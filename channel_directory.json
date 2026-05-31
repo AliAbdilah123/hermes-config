@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-31T08:38:31.547420",
+  "updated_at": "2026-05-31T09:38:52.593516",
   "platforms": {
     "discord": [
       {
@@ -109,6 +109,18 @@
         "name": "Ali's workflow / #general / I want to backup my conmes important files and configurations to this github ... / topic 1510547094694400171",
         "type": "thread",
         "thread_id": "1510547094694400171"
+      },
+      {
+        "id": "1510574743038726205:1510574743038726205",
+        "name": "Ali's workflow / #general / when trying to perform `hermes setup` in my vps, it says Error: Profile 'orch... / topic 1510574743038726205",
+        "type": "thread",
+        "thread_id": "1510574743038726205"
+      },
+      {
+        "id": "1510577863190118492:1510577863190118492",
+        "name": "Ali's workflow / #general / you know We already have multiple coder profiles. How can I specify techstack... / topic 1510577863190118492",
+        "type": "thread",
+        "thread_id": "1510577863190118492"
       }
     ],
     "telegram": [],

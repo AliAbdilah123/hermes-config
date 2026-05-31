@@ -1,0 +1,15 @@
+# Server monitor frontend/backend reference pattern
+- Reusable production pattern for a TS/React system monitor surfaced at `/projects/<project>/`.
+- Frontend fetch base should always match the serving prefix: `/projects/<project>/api/v1/...`.
+- Useful endpoints to expose from Go:
+  - `GET /api/v1/device` -> `totalMemoryMB`, `usedMemoryMB`, `totalDiskBytes`, `usedDiskBytes`, `cpuPercent`
+  - `GET /api/v1/top/processes?limit=N` -> processes sorted by memory percent with `pid`, `name`, `memPercent`, `rssMB`
+  - `GET /api/v1/top/files?limit=N` -> files sorted by size with `path`, `sizeBytes`
+- Nginx exposure notes:
+  - Static assets under `/usr/share/nginx/html/projects/<project>/`
+  - API proxy to local backend: `location /projects/<project>/api/v1/ { proxy_pass http://127.0.0.1:<port>/api/v1/; }`
+  - Do not place `server_name _;` inside a second server block on this host; reuse the existing default block.
+- Build step:
+  - `npm run build` generates `frontend/dist`; copy to `/usr/share/nginx/html/projects/<project>/`
+- Gotcha:
+  - If the browser calls `/api/v1/...` while nginx only exposes `/projects/<project>/api/v1/`, requests return 404. Always bundle the project prefix in fetch URLs or expose a top-level alias.

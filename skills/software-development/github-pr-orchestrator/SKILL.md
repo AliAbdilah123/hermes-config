@@ -16,13 +16,13 @@ Use this when running a kanban-driven coding pipeline where tasks are decomposed
 ## Prereqs
 - `gh` is authenticated (`gh auth status`)
 - A repo is cloned and the default branch is set
-- Hermes has profiles: `orchestrator`, `worker-strong`, `worker-medium`, `worker-easy`, `reviewer`
+- Hermes has profiles: `coder-orchestrator`, `coder-strong`, `coder-medium`, `coder-easy`, `coder-reviewer`
 
 ## Complexity → profile mapping
-- `high` -> `worker-strong`
-- `medium` -> `worker-medium`
-- `low` -> `worker-easy`
-- `review` -> `reviewer`
+- `high` -> `coder-strong`
+- `medium` -> `coder-medium`
+- `low` -> `coder-easy`
+- `review` -> `coder-reviewer`
 
 ## Task lifecycle
 1. `orchestrator` decomposes an idea into kanban tasks with title, description, complexity, model, and assignee.

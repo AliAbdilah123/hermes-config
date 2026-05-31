@@ -1,6 +1,6 @@
 # GitHub PR Orchestrator Runbook
 
-## Worker runbook (for worker-strong / worker-medium / worker-easy / reviewer)
+## Worker runbook (for coder-strong / coder-medium / coder-easy / coder-reviewer)
 
 When you are spawned by the dispatcher:
 1. Read `HERMES_KANBAN_TASK` from env.
@@ -18,10 +18,10 @@ When an idea/work-request arrives:
    - assignee = routed profile
 
 ## Complexity → profile mapping
-- `high` -> `worker-strong`
-- `medium` -> `worker-medium`
-- `low` -> `worker-easy`
-- `review` -> `reviewer`
+- `high` -> `coder-strong`
+- `medium` -> `coder-medium`
+- `low` -> `coder-easy`
+- `review` -> `coder-reviewer`
 
 ## Git / GitHub workflow (each task)
 
