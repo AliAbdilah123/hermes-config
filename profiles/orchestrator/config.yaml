@@ -1,0 +1,21 @@
+model:
+  default: anthropic/claude-sonnet-4
+  provider: anthropic
+agent:
+  max_turns: 200
+  gateway_timeout: 1800
+delegation:
+  max_concurrent_children: 3
+  max_spawn_depth: 1
+  orchestrator_enabled: true
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+kanban:
+  dispatch_in_gateway: true
+  orchestrator_profile: orchestrator
+  default_assignee: ''
+display:
+  personality: helpful
+gateway:
+  strict: false

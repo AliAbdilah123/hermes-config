@@ -1,0 +1,133 @@
+{
+  "updated_at": "2026-05-31T07:33:31.296229",
+  "platforms": {
+    "discord": [
+      {
+        "id": "1497600894936551559",
+        "name": "general",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1497608933567631490",
+        "name": "notifications",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1497849635786457138",
+        "name": "research",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1502140853467217920",
+        "name": "instagram-download",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1510322701141803199",
+        "name": "coding",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1510328175912161533",
+        "name": "aliabdilah",
+        "type": "dm",
+        "thread_id": null
+      },
+      {
+        "id": "1510329376875610343:1510329376875610343",
+        "name": "Ali's workflow / #general / hi / topic 1510329376875610343",
+        "type": "thread",
+        "thread_id": "1510329376875610343"
+      },
+      {
+        "id": "1497600894936551559",
+        "name": "Ali's workflow / #general",
+        "type": "group",
+        "thread_id": null
+      },
+      {
+        "id": "1510331686116659390:1510331686116659390",
+        "name": "Ali's workflow / #coding / every message in this channel needs to be handled by coding agent, unless spe... / topic 1510331686116659390",
+        "type": "thread",
+        "thread_id": "1510331686116659390"
+      },
+      {
+        "id": "1510332959331188919:1510332959331188919",
+        "name": "Ali's workflow / #coding / updat ecoding agent: unless specified, the projects you are performing needs ... / topic 1510332959331188919",
+        "type": "thread",
+        "thread_id": "1510332959331188919"
+      },
+      {
+        "id": "1510333572270133399:1510333572270133399",
+        "name": "Ali's workflow / #coding / remember that this is your public ip: 168.110.196.49 / topic 1510333572270133399",
+        "type": "thread",
+        "thread_id": "1510333572270133399"
+      },
+      {
+        "id": "1510341312958693528:1510341312958693528",
+        "name": "Ali's workflow / #coding / build app for instagram post scheduler with calendar view / topic 1510341312958693528",
+        "type": "thread",
+        "thread_id": "1510341312958693528"
+      },
+      {
+        "id": "1510343181445628035:1510343181445628035",
+        "name": "Ali's workflow / #general / How to allow all operations of hermes? / topic 1510343181445628035",
+        "type": "thread",
+        "thread_id": "1510343181445628035"
+      },
+      {
+        "id": "1510508983889432616:1510508983889432616",
+        "name": "Ali's workflow / #general / https://www.threads.com/@joshparinussa/post/DY9acKUE2RG?xmt=AQG0sgqZWBD_PnbLP... / topic 1510508983889432616",
+        "type": "thread",
+        "thread_id": "1510508983889432616"
+      },
+      {
+        "id": "1510509671969067088:1510509671969067088",
+        "name": "Ali's workflow / #general / Ok, do it / topic 1510509671969067088",
+        "type": "thread",
+        "thread_id": "1510509671969067088"
+      },
+      {
+        "id": "1510533269534539806:1510533269534539806",
+        "name": "Ali's workflow / #general / I have installed `chromium-headless.aarch64` check whether now you can use it / topic 1510533269534539806",
+        "type": "thread",
+        "thread_id": "1510533269534539806"
+      },
+      {
+        "id": "1510537881595281428:1510537881595281428",
+        "name": "Ali's workflow / #coding / create a simple server monitoring app in `<publicIP>/system` that shows the m... / topic 1510537881595281428",
+        "type": "thread",
+        "thread_id": "1510537881595281428"
+      }
+    ],
+    "telegram": [],
+    "whatsapp": [],
+    "slack": [],
+    "signal": [],
+    "mattermost": [],
+    "matrix": [],
+    "homeassistant": [],
+    "email": [],
+    "sms": [],
+    "dingtalk": [],
+    "msgraph_webhook": [],
+    "feishu": [],
+    "wecom": [],
+    "wecom_callback": [],
+    "weixin": [],
+    "bluebubbles": [],
+    "qqbot": [],
+    "yuanbao": [],
+    "google_chat": [],
+    "irc": [],
+    "line": [],
+    "ntfy": [],
+    "simplex": [],
+    "teams": []
+  }
+}

@@ -1,0 +1,17 @@
+node_modules/
+node/
+__pycache__/
+*.pyc
+logs/
+*.db
+*.db-shm
+*.db-wal
+*.lock
+gateway.pid
+.env
+.auth
+state.db
+state.db-shm
+state.db-wal
+.hermes_history
+.skills_prompt_snapshot.json
