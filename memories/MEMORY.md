@@ -11,3 +11,5 @@ Default project conventions (override only when asked): TypeScript + React via V
 Public access in this environment is http://168.110.196.49/projects/<projectName> via nginx. Project files should be owned by nginx:nginx and placed under /usr/share/nginx/html/projects/<projectName>.
 §
 AI Ops Lite scaffolding complete: repo https://github.com/AliAbdilah123/aiops-lite with PRD, OpenAPI, PR review workflow placeholder, and `github-pr-orchestrator` skill.
+§
+Hermes config auto-backups are enabled to https://github.com/AliAbdilah123/hermes-config.git via ~/.hermes/scripts/backup-github.sh and cron job 'hermes-config-backup' (every 1h). Remote also uses SSH (git@github.com:…). Repo state is in ~/.hermes-backups/hermes-config. Key excluded paths: node, node_modules, __pycache__, *.pyc, *.jar, logs, state.db*, Kanban.gz, .env, .auth.

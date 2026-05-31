@@ -11,6 +11,7 @@ tags: [web, nginx, react, go, sqlite, release]
 Use for:
 - Shipping a fresh TS/React + Go/SQLite project built as requested.
 - Making it reachable at `http://<publicIP>/projects/<projectName>`.
+- Also applies to dashboard-style services bound to a plain port that must stay reachable despite Tailscale-aware firewall rules.
 
 ## 1. Implementation contract
 

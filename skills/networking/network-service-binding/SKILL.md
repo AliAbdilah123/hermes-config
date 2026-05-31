@@ -40,6 +40,32 @@ trigger:
 - Hermes TUI/gateway specifically: use `--host 0.0.0.0` or the config field to override bind.
 - Generic Go server: ensure `Listen` uses `0.0.0.0` (or the Tailscale IP), not `127.0.0.1`.
 
+## Interface-Only Firewall Binding
+
+When binding a port to one interface only (e.g. `tailscale0`), use iptables rules in this order:
+
+1. `sudo iptables -I INPUT -p tcp --dport <PORT> -i <IFACE> -j ACCEPT`
+2. `sudo iptables -I INPUT -p udp --dport <PORT> -i <IFACE> -j ACCEPT`
+3. `sudo iptables -A INPUT -p tcp --dport <PORT> -j DROP`
+4. `sudo iptables -A INPUT -p udp --dport <PORT> -j DROP`
+
+Rules 1–2 should go before any catchall like `ts-input`.
+
+### Pitfall: service-name translation
+
+`iptables` can display/insert/delete numeric ports as resolved service names (e.g. `9119` → `mxit`). If a rule was added with `--dport 9119`, delete may require `--dport mxit`. Use `iptables -L INPUT --numeric` to verify how the rule is stored.
+
+### Reliable deletion pattern
+
+Match existing rules exactly as shown in `iptables -L INPUT --numeric`, then delete by copy/paste of that spec. Do not assume the numeric form survives every insertion path.
+
+### Verification
+
+After rule changes, confirm with:
+- `sudo iptables -L INPUT -v --line-numbers`
+- `curl -v http://<TAILSCALE_IP>:<PORT>`
+- `curl -v --connect-timeout 5 http://127.0.0.1:<PORT>`
+
 ## Reference
 
 See `references/service-exposure-checklist.md` for environment-specific notes and diagnostic output patterns.
