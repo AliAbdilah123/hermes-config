@@ -91,6 +91,14 @@ Some tools open a web editor for UI settings and refuse path changes. Workaround
 - Backend proxies may need `setsebool -P httpd_can_network_connect on`.
 - Project files under `/usr/share/nginx/html/projects/<name>` should be `nginx:nginx`.
 
+### E) Nginx 502 from a stopped/missing upstream service
+When nginx reports `connect() failed (111: Connection refused) while connecting to upstream` for a path like `/api/v1/...`:
+1. Confirm the upstream is down: `curl -i --max-time 5 http://127.0.0.1:<port>/api/v1/health` and `ss -tlnp | grep :<port>`.
+2. Check whether the app's systemd unit is actually installed/enabled: `systemctl status <app>.service --no-pager` and `journalctl -u <app>.service -n 80 --no-pager`.
+3. If the unit exists but fails before exec with `Failed to load environment files: Permission denied`, move runtime env files out of a home/project path into `/etc/<app>/`, root-own them, and update `EnvironmentFile=/etc/<app>/<service>.env`.
+4. If the unit fails with `status=203/EXEC` or `Failed to locate executable ... Permission denied` for a script under a project/home path, prefer building/installing the service binary into `/usr/local/bin/<app>` and setting `ExecStart=/usr/local/bin/<app>`; keep `WorkingDirectory` pointed at the app directory if it needs relative data paths.
+5. `systemctl daemon-reload && systemctl reset-failed <app>.service && systemctl restart <app>.service`, then verify both local upstream health and public nginx path. A successful fix should turn public auth/API calls from 502 into the app's real status (often 200/401/403).
+
 ## Decision Tree
 ```
 Port ‘listening’ yet curl times out?

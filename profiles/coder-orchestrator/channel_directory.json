@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-01T15:38:09.645223",
+  "updated_at": "2026-06-01T16:38:09.806360",
   "platforms": {
     "discord": [
       {
@@ -91,6 +91,12 @@
         "name": "Ali's workflow / #coding / I want to create POS system for F&B with extra features: - App has multi lang... / topic 1510894555883376791",
         "type": "thread",
         "thread_id": "1510894555883376791"
+      },
+      {
+        "id": "1511032683877109831:1511032683877109831",
+        "name": "Ali's workflow / #coding / I cant sign in to the omnichannel-chat-hub app. It produces this error: <html... / topic 1511032683877109831",
+        "type": "thread",
+        "thread_id": "1511032683877109831"
       }
     ],
     "telegram": [],
