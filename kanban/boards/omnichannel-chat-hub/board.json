@@ -1,0 +1,10 @@
+{
+  "slug": "omnichannel-chat-hub",
+  "name": "Omnichannel Chat Hub",
+  "description": "From-scratch omnichannel web app: WhatsApp via Baileys first, Instagram/Facebook later",
+  "icon": "💬",
+  "color": "#60a5fa",
+  "default_workdir": "/home/opc/projects/omnichannel-chat-hub",
+  "created_at": 1780229049,
+  "archived": false
+}

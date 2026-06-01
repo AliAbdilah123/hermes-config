@@ -13,3 +13,5 @@ Public access in this environment is http://168.110.196.49/projects/<projectName
 AI Ops Lite scaffolding complete: repo https://github.com/AliAbdilah123/aiops-lite with PRD, OpenAPI, PR review workflow placeholder, and `github-pr-orchestrator` skill.
 §
 Hermes config auto-backups are enabled to https://github.com/AliAbdilah123/hermes-config.git via ~/.hermes/scripts/backup-github.sh and cron job 'hermes-config-backup' (every 1h). Remote also uses SSH (git@github.com:…). Repo state is in ~/.hermes-backups/hermes-config. Key excluded paths: node, node_modules, __pycache__, *.pyc, *.jar, logs, state.db*, Kanban.gz, .env, .auth.
+§
+ARM64 headless browser path on this host: /usr/lib64/chromium-browser/headless_shell from chromium-headless RPM. Use with flags like `--no-sandbox --disable-gpu --virtual-time-budget=5000 --dump-dom` or `--screenshot=/tmp/file.png`. agent-browser config is /home/opc/.agent-browser/config.json with executable_path set to that binary.

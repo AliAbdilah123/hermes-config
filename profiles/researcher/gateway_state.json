@@ -1,0 +1,1 @@
+{"pid":208634,"kind":"hermes-gateway","argv":["/home/opc/.hermes/hermes-agent/hermes_cli/main.py","gateway","run","--replace"],"start_time":15057925,"gateway_state":"running","exit_reason":null,"restart_requested":false,"active_agents":0,"platforms":{},"updated_at":"2026-06-01T06:24:36.152792+00:00"}

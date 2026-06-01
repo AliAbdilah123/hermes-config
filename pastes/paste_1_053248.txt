@@ -1,0 +1,13 @@
+message: 400 Bad Request (error code: 50035): Invalid Form Body
+In channel_id: snowflake value should be less than or equal to 9223372036854775807.
+Traceback (most recent call last):
+  File "/home/opc/.hermes/hermes-agent/plugins/platforms/discord/adapter.py", line 1440, in send
+    channel = await self._client.fetch_channel(int(chat_id))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/.hermes/hermes-agent/venv/lib/python3.11/site-packages/discord/client.py", line 2713, in fetch_channel
+    data = await self.http.get_channel(channel_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/.hermes/hermes-agent/venv/lib/python3.11/site-packages/discord/http.py", line 778, in request
+    raise HTTPException(response, data)
+discord.errors.HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
+In channel_id: snowflake value should be less than or equal to 9223372036854775807.

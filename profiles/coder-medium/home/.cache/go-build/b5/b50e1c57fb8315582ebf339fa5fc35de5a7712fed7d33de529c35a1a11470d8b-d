@@ -1,0 +1,9 @@
+./config.go
+./repository.go
+./server.go
+./auth_test.go
+./channels_test.go
+./inbound_webhook_test.go
+./migrations_test.go
+./repository_test.go
+./server_test.go

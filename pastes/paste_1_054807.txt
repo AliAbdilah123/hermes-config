@@ -1,0 +1,37 @@
+[opc@instance-20260530-2033 ~]$ hermes gateway status --profile default
+● hermes-gateway.service - Hermes Agent Gateway - Messaging Platform Integration
+     Loaded: loaded (/home/opc/.config/systemd/user/hermes-gateway.service; enabled; preset: disabled)
+     Active: active (running) since Mon 2026-06-01 05:38:53 GMT; 6min ago
+   Main PID: 205787 (hermes)
+      Tasks: 12 (limit: 146308)
+     Memory: 7.2G (peak: 8.2G)
+        CPU: 4.866s
+     CGroup: /user.slice/user-1000.slice/user@1000.service/app.slice/hermes-gateway.service
+             ├─ 89205 "nginx: master process nginx"
+             ├─179652 "nginx: worker process"
+             ├─179653 "nginx: worker process"
+             ├─179654 "nginx: worker process"
+             ├─179655 "nginx: worker process"
+             └─205787 /home/opc/.hermes/hermes-agent/venv/bin/python -m hermes_…
+
+Jun 01 05:38:53 instance-20260530-2033 systemd[16661]: Started Hermes Agent G…n.
+Jun 01 05:38:55 instance-20260530-2033 python[205787]: WARNING gateway.run: S…e.
+Hint: Some lines were ellipsized, use -l to show in full.
+✓ User gateway service is running
+
+Recent gateway health:
+  ⚠ Last shutdown reason: Gateway restart requested
+✓ Systemd linger is enabled (service survives logout)
+
+Other profiles:
+  ✓ coder-orchestrator — PID 205787
+[opc@instance-20260530-2033 ~]$ hermes gateway status --profile coder-orchestration
+Error: Profile 'coder-orchestration' does not exist. Create it with: hermes profile create coder-orchestration
+[opc@instance-20260530-2033 ~]$ hermes gateway status --profile coder-orchestrat
+or
+✓ Gateway is running (PID: 205787)
+  (Running manually, not as a system service)
+
+To install as a service:
+  hermes gateway install
+  sudo hermes gateway install --system

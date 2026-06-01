@@ -1,2 +1,4 @@
 07:18:38 ENTER: queued interrupt msg='stop', agent_running=True
 07:18:38 interrupt fired: msg='stop', children=0, parent._interrupt=True
+05:48:07 ENTER: queued interrupt msg='[Pasted text #1: 37 lines → /home/opc/.hermes/pastes/paste_1', agent_running=True
+05:48:08 interrupt fired: msg='[Pasted text #1: 37 lines → /home/opc/.hermes/pastes/paste_1', children=0, parent._interrupt=True

@@ -1,0 +1,12 @@
+=== RUN   TestMigrationsApplyOnEmptyDatabase
+--- PASS: TestMigrationsApplyOnEmptyDatabase (0.00s)
+=== RUN   TestMigrationsAreIdempotent
+--- PASS: TestMigrationsAreIdempotent (0.00s)
+=== RUN   TestRepositoryCreateEntitiesAndUniqueness
+--- PASS: TestRepositoryCreateEntitiesAndUniqueness (0.00s)
+=== RUN   TestWebhookEventIdempotency
+--- PASS: TestWebhookEventIdempotency (0.00s)
+=== RUN   TestHealthEndpoint
+--- PASS: TestHealthEndpoint (0.00s)
+PASS
+ok  	github.com/AliAbdilah123/omnichannel-chat-hub/backend/internal/app	0.030s

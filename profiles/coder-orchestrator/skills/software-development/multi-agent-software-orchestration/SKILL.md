@@ -21,6 +21,13 @@ Goal: replicate “software house” cadence
 - Observability via dashboard/kanban
 - Operator only approves merge
 
+## PRD Drafting Pitfalls
+
+- Do not over-lock implementation assumptions in the first PRD when the user has only described the product goal. If a channel/provider choice materially affects architecture, ask or make it easy to revise.
+- For omnichannel chat/inbox products, “from scratch” usually means do not clone/depend on broken existing platforms; it does not automatically mean “official APIs only.” Clarify whether WhatsApp should use official Cloud API or Baileys/QR-session integration before making the API choice non-negotiable.
+- When the user corrects an integration choice, revise the published PRD/API contract immediately and keep the original stack stable unless the user explicitly approves a broader stack change.
+- See `references/omnichannel-chat-integrations.md` for Baileys-oriented WhatsApp MVP notes and API contract patterns.
+
 ## Skill-Based Model
 
 Execute via `gh` as owner/reviewer:

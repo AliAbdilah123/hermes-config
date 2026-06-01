@@ -1,0 +1,40 @@
+[
+  {
+    "session_id": "proc_35518347b656",
+    "command": "./deploy/scripts/run-backend.sh",
+    "pid": 179297,
+    "pid_scope": "host",
+    "cwd": "/home/opc/projects/omnichannel-chat-hub",
+    "started_at": 1780258515.743911,
+    "task_id": "default",
+    "session_key": "20260531_201159_af4f77",
+    "watcher_platform": "",
+    "watcher_chat_id": "",
+    "watcher_user_id": "",
+    "watcher_user_name": "",
+    "watcher_thread_id": "",
+    "watcher_message_id": "",
+    "watcher_interval": 0,
+    "notify_on_complete": false,
+    "watch_patterns": []
+  },
+  {
+    "session_id": "proc_b18652feeeb3",
+    "command": "./deploy/scripts/run-worker.sh",
+    "pid": 179695,
+    "pid_scope": "host",
+    "cwd": "/home/opc/projects/omnichannel-chat-hub",
+    "started_at": 1780258645.315503,
+    "task_id": "default",
+    "session_key": "20260531_201159_af4f77",
+    "watcher_platform": "",
+    "watcher_chat_id": "",
+    "watcher_user_id": "",
+    "watcher_user_name": "",
+    "watcher_thread_id": "",
+    "watcher_message_id": "",
+    "watcher_interval": 0,
+    "notify_on_complete": false,
+    "watch_patterns": []
+  }
+]

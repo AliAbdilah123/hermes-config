@@ -1,0 +1,12 @@
+=== RUN   TestAuthMeRejectsUnauthenticated
+--- PASS: TestAuthMeRejectsUnauthenticated (0.00s)
+=== RUN   TestAuthLoginMeAndLogoutFlow
+--- PASS: TestAuthLoginMeAndLogoutFlow (0.00s)
+=== RUN   TestChannelsEndpointsRequireAuth
+--- PASS: TestChannelsEndpointsRequireAuth (0.00s)
+=== RUN   TestChannelStartPollListAndDisconnect
+--- PASS: TestChannelStartPollListAndDisconnect (0.00s)
+=== RUN   TestChannelMutationRequiresAdminRole
+--- PASS: TestChannelMutationRequiresAdminRole (0.00s)
+PASS
+ok  	github.com/AliAbdilah123/omnichannel-chat-hub/backend/internal/app	0.041s

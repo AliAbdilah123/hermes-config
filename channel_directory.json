@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-31T10:39:11.060657",
+  "updated_at": "2026-06-01T07:33:13.762341",
   "platforms": {
     "discord": [
       {
@@ -29,6 +29,12 @@
       {
         "id": "1510322701141803199",
         "name": "coding",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1510599177422376980",
+        "name": "notifications-coding",
         "guild": "Ali's workflow",
         "type": "channel"
       },
@@ -169,6 +175,18 @@
         "name": "Ali's workflow / #general / after creating a thread make your first reply is the profile and model used f... / topic 1510584576282460290",
         "type": "thread",
         "thread_id": "1510584576282460290"
+      },
+      {
+        "id": "1510601849332437032:1510601849332437032",
+        "name": "Ali's workflow / #general / Which profile do you use? / topic 1510601849332437032",
+        "type": "thread",
+        "thread_id": "1510601849332437032"
+      },
+      {
+        "id": "1510894268275888159:1510894268275888159",
+        "name": "Ali's workflow / #general / hi / topic 1510894268275888159",
+        "type": "thread",
+        "thread_id": "1510894268275888159"
       }
     ],
     "telegram": [],

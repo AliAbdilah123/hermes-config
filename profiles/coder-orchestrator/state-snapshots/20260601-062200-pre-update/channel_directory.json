@@ -1,0 +1,109 @@
+{
+  "updated_at": "2026-06-01T06:18:35.039145",
+  "platforms": {
+    "discord": [
+      {
+        "id": "1497600894936551559",
+        "name": "general",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1497608933567631490",
+        "name": "notifications",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1497849635786457138",
+        "name": "research",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1502140853467217920",
+        "name": "instagram-download",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1510322701141803199",
+        "name": "coding",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1510599177422376980",
+        "name": "notifications-coding",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1510607927231123658:1510607927231123658",
+        "name": "Ali's workflow / #general / Hi / topic 1510607927231123658",
+        "type": "thread",
+        "thread_id": "1510607927231123658"
+      },
+      {
+        "id": "1510322701141803199",
+        "name": "Ali's workflow / #coding",
+        "type": "group",
+        "thread_id": null
+      },
+      {
+        "id": "1510609624917610528:1510609624917610528",
+        "name": "Ali's workflow / #general / Which profile do you use / topic 1510609624917610528",
+        "type": "thread",
+        "thread_id": "1510609624917610528"
+      },
+      {
+        "id": "1510877929444474991:1510877929444474991",
+        "name": "Ali's workflow / #general / which agent are you? / topic 1510877929444474991",
+        "type": "thread",
+        "thread_id": "1510877929444474991"
+      },
+      {
+        "id": "1510884819918127104:1510884819918127104",
+        "name": "Ali's workflow / #coding / which profile are you using? / topic 1510884819918127104",
+        "type": "thread",
+        "thread_id": "1510884819918127104"
+      },
+      {
+        "id": "1510885653859139715:1510885653859139715",
+        "name": "Ali's workflow / #coding / hi / topic 1510885653859139715",
+        "type": "thread",
+        "thread_id": "1510885653859139715"
+      },
+      {
+        "id": "1510889290073112577:1510889290073112577",
+        "name": "Ali's workflow / #coding / hi / topic 1510889290073112577",
+        "type": "thread",
+        "thread_id": "1510889290073112577"
+      }
+    ],
+    "telegram": [],
+    "whatsapp": [],
+    "slack": [],
+    "signal": [],
+    "mattermost": [],
+    "matrix": [],
+    "homeassistant": [],
+    "email": [],
+    "sms": [],
+    "dingtalk": [],
+    "msgraph_webhook": [],
+    "feishu": [],
+    "wecom": [],
+    "wecom_callback": [],
+    "weixin": [],
+    "bluebubbles": [],
+    "qqbot": [],
+    "yuanbao": [],
+    "google_chat": [],
+    "irc": [],
+    "line": [],
+    "ntfy": [],
+    "simplex": [],
+    "teams": []
+  }
+}
