@@ -1,6 +1,0 @@
-./config.go
-./repository.go
-./server.go
-./migrations_test.go
-./repository_test.go
-./server_test.go
