@@ -1,9 +1,9 @@
 {
-  "last_report_path": null,
-  "last_run_at": "2026-05-30T16:58:10.367202+00:00",
-  "last_run_duration_seconds": null,
-  "last_run_summary": "deferred first run — curator seeded, will run after one interval; use `hermes curator run --dry-run` to preview now",
-  "last_run_summary_shown_at": null,
+  "last_report_path": "/home/ubuntu/.hermes/logs/curator/20260606-171741",
+  "last_run_at": "2026-06-06T17:17:41.599636+00:00",
+  "last_run_duration_seconds": 482.837535,
+  "last_run_summary": "auto: no changes; llm: ## Human-readable summary of this pass\n\nI identified one dominant cluster: **service-exposure + fullstack-deployment**. Five of the twelve candidate skills all describe the same end-to-end workflow — building a TS/React + Go/SQLite project,…\narchived 5 skill(s):\n  • default-web-stack → service-exposure-debugging\n  • fullstack-app → service-exposure-debugging\n  • network-service-binding → service-exposure-debugging\n  • release-and-expose-web-app → service-exposure-debugging\n  • standard-stack-scaffold → service-exposure-debugging\nfull report: hermes curator status\nkeep an umbrella stable: hermes curator pin service-exposure-debugging",
+  "last_run_summary_shown_at": "2026-05-30T16:58:10.367202+00:00",
   "paused": false,
-  "run_count": 0
+  "run_count": 1
 }

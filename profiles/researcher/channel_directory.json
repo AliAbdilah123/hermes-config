@@ -1,8 +1,57 @@
 {
-  "updated_at": "2026-06-01T22:50:54.456208",
+  "updated_at": "2026-06-07T16:48:25.244858",
   "platforms": {
+    "discord": [
+      {
+        "id": "1497600894936551559",
+        "name": "general",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1497608933567631490",
+        "name": "notifications",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1497849635786457138",
+        "name": "research",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1510322701141803199",
+        "name": "coding",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1510599177422376980",
+        "name": "notifications-coding",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1512466189627166860",
+        "name": "ideas",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1513216651904942264:1513216651904942264",
+        "name": "Ali's workflow / #research / hi / topic 1513216651904942264",
+        "type": "thread",
+        "thread_id": "1513216651904942264"
+      },
+      {
+        "id": "1513220839250595942:1513220839250595942",
+        "name": "Ali's workflow / #research / Research the potential of this app / topic 1513220839250595942",
+        "type": "thread",
+        "thread_id": "1513220839250595942"
+      }
+    ],
     "telegram": [],
-    "discord": [],
     "whatsapp": [],
     "slack": [],
     "signal": [],

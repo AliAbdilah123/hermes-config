@@ -1,0 +1,10 @@
+{
+  "slug": "fnb-pos-system",
+  "name": "F&B POS System",
+  "description": "Approved PRD/API build: Indonesian-first offline-first multi-outlet F&B POS with Xendit QRIS",
+  "icon": "🍽️",
+  "color": "#8b4513",
+  "default_workdir": "/home/ubuntu/projects/fnb-pos-system",
+  "created_at": 1780559665,
+  "archived": false
+}

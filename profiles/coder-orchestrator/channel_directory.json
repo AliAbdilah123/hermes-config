@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-01T22:50:58.401699",
+  "updated_at": "2026-06-07T16:49:12.643735",
   "platforms": {
     "discord": [
       {
@@ -21,12 +21,6 @@
         "type": "channel"
       },
       {
-        "id": "1502140853467217920",
-        "name": "instagram-download",
-        "guild": "Ali's workflow",
-        "type": "channel"
-      },
-      {
         "id": "1510322701141803199",
         "name": "coding",
         "guild": "Ali's workflow",
@@ -35,6 +29,12 @@
       {
         "id": "1510599177422376980",
         "name": "notifications-coding",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1512466189627166860",
+        "name": "ideas",
         "guild": "Ali's workflow",
         "type": "channel"
       },
@@ -97,6 +97,78 @@
         "name": "Ali's workflow / #coding / I cant sign in to the omnichannel-chat-hub app. It produces this error: <html... / topic 1511032683877109831",
         "type": "thread",
         "thread_id": "1511032683877109831"
+      },
+      {
+        "id": "1511160552255394002:1511160552255394002",
+        "name": "Ali's workflow / #coding / which profile do you use? / topic 1511160552255394002",
+        "type": "thread",
+        "thread_id": "1511160552255394002"
+      },
+      {
+        "id": "1511161094297616425:1511161094297616425",
+        "name": "Ali's workflow / #coding / tell me your techstack / topic 1511161094297616425",
+        "type": "thread",
+        "thread_id": "1511161094297616425"
+      },
+      {
+        "id": "1511172281928388759:1511172281928388759",
+        "name": "Ali's workflow / #coding / I want to create POS system for F&B with extra features: App has multi langua... / topic 1511172281928388759",
+        "type": "thread",
+        "thread_id": "1511172281928388759"
+      },
+      {
+        "id": "1511267434936402061:1511267434936402061",
+        "name": "Ali's workflow / #coding / Remember all coding projects now in `~/projects` / topic 1511267434936402061",
+        "type": "thread",
+        "thread_id": "1511267434936402061"
+      },
+      {
+        "id": "1511268016132980829:1511268016132980829",
+        "name": "Ali's workflow / #coding / Create the web app ~/projects/Komuna following the SPEC.md in that directory / topic 1511268016132980829",
+        "type": "thread",
+        "thread_id": "1511268016132980829"
+      },
+      {
+        "id": "1511703967288000573:1511703967288000573",
+        "name": "Ali's workflow / #coding / remember, everytime you present me the link to a project app, give alternativ... / topic 1511703967288000573",
+        "type": "thread",
+        "thread_id": "1511703967288000573"
+      },
+      {
+        "id": "1512401815390650370:1512401815390650370",
+        "name": "Ali's workflow / #coding / Hi / topic 1512401815390650370",
+        "type": "thread",
+        "thread_id": "1512401815390650370"
+      },
+      {
+        "id": "1513073909468106802:1513073909468106802",
+        "name": "Ali's workflow / #coding / Why projects are offline? / topic 1513073909468106802",
+        "type": "thread",
+        "thread_id": "1513073909468106802"
+      },
+      {
+        "id": "1513179484990345326:1513179484990345326",
+        "name": "Ali's workflow / #coding / revert the previous changes in Komuna project / topic 1513179484990345326",
+        "type": "thread",
+        "thread_id": "1513179484990345326"
+      },
+      {
+        "id": "1513200050094735532:1513200050094735532",
+        "name": "Ali's workflow / #coding / make the project insta-scheduler production grade app and feature complete / topic 1513200050094735532",
+        "type": "thread",
+        "thread_id": "1513200050094735532"
+      },
+      {
+        "id": "1513216118095876226:1513216118095876226",
+        "name": "Ali's workflow / #coding / I fee like Komuna app is like a corporate app (all about dashboard and data),... / topic 1513216118095876226",
+        "type": "thread",
+        "thread_id": "1513216118095876226"
+      },
+      {
+        "id": "1513216593528754348:1513216593528754348",
+        "name": "Ali's workflow / #coding / add ability to connect to user's instagram account in the insta-scheduler app / topic 1513216593528754348",
+        "type": "thread",
+        "thread_id": "1513216593528754348"
       }
     ],
     "telegram": [],

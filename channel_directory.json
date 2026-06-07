@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-01T22:50:58.202537",
+  "updated_at": "2026-06-07T16:49:21.706471",
   "platforms": {
     "discord": [
       {
@@ -21,12 +21,6 @@
         "type": "channel"
       },
       {
-        "id": "1502140853467217920",
-        "name": "instagram-download",
-        "guild": "Ali's workflow",
-        "type": "channel"
-      },
-      {
         "id": "1510322701141803199",
         "name": "coding",
         "guild": "Ali's workflow",
@@ -35,6 +29,12 @@
       {
         "id": "1510599177422376980",
         "name": "notifications-coding",
+        "guild": "Ali's workflow",
+        "type": "channel"
+      },
+      {
+        "id": "1512466189627166860",
+        "name": "ideas",
         "guild": "Ali's workflow",
         "type": "channel"
       },
@@ -193,6 +193,96 @@
         "name": "Ali's workflow / #general / help me compile a plan for migrating this instance to a new instance that use... / topic 1511021517914243193",
         "type": "thread",
         "thread_id": "1511021517914243193"
+      },
+      {
+        "id": "1511160465315725462:1511160465315725462",
+        "name": "Ali's workflow / #general / what projects do we have? / topic 1511160465315725462",
+        "type": "thread",
+        "thread_id": "1511160465315725462"
+      },
+      {
+        "id": "1511169832912162846:1511169832912162846",
+        "name": "Ali's workflow / #general / enable port 9119 acccessed by tailscale / topic 1511169832912162846",
+        "type": "thread",
+        "thread_id": "1511169832912162846"
+      },
+      {
+        "id": "1511174781980901489:1511174781980901489",
+        "name": "Ali's workflow / #general / remember, your public ip is http://168.110.213.104/ / topic 1511174781980901489",
+        "type": "thread",
+        "thread_id": "1511174781980901489"
+      },
+      {
+        "id": "1511175820608016488:1511175820608016488",
+        "name": "Ali's workflow / #general / why http://168.110.213.104/prds/fnb-pos-system-7f11f0eb-dae0-474b-8778-d65d63... / topic 1511175820608016488",
+        "type": "thread",
+        "thread_id": "1511175820608016488"
+      },
+      {
+        "id": "1511177492604518591:1511177492604518591",
+        "name": "Ali's workflow / #general / Move reminder hermes-config-backup to notifications channel / topic 1511177492604518591",
+        "type": "thread",
+        "thread_id": "1511177492604518591"
+      },
+      {
+        "id": "1511177594270384388:1511177594270384388",
+        "name": "Ali's workflow / #general / Do not redirect / to /projects/demo in nginx / topic 1511177594270384388",
+        "type": "thread",
+        "thread_id": "1511177594270384388"
+      },
+      {
+        "id": "1511178475833266317:1511178475833266317",
+        "name": "Ali's workflow / #general / Run `curl http://168.110.213.104/` / topic 1511178475833266317",
+        "type": "thread",
+        "thread_id": "1511178475833266317"
+      },
+      {
+        "id": "1511178606229848175:1511178606229848175",
+        "name": "Ali's workflow / #general / Run `curl 127.0.0.1` / topic 1511178606229848175",
+        "type": "thread",
+        "thread_id": "1511178606229848175"
+      },
+      {
+        "id": "1511181753451151380:1511181753451151380",
+        "name": "Ali's workflow / #general / List allowed and disallowed ufw rules / topic 1511181753451151380",
+        "type": "thread",
+        "thread_id": "1511181753451151380"
+      },
+      {
+        "id": "1497608933567631490",
+        "name": "Ali's workflow / #notifications",
+        "type": "group",
+        "thread_id": null
+      },
+      {
+        "id": "1512401998098595891:1512401998098595891",
+        "name": "Ali's workflow / #general / Install theses skills https://github.com/mattpocock/skills: grill-me-with-doc... / topic 1512401998098595891",
+        "type": "thread",
+        "thread_id": "1512401998098595891"
+      },
+      {
+        "id": "1512402246694867129:1512402246694867129",
+        "name": "Ali's workflow / #general / Install theses skills https://github.com/mattpocock/skills: grill-me-with-doc... / topic 1512402246694867129",
+        "type": "thread",
+        "thread_id": "1512402246694867129"
+      },
+      {
+        "id": "1512468707681763340:1512468707681763340",
+        "name": "Ali's workflow / #general / /grill-with/doc ~/projects/Komuna / topic 1512468707681763340",
+        "type": "thread",
+        "thread_id": "1512468707681763340"
+      },
+      {
+        "id": "1513179217997857019:1513179217997857019",
+        "name": "Ali's workflow / #general / change accessing `/` at port 80 to show just \"hello\" message / topic 1513179217997857019",
+        "type": "thread",
+        "thread_id": "1513179217997857019"
+      },
+      {
+        "id": "1513187458601451590:1513187458601451590",
+        "name": "Ali's workflow / #general / give me list of projects we have and their link / topic 1513187458601451590",
+        "type": "thread",
+        "thread_id": "1513187458601451590"
       }
     ],
     "telegram": [],

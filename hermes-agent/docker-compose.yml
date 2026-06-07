@@ -72,5 +72,8 @@ services:
     environment:
       - HERMES_UID=${HERMES_UID:-10000}
       - HERMES_GID=${HERMES_GID:-10000}
-    # Localhost-only. For remote access, tunnel via `ssh -L 9119:localhost:9119`.
-    command: ["dashboard", "--host", "127.0.0.1", "--no-open"]
+    # Expose dashboard on all interfaces for Tailscale access.
+    # Optional hardening for Tailscale clients only:
+    #   iptables -I INPUT -p tcp --dport 9119 -s 100.64.0.0/10 -j ACCEPT
+    #   iptables -I INPUT -p tcp --dport 9119 -j DROP
+    command: ["dashboard", "--host", "0.0.0.0", "--no-open"]

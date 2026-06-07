@@ -833,10 +833,20 @@ Check logs first:
 grep -i "failed to send\|error" ~/.hermes/logs/gateway.log | tail -20
 ```
 
-Common gateway problems:
+### Common gateway problems
 - **Gateway dies on SSH logout**: Enable linger: `sudo loginctl enable-linger $USER`
 - **Gateway dies on WSL2 close**: WSL2 requires `systemd=true` in `/etc/wsl.conf` for systemd services to work. Without it, gateway falls back to `nohup` (dies when session closes).
 - **Gateway crash loop**: Reset the failed state: `systemctl --user reset-failed hermes-gateway`
+
+### Discord bot gives no reply / only an emoji
+First check logs for `Unauthorized user` on `discord`. This usually means the message was dropped before the model was even invoked.
+- **First check**: `grep -i Unauthorized ~/.hermes/logs/gateway.log`
+- **Typical root causes**:
+  1. No user allowlist configured and allow-all is off.
+     - Fix: set `GATEWAY_ALLOW_ALL_USERS=true` in `~/.hermes/.env` for the relevant profile, or add an explicit user allowlist.
+  2. Channel/thread is not in the profile’s `discord.allowed_channels` / guild list.
+     - Fix: add the thread/channel/guild IDs to the profile `config.yaml` and restart that profile’s gateway service.
+- **Verification**: after `systemctl --user restart <profile>-gateway`, re-run the same grep. If the unauthorized lines stop, the config took effect.
 
 ### Platform-specific issues
 - **Discord bot silent**: Must enable **Message Content Intent** in Bot → Privileged Gateway Intents.

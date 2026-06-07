@@ -30,6 +30,9 @@ rsync -a \
   --exclude='gateway.pid' \
   --exclude='.hermes_history' \
   --exclude='.skills_prompt_snapshot.json' \
+  --exclude='profiles/*/home/go/pkg/mod' \
+  --exclude='profiles/*/home/.npm/_logs' \
+  --exclude='profiles/*/home/.cache' \
   "$SOURCE_HOME/" "$REPO_DIR/"
 
 cd "$REPO_DIR"
@@ -42,4 +45,5 @@ if git diff --cached --quiet; then
 fi
 
 git commit -m "$COMMIT_MSG"
+git pull --rebase origin HEAD
 git push origin HEAD

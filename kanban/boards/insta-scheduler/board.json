@@ -1,0 +1,10 @@
+{
+  "slug": "insta-scheduler",
+  "name": "Insta Scheduler",
+  "description": "",
+  "icon": "",
+  "color": "",
+  "default_workdir": "/home/ubuntu/projects/insta-scheduler",
+  "created_at": 1780845667,
+  "archived": false
+}

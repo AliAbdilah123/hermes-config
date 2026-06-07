@@ -307,7 +307,19 @@ If you catch yourself thinking:
 | "One more fix attempt" (after 2+ failures) | 3+ failures = architectural problem. Question the pattern, don't fix again. |
 | "I'll keep retrying after root cause is clear" | Once root cause is confirmed, abandon failed paths fast and switch tactics; verbose retries are signal, not effort. |
 
-## Quick Reference
+## Common Debugging Anti-Patterns
+
+### Mirrors and Import Rewrites Before Verifying the Source Module
+
+**Symptom:** Page-level TS errors say a shared module is missing exports or methods.
+
+**Anti-pattern:** Creating a mirror module, then rewiring one page import at a time.
+
+**Better:** Treat the shared module itself as the likely root cause. Inspect it directly and restore the missing exports/methods there. Only mirror if the shared module is explicitly read-only or generated.
+
+Rationale: Import rewrites solve visibility but not contract drift. Fixing the shared module keeps one source of truth and prevents half-migrated files.
+
+---
 
 | Phase | Key Activities | Success Criteria |
 |-------|---------------|------------------|

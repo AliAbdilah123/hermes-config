@@ -1,13 +1,14 @@
 ---
 name: service-exposure-debugging
-description: "Service unreachable/broken exposure debugging: ports, firewalls, SELinux, nginx, Tailscale, localhost-only loopback aliases, proxy-ready paths, and restart loops."
-version: 1.0.0
+description: "Service unreachable/broken exposure debugging: ports, firewalls, SELinux, nginx, Tailscale, localhost-only loopback aliases, proxy-ready paths, and restart loops. This is the consolidated umbrella for all service-exposure and fullstack-deployment knowledge; see the references/ directory for absorbed skill content."
+version: 1.0.1
 author: Hermes Agent
 license: MIT
 platforms: [linux]
 metadata:
   hermes:
-    tags: [debugging, networking, linux, tailscale, selinux, iptables, nginx, port-forwarding]
+    tags: [debugging, networking, linux, tailscale, selinux, iptables, nginx, port-forwarding, fullstack-deployment, nginx-config]
+    related_skills: [network-service-binding, release-and-expose-web-app, standard-stack-scaffold, default-web-stack, fullstack-app]
 ---
 
 # Service Exposure Debugging
@@ -57,6 +58,9 @@ s.connect(('127.0.0.1', PORT)); print('ok'); s.close()
   Locally-generated traffic does not arrive on tailscale0 → local curl fails.
   A curl via proxy may succeed because proxy uses `tailscale0`.
 
+## Response Style
+- User prefers concise, direct answers. Give result or next concrete step; avoid verbose explanation unless asked.
+
 ## Remediation Playbook
 
 ### A) Dashboard/agent listen deadlock
@@ -91,6 +95,23 @@ Some tools open a web editor for UI settings and refuse path changes. Workaround
 - Backend proxies may need `setsebool -P httpd_can_network_connect on`.
 - Project files under `/usr/share/nginx/html/projects/<name>` should be `nginx:nginx`.
 
+### E) Static frontend projects under /home/<user> and path-based exposure
+Use this when nginx is inbound-blocked from serving `/home/...` directly or when the nginx runtime user cannot traverse home dirs.
+
+1. Use a stable root under `/var/www/html/projects/<name>`.
+2. Copy each project's known-good `frontend/` directory there with `cp -a`.
+3. Route all projects under shared `/projects/` prefix instead of separate ports per project.
+4. Do not leave stale directories like `omnichannel-chat-hub` if canonical name is `projects-omnichannel-chat-hub`; duplicate dirs cause 404 surprise.
+
+Example layout:
+```
+/var/www/html/projects/demo/index.html
+/var/www/html/projects/insta-scheduler/index.html
+/var/www/html/projects/omnichannel-hub/index.html
+/var/www/html/projects/projects-omnichannel-chat-hub/index.html
+/var/www/html/projects/system/index.html
+```
+
 ## Decision Tree
 ```
 Port ‘listening’ yet curl times out?
@@ -101,5 +122,28 @@ Port ‘listening’ yet curl times out?
   -> Re-run socket-level test; if same -> OS layer (firewall/iptables/SELinux/loopback).
 ```
 
-## References
+## Absorbed content from network-service-binding
+
+- `references/network-service-binding-iptables-port-names-pitfall.md` — iptables port-name translation pitfall (numeric vs. service-name resolution), verbatim delete workflow.
+- `references/network-service-binding-service-exposure-checklist.md` — sample diagnostic output, environment facts (Oracle Linux 9, nginx 1.20.1, SELinux enforcing), and local routing check for port 9119 and Tailscale IP.
+
+## Absorbed content from release-and-expose-web-app
+
+- `references/release-and-expose-nginx-root-return-fix.md` — patch pattern for returning a plain text body from `/` via `/etc/nginx/projects/default.conf`, reload checklist.
+- `references/release-and-expose-oracle-linux-nginx-selinux.md` — Oracle Linux 9 SELinux + nginx checklist for home-dir serving, `httpd_can_network_connect`, preferred `/usr/share/nginx/html/<project>/` layout.
+
+## Absorbed content from standard-stack-scaffold
+
+- `references/standard-stack-port-sharing-lessons.md` — Duplicate `server_name _` fix, port 8080 occupied fallback to 9090, `nginx.conf` inclusion paths (`/etc/nginx/conf.d/*.conf`), relative API path guidance.
+- `references/standard-stack-monitor-frontend-pattern.md` — Reusable production pattern for TS/React system monitors under `/projects/<project>/`, Go endpoints, nginx exposure, frontend fetch-base rule.
+
+## Original references
+
 - `references/iptables-tailscale-port-block.md` — reproduction recipe and filter diff for the DROP+tailscale ACCEPT pattern.
+- `references/network-service-binding-iptables-port-names-pitfall.md` — iptables port-name translation pitfall (numeric vs. service-name resolution).
+- `references/network-service-binding-service-exposure-checklist.md` — sample diagnostic output and environment facts.
+- `references/release-and-expose-nginx-root-return-fix.md` — patch pattern for returning a plain text body from `/` via `/etc/nginx/projects/default.conf`, reload checklist and root-return pitfalls.
+- `references/release-and-expose-oracle-linux-nginx-selinux.md` — Oracle Linux 9 nginx + SELinux fix checklist for home-dir serving and static asset placement.
+- `references/standard-stack-port-sharing-lessons.md` — port 8080 occupied fallback, duplicate `server_name _` fix, relative API path guidance, `nginx.conf` inclusion paths.
+- `references/standard-stack-monitor-frontend-pattern.md` — reusable TS/React + Go system monitor pattern, frontend fetch-base rule.
+- `references/fullstack-app-output-sequence.md` — fullstack-app deliverable contract: required output is a working public link, backend frontend fallbacks, and tail-validation order.

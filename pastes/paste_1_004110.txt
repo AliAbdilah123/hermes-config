@@ -1,0 +1,49 @@
+> web@0.0.0 build
+    > tsc -b && vite build
+
+    src/pages/McpPage.tsx(9,15): error TS2305: Module '"@/lib/api"' has no exported member 'McpServer'.
+    src/pages/McpPage.tsx(9,26): error TS2305: Module '"@/lib/api"' has no exported member 'McpServerCreate'.
+    src/pages/McpPage.tsx(9,43): error TS2305: Module '"@/lib/api"' has no exported member 'McpTestResult'.
+    src/pages/McpPage.tsx(85,8): error TS2339: Property 'getMcpServers' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/McpPage.tsx(86,14): error TS7006: Parameter 'res' implicitly has an 'any' type.
+    src/pages/McpPage.tsx(87,15): error TS7006: Parameter 'e' implicitly has an 'any' type.
+    src/pages/McpPage.tsx(121,17): error TS2339: Property 'addMcpServer' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/McpPage.tsx(141,32): error TS2339: Property 'testMcpServer' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/McpPage.tsx(162,21): error TS2339: Property 'removeMcpServer' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/McpPage.tsx(404,39): error TS7006: Parameter 'tool' implicitly has an 'any' type.
+    src/pages/PairingPage.tsx(8,15): error TS2305: Module '"@/lib/api"' has no exported member 'PairingResponse'.
+    src/pages/PairingPage.tsx(8,32): error TS2305: Module '"@/lib/api"' has no exported member 'PairingUser'.
+    src/pages/PairingPage.tsx(41,8): error TS2339: Property 'getPairing' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/PairingPage.tsx(62,17): error TS2339: Property 'approvePairing' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/PairingPage.tsx(76,29): error TS2339: Property 'clearPendingPairing' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/PairingPage.tsx(92,21): error TS2339: Property 'revokePairing' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(31,3): error TS2305: Module '"@/lib/api"' has no exported member 'MemoryStatus'.
+    src/pages/SystemPage.tsx(32,3): error TS2305: Module '"@/lib/api"' has no exported member 'CredentialPoolProvider'.
+    src/pages/SystemPage.tsx(33,3): error TS2305: Module '"@/lib/api"' has no exported member 'CheckpointsResponse'.
+    src/pages/SystemPage.tsx(34,3): error TS2724: '"@/lib/api"' has no exported member named 'HooksResponse'. Did you mean 'LogsResponse'?
+    src/pages/SystemPage.tsx(141,11): error TS2339: Property 'getMemory' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(142,11): error TS2339: Property 'getCredentialPool' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(143,11): error TS2339: Property 'getCheckpoints' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(144,11): error TS2339: Property 'getHooks' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(166,19): error TS2551: Property 'startGateway' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'. Did you mean 'restartGateway'?
+    src/pages/SystemPage.tsx(169,19): error TS2339: Property 'stopGateway' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(185,17): error TS2339: Property 'setMemoryProvider' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(200,33): error TS2339: Property 'resetMemory' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(222,17): error TS2339: Property 'addCredentialPoolEntry' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(243,21): error TS2339: Property 'removeCredentialPoolEntry' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(272,31): error TS2339: Property 'pruneCheckpoints' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(393,49): error TS7006: Parameter 'p' implicitly has an 'any' type.
+    src/pages/SystemPage.tsx(502,36): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+    src/pages/SystemPage.tsx(547,40): error TS2339: Property 'runDoctor' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(555,40): error TS2339: Property 'runSecurityAudit' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(563,46): error TS2339: Property 'runBackup' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(571,40): error TS2339: Property 'updateSkillsFromHub' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(596,33): error TS2339: Property 'runImport' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/SystemPage.tsx(642,28): error TS7006: Parameter 'h' implicitly has an 'any' type.
+    src/pages/SystemPage.tsx(642,31): error TS7006: Parameter 'i' implicitly has an 'any' type.
+    src/pages/WebhooksPage.tsx(9,15): error TS2305: Module '"@/lib/api"' has no exported member 'WebhookRoute'.
+    src/pages/WebhooksPage.tsx(9,29): error TS2305: Module '"@/lib/api"' has no exported member 'WebhooksResponse'.
+    src/pages/WebhooksPage.tsx(82,8): error TS2339: Property 'getWebhooks' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/WebhooksPage.tsx(112,29): error TS2339: Property 'createWebhook' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/WebhooksPage.tsx(135,21): error TS2339: Property 'deleteWebhook' does not exist on type '{ getStatus: () => Promise<StatusResponse>; getAuthMe: () => Promise<AuthMeResponse>; logout: () => Promise<Response>; ... 58 more ...; setTheme: (name: string) => Promise<...>; }'.
+    src/pages/WebhooksPage.tsx(413,37): error TS7006: Parameter 'evt' implicitly has an 'any' type.

@@ -1,0 +1,428 @@
+{
+  "timestamp": "2026-06-02T07:25:34.038285",
+  "session_id": "20260602_072012_cfaa94",
+  "reason": "max_retries_exhausted",
+  "request": {
+    "method": "POST",
+    "url": "https://chatgpt.com/backend-api/codex/responses",
+    "headers": {
+      "Authorization": "Bearer eyJhbGci...uhBQ",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "model": "gpt-5.5",
+      "instructions": "You are Hermes Agent, an intelligent AI assistant created by Nous Research. You are helpful, knowledgeable, and direct. You assist users with a wide range of tasks including answering questions, writing and editing code, analyzing information, creative work, and executing actions via your tools. You communicate clearly, admit uncertainty when appropriate, and prioritize being genuinely useful over being verbose unless otherwise directed below. Be targeted and efficient in your exploration and investigations.\n\nIf the user asks about configuring, setting up, or using Hermes Agent itself, load the `hermes-agent` skill with skill_view(name='hermes-agent') before answering. Docs: https://hermes-agent.nousresearch.com/docs\n\n# Finishing the job\nWhen the user asks you to build, run, or verify something, the deliverable is a working artifact backed by real tool output — not a description of one. Do not stop after writing a stub, a plan, or a single command. Keep working until you have actually exercised the code or produced the requested result, then report what real execution returned.\nIf a tool, install, or network call fails and blocks the real path, say so directly and try an alternative (different package manager, different approach, ask the user). NEVER substitute plausible-looking fabricated output (made-up data, invented file contents, synthesised API responses) for results you couldn't actually produce. Reporting a blocker honestly is always better than inventing a result.\n\nHost: Linux (6.17.0-1011-oracle)\nUser home directory: /home/ubuntu\nCurrent working directory: /home/ubuntu\n\nActive Hermes profile: coder-orchestrator. This session reads and writes ~/.hermes/profiles/coder-orchestrator/. The default profile's data lives at ~/.hermes/skills/, ~/.hermes/plugins/, ~/.hermes/cron/, ~/.hermes/memories/ — those belong to a different session run from a different shell. Do NOT modify another profile's skills/plugins/cron/memories unless the user explicitly directs you to. The cross-profile write guard will refuse such writes by default; pass cross_profile=True only after explicit direction.\n\nYou are in a Discord server or group chat communicating with your user. You can send media files natively: include MEDIA:/absolute/path/to/file in your response. Images (.png, .jpg, .webp) are sent as photo attachments, audio as file attachments. You can also include image URLs in markdown format ![alt](url) and they will be sent as attachments.\n\nConversation started: Tuesday, June 02, 2026\nModel: gpt-5.5\nProvider: openai-codex\n\nYou are a focused subagent working on a specific delegated task.\n\nYOUR TASK:\nImplement the Komuna web app in /home/ubuntu/projects/Komuna following SPEC.md. Produce a working React+TypeScript frontend, Go backend, SQLite DB, built and ready to serve under /projects/Komuna/.\n\nCONTEXT:\nProject root: /home/ubuntu/projects/Komuna. Existing files: SPEC.md and .git only. User asked: \"Create the web app ~/projects/Komuna following the SPEC.md in that directory\".\n\nMANDATORY STACK/DELIVERY:\n- Frontend: Vite React + TypeScript.\n- Backend: Go API under /api/v1/*, SQLite storage (modernc.org/sqlite preferred).\n- Public deployment will be nginx serving frontend/dist under /projects/Komuna/ and proxying API to backend at 127.0.0.1:8080.\n- Set vite base to /projects/Komuna/.\n- Do NOT switch stacks.\n- Create local git branch kanban/komuna-build-session-booking-platform and commit changes.\n\nSPEC SUMMARY (read /home/ubuntu/projects/Komuna/SPEC.md for full details):\nBuild a multi-tenant session booking platform for bookable/redeemable offerings.\nCore entities/features to represent in v1 app:\n1) Programs: name, description, visibility (public, need approval, invitation only, private), timezone, optional location. Admin top-level container.\n2) Products: within program. Type=session or simple. Name/description, capacity for sessions, lifecycle active/archived, custom fields, cancellation settings, validity extension.\n3) Purchase packages: program-level immutable versions. Entries granting product vouchers with quantities and validity rules (X days, end of month, end of N months). Active/archived.\n4) Vouchers: owner/member, product, expiredAt, source purchase/compensation/giveaway, status active/claimed/expired/refunded, issuance reason/audit.\n5) Claims/bookings: voucher claim tied to session or redemption event, claimant, optional walk-in alias, custom answers, attendance, cancellation reason.\n6) Sessions: dated instances of session products, start/end in program timezone, assigned managers, active state per date, capacity, status scheduled/cancelled/completed, QR code token.\n7) Roles: super admin, program admin, product manager, member. Reflect permission differences in UI copy/actions.\n8) Membership flows: public join, approval queue, invitations, private direct link.\n9) Purchases with simulated Xendit payment/recovery, service fee settings, vouchers issued on success, refund product/payout info.\n10) Booking window, full-session approval request, FIFO voucher selection.\n11) Cancellation compensation tiers and admin/manager cancellation reason.\n12) Session activation/deactivation workflows and notifications.\n13) Notifications event matrix.\n14) Analytics dashboards: attendance rate, revenue, utilization, compensation rate, popular sessions/managers, no-show, package attribution.\n15) Audit log append-only key actions.\n\nIMPLEMENTATION EXPECTATION:\n- This can be a polished functional v1/prototype with seeded data and CRUD/demo flows, not a full payment integration.\n- Include rich UI covering dashboards, program/product/session/package/voucher/booking/admin flows and the spec concepts. It must feel like a real app, not a static page.\n- Backend should expose useful endpoints and persist mutable demo state in SQLite. Suggested endpoints:\n  GET /api/v1/health\n  GET /api/v1/bootstrap (all initial app data)\n  CRUD-ish POST endpoints for creating programs/products/packages/sessions, joining/requesting programs, purchasing a package, claiming/cancelling vouchers, activating/deactivating sessions, issuing giveaway/compensation/refund, extending voucher, marking attendance, adding aliases, approving membership/booking requests.\n- Seed DB with realistic data if empty.\n- Frontend should call the backend, render data, and allow core state changes via buttons/forms.\n- Include tests or at minimum smoke scripts. Run npm build and go build before finishing.\n\nReturn final summary with files changed, commands run, commit hash, and any known limitations.\n\nWORKSPACE PATH:\n/home/ubuntu\nUse this exact path for local repository/workdir operations unless the task explicitly says otherwise.\n\nComplete this task using the tools available to you. When finished, provide a clear, concise summary of:\n- What you did\n- What you found or accomplished\n- Any files you created or modified\n- Any issues encountered\n\nImportant workspace rule: Never assume a repository lives at /workspace/... or any other container-style path unless the task/context explicitly gives that path. If no exact local path is provided, discover it first before issuing git/workdir-specific commands.\n\nBe thorough but concise -- your response is returned to the parent agent as a summary.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Implement the Komuna web app in /home/ubuntu/projects/Komuna following SPEC.md. Produce a working React+TypeScript frontend, Go backend, SQLite DB, built and ready to serve under /projects/Komuna/."
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqHoQw5v1QR4OJhi8_dG4TW2faI9BSfKABM8eqkgKxz78yFXEZbbmzO8_k1dwTG2HIDKog9UyDkoRTJY-nhVZspOZXEcW5hTebGWIH9LjwGJD5R3Wps7_KeLZGHsmqFNKV1mSPyGvBHFDZ_M7UrUbngG95ZdGkn1vyxIWNIHXppfo2_i87KWwWefxnVtOLQU2lyGsFMNa-5i5XN-HTfYjM7-1P8rN1PZZMefdoXbO-eTjABi2h6FtvEWgq1p6sS4aRvjHwj8SfYDSGAwedrbmSo0h1eXmg79oh-ePhcs2qg5Em-leY-pGXt_5M0KK0Fd7TsG6ilXcfu233hIbVocgGXqa3OedwVj0PcjE77Mgs7gQqVwOgBCHv_o15zIgMHpZqJIPq9raZEhm7tILeqMW_tVdBo8pCbsn1EZoXmMa9K2Rx3Ex1iRU4o_e0yNZ8RXc5X3xCts1d7i2LNGoFVKIk_CS3rIJEc4G7tGALJavDkN3jFfFETGkljvjWypy-7jTdzlqHGHbb4YAb2kIbyCDox5LOarwuGf8gkVUjwZmTr5pOjhR7lptCEdx8M3LA78dht0RWmNZl0Ox031nWNqMTC67YAKEn2LQJv13KbE9-zsWWcAx1inTDgrcy7EsMEWsGFfeSQFcCjV4EKpB1bm55j8LpbIs7kPc5TX8_ZK0JC7kD4hyVWWd31wN66mFi4LK4FSgDqsd0mQKrKZBwhDeQNl391Hp1J0B9gsJ3efTAAMzIX-h1PzAF3lJAd9onUUBS0rxYHmR2olGd0GcaA2AthbOqrDVd52iw5__MELNF5qKzT-nuIcG-4yAf5jnCghTFzAbbnuv4H1SA0slF_XyfCg3kXuUtJ-WixZNDWaAyqySfeAN1H-KSHVk7Rz04X5cKmseZBBqYYd0PEFcriwclLVp37fdBKxd8q8ur3cVOrGEQGx9sjiBqbBz8nb5dPrQgbVX-",
+          "summary": []
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_8xgATeRc719In1oGL6v5ng5g",
+          "name": "read_file",
+          "arguments": "{\"limit\":2000,\"path\":\"/home/ubuntu/projects/Komuna/SPEC.md\"}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_Z8Cv6O0ciyySm5GQtM6TQcVH",
+          "name": "search_files",
+          "arguments": "{\"limit\":100,\"path\":\"/home/ubuntu/projects/Komuna\",\"pattern\":\"*\",\"target\":\"files\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_8xgATeRc719In1oGL6v5ng5g",
+          "output": "{\"content\": \"1|# Session Booking Platform — Specification\\n2|\\n3|A multi-tenant platform for running session-based services (e.g., boxing gyms, yoga studios, coaching programs). Generalized via the \\\"product\\\" abstraction so it can support any bookable or redeemable offering.\\n4|\\n5|## 1. Core Concepts\\n6|\\n7|### 1.1 Program\\n8|\\n9|A program is the top-level container operated by an admin. Each program has its own members, products, purchase packages, and settings. It also has location info as optional data to enable user filter programs based on location.\\n10|\\n11|**Visibility levels:**\\n12|\\n13|- **Public** — anyone can discover and join freely.\\n14|- **Need approval** — anyone can discover and request; admin reviews a queue.\\n15|- **Invitation only** — only invited users can join. Invitations sent by admin or product manager.\\n16|- **Private** — not discoverable; access by direct link only.\\n17|\\n18|**Program settings:**\\n19|\\n20|- Name, description, visibility\\n21|- Default timezone (each program is tied to a single timezone)\\n22|- Cancellation reason required on admin/manager cancellations (always on)\\n23|\\n24|### 1.2 Product\\n25|\\n26|Any purchasable or redeemable offering within a program.\\n27|\\n28|**Types:**\\n29|\\n30|- **Session** — has scheduled instances with a date/time, capacity, and assigned managers. Examples: a weekly boxing class, a personal training slot.\\n31|- **Simple** — no scheduling; redeemable as-is. Examples: drop-in pass, merchandise, refund token.\\n32|\\n33|**Product properties:**\\n34|\\n35|- Name, description, type\\n36|- Capacity (session-type only) — set at creation\\n37|- Custom fields for member input at claim time (see §5.6)\\n38|- Cancellation settings (see §6)\\n39|- Validity extension rules (admin-configurable max extension, via calendar picker)\\n40|- Visibility: inherited from program by default; may be further restricted (future)\\n41|\\n42|**Product lifecycle:** active, archived. Archived products keep existing vouchers valid until expiry but accept no new purchases.\\n43|\\n44|### 1.3 Purchase Package\\n45|\\n46|Program-level. Defines how vouchers are sold. Shown on each relevant product's page.\\n47|\\n48|**Properties:**\\n49|\\n50|- Name, price\\n51|- List of entries, each specifying: product, quantity of vouchers, validity rule\\n52|- Validity rules supported: *X days from purchase*, *end of purchase month*, *end of N months from purchase*\\n53|- Status: active, archived\\n54|\\n55|**Immutability:** purchase packages are immutable after creation. Any edit creates a new version; the old version is archived. This preserves revenue reporting integrity.\\n56|\\n57|**Complex packages:** a single package may grant vouchers across multiple products (e.g., \\\"Starter Pack: 5 Boxing + 2 Yoga\\\"). Each entry in the package has its own validity rule.\\n58|\\n59|### 1.4 Voucher\\n60|\\n61|The member's right to claim a product. One row per voucher (no grouping).\\n62|\\n63|**Properties:**\\n64|\\n65|- Owner (member)\\n66|- Product reference\\n67|- `expiredAt` (UTC timestamp, stamped at issuance)\\n68|- Source: `purchase` | `compensation` | `giveaway`\\n69|- Status: `active` | `claimed` | `expired` | `refunded`\\n70|- Issued by (for non-purchase sources)\\n71|- Issuance reason (required for compensation and giveaway)\\n72|- Originating purchase or claim reference (for audit)\\n73|\\n74|**Expiry handling:** lazy. A voucher is treated as expired when queried if `expiredAt <= now()`. No cron needed. UI filters hide expired vouchers by default; they remain viewable in detailed transaction history.\\n75|\\n76|**Validity source at issuance:**\\n77|\\n78|- Purchase → from purchase package's validity rule for that product\\n79|- Compensation → from product's cancellation settings (with override field)\\n80|- Giveaway → admin enters manually at issuance\\n81|\\n82|### 1.5 Voucher Claim\\n83|\\n84|A spent voucher, tied to a specific session (session-type) or redemption event (simple-type).\\n85|\\n86|**Properties:**\\n87|\\n88|- Voucher reference\\n89|- Session reference (for session-type)\\n90|- Claimant (the member who owns the voucher)\\n91|- Alias (optional; for walk-ins — see §5.7)\\n92|- Custom field answers (see §5.6)\\n93|- Attendance status (for session-type; optional)\\n94|- Created at, cancelled at\\n95|- Cancellation reason (if cancelled)\\n96|\\n97|**Claim finality:** cancel is always cancel. No undo window. Cancellation triggers the compensation flow (§6).\\n98|\\n99|### 1.6 Session\\n100|\\n101|A dated instance of a session-type product.\\n102|\\n103|**Properties:**\\n104|\\n105|- Product reference\\n106|- Start and end datetime (in program timezone)\\n107|- Assigned managers (one or more)\\n108|- Active/inactive state for its date (see §7)\\n109|- Capacity (inherited from product; may be overridden per session — future)\\n110|- Status: scheduled, cancelled, completed\\n111|- Attendance QR code (static per session, manually regeneratable)\\n112|\\n113|Sessions are generated from a weekly template defined on the product, plus one-off additions. Weekly template changes do not auto-move existing bookings; admin uses in-app broadcast to notify affected members.\\n114|\\n115|## 2. Roles and Permissions\\n116|\\n117|Roles are scoped per program. A user may hold multiple roles within a program and across programs.\\n118|\\n119|### 2.1 Super Admin (Platform Level)\\n120|\\n121|- Configure platform-wide settings: service fee percentage, minimum fee amount\\n122|- View platform-wide statistics\\n123|- Not scoped to any program\\n124|\\n125|### 2.2 Admin (Per Program)\\n126|\\n127|Full authority within the program:\\n128|\\n129|- Create/edit/archive products, purchase packages, voucher settings\\n130|- Assign product managers\\n131|- Manage program members (invite, approve, ban)\\n132|- Issue giveaway vouchers (with reason, any product)\\n133|- Extend voucher validity (with calendar picker, per-product-configurable max)\\n134|- Cancel sessions\\n135|- Approve booking requests (full-session, out-of-window)\\n136|- Manage refund product (see §8.2)\\n137|- View all program statistics\\n138|- Request payouts on-demand\\n139|\\n140|### 2.3 Product Manager (Per Product)\\n141|\\n142|Narrower scope, per assigned product:\\n143|\\n144|- Set session active/inactive for a given day (§7)\\n145|- Cancel sessions (triggers compensation flow)\\n146|- Approve booking requests for their product\\n147|- Mark attendance (optional; QR scan or manual)\\n148|- Add alias to claims for walk-ins\\n149|- View statistics for their product\\n150|- Invite users to the program\\n151|\\n152|Managers cannot: create/edit products or purchase packages, change voucher pricing, manage other managers, access program-level settings.\\n153|\\n154|### 2.4 Member\\n155|\\n156|- Browse products visible to them\\n157|- Purchase packages\\n158|- Claim vouchers (book sessions, redeem simple products)\\n159|- View their voucher wallet with expiry dates\\n160|- Cancel their own claims (triggers compensation rule evaluation)\\n161|- Scan attendance QR\\n162|- Fill custom fields at claim time\\n163|\\n164|### 2.5 Role Edge Cases\\n165|\\n166|- **Manager-as-member:** a manager may book sessions as a member, including sessions of their own product. They may optionally add an alias.\\n167|- **Banned users:** remain in the program but cannot claim or purchase. Existing vouchers remain visible but unusable.\\n168|\\n169|## 3. Program Membership Flow\\n170|\\n171|**Public programs:** one-click join.\\n172|\\n173|**Need-approval programs:** user submits join request → admin sees queue → approves/denies. Notification on decision.\\n174|\\n175|**Invitation-only programs:** admin or manager sends invitation via email and SMS (SMS is opt-in per the invite channel settings). User follows link to accept.\\n176|\\n177|**Private programs:** invitation flow only; no discovery.\\n178|\\n179|## 4. Purchases\\n180|\\n181|### 4.1 Purchase Flow\\n182|\\n183|1. Member views a product, sees list of purchase packages that include that product.\\n184|2. Member selects a package → taken to checkout.\\n185|3. Payment via Xendit. Service fee (super admin's percentage or minimum, whichever is higher) is added on top, paid by the member.\\n186|4. On successful payment, voucher(s) are issued per the package's entries. Each entry produces `quantity` vouchers with the specified validity.\\n187|5. Purchase confirmation email + in-app notification.\\n188|\\n189|### 4.2 Payment Recovery\\n190|\\n191|- Xendit timeout or failure mid-flow → purchase marked pending; auto-retry with exponential backoff.\\n192|- Failed after retries → member notified, purchase discarded, no vouchers issued.\\n193|- Manual reconciliation view available to admin for edge cases.\\n194|\\n195|### 4.3 Refunds\\n196|\\n197|Refunds use a dedicated **Refund Product** mechanism:\\n198|\\n199|- Admin creates a simple-type product called \\\"Refund.\\\"\\n200|- Claiming this product requires elevated permission (admin only).\\n201|- Admin issues a refund by invalidating the original voucher(s) and triggering a cash refund via Xendit.\\n202|- Partial refunds are supported at the voucher level (e.g., refund 3 of 5 vouchers in a bundle).\\n203|\\n204|### 4.4 Payouts\\n205|\\n206|- Admin requests payouts on-demand from their program's revenue balance.\\n207|- Payout processed via Xendit.\\n208|- Notification on payout completion.\\n209|- Invoice/receipt generation for PPN compliance.\\n210|\\n211|## 5. Booking (Claiming Vouchers)\\n212|\\n213|### 5.1 Booking Window\\n214|\\n215|Each session-type product has a configurable booking window (e.g., \\\"bookings open 7 days before\\\").\\n216|\\n217|**Within window:** direct claim.\\n218|\\n219|**Outside window:** requires admin/manager approval *unless* the session has been marked active by a manager (§7), in which case direct claim is allowed.\\n220|\\n221|### 5.2 Full Session\\n222|\\n223|If the session is at capacity, the member may still request to join. Request goes to the product manager or admin (either can approve). Not an auto-promoting waitlist — manual decision per request.\\n224|\\n225|### 5.3 Multiple Bookings\\n226|\\n227|A member may book any number of future sessions, subject to booking window and voucher availability. Each booking consumes one voucher.\\n228|\\n229|### 5.4 Voucher Selection\\n230|\\n231|When a member has multiple eligible vouchers for the same product, the system **auto-selects FIFO by expiry** (soonest-expiring first). No user choice at claim time.\\n232|\\n233|### 5.5 Cancellation by Member\\n234|\\n235|See §6.\\n236|\\n237|### 5.6 Custom Fields\\n238|\\n239|Each product may define custom fields (text type for v1).\\n240|\\n241|- **Collected at:** claim time.\\n242|- **Required or optional:** configurable per field.\\n243|- **Reuse:** last answer is saved per member and pre-fills next claim.\\n244|- **Visibility:** admins and managers of the product can see answers.\\n245|\\n246|### 5.7 Walk-in Aliases\\n247|\\n248|- A member's claim may have an alias, set only by a manager or admin.\\n249|- Alias is a free-text field; manager can add additional info in the same field if needed.\\n250|- Members cannot self-alias (prevents accidental misattribution).\\n251|\\n252|### 5.8 Attendance\\n253|\\n254|- Attendance is optional by default.\\n255|- No-shows consume the voucher as normal.\\n256|- Two mechanisms: static QR per session (regeneratable by admin/manager), manual mark by manager.\\n257|- Manager can override attendance after the fact.\\n258|- Attendance status is visible to the member (notification optional).\\n259|\\n260|## 6. Cancellations\\n261|\\n262|### 6.1 By Member\\n263|\\n264|Each product defines cancellation rules as a set of tiered thresholds:\\n265|\\n266|- *If cancelled more than X hours before session → issue compensation voucher with validity V1*\\n267|- *If cancelled between X and Y hours before → validity V2*\\n268|- *If cancelled less than Y hours before → no voucher issued* (optional tier)\\n269|\\n270|Tiers are fully configurable per product. At least one tier is required; no cap on number of tiers.\\n271|\\n272|**Compensation voucher properties:**\\n273|\\n274|- Same product as the cancelled voucher\\n275|\\n276|- Validity per the matched tier\\n277|- Source: `compensation`\\n278|- Reason: \\\"Member cancellation\\\" (or custom)\\n279|\\n280|### 6.2 By Admin or Manager\\n281|\\n282|Same flow as member cancellation — uses the same product cancellation rules. (No separate \\\"admin-cancelled\\\" path.)\\n283|\\n284|- Cancellation requires a reason (free text).\\n285|- Reason is included in notifications to affected members.\\n286|- Warning shown before confirmation listing affected members.\\n287|- Validity field is pre-filled from the rule; canceller can override.\\n288|\\n289|### 6.3 Voucher Validity Extension\\n290|\\n291|- Admin only.\\n292|- Per-product configured max extension (calendar picker defines the latest date allowed).\\n293|- Extension is logged in audit with reason.\\n294|\\n295|## 7. Session Activation\\n296|\\n297|By default, no sessions are active on any given day. Either the assigned manager or the program admin must activate a session for it to run.\\n298|\\n299|**Activation:**\\n300|\\n301|- One-click per session per day.\\n302|- Triggers notifications to booked members (\\\"Your session today is confirmed\\\").\\n303|\\n304|**Deactivation:**\\n305|\\n306|- Shows warning listing affected members.\\n307|- Requires reason.\\n308|- Triggers cancellation flow for all bookings (compensation vouchers issued per §6).\\n309|- Notifications sent to admin, managers, and affected members with the reason.\\n310|\\n311|**Active state is per date**, not a persistent flag on the session template. Each day is independently activated.\\n312|\\n313|## 8. Voucher Lifecycle Summary\\n314|\\n315|```\\n316|[Purchase] ─┐\\n317|[Compensation] ─┼─→ [Voucher: active] ─┬─→ [Claim] ─→ [Voucher: claimed]\\n318|[Giveaway] ─┘                          ├─→ [Expiry] ─→ [Voucher: expired]\\n319|                                       └─→ [Refund] ─→ [Voucher: refunded]\\n320|```\\n321|\\n322|- **Expired** vouchers are hidden from the default wallet view but visible in transaction history.\\n323|- **Claimed** vouchers are tied to a Voucher Claim row; cancellation of that claim may issue a new compensation voucher (it does not reactivate the original).\\n324|- **Refunded** vouchers are invalidated; associated cash refund processed via Xendit.\\n325|- If a product is archived, its vouchers remain usable until their individual expiry.\\n326|\\n327|## 9. Notifications\\n328|\\n329|**Channels:**\\n330|\\n331|- **Email** — on by default, per-event toggle available to members\\n332|- **Push (in-app)** — always on\\n333|- **SMS** — used only for program invitations (opt-in at invite time)\\n334|\\n335|**Event matrix:**\\n336|\\n337|| Event | Admin | Manager (of product) | Member involved |\\n338|| --- | --- | --- | --- |\\n339|| Voucher purchased | — | — | ✓ (receipt) |\\n340|| Voucher expiring in 1 day | — | — | ✓ |\\n341|| Booking confirmed | — | ✓ | ✓ |\\n342|| Booking approval requested | ✓ | ✓ | — |\\n343|| Booking approved/denied | — | — | ✓ |\\n344|| Session activated for today | — | — | ✓ (if booked) |\\n345|| Session deactivated/cancelled | ✓ | ✓ | ✓ (with reason) |\\n346|| Compensation voucher issued | — | — | ✓ |\\n347|| Session reminder 24h before | — | ✓ | ✓ |\\n348|| Session reminder 1h before | — | — | ✓ |\\n349|| Manager assigned to product | ✓ | ✓ (assignee) | — |\\n350|| Invitation to program | — | — | ✓ (email + SMS) |\\n351|| Join approval granted/denied | — | — | ✓ |\\n352|| Attendance marked | — | — | ✓ (optional) |\\n353|| Payout processed | ✓ | — | — |\\n354|| Weekly schedule template changed | — | — | ✓ (in-app broadcast) |\\n355|\\n356|## 10. Analytics\\n357|\\n358|Dashboards visible to admin (program-wide) and manager (product-scoped):\\n359|\\n360|- Attendance rate per product and per session\\n361|- Revenue per product, per package, per period\\n362|- Voucher utilization: purchased vs claimed vs expired vs refunded\\n363|- Compensation voucher issuance rate (signal of cancellation volume)\\n364|- Popular trainers/managers\\n365|- Popular sessions and time slots\\n366|- Student retention (repeat bookings over time)\\n367|- No-show rate per product\\n368|- Package attribution on revenue (which packages are selling)\\n369|\\n370|Compensation vs purchased vouchers are tracked separately in utilization stats.\\n371|\\n372|**Multi-product package revenue split:** revenue is attributed evenly across the claims issued (simple and auditable for v1; can refine later).\\n373|\\n374|## 11. Audit Log\\n375|\\n376|Append-only log of key actions for dispute resolution. Captured events:\\n377|\\n378|- Voucher purchase, compensation issuance, giveaway issuance, refund, expiry, validity extension\\n379|- Session create, activate, deactivate, cancel, complete\\n380|- Booking create, cancel, alias add/edit, attendance mark/override\\n381|- Role assignments and changes\\n382|- Program visibility changes\\n383|- Purchase package create/archive (packages themselves are immutable)\\n384|- Member bans, approvals, invitations\\n385|- Admin/manager settings changes\\n386|\\n387|Each entry includes: actor, action, target entity, timestamp, optional reason.\\n388|\\n389|## 12. Platform-Level Settings (Super Admin)\\n390|\\n391|- Service fee percentage\\n392|- Minimum service fee amount (whichever is higher of percentage or minimum applies)\\n393|- Fee applied per transaction, on top of the package price, paid by the member\\n394|- Platform-wide statistics dashboard\\n395|\\n396|## 13. Out of Scope for v1\\n397|\\n398|Documented so they're not forgotten:\\n399|\\n400|- Discount codes / promo codes on packages\\n401|- Per-member-restricted packages (loyalty tiers)\\n402|- Time-limited package availability (workaround: create a second package and archive the old one)\\n403|- Mixed-timezone programs\\n404|- Auto-promoting waitlists\\n405|- Un-cancel / undo window on claims\\n406|- Session-level capacity override (inherits from product)\\n407|- Voucher validity resume on un-refund\\n408|- Per-member notification preferences beyond on/off for email\\n409|- Multi-channel custom fields (file upload, multi-select, etc. — text only for v1)\\n410|\\n411|## 14. Open Implementation Questions (for build phase)\\n412|\\n413|These are settled design decisions but have implementation nuances to resolve during build:\\n414|\\n415|- Exact Xendit integration pattern (invoice vs redirect vs embedded)\\n416|- PPN invoice numbering and template format\\n417|- Push notification provider (FCM? OneSignal?)\\n418|- QR format and validation logic (time window around session, signing)\\n419|- Manager \\\"invite to program\\\" — does this share the admin invite quota or have its own?\\n420|- Audit log retention period and archival strategy\\n421|\", \"total_lines\": 420, \"file_size\": 16733, \"truncated\": false, \"is_binary\": false, \"is_image\": false}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_Z8Cv6O0ciyySm5GQtM6TQcVH",
+          "output": "{\"total_count\": 19, \"files\": [\"/home/ubuntu/projects/Komuna/SPEC.md\", \"/home/ubuntu/projects/Komuna/.git/config\", \"/home/ubuntu/projects/Komuna/.git/HEAD\", \"/home/ubuntu/projects/Komuna/.git/description\", \"/home/ubuntu/projects/Komuna/.git/info/exclude\", \"/home/ubuntu/projects/Komuna/.git/hooks/pre-push.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/prepare-commit-msg.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/applypatch-msg.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/fsmonitor-watchman.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/sendemail-validate.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/pre-receive.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/pre-rebase.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/update.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/push-to-checkout.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/commit-msg.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/pre-commit.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/pre-merge-commit.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/pre-applypatch.sample\", \"/home/ubuntu/projects/Komuna/.git/hooks/post-update.sample\"]}"
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqHoQ12Q3FEYt7GS5SA1XyVJX-l1B9ls89RR81ZcjyxS3CIicFnYfc4qx3s3Z7vxnQCjbKU3rhK8LJyt-8QBiEew5kovolLFetp3zTt9xLD627KnbUi5BLiIgNTQbZlWnO_DphcaainpVm13etxqRo3Y-Zdlqc4OFDh2MUYZF614k8c_jlYKEk-XEFsbXvqVaT9FLObreHbL91hUCPFWGouq98JtnsW8ycwB7ZV4Ie8D4f_T_cpr_ol9kc6em8JB0b64ElkmoiJbeIqy50T5Rrvkugl6UfHIDnryazKUPQMZuhOfJ7UDy8uruODSLzVDiSzFbQ0EEppO_1yFYzOWCzM4nr_gmEm7wZVE9sNag1AwK64HVxakfRT1LBoODMyaCMsruLiguqg53R49CmpwtycfOXJkaqZY7LAKfF07mnL5KyMW_QVbcQQmyNbC4WoGTIsNF5QPPhJXtaZmyllRRjsqk5s_UPWc0LNuAva00TjSpdUMXXab16hCi64e3aLPpv9qoyeyDpnjDZVC2N1dW095hpj_5SoU2FkYFGaFriB8S2oYiaoDZ93Btpxu-ejtQVAQXOF3NR39XOjCi5LSbItRiXj21cKvIBeKIVYArksQwqknd_fBzyL0s8wDmSDOM8v_PMTFSPZoe5YBITYvlJQ5XjAACyPxU82NUI02N_tGUh1Wyj59kv69NntIVCAsxsAy4eos8lVv70cSNz_9RmNMI6z1Cs621i9Kcm4ARo3z_eS0xf5oGyTOeLqKhMkvE_ZslYyftqSOfAy1UD53xJSVIanjuTQgsWH2o0hqic8lGR_aDKPvhF_OCaN_jrkS8eVE0VEXcAN06YDX3EXi1srD7gUNEXrLCgNtbGqiv8W-SttcBpZuLFoiC_jlrDAZRG8GPHWAujaFNEd9lf5h2-qR-cbgxkf5APFKMTXBawongzFzvWCRR1rTJ3FsJzR_0-JqzM3fBcAu4KFebucWkUQOitiaBtwnwqVkDcMeZ6yISGcLu56drPhzsgsKTamYqiD3VjQgIk4lMPGTR0wo-W9Egxsg==",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "**Creating app quickly**\n\nI need to create an app fast. I wonder if I should use npm create to kick things off. I’ll write the necessary files afterward. It’s essential to have a Go backend, so I need to make sure my environment is set up correctly. I’ll check everything to ensure I haven’t missed any steps! Let’s get to it and see how efficiently I can put this together."
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_U6YxtFazHlCNg16Gy3vb7egM",
+          "name": "terminal",
+          "arguments": "{\"command\":\"node -v && npm -v && go version && git status --short && git checkout -b kanban/komuna-build-session-booking-platform\",\"timeout\":120,\"workdir\":\"/home/ubuntu/projects/Komuna\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_U6YxtFazHlCNg16Gy3vb7egM",
+          "output": "{\"output\": \"v22.22.3\\n10.9.8\\ngo version go1.22.2 linux/arm64\\n?? SPEC.md\\nSwitched to a new branch 'kanban/komuna-build-session-booking-platform'\", \"exit_code\": 0, \"error\": null}"
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqHoQ5HHFQzBF1WnBTKqpgt1alxgwABiewJfksiP96ifIhjLSfP2wpLaC611bxON-EltoVAuluSoW2FCDaGblWqByfo8RY8UX1xo29WB0CaWABHLJu-ZTj_qIch03NBNxJduzqen4aGTqvF2JjC2lqFI-2P32roP-eWg0YyEvMBnfCmlNc4H079LAiZ7pLELq8papdPUOS2BFHYHw5IA5eASr3DOgT7m3C4yGyUalTDQs8TLS29qIqIhKq-LxWd8vPrH-kD4pJsV_n5CSTgCnjJrLhj6NrS0KTf7jf8dXVEwv2V6bhzl2up8ZEBTlgJ80wMu65FIbg5Pglo9qKwPxhjSCmap0JdrzsWSLngeL4bcNxL11J_t_oqz_wNVDoxZgKVgYG3iiUrNA3rzcj9jFTU02x3A1zNAUV2zQrpyTp06kM1QW52R8stM9Hhbx_ZHDP2ETBvjS1FaxSaWER_c_XUBud69GZdQQukGB3PdNqw5rVcXeiCk-jM5w1ZJ3bhB9H1S09jm0jC3LRQY1prrdkWQGTRLPNh1E_RqYDriFrjwQUlwmsgdX9wPBi9HgT5haPTvZdBJ4Mp3Efjf31Q4nzdbCqkFfEUaQ78YAbHdf1RSk6UWK_mripO8roQtz9iT7VUF4hVEHiF7_Cy7YmrpBOjkXQMkhi1MA31ydzknHCyk_v7iReGkKh2bAVnDXuJGAXFxWuLzZhYvF4FhKIHBAtkpIq_iJ2hKL0H9P6HECkO_Nbt1jxqCW8FrmeBDAc3XDjaTBiVJAj985UsTzl9Jt8tRMlJef_2Vo7TCgW60-NjS_0moegHJh86zQOLa7dut6ik-fvEPAhowqRgzO655KeFlU5dEVTmo2EBpU7008SloZgzWQUm1b8cCPJedxilJ6LnXKDU1WYu2kbev79CuK12rUs_vCMrUpDruO45xUhEUI5jdxHDrK7NciszONTJ4TDySQhBZF4Ap-pdaRV75ZALrv3nw==",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "**Considering implementation options**\n\nI need to implement something, and I'm thinking I might use Vite with `npm init` to get started. It's a popular choice for modern web development because it’s fast and simple to set up. I'll want to explore its documentation to see how best to configure everything. I'm looking forward to diving into this! There seems to be a lot of potential here to create something efficient and effective."
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_B7Ajqkf9ub1xetIHICoxN6F5",
+          "name": "terminal",
+          "arguments": "{\"command\":\"npm create vite@latest frontend -- --template react-ts\",\"timeout\":300,\"workdir\":\"/home/ubuntu/projects/Komuna\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_B7Ajqkf9ub1xetIHICoxN6F5",
+          "output": "{\"output\": \"> npx\\n> create-vite frontend --template react-ts\\n\\n│\\n◇  Scaffolding project in /home/ubuntu/projects/Komuna/frontend...\\n│\\n└  Done. Now run:\\n\\n  cd frontend\\n  npm install\\n  npm run dev\", \"exit_code\": 0, \"error\": null}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_yQBBi88y7lx0RuzfEPL6L5Dn",
+          "name": "terminal",
+          "arguments": "{\"command\":\"npm install\",\"timeout\":300,\"workdir\":\"/home/ubuntu/projects/Komuna/frontend\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_yQBBi88y7lx0RuzfEPL6L5Dn",
+          "output": "{\"output\": \"added 152 packages, and audited 153 packages in 9s\\n\\n42 packages are looking for funding\\n  run `npm fund` for details\\n\\nfound 0 vulnerabilities\", \"exit_code\": 0, \"error\": null}"
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqHoRRRLe6Wa5FLcgEo8jfOLOmE0KAEKVtXz867xtY8vBLFNeJOKiUQdteWn6dC0NcFbfWL5xrgVcxgVDFsRKXn3jGJR5_Xe8yP4ocCBmpK-TVLJMBAYJo70JTg10I0PfIGa_N_xrA3KusWPOamAUTUXx8JE45Krwj8rfxzI9DwHi-XK12DBqFTZdbHzJxIg_Nc7_eoz_MBCjzrmafOce6vmAMdNcO-KXBCpe5HCZYv1EqUthzUuvQLSMWCwrVNskVz9N9J93EL9EXXy_S-975HJOLXRxbGTLRjCGHzgMVSdp_otvmHh3elj3DtlGPmSn-Bjy6lbMPKozpeJCNeU_msszpt3Qz6xzOno95fkArLKoclh7E7UaQyzuTfCPPZn77OfCpX-anAPUijaW3w9b7nIsqD2wgr_1zmSV0G5Dps-nbSAA2Fbt3LAiSi6dBY9iKyBaN3CquiUC4KRskN8R8nyLpM3jCux6rOKacgXI_GDDt7y_-tu7nAqDfwtM8RNEALPnvw8PcevRytE4vGv2gFrFmOGs4i4LQ6mKHjaqGd-A9gpc_WuYMdrfvtlOum2yU5vzKl5vCvNVnjST90yCCIwdHLt6EPQrUJkb8tdG8uQuIpUzgk6vcYvaB5L_98ysuGCmh6PFoWKJPf6m4XdwrDQ8y1uPwMWPjvtg2kBWvJT0s_qHboqwVByT0SAcfutF2FLNLmbwsuQOt6mwV6wn5vky4q57NPI3aPUUUBIfC1kJui9oSbnV7H4JQS9Rfp9aL-AQAMJ-VywTY1MhNJq1nLsApA3PN1n41Gr9SzVbyIN4ytx9LSP7kncVsx2ACu9Mp-jmON9UjIcB5GHqMFHfryIGNEB338ZDQ0XGzCgMulrYan4QsVpbTYzCbMky0_TZ4q5euPNdiATXiuFUqtpx_EzWEyJXdvaPBvV8D-7cCj72si_2W_BvRYxtSzZC-VUcU0Qo5W9LHN9sm2IJLGYfecJBnUk2JX9XezyN-Xw_zLay-qHlr_3qaWWLGX72I0L_lR8UztRriqT9LhWsTb1eZW1lX734HNvDPk-_2sMwcYISpVpkXW0XJTbZbkc2Z5BBuzdDvpYnV-3lvb43OopYzsbdkZchcoomM_lTUcHtgrtoef68OCm8mr82DvXoWij_DJmS4ioGoNa_QEj9BVR_kw4ZYBRo7EIaALM_7AS0t0T_bC2ZMAgDyRzl7zc5uAdyHgvlfogKmVmEcJ2xJMnC2QqkUgj_RSDdgPwmfc_wq-ox8DHTpawXHXEJnlkuLVyYxU-nAcY7Pyo48Uao0TkY6PFOyHNsE7bD1KIhmraLCogaatMslNZlsaT9e5YQ8-_crDqxW66XyNMhgrvGx-PFHOKtAZUjSfbujxhkRsJW8Z3J8iYuGswXQym2As90n5eYnoaqiScuh0HQkND3uBr4JcH38j-vK2tsG8aLVa5Qb_tP-WydcTeOwl_hm_Rqc661frKt-GWO-nxkO-xYB7wSL0AUC8DZAWmMDpprBmvXcNrLw_eM=",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "**Planning backend development**\n\nI'm envisioning the backend architecture, needing extensive code. I plan to use `write_file` and install Modernc for consistency. SQLite could work for data normalization, which sounds manageable. I'll implement endpoints in an action style using JSON. For files, I see `api/go.mod` and `main.go` in the structure. I'll create tables for programs, products, and more, and then seed the database. Lastly, I'll focus on polishing the frontend with CSS while writing the backend in `main.go`."
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_sVlefyVxfGZsLaAP2pc6OYGK",
+          "name": "write_file",
+          "arguments": "{\"content\":\"module komuna/api\\n\\ngo 1.22\\n\\nrequire modernc.org/sqlite v1.34.5\\n\",\"path\":\"/home/ubuntu/projects/Komuna/api/go.mod\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_sVlefyVxfGZsLaAP2pc6OYGK",
+          "output": "{\"bytes_written\": 63, \"dirs_created\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .mod files\"}, \"resolved_path\": \"/home/ubuntu/projects/Komuna/api/go.mod\", \"files_modified\": [\"/home/ubuntu/projects/Komuna/api/go.mod\"]}"
+        }
+      ],
+      "store": false,
+      "tools": [
+        {
+          "type": "function",
+          "name": "patch",
+          "description": "Targeted find-and-replace edits in files. Use this instead of sed/awk in terminal. Uses fuzzy matching (9 strategies) so minor whitespace/indentation differences won't break it. Returns a unified diff. Auto-runs syntax checks after editing.\n\nREPLACE MODE (mode='replace', default): find a unique string and replace it. REQUIRED PARAMETERS: mode, path, old_string, new_string.\nPATCH MODE (mode='patch'): apply V4A multi-file patches for bulk changes. REQUIRED PARAMETERS: mode, patch.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "replace",
+                  "patch"
+                ],
+                "description": "Edit mode. 'replace' (default): requires path + old_string + new_string. 'patch': requires patch content only.",
+                "default": "replace"
+              },
+              "path": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. File path to edit."
+              },
+              "old_string": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. Exact text to find and replace. Must be unique in the file unless replace_all=true. Include surrounding context lines to ensure uniqueness."
+              },
+              "new_string": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. Replacement text. Pass empty string '' to delete the matched text."
+              },
+              "replace_all": {
+                "type": "boolean",
+                "description": "Replace all occurrences instead of requiring a unique match (default: false)",
+                "default": false
+              },
+              "patch": {
+                "type": "string",
+                "description": "REQUIRED when mode='patch'. V4A format patch content. Format:\n*** Begin Patch\n*** Update File: path/to/file\n@@ context hint @@\n context line\n-removed line\n+added line\n*** End Patch"
+              },
+              "cross_profile": {
+                "type": "boolean",
+                "description": "Opt out of the cross-profile soft guard. Defaults to false. Set true ONLY after explicit user direction to edit another Hermes profile's skills/plugins/cron/memories.",
+                "default": false
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "process",
+          "description": "Manage background processes started with terminal(background=true). Actions: 'list' (show all), 'poll' (check status + new output), 'log' (full output with pagination), 'wait' (block until done or timeout), 'kill' (terminate), 'write' (send raw stdin data without newline), 'submit' (send data + Enter, for answering prompts), 'close' (close stdin/send EOF).",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "list",
+                  "poll",
+                  "log",
+                  "wait",
+                  "kill",
+                  "write",
+                  "submit",
+                  "close"
+                ],
+                "description": "Action to perform on background processes"
+              },
+              "session_id": {
+                "type": "string",
+                "description": "Process session ID (from terminal background output). Required for all actions except 'list'."
+              },
+              "data": {
+                "type": "string",
+                "description": "Text to send to process stdin (for 'write' and 'submit' actions)"
+              },
+              "timeout": {
+                "type": "integer",
+                "description": "Max seconds to block for 'wait' action. Returns partial output on timeout.",
+                "minimum": 1
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Line offset for 'log' action (default: last 200 lines)"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Max lines to return for 'log' action",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_file",
+          "description": "Read a text file with line numbers and pagination. Use this instead of cat/head/tail in terminal. Output format: 'LINE_NUM|CONTENT'. Suggests similar filenames if not found. Use offset and limit for large files. Reads exceeding ~100K characters are rejected; use offset and limit to read specific sections of large files. NOTE: Cannot read images or binary files — use vision_analyze for images.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to the file to read (absolute, relative, or ~/path)"
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Line number to start reading from (1-indexed, default: 1)",
+                "default": 1,
+                "minimum": 1
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Maximum number of lines to read (default: 500, max: 2000)",
+                "default": 500,
+                "maximum": 2000
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "search_files",
+          "description": "Search file contents or find files by name. Use this instead of grep/rg/find/ls in terminal. Ripgrep-backed, faster than shell equivalents.\n\nContent search (target='content'): Regex search inside files. Output modes: full matches with line numbers, file paths only, or match counts.\n\nFile search (target='files'): Find files by glob pattern (e.g., '*.py', '*config*'). Also use this instead of ls — results sorted by modification time.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern for content search, or glob pattern (e.g., '*.py') for file search"
+              },
+              "target": {
+                "type": "string",
+                "enum": [
+                  "content",
+                  "files"
+                ],
+                "description": "'content' searches inside file contents, 'files' searches for files by name",
+                "default": "content"
+              },
+              "path": {
+                "type": "string",
+                "description": "Directory or file to search in (default: current working directory)",
+                "default": "."
+              },
+              "file_glob": {
+                "type": "string",
+                "description": "Filter files by pattern in grep mode (e.g., '*.py' to only search Python files)"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Maximum number of results to return (default: 50)",
+                "default": 50
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Skip first N results for pagination (default: 0)",
+                "default": 0
+              },
+              "output_mode": {
+                "type": "string",
+                "enum": [
+                  "content",
+                  "files_only",
+                  "count"
+                ],
+                "description": "Output format for grep mode: 'content' shows matching lines with line numbers, 'files_only' lists file paths, 'count' shows match counts per file",
+                "default": "content"
+              },
+              "context": {
+                "type": "integer",
+                "description": "Number of context lines before and after each match (grep mode only)",
+                "default": 0
+              }
+            },
+            "required": [
+              "pattern"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "terminal",
+          "description": "Execute shell commands on a Linux environment. Filesystem usually persists between calls.\n\nDo NOT use cat/head/tail to read files — use read_file instead.\nDo NOT use grep/rg/find to search — use search_files instead.\nDo NOT use ls to list directories — use search_files(target='files') instead.\nDo NOT use sed/awk to edit files — use patch instead.\nDo NOT use echo/cat heredoc to create files — use write_file instead.\nReserve terminal for: builds, installs, git, processes, scripts, network, package managers, and anything that needs a shell.\n\nForeground (default): Commands return INSTANTLY when done, even if the timeout is high. Set timeout=300 for long builds/scripts — you'll still get the result in seconds if it's fast. Prefer foreground for short commands.\nBackground: Set background=true to get a session_id. Almost always pair with notify_on_complete=true — bg without notify runs SILENTLY and you have no way to learn it finished short of calling process(action='poll') yourself. Two legitimate uses:\n  (1) Long-lived processes that never exit (servers, watchers, daemons) — silent is correct, there's no exit to notify on.\n  (2) Long-running bounded tasks (tests, builds, deploys, CI pollers, batch jobs) — MUST set notify_on_complete=true. Without it you'll either forget to poll or sit blocked waiting for the user to surface the result.\nFor servers/watchers, do NOT use shell-level background wrappers (nohup/disown/setsid/trailing '&') in foreground mode. Use background=true so Hermes can track lifecycle and output.\nAfter starting a server, verify readiness with a health check or log signal, then run tests in a separate terminal() call. Avoid blind sleep loops.\nUse process(action=\"poll\") for progress checks, process(action=\"wait\") to block until done.\nWorking directory: Use 'workdir' for per-command cwd.\nPTY mode: Set pty=true for interactive CLI tools (Codex, Claude Code, Python REPL).\n\nDo NOT use vim/nano/interactive tools without pty=true — they hang without a pseudo-terminal. Pipe git output to cat if it might page.\n",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string",
+                "description": "The command to execute on the VM"
+              },
+              "background": {
+                "type": "boolean",
+                "description": "Run the command in the background. Almost always pair with notify_on_complete=true — without it, the process runs silently and you'll have no way to learn it finished short of calling process(action='poll') yourself (easy to forget, leading to silent blindness on long jobs). Two legitimate patterns: (1) Long-lived processes that never exit (servers, watchers, daemons) — these stay silent because there's no exit to notify on. (2) Long-running bounded tasks (tests, builds, deploys, CI pollers, batch jobs) — these MUST set notify_on_complete=true. For short commands, prefer foreground with a generous timeout instead.",
+                "default": false
+              },
+              "timeout": {
+                "type": "integer",
+                "description": "Max seconds to wait (default: 180, foreground max: 600). Returns INSTANTLY when command finishes — set high for long tasks, you won't wait unnecessarily. Foreground timeout above 600s is rejected; use background=true for longer commands.",
+                "minimum": 1
+              },
+              "workdir": {
+                "type": "string",
+                "description": "Working directory for this command (absolute path). Defaults to the session working directory."
+              },
+              "pty": {
+                "type": "boolean",
+                "description": "Run in pseudo-terminal (PTY) mode for interactive CLI tools like Codex, Claude Code, or Python REPL. Only works with local and SSH backends. Default: false.",
+                "default": false
+              },
+              "notify_on_complete": {
+                "type": "boolean",
+                "description": "When true (and background=true), you'll be automatically notified exactly once when the process finishes. **This is the right choice for almost every long-running task** — tests, builds, deployments, multi-item batch jobs, anything that takes over a minute and has a defined end. Use this and keep working on other things; the system notifies you on exit. MUTUALLY EXCLUSIVE with watch_patterns — when both are set, watch_patterns is dropped.",
+                "default": false
+              },
+              "watch_patterns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Strings to watch for in background process output. HARD RATE LIMIT: at most 1 notification per 15 seconds per process — matches arriving inside the cooldown are dropped. After 3 consecutive 15-second windows with dropped matches, watch_patterns is automatically disabled for that process and promoted to notify_on_complete behavior (one notification on exit, no more mid-process spam). USE ONLY for truly rare, one-shot mid-process signals on LONG-LIVED processes that will never exit on their own — e.g. ['Application startup complete'] on a server so you know when to hit its endpoint, or ['migration done'] on a daemon. DO NOT use for: (1) end-of-run markers like 'DONE'/'PASS' — use notify_on_complete instead; (2) error patterns like 'ERROR'/'Traceback' in loops or multi-item batch jobs — they fire on every iteration and you'll hit the strike limit fast; (3) anything you'd ever combine with notify_on_complete. When in doubt, choose notify_on_complete. MUTUALLY EXCLUSIVE with notify_on_complete — set one, not both."
+              }
+            },
+            "required": [
+              "command"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "write_file",
+          "description": "Write content to a file, completely replacing existing content. Use this instead of echo/cat heredoc in terminal. Creates parent directories automatically. OVERWRITES the entire file — use 'patch' for targeted edits. Auto-runs syntax checks on .py/.json/.yaml/.toml and other linted languages; only NEW errors introduced by this write are surfaced (pre-existing errors are filtered out).",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to the file to write (will be created if it doesn't exist, overwritten if it does)"
+              },
+              "content": {
+                "type": "string",
+                "description": "Complete content to write to the file"
+              },
+              "cross_profile": {
+                "type": "boolean",
+                "description": "Opt out of the cross-profile soft guard. Defaults to false. Set true ONLY after explicit user direction to edit another Hermes profile's skills/plugins/cron/memories — by default these writes are blocked with a warning because they affect a different profile than the one this session is running under.",
+                "default": false
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ]
+          }
+        }
+      ],
+      "reasoning": {
+        "effort": "medium",
+        "summary": "auto"
+      },
+      "include": [
+        "reasoning.encrypted_content"
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "prompt_cache_key": "20260602_072012_cfaa94",
+      "extra_headers": {
+        "session_id": "20260602_072012_cfaa94",
+        "x-client-request-id": "20260602_072012_cfaa94"
+      }
+    }
+  },
+  "error": {
+    "type": "TimeoutError",
+    "message": "Non-streaming API call timed out after 90s with no response (threshold: 90s). Codex backend appears to be silently rejecting 'gpt-5.5' on chatgpt.com/backend-api/codex (no stream events, no error). This is a known backend-side pattern that has affected ChatGPT Plus accounts intermittently. Workaround: try `gpt-5.4` on the same OAuth profile, or `gpt-5.3-codex`, or switch to a different model/provider in your fallback chain. Some ChatGPT Codex accounts do not support `gpt-5.4-codex`. See hermes-agent#21444 for symptom history."
+  }
+}

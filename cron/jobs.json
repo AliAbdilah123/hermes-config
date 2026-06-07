@@ -3,7 +3,7 @@
     {
       "id": "0989b16b1661",
       "name": "hermes-config-backup",
-      "prompt": "Run /home/opc/.hermes/scripts/backup-github.sh \"backup: update hermes config\".\nAt the end, report: changed files summary, commit hash or 'No changes', and push status. If any command fails, report which one and stop.",
+      "prompt": "Run /home/ubuntu/.hermes/scripts/backup-github.sh \"backup: update hermes config\".\nAt the end, report: completed / failed with reason.",
       "skills": [],
       "skill": null,
       "model": null,
@@ -20,19 +20,19 @@
       "schedule_display": "every 60m",
       "repeat": {
         "times": null,
-        "completed": 19
+        "completed": 156
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-31T07:39:38.771853+00:00",
-      "next_run_at": "2026-06-01T23:44:32.932715+00:00",
-      "last_run_at": "2026-06-01T22:44:32.932715+00:00",
+      "next_run_at": "2026-06-07T17:50:21.710734+00:00",
+      "last_run_at": "2026-06-07T15:50:21.421329+00:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
-      "deliver": "origin",
+      "deliver": "discord:#notifications",
       "origin": {
         "platform": "discord",
         "chat_id": "1510547094694400171",
@@ -47,5 +47,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-01T22:44:32.932949+00:00"
+  "updated_at": "2026-06-07T16:50:21.710898+00:00"
 }

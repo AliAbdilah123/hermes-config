@@ -194,23 +194,6 @@ export async function buildWsAuthParam(): Promise<[string, string]> {
 
 export const api = {
   getStatus: () => fetchJSON<StatusResponse>("/api/status"),
-  /**
-   * Identity probe for the dashboard auth gate (Phase 7).
-   *
-   * Returns the verified Session as JSON when gated mode is active and a
-   * valid cookie is attached. Loopback mode is unaffected — the endpoint
-   * still exists but is never useful there (no Session, no cookie). The
-   * AuthWidget component swallows 401s from this call: if the gate isn't
-   * engaged, /api/auth/me returns 401 and the widget renders nothing.
-   *
-   * ``allowUnauthorized`` is load-bearing: in loopback mode this endpoint
-   * 401s by design, and fetchJSON's default loopback behaviour treats a
-   * 401 as a rotated session token and full-page-reloads to pick up a
-   * fresh one. Because every *other* dashboard request succeeds (and so
-   * clears the one-shot reload guard), that turns this expected 401 into
-   * an infinite reload loop. Opting out keeps the 401 a plain throw the
-   * widget can catch.
-   */
   getAuthMe: () =>
     fetchJSON<AuthMeResponse>("/api/auth/me", undefined, {
       allowUnauthorized: true,
@@ -220,12 +203,130 @@ export const api = {
       method: "POST",
       credentials: "include",
     }).then((r) => {
-      // /auth/logout returns 302 → /login. Follow that with a full-page
-      // navigation rather than letting fetch() opaquely consume the
-      // redirect — the SPA needs to leave the protected area.
       window.location.assign("/login");
       return r;
     }),
+
+  // MCP
+  getMcpServers: () =>
+    fetchJSON<{ ok: boolean; servers: McpServer[] }>("/api/mcp/servers"),
+  addMcpServer: (body: McpServerCreate) =>
+    fetchJSON<{ ok: boolean; server: McpServer }>("/api/mcp/servers", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }),
+  testMcpServer: (id: string) =>
+    fetchJSON<McpTestResult>(`/api/mcp/servers/${encodeURIComponent(id)}/test`, {
+      method: "POST",
+    }),
+  removeMcpServer: (id: string) =>
+    fetchJSON<{ ok: boolean }>(
+      `/api/mcp/servers/${encodeURIComponent(id)}`,
+      { method: "DELETE" },
+    ),
+
+  // Pairing
+  getPairing: () =>
+    fetchJSON<PairingResponse>("/api/pairing"),
+  approvePairing: (platform: string, code: string) =>
+    fetchJSON<{ ok: boolean }>("/api/pairing/approve", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ platform, code }),
+    }),
+  clearPendingPairing: () =>
+    fetchJSON<{ ok: boolean; cleared: number }>("/api/pairing/clear", {
+      method: "POST",
+    }),
+  revokePairing: (platform: string, user_id: string) =>
+    fetchJSON<{ ok: boolean }>("/api/pairing/revoke", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ platform, user_id }),
+    }),
+
+  // System / ops
+  getMemory: () => fetchJSON<MemoryStatus>("/api/system/memory"),
+  getCredentialPool: () =>
+    fetchJSON<CredentialPoolProvider[]>("/api/system/credentials"),
+  getCheckpoints: () =>
+    fetchJSON<CheckpointsResponse>("/api/system/checkpoints"),
+  getHooks: () => fetchJSON<HooksResponse>("/api/system/hooks"),
+  startGateway: () =>
+    fetchJSON<{ ok: boolean }>("/api/gateway/start", { method: "POST" }),
+  stopGateway: () =>
+    fetchJSON<{ ok: boolean }>("/api/gateway/stop", { method: "POST" }),
+  setMemoryProvider: (name: string) =>
+    fetchJSON<{ ok: boolean }>("/api/system/memory", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ provider: name }),
+    }),
+  resetMemory: () =>
+    fetchJSON<{ ok: boolean }>("/api/system/memory/reset", { method: "POST" }),
+  addCredentialPoolEntry: (provider_id: string) =>
+    fetchJSON<{ ok: boolean }>("/api/system/credentials", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ provider_id }),
+    }),
+  removeCredentialPoolEntry: (entry_id: string) =>
+    fetchJSON<{ ok: boolean }>(
+      `/api/system/credentials/${encodeURIComponent(entry_id)}`,
+      { method: "DELETE" },
+    ),
+  pruneCheckpoints: (keep: number) =>
+    fetchJSON<{ ok: boolean }>(
+      `/api/system/checkpoints/prune?keep=${encodeURIComponent(String(keep))}`,
+      { method: "POST" },
+    ),
+  runDoctor: () =>
+    fetchJSON<{ ok: boolean; output?: string }>("/api/system/doctor", {
+      method: "POST",
+    }),
+  runSecurityAudit: () =>
+    fetchJSON<{ ok: boolean; output?: string }>("/api/system/security-audit", {
+      method: "POST",
+    }),
+  runBackup: () =>
+    fetchJSON<{ ok: boolean; output?: string }>("/api/system/backup", {
+      method: "POST",
+    }),
+  updateSkillsFromHub: () =>
+    fetchJSON<{ ok: boolean; output?: string }>(
+      "/api/system/skills/update",
+      { method: "POST" },
+    ),
+  runImport: (file: File) => {
+    const form = new FormData();
+    form.set("file", file);
+    return fetchJSON<{ ok: boolean; output?: string }>("/api/system/import", {
+      method: "POST",
+      body: form,
+    });
+  },
+
+  // Webhooks
+  getWebhooks: () =>
+    fetchJSON<WebhooksResponse>("/api/webhooks"),
+  createWebhook: (body: {
+    path: string;
+    method?: string;
+    target: string;
+    enabled?: boolean;
+  }) =>
+    fetchJSON<{ ok: boolean; route: WebhookRoute }>("/api/webhooks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }),
+  deleteWebhook: (id: string) =>
+    fetchJSON<{ ok: boolean }>(
+      `/api/webhooks/${encodeURIComponent(id)}`,
+      { method: "DELETE" },
+    ),
+
   getSessions: (limit = 20, offset = 0) =>
     fetchJSON<PaginatedSessions>(`/api/sessions?limit=${limit}&offset=${offset}`),
   getSessionMessages: (id: string) =>

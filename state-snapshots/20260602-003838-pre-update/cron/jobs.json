@@ -1,0 +1,51 @@
+{
+  "jobs": [
+    {
+      "id": "0989b16b1661",
+      "name": "hermes-config-backup",
+      "prompt": "Run /home/opc/.hermes/scripts/backup-github.sh \"backup: update hermes config\".\nAt the end, report: changed files summary, commit hash or 'No changes', and push status. If any command fails, report which one and stop.",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "interval",
+        "minutes": 60,
+        "display": "every 60m"
+      },
+      "schedule_display": "every 60m",
+      "repeat": {
+        "times": null,
+        "completed": 20
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-31T07:39:38.771853+00:00",
+      "next_run_at": "2026-06-02T00:51:43.034485+00:00",
+      "last_run_at": "2026-06-01T23:51:43.034485+00:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Nous Portal detected refresh-token reuse and revoked this session.\nThis usually means an external process (monitoring script, custom self-heal hook, or another Hermes install sharing ~/.hermes/auth.json) called POST /api/oauth/token with Hermes's refresh token without persisting the rotated token back.\nNous refresh tokens are single-use \u2014 only Hermes may call the refresh endpoint. For health checks, use `hermes auth status` instead.\nRe-authenticate with: hermes auth add nous Run `hermes model` to re-authenticate.",
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": {
+        "platform": "discord",
+        "chat_id": "1510547094694400171",
+        "chat_name": "Ali's workflow / #general / I want to backup my conmes important files and configurations to this github ...",
+        "thread_id": "1510547094694400171"
+      },
+      "enabled_toolsets": [
+        "terminal",
+        "file"
+      ],
+      "workdir": null,
+      "profile": null
+    }
+  ],
+  "updated_at": "2026-06-01T23:51:43.034655+00:00"
+}

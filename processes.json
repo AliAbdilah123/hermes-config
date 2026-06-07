@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "session_id": "proc_a06a8dbf73b1",
+    "command": "cd /home/ubuntu/projects/system/backend && PORT=8081 ./server >/tmp/system-server.log 2>&1",
+    "pid": 166978,
+    "pid_scope": "host",
+    "cwd": "/home/ubuntu/projects/insta-scheduler/backend",
+    "started_at": 1780842728.0755765,
+    "task_id": "default",
+    "session_key": "agent:main:discord:thread:1513187458601451590:1513187458601451590",
+    "watcher_platform": "discord",
+    "watcher_chat_id": "1513187458601451590",
+    "watcher_user_id": "846741144095686676",
+    "watcher_user_name": "Capt4ce",
+    "watcher_thread_id": "1513187458601451590",
+    "watcher_message_id": "1513188391892815904",
+    "watcher_interval": 5,
+    "notify_on_complete": true,
+    "watch_patterns": []
+  }
+]

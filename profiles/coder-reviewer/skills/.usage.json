@@ -95,13 +95,13 @@
     "created_at": "2026-05-31T07:20:39.889692+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-05-31T07:39:39.368333+00:00",
-    "last_used_at": "2026-05-31T08:52:05.301854+00:00",
-    "last_viewed_at": "2026-05-31T08:52:05.298937+00:00",
+    "last_used_at": "2026-06-02T16:15:43.550878+00:00",
+    "last_viewed_at": "2026-06-02T16:15:43.547114+00:00",
     "patch_count": 3,
     "pinned": false,
     "state": "active",
-    "use_count": 3,
-    "view_count": 3
+    "use_count": 4,
+    "view_count": 4
   },
   "release-and-expose-web-app": {
     "archived_at": null,
@@ -121,13 +121,13 @@
     "created_at": "2026-05-31T08:12:18.194734+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-05-31T08:12:31.932555+00:00",
-    "last_used_at": null,
-    "last_viewed_at": null,
+    "last_used_at": "2026-06-02T16:15:43.542846+00:00",
+    "last_viewed_at": "2026-06-02T16:15:43.538476+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "standard-stack-scaffold": {
     "archived_at": null,

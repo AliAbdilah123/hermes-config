@@ -35,6 +35,14 @@ Use this skill when:
 
 ## The Process
 
+### 0. Choose the visible task system
+
+Before dispatching subagents, decide whether progress must be visible outside the chat:
+
+- Use `todo` for lightweight in-session tracking only.
+- Use Hermes Kanban tasks/boards when the user expects dashboard visibility, explicitly asks for Kanban, or has an established preference for coding work to be mirrored into Kanban.
+- Do not assume local todo items will appear on the Kanban dashboard. If Kanban visibility matters, create/switch the project board, create the implementation/review tasks there, and mark them done as the work completes.
+
 ### 1. Read and Parse Plan
 
 Read the plan file. Extract ALL tasks with their full text and context upfront. Create a todo list:
@@ -176,6 +184,8 @@ delegate_task(
 
 ### 4. Verify and Commit
 
+The orchestrator must independently verify subagent claims before reporting success. Treat subagent summaries as leads, not proof.
+
 ```bash
 # Run full test suite
 pytest tests/ -q
@@ -186,6 +196,14 @@ git diff --stat
 # Final commit if needed
 git add -A && git commit -m "feat: complete [feature name] implementation"
 ```
+
+For user requests that include build/run/deploy/verify, do the final artifact handoff in the parent session after the subagent returns:
+
+1. Re-read or inspect any files the subagent reports changing before making more edits.
+2. Re-run the exact build/test commands yourself and keep the real output.
+3. If deployment is part of the deliverable, copy the built artifacts into the serving path and verify through the serving layer, not just the source dev server.
+4. Use a deterministic smoke check where possible (HTTP status, API JSON endpoint, headless DOM text match) before telling the user the app is live.
+5. Report the commit hash plus the commands that actually passed.
 
 ## Task Granularity
 

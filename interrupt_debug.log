@@ -2,3 +2,5 @@
 07:18:38 interrupt fired: msg='stop', children=0, parent._interrupt=True
 05:48:07 ENTER: queued interrupt msg='[Pasted text #1: 37 lines → /home/opc/.hermes/pastes/paste_1', agent_running=True
 05:48:08 interrupt fired: msg='[Pasted text #1: 37 lines → /home/opc/.hermes/pastes/paste_1', children=0, parent._interrupt=True
+00:09:51 ENTER: queued interrupt msg='do it for coder-orchestrator gateway as well', agent_running=True
+00:09:51 interrupt fired: msg='do it for coder-orchestrator gateway as well', children=0, parent._interrupt=True

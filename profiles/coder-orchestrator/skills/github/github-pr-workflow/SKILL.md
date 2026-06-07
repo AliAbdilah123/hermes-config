@@ -355,6 +355,40 @@ git push -u origin HEAD
 # 8. Merge when green (see Section 6)
 ```
 
+## 8. Reverting the Previous Change Safely
+
+When the user asks to "revert the previous changes" on a feature branch, prefer a new revert commit over resetting history unless they explicitly request destructive history edits.
+
+```bash
+# Confirm current branch and recent commits
+git status --short --branch
+git log --oneline --decorate -5
+
+# Revert the latest commit without rewriting branch history
+git revert --no-edit HEAD
+
+# Verify the revert only changed the intended files
+git diff --name-only HEAD~1..HEAD
+git status --short --branch
+```
+
+For deployed web apps, finish the revert with real verification, not just the git operation:
+
+```bash
+# Example frontend verification
+npm run build
+
+# Example backend verification, if applicable
+go test ./...
+
+# Redeploy built assets to the served path, then smoke the local nginx URL
+sudo cp -a frontend/dist/. /var/www/html/projects/<ProjectName>/
+sudo chown -R www-data:www-data /var/www/html/projects/<ProjectName>/
+curl -I --max-time 10 http://127.0.0.1/projects/<ProjectName>/
+```
+
+Pitfall: public-IP curl/browser checks can time out from inside the host even when local nginx is healthy. Do not report failure solely from public hairpin timeout; verify `127.0.0.1` and include the public URL as the user-facing target.
+
 ## Useful PR Commands Reference
 
 | Action | gh | git + curl |

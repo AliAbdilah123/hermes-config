@@ -28,6 +28,32 @@ Goal: replicate “software house” cadence
 - When the user corrects an integration choice, revise the published PRD/API contract immediately and keep the original stack stable unless the user explicitly approves a broader stack change.
 - See `references/omnichannel-chat-integrations.md` for Baileys-oriented WhatsApp MVP notes and API contract patterns.
 
+## PRD/API Artifact Publishing
+
+When the orchestrator is asked to turn an idea into a PRD/API contract, create a visually readable HTML artifact and make it available at `<publicIP>/prds/<prd-title>-<uuid>.html` before asking for approval.
+
+Minimum flow:
+1. Draft concise PRD + API contract in one accessible HTML file: problem/goal, roles/personas, functional requirements, permission matrix, data model, API routes, key request/response examples, milestones, and open review questions.
+2. Use a stable slug plus UUID in the filename to avoid collisions, e.g. `fnb-pos-system-<uuid>.html`.
+3. Publish under the host's PRD web root (`/var/www/html/prds` when nginx uses a `/prds/` alias; otherwise configure an equivalent `/prds/` location), set world-readable permissions, reload/test nginx if config changed.
+4. Verify the artifact with real HTTP output (at minimum local `200 OK`; public URL too when network path allows) before telling the user it is ready.
+5. Ask for focused review decisions after the link, not a broad “thoughts?” — e.g. provider choices, offline requirement, single vs multi-tenant/outlet, MVP scope switches.
+
+Pitfall: do not proceed directly to Kanban breakdown until the user has approved or refined the PRD/API contract.
+
+## Local-autonomous execution after approval
+
+If the user approves the PRD and explicitly says to continue without creating a repo/PR or waiting for further review, switch from the GitHub/PR path to a local autonomous path:
+
+1. Keep the approved stack stable and work in the local project directory.
+2. Create local git branches using the usual task naming pattern, e.g. `kanban/<task_id>-<slug>`, but do not create a remote repository, GitHub issues, or pull requests.
+3. If mirroring the work into Hermes Kanban with per-task branches, use `--workspace worktree --branch <branch>`; `--branch` is rejected with `--workspace dir:<path>`. Initialize the repo and create an initial commit first so worktrees/branches have a base. In CLI JSON output, read the task id from `id` (not `task_id`).
+4. Use implementer subagents for the concrete coding tasks and a final integration-review subagent, but do not insert manual user review gates unless the user asked for them.
+5. Commit each completed task locally with a concise feature commit.
+6. Finish with a deployed/runnable artifact and real verification output, not only a task summary.
+
+This is especially important for this user's preferred workflow: autonomous Kanban-style coding progress with local branches/commits, no GitHub repo/PR creation unless explicitly requested, and testing/deployment at the end.
+
 ## Skill-Based Model
 
 Execute via `gh` as owner/reviewer:
