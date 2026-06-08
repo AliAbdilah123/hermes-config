@@ -27,6 +27,7 @@ Use this skill when the user asks to:
 - Make an app publicly reachable at `/projects/<projectName>/`.
 - Produce a clickable public URL after deployment.
 - Harden an existing app toward production quality.
+- Refine an existing app that works but feels too corporate, dashboard-like, or data-first.
 - Debug 404/502/timeouts involving nginx, backend ports, SELinux, firewall rules, Tailscale, loopback/localhost binding, or stale systemd/background processes.
 - Run visual smoke tests with Playwright/Puppeteer/headless Chromium on ARM64 Linux.
 
@@ -94,6 +95,19 @@ When the user says an app feels too corporate, dashboard-heavy, or data-first, t
 - Build, deploy the updated dist, and smoke-test real served DOM for the new user-facing copy before reporting done.
 
 Reference: `references/community-ux-humanization.md`.
+
+## Consumer / Community UX Refinement Pass
+
+When the user says an app feels too corporate, dashboard-like, or data-first, treat it as a product/UX-tone problem before treating it as a backend problem. Preserve the chosen stack and existing API behavior unless there is a clear data gap.
+
+Use a people/action-first pass:
+- Make the first screen answer: what can I do now, who can I connect with, and what is happening near me?
+- Move analytics, audit logs, settings, and platform health behind secondary organizer/admin labels.
+- Rename corporate sections into human terms where appropriate (Dashboard → Today, Programs → Circles, Sessions → Events, Analytics → Organizer view).
+- Prefer warm hero copy, quick action cards, community feed/pulse, upcoming event cards, member wallet highlights, and human story cards over metric tiles and tables.
+- Verify tone with a screenshot or DOM phrase smoke check, not only a successful build.
+
+Reference: `references/consumer-community-ux-redesign.md`.
 
 ## Production Hardening Pass
 
