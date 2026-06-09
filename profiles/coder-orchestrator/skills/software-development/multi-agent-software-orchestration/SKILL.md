@@ -34,7 +34,8 @@ When the orchestrator is asked to turn an idea into a PRD/API contract, create a
 
 Minimum flow:
 1. Draft concise PRD + API contract in one accessible HTML file: problem/goal, roles/personas, functional requirements, permission matrix, data model, API routes, key request/response examples, milestones, and open review questions.
-2. If the user's environment has an established house stack or deployment convention, make that the default even when the supplied product spec recommends a different stack. Do not present the spec's stack as the primary option unless the user explicitly asks to follow it. For this user's web apps, prefer the standard React + TypeScript (Vite), Go API, SQLite, nginx `/projects/<project>/` deployment pattern unless overridden.
+2. If the user supplies a design reference image or asks for design-system-first delivery, include a dedicated design system section before implementation milestones: tokens, component inventory, layout patterns, visual QA expectations, and which product screens consume each component.
+3. If the user's environment has an established house stack or deployment convention, make that the default even when the supplied product spec recommends a different stack. Do not present the spec's stack as the primary option unless the user explicitly asks to follow it. For this user's web apps, prefer the standard React + TypeScript (Vite), Go API, SQLite, nginx `/projects/<project>/` deployment pattern unless overridden.
 3. Use a stable slug plus UUID in the filename to avoid collisions, e.g. `fnb-pos-system-<uuid>.html`.
 4. Publish under the host's PRD web root (`/var/www/html/prds` when nginx uses a `/prds/` alias; otherwise configure an equivalent `/prds/` location), set world-readable permissions, reload/test nginx if config changed.
 5. Verify the artifact with real HTTP output (at minimum local `200 OK`; public URL too when network path allows) before telling the user it is ready.

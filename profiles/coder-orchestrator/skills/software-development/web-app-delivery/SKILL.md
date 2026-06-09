@@ -44,6 +44,17 @@ When the user does not specify a stack, use:
 
 Stack lock rule: once the default stack is selected, do not silently replace React/TS, Go, or SQLite. Fix build/toolchain errors in place first. Ask before falling back to Python/FastAPI or plain HTML/JS.
 
+## Design-System-First Product Builds
+
+When the user supplies a design reference image or explicitly says to build the design system before the app, make that the first implementation milestone:
+- Analyze the reference into tokens: colors, typography, spacing, radii, shadows, density, navigation, cards, tables, filters, charts, and interaction states.
+- Implement reusable tokens/components before feature screens: app shell, cards/stat tiles, buttons, forms, badges/status pills, tables/lists, drawers/modals, score/progress visuals, and empty/loading/error states.
+- Build product screens only from those components so the app feels coherent instead of a set of one-off pages.
+- For SaaS/BI/dashboard products, seed realistic demo data and show complete flows even when external connectors/scanners are abstractions.
+- Verify visual delivery with an actual served UI smoke check, not only a successful build.
+
+Reference: `references/design-system-first-saas-bi-dashboard.md`.
+
 ## Build and Scaffold Workflow
 
 1. Create or use `~/projects/<projectName>` unless the user requested a different root.

@@ -1,0 +1,393 @@
+{
+  "timestamp": "2026-06-09T08:21:31.319933",
+  "session_id": "20260609_081519_dcfb44",
+  "reason": "max_retries_exhausted",
+  "request": {
+    "method": "POST",
+    "url": "https://chatgpt.com/backend-api/codex/responses",
+    "headers": {
+      "Authorization": "Bearer eyJhbGci...uhBQ",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "model": "gpt-5.5",
+      "instructions": "You are Hermes Agent, an intelligent AI assistant created by Nous Research. You are helpful, knowledgeable, and direct. You assist users with a wide range of tasks including answering questions, writing and editing code, analyzing information, creative work, and executing actions via your tools. You communicate clearly, admit uncertainty when appropriate, and prioritize being genuinely useful over being verbose unless otherwise directed below. Be targeted and efficient in your exploration and investigations.\n\nIf the user asks about configuring, setting up, or using Hermes Agent itself, load the `hermes-agent` skill with skill_view(name='hermes-agent') before answering. Docs: https://hermes-agent.nousresearch.com/docs\n\n# Finishing the job\nWhen the user asks you to build, run, or verify something, the deliverable is a working artifact backed by real tool output — not a description of one. Do not stop after writing a stub, a plan, or a single command. Keep working until you have actually exercised the code or produced the requested result, then report what real execution returned.\nIf a tool, install, or network call fails and blocks the real path, say so directly and try an alternative (different package manager, different approach, ask the user). NEVER substitute plausible-looking fabricated output (made-up data, invented file contents, synthesised API responses) for results you couldn't actually produce. Reporting a blocker honestly is always better than inventing a result.\n\nHost: Linux (6.17.0-1011-oracle)\nUser home directory: /home/ubuntu\nCurrent working directory: /home/ubuntu\n\nActive Hermes profile: coder-orchestrator. This session reads and writes ~/.hermes/profiles/coder-orchestrator/. The default profile's data lives at ~/.hermes/skills/, ~/.hermes/plugins/, ~/.hermes/cron/, ~/.hermes/memories/ — those belong to a different session run from a different shell. Do NOT modify another profile's skills/plugins/cron/memories unless the user explicitly directs you to. The cross-profile write guard will refuse such writes by default; pass cross_profile=True only after explicit direction.\n\nYou are in a Discord server or group chat communicating with your user. You can send media files natively: include MEDIA:/absolute/path/to/file in your response. Images (.png, .jpg, .webp) are sent as photo attachments, audio as file attachments. You can also include image URLs in markdown format ![alt](url) and they will be sent as attachments.\n\nConversation started: Tuesday, June 09, 2026\nModel: gpt-5.5\nProvider: openai-codex\n\nYou are a focused subagent working on a specific delegated task.\n\nYOUR TASK:\nBuild the Local Business OS Indonesia MVP in the existing repo using the approved stack and requirements.\n\nCONTEXT:\nYou are implementing in /home/ubuntu/projects/local-business-os-indonesia. The user approved building now. Stack is locked: React + TypeScript with Vite frontend, Go API backend, SQLite, nginx deployment under /projects/local-business-os-indonesia/. Do NOT use Next.js, Clerk, Cloudflare Workers, Neon, or Python backend.\n\nNeed a working MVP, not a plan. Implement as much as practical with real code and tests/builds.\n\nRequirements:\n- Design-system first UI based on reference: dark navy sidebar, light dashboard canvas, rounded white cards, blue active nav, colored icon chips, dashboard layout. Indonesian default copy.\n- Multi-language from beginning: default `id`, English locale structure. Include language switcher or locale foundation.\n- Go-native auth: username/email + password login; bcrypt hashing; secure HTTP-only signed sessions; CSRF-ready for mutable operations. Basic auth only for emergency internal/admin endpoint if needed.\n- SQLite schema: users, sessions, businesses, business_snapshots, leads, imports, scan_jobs, website_drafts, market_reports.\n- Seed Balikpapan sample data.\n- API base /api/v1 locally; when nginx deployed parent will proxy /projects/local-business-os-indonesia/api/v1/.\n- API endpoints: /healthz, /api/v1/auth/login, /api/v1/auth/logout, /api/v1/auth/me, /api/v1/locales/{locale}, /api/v1/dashboard/summary, /api/v1/businesses, /api/v1/businesses/{id}, /api/v1/businesses/{id}/snapshots, /api/v1/imports, /api/v1/scan-jobs, /api/v1/opportunities, /api/v1/leads, /api/v1/website-drafts, /api/v1/website-drafts/{id}/deploy, /api/v1/market-reports.\n- Import: accept JSON/CSV-ish payload or JSON list; validate/dedupe enough for MVP.\n- Cheapest Google Maps scraping method: implement a connector/job abstraction and a stub or safe low-cost scraper endpoint that records city/category/query, rate-limit/safeguard metadata, and returns sample collected records; do not rely on paid APIs.\n- Website generator: generate static HTML for a business; deploy to local server path configurable by env (e.g. GENERATED_SITES_ROOT) and return subdomain-ready metadata/URL. Do not actually edit nginx from backend; parent will handle server setup.\n- Frontend should call real Go API and show dashboard, business list/detail, opportunities, import/scrape forms, leads, website draft/deploy UI, market intelligence, login.\n- Use Vite base '/projects/local-business-os-indonesia/'.\n- Include tests where practical (Go tests preferred for auth/scoring/API basics).\n- Commit changes locally when done.\n\nYou may create the project structure. Run build/tests and report exact commands/results. If a dependency install fails, choose a simpler dependency-light approach but keep stack. Return concise summary with changed files, commands run, and blockers if any.\n\nWORKSPACE PATH:\n/home/ubuntu\nUse this exact path for local repository/workdir operations unless the task explicitly says otherwise.\n\nComplete this task using the tools available to you. When finished, provide a clear, concise summary of:\n- What you did\n- What you found or accomplished\n- Any files you created or modified\n- Any issues encountered\n\nImportant workspace rule: Never assume a repository lives at /workspace/... or any other container-style path unless the task/context explicitly gives that path. If no exact local path is provided, discover it first before issuing git/workdir-specific commands.\n\nBe thorough but concise -- your response is returned to the parent agent as a summary.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Build the Local Business OS Indonesia MVP in the existing repo using the approved stack and requirements."
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqJ8umegKQNC08q8CAV3olKdHBUeUkqCh7GSThLZ01HdGaJXCyC79QxmVOGnarBrOXFmSjvgGVK36VlWI-LQusHh7LhyH1KRDjns8ecf9DJ3NtZEhgzKKcf3TsrxnC9BM8NuXZSpGY1hnB145vjqEB5c4fELDCv-jBCOq2r3JN7DhxISqvk-378YB13nKrScLsw42t9jXhlKRz1C0mlB8fgwL_8mCFd-5GUcsCH0qhM103_WnsoyGdZ4-zjL-7b84eddFjT3aE7WwxHrIicJScvoRHNi9hGVCahFNis3mh9FgBzhm5KfcPtUXi0qtmaAhNyy_U1xeBNaQQpZnSsVdWXEigdTwrcjXki72dhVI0jJiJoY-WU3YE-aub6I0xBAwB4d2qH45gKw7Ncb__hFm8FrSXWC_DpC6qIQP3y7fVWevwVpvhV7o7otYOV4ALBKKEfhUTY3XFnxmc8Z3SmXICSO8XPQ-H2RR6yRzWVtVRFWmz9MD_yjcXVjdyT5Sklt5BEpCWCYCec-IEe3T1AyEMBJ9Y54-Wd466826s3z56Oey9o4NNEgzgE3JJC4XonrIoiJ29bfS54-o7WlGYBvIQWbiPj8FupD78gLfuI6EZpPswJGSU0lJ16c00rbjiGGvxG6-czEzUNX_B3z2Y6ISTpav4mdjDxoQYqgVKM--YLCPr3pW9xrKfwodo6RQh8ft9OfgyHLrivPlkxY4F5OtXGHYDxy6sEYJ9ySv8pRhaYqiHApIFjYwjMlN2J9vlkL49QMboysmdo7MW7SgtY0GSWce00Y2HK30MtNUgk7aJY_Rn2U6e_XxwkhLW6rf5kcFID4T3kdJgG0Mqy78N3e2BzGBrooEfBwqcXauFYVPvv6iWRoKdFSvhhOMhw6pJ81IYhvii95buqLyjNEFlkr3tOya5y_fJqQwKDHh3b-gcCnvxuDun-UfbnjTk6Fe43qcoBdEu",
+          "summary": []
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_zlXD64EUe3rdVn9macLBVvMh",
+          "name": "search_files",
+          "arguments": "{\"limit\":50,\"path\":\"/home/ubuntu/projects/local-business-os-indonesia\",\"pattern\":\"*\",\"target\":\"files\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_zlXD64EUe3rdVn9macLBVvMh",
+          "output": "{\"total_count\": 27, \"files\": [\"/home/ubuntu/projects/local-business-os-indonesia/.git/logs/refs/heads/master\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/logs/HEAD\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/refs/heads/master\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/objects/01/a74f8338e0df76ba5f2759fc0bf8f7c5199e66\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/COMMIT_EDITMSG\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/objects/45/f53e307d57492b04ed13dc9b2edeb52dacdca1\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/index\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/objects/a6/612d78bad4f965b763ce5cf409aa07aeff5278\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/config\", \"/home/ubuntu/projects/local-business-os-indonesia/README.md\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/HEAD\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/pre-push.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/prepare-commit-msg.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/applypatch-msg.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/fsmonitor-watchman.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/sendemail-validate.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/pre-receive.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/pre-rebase.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/update.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/push-to-checkout.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/commit-msg.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/pre-commit.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/pre-merge-commit.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/pre-applypatch.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/hooks/post-update.sample\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/description\", \"/home/ubuntu/projects/local-business-os-indonesia/.git/info/exclude\"]}"
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqJ8urQN9PJLKOqWrMbIJpsXHEh5N3f3oaZoCWOf-SjOU_RsM0p3FZFiHzkVNsz31pO6VSR9ChCUqZA3LUltOmiR8V565n10ZlPdC-eBvsQlDnh6nTLCkgGO_EVHTMzBmyLjpn5vBBvX8168CPCRnQXxNGP2iKdUwUeSuT4kmEXZhDIEOKTt_5YLnw8EJzVvqTOJyqJvTj8InsNod3yRZL-TegDFXG9xrBTZss0jTyYaj4iEG_m1qIHgumKfgOq719I_bjs-MT8YhBLfZH4yXmWA4l3GBPlSaGjO7mAXzgp014y9hOLicHC3LkLKfmTNdcFQelu7yxeAOfjnB5nDpDQGz_XYkx6osr_Sq-lx809gZ99UZIPVnT7gd4LI41Jm42YvSKV1rNtrNyC7ZIsZI1jtR8HPYsqRKPNSaUrypzB-Cw6c_oKwWs9ZCrYaqQAKyyeO3BVSa6fKhZce4vy5-xFOrZz6TjGXuZlWwH_5925H5eHEEU6UDeC5QOmuCEFjSdHbtyYLQy-7rHaX8LM_415Jb3XFewliEr2TF9hem94BeXbuNG_LlpVecmWi_bMQDOc9E7sTkjwD2QovEQzLOsYLBvvMKE5kD06WMvTUFCtdqSw5DAVKKzTINJfw5dHbS3wSCstjOZ4UR9MQezdqK1XNXxufyPDzwN2gYt9MJxSlTacoLmejwm6N9GBQfkqZxrVap8yjlfTJ-zeljVzWpSyyDsoVp5YAXKdiHk4czrR-gTzR4pem4Yz9FR9_cseDbCU9MROZAdlQVvRgkccHJFaiUwPoP1MEBVqMxAkCGquqdi4-VyqYbvZ4_vHJfPhnbLQxcndG2A_NmhqEZBzgxmZTix8h8PQ3bHyKlr_Oa4Cl3ifZMAuAa5CmBeb4b923NDP-ArKpDRSJZPHevggzFrfU1TdzGp4EEjV6BVR2sC6rQTPnh9WItruZ6sdIVmrUcxev12QiEGgJH2Fn4Ws7AIq8WvNcP2SLfajv8lFro8CiPrjGw=",
+          "summary": []
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_pXWsRwKZNgLNM4APVbSFsXbP",
+          "name": "terminal",
+          "arguments": "{\"command\":\"go version && node --version && npm --version\",\"timeout\":30,\"workdir\":\"/home/ubuntu/projects/local-business-os-indonesia\"}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_M8Avi04C2XZxPfmHrggIoonl",
+          "name": "read_file",
+          "arguments": "{\"limit\":200,\"path\":\"/home/ubuntu/projects/local-business-os-indonesia/README.md\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_pXWsRwKZNgLNM4APVbSFsXbP",
+          "output": "{\"output\": \"go version go1.22.2 linux/arm64\\nv22.22.3\\n10.9.8\", \"exit_code\": 0, \"error\": null}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_M8Avi04C2XZxPfmHrggIoonl",
+          "output": "{\"content\": \"1|# Local Business OS Indonesia\\n2|\\n3|React+TS, Go, SQLite MVP.\\n4|\", \"total_lines\": 3, \"file_size\": 57, \"truncated\": false, \"is_binary\": false, \"is_image\": false}"
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqJ8u2zUvGFj2DFhZ87-WxVJjCDoAUnKRlDkXUXUAb8e6hGewq1ueJDMGKwU2_pNAqs-93QIAmCUUwzgwFZWad3wMWuztMQ_DaAUHmzSWdvSuiG3s3O4icXcS7zPXeEppXAn7U-nvdelzGqKDVAbzNB3TWkFg4cxezFxRVZfRBB2mRFDXk6pMUxADXA3k4kxj3J5h-EB4msWT-c8-_gfCVaiGe-6ak2GvRsaYWgWh3l5a3pBKlkUgsz4-1ABSMK1qJusmzcn3Lu4mu7naiADgAVM-uruGM2snjv32n5dr6j1YhDKH1cDfgf0rYO0yRCynb9SE204h87eAGJj49A-0x2Z4XZRmO_uEbpMGENpcQA8uIFAI60WbUnRK_2y8NBwQsMav5GtaGLmNZ4DfMH0n_CHCMwl1b9ll9Y1_WAHyhrW_72NPMcCDPnzEBIrB39VZRoX8-5Lxd9ads35AIy9Lxtj0p_HlPOsCu3ncGm-8dF9wyPgxYajUSbH6Jd6j3-Aih9Ob9mSyYFmYoht71Ehgy-Bu854OhPiAekKi2bE_UUORgaNHS4D4Kqe1MtlyfMQ29c2m320EyOEBlNr_myLax8oDnoZo93d32IAELteN1kPRrcCy3IQSkR8Uq0wYvE4X6DmeloFJoqgNmKBriYY-mwoz_rOkyocqynNJc_-MOkFmXnxc80zQJbjR-PaeVAPf9l_EMJH3LpdAoSQZaIRyYVHtICX5IpPAYZ-hqBdUM6UJf_SRT1WdNTfF2rVHidt4yYi5lEpz4W91vcVZ33qA1CTcVLvX7Fxnk-xnjZP9TL0H2HodUjlh-fOTudvcGVgefa2vbb_Fh_c8MtMiaCZjmf1yECmKolIdAFes0Bz4FFNfeyuBMvWJnDYMEwP9QIi2UMQT53eaTjo9i80T7nwahWLdLt3pGKHIXBoIltmONJLhR9-F3x3PR9EnAJJHC80pl11feHFDFTL4Tit0qYc5YTmoRI6kHhifGXVjgrbDwFqWZfX3AXwsqB21-imgOosDhTzmn-GoHjXv6E0tyoX8u_uCPxVXJzwxmml_EWtkbF-8gsdE9AylRkHlcBeVJvXJODia4jQCt51XR73fNLpZFmrRc6HeXSUHYj9pWPNi_M5OUECfVwBbR02yEQ_ejXE0BtJNNm4cDpJhlJFL_q2lk-6Yqu4P34i00a10avYM6Jcv0HNbhWHm5n_YJizE4UlJl6ymqJVsniNdzuV4ZOWkZ57UItDWBxOEsKduYR6tx-yGEv6upJdYAb1UOxDKvp6rsnKtYddsNmUk2BueNTerMwq3U0beHE_SFPRoJjgeMr1HpB_fVcMe0wGGY_FdKy_KDQElmz4rgdrBg8VoW5h04A1C--Ay_qssTf-Vr43klFbLNSEGuxN1zt0xdt3qVSTc49hIzSPCGvDfe0FhtUnwSCEbcxbDpei14br-KfW7m4R1bYXLSaHBo8s2rrQ3b7b5J8ZrWw9lg03kET5ZfcI4snPcnbrJB1dpJgEK1Cj9c1uKsfoSYcqtCPO_A4cTPEYP9N62rQTZFGJeyddAzjm3mjDBt9B7ZFVzaZ1QgTIhSuDe2mpvZneRnSefBO40ONUGaTHU2s8BI6PojL-bC9HqIpRsCeYzHJhdfEiDP-vwFoyGcFVHDaz5fKouASl1VeqV2ccrVohdZN-pO9lrLp9NeY8GDMpST9dXtQF9hfG5smQXlYBWs-z9h1ZDDRsvX8vUccyyuAWeNBs7ns-_o8xM-RuTVQ4R0hdsvrcNF2Zv_9v3sM9QtDKgBQkfDtvXwowWD5mkpdIAWz0-FyCGIlu435guhc4RzNYv0qxKwklCWetYI4kPP3yHkepFbHk33RcorsN_Vznd_FDMRyr_Ps_6o_1XcvjmcF8YVOURtVBQ5bLefDg_0GGn5lL6DFR-c3fbOImtEq-xySyYHCuKn0a4t1FCivNtiOa47M4qeu-yyjPUe3CCdQIXRvYdM__5gHGv-gk-goKrM7SypJkP7malLn1I9kdNlvLlcNBleFknGi7qurfbEQcKnZbMFogCM5JUzJFimmsWcVdQnonnq7qm1h8Hw6CJq6piXKnnrkxP-qY1_4ijnnf-GkCvkwiGAgCBPEZC0x84V7NQZEXI9xk-FXwAk6gTvzhdGKeqfCXmyiu9i7eUpsYC8QmEnM3Fla03BoZPt",
+          "summary": []
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_abK3YcLokSHInRPKFgjSPaR3",
+          "name": "write_file",
+          "arguments": "{\"content\":\"module local-business-os-indonesia\\n\\ngo 1.22\\n\\nrequire (\\n\\tgithub.com/google/uuid v1.6.0\\n\\tgolang.org/x/crypto v0.31.0\\n\\tmodernc.org/sqlite v1.34.4\\n)\\n\",\"path\":\"/home/ubuntu/projects/local-business-os-indonesia/go.mod\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_abK3YcLokSHInRPKFgjSPaR3",
+          "output": "{\"bytes_written\": 145, \"dirs_created\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .mod files\"}, \"resolved_path\": \"/home/ubuntu/projects/local-business-os-indonesia/go.mod\", \"files_modified\": [\"/home/ubuntu/projects/local-business-os-indonesia/go.mod\"]}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_YatJjx1SeMzrwNod04uE9h1I",
+          "name": "write_file",
+          "arguments": "{\"content\":\"package main\\n\\nimport (\\n\\t\\\"crypto/hmac\\\"\\n\\t\\\"crypto/rand\\\"\\n\\t\\\"crypto/sha256\\\"\\n\\t\\\"database/sql\\\"\\n\\t\\\"encoding/base64\\\"\\n\\t\\\"encoding/csv\\\"\\n\\t\\\"encoding/hex\\\"\\n\\t\\\"encoding/json\\\"\\n\\t\\\"errors\\\"\\n\\t\\\"fmt\\\"\\n\\t\\\"html\\\"\\n\\t\\\"io\\\"\\n\\t\\\"log\\\"\\n\\t\\\"net/http\\\"\\n\\t\\\"os\\\"\\n\\t\\\"path/filepath\\\"\\n\\t\\\"strconv\\\"\\n\\t\\\"strings\\\"\\n\\t\\\"time\\\"\\n\\n\\t\\\"github.com/google/uuid\\\"\\n\\t\\\"golang.org/x/crypto/bcrypt\\\"\\n\\t_ \\\"modernc.org/sqlite\\\"\\n)\\n\\ntype app struct{ db *sql.DB; secret []byte; sitesRoot string }\\ntype ctxKey string\\nconst userIDKey ctxKey = \\\"uid\\\"\\n\\ntype business struct{ ID int64 `json:\\\"id\\\"`; Name,Category,City,Address,Phone,Website,Status string `json:\\\"name,omitempty\\\"`; Score int `json:\\\"score\\\"`; PotentialMonthlyRevenue int `json:\\\"potential_monthly_revenue\\\"`; Notes string `json:\\\"notes\\\"` }\\n\\ntype jmap map[string]any\\n\\nfunc main(){\\n\\tdbPath:=env(\\\"DB_PATH\\\",\\\"./data/local-business-os.db\\\"); _=os.MkdirAll(filepath.Dir(dbPath),0755)\\n\\tdb,err:=sql.Open(\\\"sqlite\\\",dbPath); if err!=nil{log.Fatal(err)}\\n\\ta:=&app{db:db, secret:[]byte(env(\\\"SESSION_SECRET\\\",\\\"dev-change-me-local-business-os\\\")), sitesRoot:env(\\\"GENERATED_SITES_ROOT\\\",\\\"./generated-sites\\\")}\\n\\tif err:=a.initDB(); err!=nil{log.Fatal(err)}\\n\\tmux:=http.NewServeMux(); a.routes(mux)\\n\\taddr:=env(\\\"ADDR\\\",\\\":8080\\\"); log.Printf(\\\"Local Business OS Indonesia API listening on %s\\\",addr); log.Fatal(http.ListenAndServe(addr, logReq(cors(mux))))\\n}\\n\\nfunc env(k,d string) string{ if v:=os.Getenv(k); v!=\\\"\\\"{return v}; return d }\\nfunc writeJSON(w http.ResponseWriter, code int, v any){ w.Header().Set(\\\"Content-Type\\\",\\\"application/json\\\"); w.WriteHeader(code); _=json.NewEncoder(w).Encode(v) }\\nfunc readJSON(r *http.Request, v any) error{ defer r.Body.Close(); return json.NewDecoder(io.LimitReader(r.Body,1<<20)).Decode(v) }\\nfunc logReq(next http.Handler) http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){log.Printf(\\\"%s %s\\\",r.Method,r.URL.Path); next.ServeHTTP(w,r)})}\\nfunc cors(next http.Handler) http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){o:=r.Header.Get(\\\"Origin\\\"); if strings.HasPrefix(o,\\\"http://localhost\\\")||strings.HasPrefix(o,\\\"http://127.0.0.1\\\"){w.Header().Set(\\\"Access-Control-Allow-Origin\\\",o); w.Header().Set(\\\"Access-Control-Allow-Credentials\\\",\\\"true\\\"); w.Header().Set(\\\"Access-Control-Allow-Headers\\\",\\\"Content-Type,X-CSRF-Token\\\"); w.Header().Set(\\\"Access-Control-Allow-Methods\\\",\\\"GET,POST,OPTIONS\\\")}; if r.Method==\\\"OPTIONS\\\"{w.WriteHeader(204); return}; next.ServeHTTP(w,r)})}\\n\\nfunc (a *app) routes(m *http.ServeMux){\\n\\tm.HandleFunc(\\\"/healthz\\\", func(w http.ResponseWriter,r *http.Request){writeJSON(w,200,jmap{\\\"ok\\\":true,\\\"service\\\":\\\"local-business-os-indonesia\\\"})})\\n\\tm.HandleFunc(\\\"/api/v1/locales/\\\", a.handleLocale)\\n\\tm.HandleFunc(\\\"/api/v1/auth/login\\\", a.handleLogin)\\n\\tm.Handle(\\\"/api/v1/auth/logout\\\", a.auth(http.HandlerFunc(a.handleLogout)))\\n\\tm.Handle(\\\"/api/v1/auth/me\\\", a.auth(http.HandlerFunc(a.handleMe)))\\n\\tm.Handle(\\\"/api/v1/dashboard/summary\\\", a.auth(http.HandlerFunc(a.handleSummary)))\\n\\tm.Handle(\\\"/api/v1/businesses\\\", a.auth(http.HandlerFunc(a.handleBusinesses)))\\n\\tm.Handle(\\\"/api/v1/businesses/\\\", a.auth(http.HandlerFunc(a.handleBusinessSub)))\\n\\tm.Handle(\\\"/api/v1/imports\\\", a.auth(http.HandlerFunc(a.handleImports)))\\n\\tm.Handle(\\\"/api/v1/scan-jobs\\\", a.auth(http.HandlerFunc(a.handleScanJobs)))\\n\\tm.Handle(\\\"/api/v1/opportunities\\\", a.auth(http.HandlerFunc(a.handleOpportunities)))\\n\\tm.Handle(\\\"/api/v1/leads\\\", a.auth(http.HandlerFunc(a.handleLeads)))\\n\\tm.Handle(\\\"/api/v1/website-drafts\\\", a.auth(http.HandlerFunc(a.handleDrafts)))\\n\\tm.Handle(\\\"/api/v1/website-drafts/\\\", a.auth(http.HandlerFunc(a.handleDraftSub)))\\n\\tm.Handle(\\\"/api/v1/market-reports\\\", a.auth(http.HandlerFunc(a.handleReports)))\\n}\\n\\nfunc (a *app) initDB() error{\\n\\tstmts:=[]string{`PRAGMA foreign_keys=ON`,\\n`CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, email TEXT UNIQUE NOT NULL, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'owner', created_at TEXT NOT NULL)`,\\n`CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, token_hash TEXT NOT NULL, csrf_token TEXT NOT NULL, expires_at TEXT NOT NULL, created_at TEXT NOT NULL, FOREIGN KEY(user_id) REFERENCES users(id))`,\\n`CREATE TABLE IF NOT EXISTS businesses(id INTEGER PRIMARY KEY, name TEXT NOT NULL, category TEXT NOT NULL, city TEXT NOT NULL, address TEXT, phone TEXT, website TEXT, status TEXT NOT NULL DEFAULT 'prospect', score INTEGER NOT NULL DEFAULT 0, potential_monthly_revenue INTEGER NOT NULL DEFAULT 0, notes TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, UNIQUE(name,city,category))`,\\n`CREATE TABLE IF NOT EXISTS business_snapshots(id INTEGER PRIMARY KEY, business_id INTEGER NOT NULL, source TEXT NOT NULL, rating REAL, review_count INTEGER, has_website INTEGER, social_links TEXT, raw_json TEXT, created_at TEXT NOT NULL, FOREIGN KEY(business_id) REFERENCES businesses(id))`,\\n`CREATE TABLE IF NOT EXISTS leads(id INTEGER PRIMARY KEY, business_id INTEGER, contact_name TEXT, channel TEXT, value INTEGER, stage TEXT, next_action TEXT, created_at TEXT NOT NULL, FOREIGN KEY(business_id) REFERENCES businesses(id))`,\\n`CREATE TABLE IF NOT EXISTS imports(id INTEGER PRIMARY KEY, source TEXT, status TEXT, total_rows INTEGER, inserted_rows INTEGER, duplicate_rows INTEGER, errors TEXT, created_at TEXT NOT NULL)`,\\n`CREATE TABLE IF NOT EXISTS scan_jobs(id INTEGER PRIMARY KEY, city TEXT, category TEXT, query TEXT, status TEXT, safeguards TEXT, collected_count INTEGER, sample_json TEXT, created_at TEXT NOT NULL)`,\\n`CREATE TABLE IF NOT EXISTS website_drafts(id INTEGER PRIMARY KEY, business_id INTEGER NOT NULL, title TEXT, slug TEXT UNIQUE, html TEXT, status TEXT, deployed_path TEXT, public_url TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, FOREIGN KEY(business_id) REFERENCES businesses(id))`,\\n`CREATE TABLE IF NOT EXISTS market_reports(id INTEGER PRIMARY KEY, city TEXT, category TEXT, title TEXT, summary TEXT, metrics_json TEXT, created_at TEXT NOT NULL)`}\\n\\tfor _,s:=range stmts{ if _,err:=a.db.Exec(s); err!=nil{return err} }\\n\\tvar n int; _=a.db.QueryRow(`SELECT COUNT(*) FROM users`).Scan(&n); if n==0{ h,_:=bcrypt.GenerateFromPassword([]byte(\\\"balikpapan123\\\"),bcrypt.DefaultCost); _,err:=a.db.Exec(`INSERT INTO users(email,username,password_hash,role,created_at) VALUES(?,?,?,?,?)`,\\\"admin@localbiz.id\\\",\\\"admin\\\",string(h),\\\"owner\\\",now()); if err!=nil{return err}}\\n\\t_ = a.seed(); return nil\\n}\\nfunc now() string{return time.Now().UTC().Format(time.RFC3339)}\\nfunc (a *app) seed() error{var n int; _=a.db.QueryRow(`SELECT COUNT(*) FROM businesses`).Scan(&n); if n>0{return nil}; samples:=[]business{{Name:\\\"Kopi Teluk Balikpapan\\\",Category:\\\"Kafe\\\",City:\\\"Balikpapan\\\",Address:\\\"Jl. Jenderal Sudirman\\\",Phone:\\\"0812-1000-2000\\\",Status:\\\"prospect\\\",Score:82,PotentialMonthlyRevenue:4500000,Notes:\\\"Belum punya website, ulasan kuat.\\\"},{Name:\\\"Bengkel Prima Sepinggan\\\",Category:\\\"Bengkel\\\",City:\\\"Balikpapan\\\",Address:\\\"Sepinggan\\\",Phone:\\\"0812-2222-3333\\\",Website:\\\"\\\",Status:\\\"qualified\\\",Score:76,PotentialMonthlyRevenue:6000000},{Name:\\\"Salon Cantik Damai\\\",Category:\\\"Salon\\\",City:\\\"Balikpapan\\\",Address:\\\"Damai\\\",Phone:\\\"0813-8888-9000\\\",Score:69,PotentialMonthlyRevenue:3000000},{Name:\\\"Warung Makan Beruang Madu\\\",Category:\\\"Restoran\\\",City:\\\"Balikpapan\\\",Address:\\\"Gunung Bahagia\\\",Phone:\\\"0542-555777\\\",Score:88,PotentialMonthlyRevenue:7500000}}; for _,b:=range samples{res,_:=a.db.Exec(`INSERT OR IGNORE INTO businesses(name,category,city,address,phone,website,status,score,potential_monthly_revenue,notes,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,b.Name,b.Category,b.City,b.Address,b.Phone,b.Website,coalesce(b.Status,\\\"prospect\\\"),b.Score,b.PotentialMonthlyRevenue,b.Notes,now(),now()); id,_:=res.LastInsertId(); a.db.Exec(`INSERT INTO business_snapshots(business_id,source,rating,review_count,has_website,social_links,raw_json,created_at) VALUES(?,?,?,?,?,?,?,?)`,id,\\\"seed\\\",4.4,80,b.Website!=\\\"\\\",\\\"[]\\\",\\\"{}\\\",now())}; a.db.Exec(`INSERT INTO leads(business_id,contact_name,channel,value,stage,next_action,created_at) VALUES(1,'Ibu Rina','WhatsApp',4500000,'new','Kirim audit gratis',?)`,now()); a.db.Exec(`INSERT INTO market_reports(city,category,title,summary,metrics_json,created_at) VALUES('Balikpapan','UMKM','Peluang Digital UMKM Balikpapan','Banyak bisnis lokal kuat di ulasan namun belum memiliki website cepat dan katalog online.',?,?)`,`{\\\"avgScore\\\":79,\\\"topCategories\\\":[\\\"Kafe\\\",\\\"Bengkel\\\",\\\"Restoran\\\"]}`,now()); return nil}\\nfunc coalesce(v,d string) string{if v==\\\"\\\"{return d}; return v}\\n\\nfunc (a *app) sign(s string) string{m:=hmac.New(sha256.New,a.secret); m.Write([]byte(s)); return hex.EncodeToString(m.Sum(nil))}\\nfunc randToken() string{b:=make([]byte,32); rand.Read(b); return base64.RawURLEncoding.EncodeToString(b)}\\nfunc hashToken(t string) string{h:=sha256.Sum256([]byte(t)); return hex.EncodeToString(h[:])}\\nfunc (a *app) auth(next http.Handler) http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){c,err:=r.Cookie(\\\"lbos_session\\\"); if err!=nil{writeJSON(w,401,jmap{\\\"error\\\":\\\"unauthorized\\\"});return}; parts:=strings.Split(c.Value,\\\".\\\"); if len(parts)!=2 || !hmac.Equal([]byte(a.sign(parts[0])),[]byte(parts[1])){writeJSON(w,401,jmap{\\\"error\\\":\\\"bad_session\\\"});return}; var uid int64; var csrf,exp string; err=a.db.QueryRow(`SELECT user_id,csrf_token,expires_at FROM sessions WHERE token_hash=?`,hashToken(parts[0])).Scan(&uid,&csrf,&exp); if err!=nil{writeJSON(w,401,jmap{\\\"error\\\":\\\"session_not_found\\\"});return}; et,_:=time.Parse(time.RFC3339,exp); if time.Now().After(et){writeJSON(w,401,jmap{\\\"error\\\":\\\"session_expired\\\"});return}; if r.Method!=\\\"GET\\\" && r.Method!=\\\"HEAD\\\"{ if r.Header.Get(\\\"X-CSRF-Token\\\")!=csrf{writeJSON(w,403,jmap{\\\"error\\\":\\\"csrf_required\\\"});return} }; next.ServeHTTP(w,r.WithContext(contextWithUser(r.Context(),uid)))})}\\n\\n// tiny context helpers avoid extra framework\\nfunc contextWithUser(ctx interface{ Done() <-chan struct{} }, uid int64) any { return nil }\\n\",\"path\":\"/home/ubuntu/projects/local-business-os-indonesia/cmd/api/main.go\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_YatJjx1SeMzrwNod04uE9h1I",
+          "output": "{\"bytes_written\": 9799, \"dirs_created\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"LSP server handles .go — shell linter skipped\"}, \"lsp_diagnostics\": \"LSP diagnostics introduced by this edit:\\n<diagnostics file=\\\"/home/ubuntu/projects/local-business-os-indonesia/cmd/api/main.go\\\">\\nERROR [9:2] \\\"encoding/csv\\\" imported and not used [UnusedImport] (compiler)\\nERROR [12:2] \\\"errors\\\" imported and not used [UnusedImport] (compiler)\\nERROR [13:2] \\\"fmt\\\" imported and not used [UnusedImport] (compiler)\\nERROR [14:2] \\\"html\\\" imported and not used [UnusedImport] (compiler)\\nERROR [20:2] \\\"strconv\\\" imported and not used [UnusedImport] (compiler)\\nERROR [24:2] could not import github.com/google/uuid (no required module provides package \\\"github.com/google/uuid\\\") [BrokenImport] (compiler)\\nERROR [25:2] could not import golang.org/x/crypto/bcrypt (no required module provides package \\\"golang.org/x/crypto/bcrypt\\\") [BrokenImport] (compiler)\\nERROR [26:4] could not import modernc.org/sqlite (no required module provides package \\\"modernc.org/sqlite\\\") [BrokenImport] (compiler)\\nERROR [54:37] a.handleLocale undefined (type *app has no field or method handleLocale) [MissingFieldOrMethod] (compiler)\\nERROR [55:39] a.handleLogin undefined (type *app has no field or method handleLogin) [MissingFieldOrMethod] (compiler)\\nERROR [56:60] a.handleLogout undefined (type *app has no field or method handleLogout) [MissingFieldOrMethod] (compiler)\\nERROR [57:56] a.handleMe undefined (type *app has no field or method handleMe) [MissingFieldOrMethod] (compiler)\\nERROR [58:66] a.handleSummary undefined (type *app has no field or method handleSummary) [MissingFieldOrMethod] (compiler)\\nERROR [59:59] a.handleBusinesses undefined (type *app has no field or method handleBusinesses) [MissingFieldOrMethod] (compiler)\\nERROR [60:60] a.handleBusinessSub undefined (type *app has no field or method handleBusinessSub) [MissingFieldOrMethod] (compiler)\\nERROR [61:56] a.handleImports undefined (type *app has no field or method handleImports) [MissingFieldOrMethod] (compiler)\\nERROR [62:58] a.handleScanJobs undefined (type *app has no field or method handleScanJobs) [MissingFieldOrMethod] (compiler)\\nERROR [63:62] a.handleOpportunities undefined (type *app has no field or method handleOpportunities) [MissingFieldOrMethod] (compiler)\\nERROR [64:54] a.handleLeads undefined (type *app has no field or method handleLeads) [MissingFieldOrMethod] (compiler)\\nERROR [65:63] a.handleDrafts undefined (type *app has no field or method handleDrafts) [MissingFieldOrMethod] (compiler)\\n... and 3 more\\n</diagnostics>\", \"resolved_path\": \"/home/ubuntu/projects/local-business-os-indonesia/cmd/api/main.go\", \"files_modified\": [\"/home/ubuntu/projects/local-business-os-indonesia/cmd/api/main.go\"]}"
+        }
+      ],
+      "store": false,
+      "tools": [
+        {
+          "type": "function",
+          "name": "patch",
+          "description": "Targeted find-and-replace edits in files. Use this instead of sed/awk in terminal. Uses fuzzy matching (9 strategies) so minor whitespace/indentation differences won't break it. Returns a unified diff. Auto-runs syntax checks after editing.\n\nREPLACE MODE (mode='replace', default): find a unique string and replace it. REQUIRED PARAMETERS: mode, path, old_string, new_string.\nPATCH MODE (mode='patch'): apply V4A multi-file patches for bulk changes. REQUIRED PARAMETERS: mode, patch.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "replace",
+                  "patch"
+                ],
+                "description": "Edit mode. 'replace' (default): requires path + old_string + new_string. 'patch': requires patch content only.",
+                "default": "replace"
+              },
+              "path": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. File path to edit."
+              },
+              "old_string": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. Exact text to find and replace. Must be unique in the file unless replace_all=true. Include surrounding context lines to ensure uniqueness."
+              },
+              "new_string": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. Replacement text. Pass empty string '' to delete the matched text."
+              },
+              "replace_all": {
+                "type": "boolean",
+                "description": "Replace all occurrences instead of requiring a unique match (default: false)",
+                "default": false
+              },
+              "patch": {
+                "type": "string",
+                "description": "REQUIRED when mode='patch'. V4A format patch content. Format:\n*** Begin Patch\n*** Update File: path/to/file\n@@ context hint @@\n context line\n-removed line\n+added line\n*** End Patch"
+              },
+              "cross_profile": {
+                "type": "boolean",
+                "description": "Opt out of the cross-profile soft guard. Defaults to false. Set true ONLY after explicit user direction to edit another Hermes profile's skills/plugins/cron/memories.",
+                "default": false
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "process",
+          "description": "Manage background processes started with terminal(background=true). Actions: 'list' (show all), 'poll' (check status + new output), 'log' (full output with pagination), 'wait' (block until done or timeout), 'kill' (terminate), 'write' (send raw stdin data without newline), 'submit' (send data + Enter, for answering prompts), 'close' (close stdin/send EOF).",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "list",
+                  "poll",
+                  "log",
+                  "wait",
+                  "kill",
+                  "write",
+                  "submit",
+                  "close"
+                ],
+                "description": "Action to perform on background processes"
+              },
+              "session_id": {
+                "type": "string",
+                "description": "Process session ID (from terminal background output). Required for all actions except 'list'."
+              },
+              "data": {
+                "type": "string",
+                "description": "Text to send to process stdin (for 'write' and 'submit' actions)"
+              },
+              "timeout": {
+                "type": "integer",
+                "description": "Max seconds to block for 'wait' action. Returns partial output on timeout.",
+                "minimum": 1
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Line offset for 'log' action (default: last 200 lines)"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Max lines to return for 'log' action",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_file",
+          "description": "Read a text file with line numbers and pagination. Use this instead of cat/head/tail in terminal. Output format: 'LINE_NUM|CONTENT'. Suggests similar filenames if not found. Use offset and limit for large files. Reads exceeding ~100K characters are rejected; use offset and limit to read specific sections of large files. NOTE: Cannot read images or binary files — use vision_analyze for images.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to the file to read (absolute, relative, or ~/path)"
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Line number to start reading from (1-indexed, default: 1)",
+                "default": 1,
+                "minimum": 1
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Maximum number of lines to read (default: 500, max: 2000)",
+                "default": 500,
+                "maximum": 2000
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "search_files",
+          "description": "Search file contents or find files by name. Use this instead of grep/rg/find/ls in terminal. Ripgrep-backed, faster than shell equivalents.\n\nContent search (target='content'): Regex search inside files. Output modes: full matches with line numbers, file paths only, or match counts.\n\nFile search (target='files'): Find files by glob pattern (e.g., '*.py', '*config*'). Also use this instead of ls — results sorted by modification time.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern for content search, or glob pattern (e.g., '*.py') for file search"
+              },
+              "target": {
+                "type": "string",
+                "enum": [
+                  "content",
+                  "files"
+                ],
+                "description": "'content' searches inside file contents, 'files' searches for files by name",
+                "default": "content"
+              },
+              "path": {
+                "type": "string",
+                "description": "Directory or file to search in (default: current working directory)",
+                "default": "."
+              },
+              "file_glob": {
+                "type": "string",
+                "description": "Filter files by pattern in grep mode (e.g., '*.py' to only search Python files)"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Maximum number of results to return (default: 50)",
+                "default": 50
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Skip first N results for pagination (default: 0)",
+                "default": 0
+              },
+              "output_mode": {
+                "type": "string",
+                "enum": [
+                  "content",
+                  "files_only",
+                  "count"
+                ],
+                "description": "Output format for grep mode: 'content' shows matching lines with line numbers, 'files_only' lists file paths, 'count' shows match counts per file",
+                "default": "content"
+              },
+              "context": {
+                "type": "integer",
+                "description": "Number of context lines before and after each match (grep mode only)",
+                "default": 0
+              }
+            },
+            "required": [
+              "pattern"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "terminal",
+          "description": "Execute shell commands on a Linux environment. Filesystem usually persists between calls.\n\nDo NOT use cat/head/tail to read files — use read_file instead.\nDo NOT use grep/rg/find to search — use search_files instead.\nDo NOT use ls to list directories — use search_files(target='files') instead.\nDo NOT use sed/awk to edit files — use patch instead.\nDo NOT use echo/cat heredoc to create files — use write_file instead.\nReserve terminal for: builds, installs, git, processes, scripts, network, package managers, and anything that needs a shell.\n\nForeground (default): Commands return INSTANTLY when done, even if the timeout is high. Set timeout=300 for long builds/scripts — you'll still get the result in seconds if it's fast. Prefer foreground for short commands.\nBackground: Set background=true to get a session_id. Almost always pair with notify_on_complete=true — bg without notify runs SILENTLY and you have no way to learn it finished short of calling process(action='poll') yourself. Two legitimate uses:\n  (1) Long-lived processes that never exit (servers, watchers, daemons) — silent is correct, there's no exit to notify on.\n  (2) Long-running bounded tasks (tests, builds, deploys, CI pollers, batch jobs) — MUST set notify_on_complete=true. Without it you'll either forget to poll or sit blocked waiting for the user to surface the result.\nFor servers/watchers, do NOT use shell-level background wrappers (nohup/disown/setsid/trailing '&') in foreground mode. Use background=true so Hermes can track lifecycle and output.\nAfter starting a server, verify readiness with a health check or log signal, then run tests in a separate terminal() call. Avoid blind sleep loops.\nUse process(action=\"poll\") for progress checks, process(action=\"wait\") to block until done.\nWorking directory: Use 'workdir' for per-command cwd.\nPTY mode: Set pty=true for interactive CLI tools (Codex, Claude Code, Python REPL).\n\nDo NOT use vim/nano/interactive tools without pty=true — they hang without a pseudo-terminal. Pipe git output to cat if it might page.\n",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string",
+                "description": "The command to execute on the VM"
+              },
+              "background": {
+                "type": "boolean",
+                "description": "Run the command in the background. Almost always pair with notify_on_complete=true — without it, the process runs silently and you'll have no way to learn it finished short of calling process(action='poll') yourself (easy to forget, leading to silent blindness on long jobs). Two legitimate patterns: (1) Long-lived processes that never exit (servers, watchers, daemons) — these stay silent because there's no exit to notify on. (2) Long-running bounded tasks (tests, builds, deploys, CI pollers, batch jobs) — these MUST set notify_on_complete=true. For short commands, prefer foreground with a generous timeout instead.",
+                "default": false
+              },
+              "timeout": {
+                "type": "integer",
+                "description": "Max seconds to wait (default: 180, foreground max: 600). Returns INSTANTLY when command finishes — set high for long tasks, you won't wait unnecessarily. Foreground timeout above 600s is rejected; use background=true for longer commands.",
+                "minimum": 1
+              },
+              "workdir": {
+                "type": "string",
+                "description": "Working directory for this command (absolute path). Defaults to the session working directory."
+              },
+              "pty": {
+                "type": "boolean",
+                "description": "Run in pseudo-terminal (PTY) mode for interactive CLI tools like Codex, Claude Code, or Python REPL. Only works with local and SSH backends. Default: false.",
+                "default": false
+              },
+              "notify_on_complete": {
+                "type": "boolean",
+                "description": "When true (and background=true), you'll be automatically notified exactly once when the process finishes. **This is the right choice for almost every long-running task** — tests, builds, deployments, multi-item batch jobs, anything that takes over a minute and has a defined end. Use this and keep working on other things; the system notifies you on exit. MUTUALLY EXCLUSIVE with watch_patterns — when both are set, watch_patterns is dropped.",
+                "default": false
+              },
+              "watch_patterns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Strings to watch for in background process output. HARD RATE LIMIT: at most 1 notification per 15 seconds per process — matches arriving inside the cooldown are dropped. After 3 consecutive 15-second windows with dropped matches, watch_patterns is automatically disabled for that process and promoted to notify_on_complete behavior (one notification on exit, no more mid-process spam). USE ONLY for truly rare, one-shot mid-process signals on LONG-LIVED processes that will never exit on their own — e.g. ['Application startup complete'] on a server so you know when to hit its endpoint, or ['migration done'] on a daemon. DO NOT use for: (1) end-of-run markers like 'DONE'/'PASS' — use notify_on_complete instead; (2) error patterns like 'ERROR'/'Traceback' in loops or multi-item batch jobs — they fire on every iteration and you'll hit the strike limit fast; (3) anything you'd ever combine with notify_on_complete. When in doubt, choose notify_on_complete. MUTUALLY EXCLUSIVE with notify_on_complete — set one, not both."
+              }
+            },
+            "required": [
+              "command"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "write_file",
+          "description": "Write content to a file, completely replacing existing content. Use this instead of echo/cat heredoc in terminal. Creates parent directories automatically. OVERWRITES the entire file — use 'patch' for targeted edits. Auto-runs syntax checks on .py/.json/.yaml/.toml and other linted languages; only NEW errors introduced by this write are surfaced (pre-existing errors are filtered out).",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to the file to write (will be created if it doesn't exist, overwritten if it does)"
+              },
+              "content": {
+                "type": "string",
+                "description": "Complete content to write to the file"
+              },
+              "cross_profile": {
+                "type": "boolean",
+                "description": "Opt out of the cross-profile soft guard. Defaults to false. Set true ONLY after explicit user direction to edit another Hermes profile's skills/plugins/cron/memories — by default these writes are blocked with a warning because they affect a different profile than the one this session is running under.",
+                "default": false
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ]
+          }
+        }
+      ],
+      "reasoning": {
+        "effort": "medium",
+        "summary": "auto"
+      },
+      "include": [
+        "reasoning.encrypted_content"
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "prompt_cache_key": "20260609_081519_dcfb44",
+      "extra_headers": {
+        "session_id": "20260609_081519_dcfb44",
+        "x-client-request-id": "20260609_081519_dcfb44"
+      }
+    }
+  },
+  "error": {
+    "type": "TimeoutError",
+    "message": "Non-streaming API call timed out after 90s with no response (threshold: 90s). Codex backend appears to be silently rejecting 'gpt-5.5' on chatgpt.com/backend-api/codex (no stream events, no error). This is a known backend-side pattern that has affected ChatGPT Plus accounts intermittently. Workaround: try `gpt-5.4` on the same OAuth profile, or `gpt-5.3-codex`, or switch to a different model/provider in your fallback chain. Some ChatGPT Codex accounts do not support `gpt-5.4-codex`. See hermes-agent#21444 for symptom history."
+  }
+}
