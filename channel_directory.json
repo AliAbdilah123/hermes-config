@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T12:08:27.737424",
+  "updated_at": "2026-06-09T13:09:47.350229",
   "platforms": {
     "discord": [
       {
@@ -289,6 +289,12 @@
         "name": "Ali's workflow / #general / I have added oracle cloud configuation variables in /home/ubuntu/.oci. check ... / topic 1513869275989803160",
         "type": "thread",
         "thread_id": "1513869275989803160"
+      },
+      {
+        "id": "1513885939737559090:1513885939737559090",
+        "name": "Ali's workflow / #general / Some responses from agent still give me this ip http://168.110.196.49/project... / topic 1513885939737559090",
+        "type": "thread",
+        "thread_id": "1513885939737559090"
       }
     ],
     "telegram": [],

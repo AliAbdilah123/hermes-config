@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T12:09:22.134444",
+  "updated_at": "2026-06-09T13:09:22.383363",
   "platforms": {
     "discord": [
       {
@@ -187,6 +187,24 @@
         "name": "Ali's workflow / #coding / Give me a summary of the non technical spec of bisnislokalOS for me to pass t... / topic 1513844690250764399",
         "type": "thread",
         "thread_id": "1513844690250764399"
+      },
+      {
+        "id": "1513877937680551958:1513877937680551958",
+        "name": "Ali's workflow / #coding / in the bisnis-local-os project: this section doesn't look good, the overflow ... / topic 1513877937680551958",
+        "type": "thread",
+        "thread_id": "1513877937680551958"
+      },
+      {
+        "id": "1513888205991186555:1513888205991186555",
+        "name": "Ali's workflow / #coding / What frontend ui framwork/library used for bisnis-lokal-os / topic 1513888205991186555",
+        "type": "thread",
+        "thread_id": "1513888205991186555"
+      },
+      {
+        "id": "1513888907417227414:1513888907417227414",
+        "name": "Ali's workflow / #coding / Give me public link for bisnis-lokal-os / topic 1513888907417227414",
+        "type": "thread",
+        "thread_id": "1513888907417227414"
       }
     ],
     "telegram": [],

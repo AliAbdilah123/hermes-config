@@ -112,10 +112,15 @@ When the request is specifically about mobile/small-screen behavior (hamburger m
 - Preserve desktop behavior first; make the change breakpoint-scoped rather than rewriting the app shell.
 - Prefer reusing the existing navigation content inside a drawer/overlay instead of maintaining a second duplicate nav tree.
 - Add accessible controls: hamburger `aria-label`, `aria-expanded`, `aria-controls`; drawer/backdrop close affordances; Escape close where straightforward.
+- Check `index.html` for a valid mobile viewport tag (`<meta name="viewport" content="width=device-width, initial-scale=1.0" />`). Missing viewport metadata makes mobile screenshots render a scaled desktop layout (often `innerWidth` around 980) even when CSS breakpoints look correct.
 - After building, deploy the new `dist/` to the nginx-served path if the live URL is part of the deliverable, then verify `index.html` references the new hashed assets.
 - Capture a real small-viewport screenshot (e.g. `390x844`) and confirm the persistent sidebar is gone and content stacks without horizontal squeezing.
+- Verify mobile with DOM metrics, not only visual dimensions: `innerWidth`, `document.documentElement.scrollWidth`, and `horizontalOverflow = scrollWidth > innerWidth`. For a true 390px check, `innerWidth` and `scrollWidth` should both be about 390.
+- If the target screen is behind auth, authenticate in the browser context with the real login API/session flow before capturing screenshots; do not accept a login-screen screenshot as proof that the dashboard is fixed.
 
-Reference: `references/mobile-responsive-navigation-verification.md`.
+References:
+- `references/mobile-responsive-navigation-verification.md`
+- `references/mobile-viewport-and-authenticated-visual-checks.md`
 
 ## UX Humanization Pass
 
