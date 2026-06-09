@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T13:09:22.383363",
+  "updated_at": "2026-06-09T14:09:22.615192",
   "platforms": {
     "discord": [
       {
@@ -205,6 +205,18 @@
         "name": "Ali's workflow / #coding / Give me public link for bisnis-lokal-os / topic 1513888907417227414",
         "type": "thread",
         "thread_id": "1513888907417227414"
+      },
+      {
+        "id": "1513902044279345162:1513902044279345162",
+        "name": "Ali's workflow / #coding / update your profile to always build a responsive UI and production grade back... / topic 1513902044279345162",
+        "type": "thread",
+        "thread_id": "1513902044279345162"
+      },
+      {
+        "id": "1513904979180654824:1513904979180654824",
+        "name": "Ali's workflow / #coding / what are list of things I need in order to make bisnis-lokal-os to make it re... / topic 1513904979180654824",
+        "type": "thread",
+        "thread_id": "1513904979180654824"
       }
     ],
     "telegram": [],
