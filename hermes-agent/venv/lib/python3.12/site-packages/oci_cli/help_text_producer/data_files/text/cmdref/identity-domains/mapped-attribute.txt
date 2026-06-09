@@ -1,0 +1,22 @@
+mapped-attribute
+****************
+
+
+Description
+===========
+
+Schema for MappedAttribute resource.
+
+
+Available Commands
+==================
+
+* get
+
+* list
+
+* patch
+
+* put
+
+* search

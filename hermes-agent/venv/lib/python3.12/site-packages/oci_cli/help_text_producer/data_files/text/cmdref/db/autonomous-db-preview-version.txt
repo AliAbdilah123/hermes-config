@@ -1,0 +1,16 @@
+autonomous-db-preview-version
+*****************************
+
+
+Description
+===========
+
+The Autonomous AI Database preview version. Note that preview version
+software is only available for Autonomous AI Database Serverless
+instances.
+
+
+Available Commands
+==================
+
+* list

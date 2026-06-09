@@ -1,0 +1,15 @@
+runbook-import-status-collection
+********************************
+
+
+Description
+===========
+
+Results of a runbook search. Contains RunbookImportStatusSummary items
+and other information.
+
+
+Available Commands
+==================
+
+* list-runbook-import-statuses

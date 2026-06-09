@@ -1,0 +1,47 @@
+psa
+***
+
+
+Description
+===========
+
+Use the PrivateServiceAccess Control Plane CLI to manage
+privateServiceAccess.
+
+
+Available Commands
+==================
+
+* private-service-access
+
+  * change-compartment
+
+  * create
+
+  * delete
+
+  * get
+
+  * list
+
+  * update
+
+* psa-services
+
+  * list
+
+* work-request
+
+  * cancel
+
+  * get
+
+  * list
+
+* work-request-error
+
+  * list
+
+* work-request-log
+
+  * list

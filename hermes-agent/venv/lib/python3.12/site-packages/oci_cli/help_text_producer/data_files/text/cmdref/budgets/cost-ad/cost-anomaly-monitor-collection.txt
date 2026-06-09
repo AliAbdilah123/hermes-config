@@ -1,0 +1,15 @@
+cost-anomaly-monitor-collection
+*******************************
+
+
+Description
+===========
+
+Results of a costAnomalyMonitor search. Contains both
+CostAnomalyMonitorSummary items and other data.
+
+
+Available Commands
+==================
+
+* list-monitors

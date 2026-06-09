@@ -1,0 +1,25 @@
+private-service-access
+**********************
+
+
+Description
+===========
+
+Private Service Access (PSA) is a new way to create private accesss
+for a service.
+
+
+Available Commands
+==================
+
+* change-compartment
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* update

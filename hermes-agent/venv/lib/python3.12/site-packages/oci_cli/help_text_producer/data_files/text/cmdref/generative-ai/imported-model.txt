@@ -1,0 +1,30 @@
+imported-model
+**************
+
+
+Description
+===========
+
+Represents a model imported into the system based on an external data
+source, such as Hugging Face or Object Storage.
+
+To use any of the API operations, you must be authorized in an IAM
+policy. If you’re not authorized, talk to an administrator who gives
+OCI resource access to users. See Getting Started with Policies and
+Getting Access to Generative AI Resources.
+
+
+Available Commands
+==================
+
+* change-compartment
+
+* create-from-huggingface
+
+* create-from-objectstorage
+
+* delete
+
+* get
+
+* update

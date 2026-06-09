@@ -1,0 +1,20 @@
+cost-alert-subscription
+***********************
+
+
+Description
+===========
+
+A CostAlertSubscription.
+
+
+Available Commands
+==================
+
+* create
+
+* delete
+
+* get
+
+* update

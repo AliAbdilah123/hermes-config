@@ -1,0 +1,14 @@
+configuration
+*************
+
+
+Description
+===========
+
+returns the service catalog mode
+
+
+Available Commands
+==================
+
+* get

@@ -1,0 +1,14 @@
+report-metadata-collection
+**************************
+
+
+Description
+===========
+
+Results of a run report .
+
+
+Available Commands
+==================
+
+* list-report-metadata

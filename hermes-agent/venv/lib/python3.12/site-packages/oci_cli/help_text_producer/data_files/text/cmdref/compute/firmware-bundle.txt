@@ -1,0 +1,17 @@
+firmware-bundle
+***************
+
+
+Description
+===========
+
+A collection of pinned component firmware versions organized by
+platform.
+
+
+Available Commands
+==================
+
+* get
+
+* list

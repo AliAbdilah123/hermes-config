@@ -1,0 +1,14 @@
+import-runbook-precheck-details
+*******************************
+
+
+Description
+===========
+
+Request for precheck of Runbook import.
+
+
+Available Commands
+==================
+
+* import-runbook-precheck

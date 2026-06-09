@@ -1,0 +1,57 @@
+cost-ad
+*******
+
+
+Description
+===========
+
+Use the Budgets CLI to manage budgets and budget alerts. For more
+information, see Budgets Overview.
+
+
+Available Commands
+==================
+
+* cost-alert-subscription
+
+  * create
+
+  * delete
+
+  * get
+
+  * update
+
+* cost-alert-subscription-collection
+
+  * list-subs
+
+* cost-anomaly-event
+
+  * anomaly-events-stats
+
+  * get
+
+  * update
+
+* cost-anomaly-event-collection
+
+  * list-events
+
+* cost-anomaly-monitor
+
+  * create
+
+  * delete
+
+  * disable
+
+  * enable
+
+  * get
+
+  * update
+
+* cost-anomaly-monitor-collection
+
+  * list-monitors

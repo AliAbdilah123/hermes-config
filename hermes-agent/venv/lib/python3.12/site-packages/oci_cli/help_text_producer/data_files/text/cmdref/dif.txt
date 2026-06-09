@@ -1,0 +1,49 @@
+dif
+***
+
+
+Description
+===========
+
+Use the DataIntelligences Control Plane CLI to manage
+dataIntelligences.
+
+
+Available Commands
+==================
+
+* stack
+
+  * add
+
+  * change-compartment
+
+  * create
+
+  * delete
+
+  * deploy-artifacts
+
+  * get
+
+  * update
+
+* stack-collection
+
+  * list-stacks
+
+* work-request
+
+  * cancel
+
+  * get
+
+  * list
+
+* work-request-error
+
+  * list
+
+* work-request-log-entry
+
+  * list-work-request-logs

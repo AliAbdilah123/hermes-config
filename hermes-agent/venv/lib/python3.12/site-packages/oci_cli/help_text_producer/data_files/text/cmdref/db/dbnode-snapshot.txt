@@ -1,0 +1,22 @@
+dbnode-snapshot
+***************
+
+
+Description
+===========
+
+Details of the Database Node Snapshot.
+
+
+Available Commands
+==================
+
+* delete
+
+* get
+
+* list
+
+* mount
+
+* unmount

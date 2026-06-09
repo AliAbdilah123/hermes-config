@@ -1,0 +1,22 @@
+automatic-dr-configuration
+**************************
+
+
+Description
+===========
+
+The details of Automatic DR configuration.
+
+
+Available Commands
+==================
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* update

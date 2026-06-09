@@ -1,0 +1,15 @@
+runbook-export-status-collection
+********************************
+
+
+Description
+===========
+
+Results of a runbook search. Contains RunbookExportStatusSummary items
+and other information.
+
+
+Available Commands
+==================
+
+* list-runbook-export-statuses

@@ -1,0 +1,16 @@
+psa-services
+************
+
+
+Description
+===========
+
+Results of a privateServiceAccess search. Contains both
+PrivateServiceAccessSummary items and other information, such as
+metadata.
+
+
+Available Commands
+==================
+
+* list

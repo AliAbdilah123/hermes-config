@@ -1,0 +1,15 @@
+cost-anomaly-event-collection
+*****************************
+
+
+Description
+===========
+
+Results of a costAnomalyEvent search. Contains both
+CostAnomalyEventSummary items and other data.
+
+
+Available Commands
+==================
+
+* list-events

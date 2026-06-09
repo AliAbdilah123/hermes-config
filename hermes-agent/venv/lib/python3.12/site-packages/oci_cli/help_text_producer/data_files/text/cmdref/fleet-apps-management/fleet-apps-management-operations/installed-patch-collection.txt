@@ -1,0 +1,14 @@
+installed-patch-collection
+**************************
+
+
+Description
+===========
+
+Results of an installed patches search.
+
+
+Available Commands
+==================
+
+* list-installed-patches

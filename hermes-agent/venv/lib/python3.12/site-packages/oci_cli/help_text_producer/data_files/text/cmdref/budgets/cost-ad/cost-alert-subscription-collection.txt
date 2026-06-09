@@ -1,0 +1,15 @@
+cost-alert-subscription-collection
+**********************************
+
+
+Description
+===========
+
+Results of a costAlertSubscription search. Contains both
+CostAlertSubscriptionSummary items and other data.
+
+
+Available Commands
+==================
+
+* list-subs

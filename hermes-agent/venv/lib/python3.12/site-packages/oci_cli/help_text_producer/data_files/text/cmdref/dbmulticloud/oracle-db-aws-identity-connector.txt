@@ -1,0 +1,26 @@
+oracle-db-aws-identity-connector
+********************************
+
+
+Description
+===========
+
+Oracle DB AWS Connector resource object.
+
+
+Available Commands
+==================
+
+* change-compartment
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* refresh
+
+* update

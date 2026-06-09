@@ -150,11 +150,15 @@ When asked to refine an app until production-grade, include more than UI polish:
 - Frontend loading/error/empty states, disabled pending actions, focus/accessibility polish.
 - Systemd service for backend and nginx-only public exposure.
 - **Authentication/authorization for mutable public APIs.** For single-user/internal apps without full auth, add an `ADMIN_TOKEN` gate for POST/PUT/PATCH/DELETE while keeping safe GET endpoints public only if appropriate. The frontend should have a token entry UX and send the token only on mutating calls.
+- **Real pages, not empty navigation.** If the app has a sidebar/top nav, implement the pages users can reach (tables, detail flows, pipeline, generators, scripts, etc.) or visibly disable/grey out the nav item/button with `Soon`/`Segera Hadir`. Do not leave clickable placeholders, `href="#"` dead links, or buttons that imply unavailable functionality.
+- **Visual-demo auth cleanup.** If a previous visual-reference pass temporarily bypassed auth to make screenshots easier, restore login/session/CSRF before calling the app production-grade.
+- **Action-backed UI.** Primary actions on implemented pages must call real APIs and be verified. If an action is not backed by a real endpoint yet, disable it instead of showing a fake success.
 - **Clean release state.** Generated backend binaries, local SQLite DBs, and frontend dist output should not dirty git after deployment; ignore/remove them from tracking where appropriate.
 
 References:
 - `references/fullstack-app-production-hardening.md`
 - `references/production-admin-token-and-systemd-cutover.md`
+- `references/production-grade-saas-mvp-pages-disabled-states.md`
 
 ## Exposure Debugging Playbook
 

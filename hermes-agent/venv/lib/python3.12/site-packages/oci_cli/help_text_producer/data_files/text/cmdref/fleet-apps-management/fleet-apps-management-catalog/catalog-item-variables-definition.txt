@@ -1,0 +1,14 @@
+catalog-item-variables-definition
+*********************************
+
+
+Description
+===========
+
+Variables Definitions for a CatalogItem.
+
+
+Available Commands
+==================
+
+* get

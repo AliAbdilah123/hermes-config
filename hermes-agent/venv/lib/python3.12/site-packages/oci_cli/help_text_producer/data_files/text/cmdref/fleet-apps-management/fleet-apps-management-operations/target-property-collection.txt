@@ -1,0 +1,14 @@
+target-property-collection
+**************************
+
+
+Description
+===========
+
+Results of an target property search.
+
+
+Available Commands
+==================
+
+* list-target-properties

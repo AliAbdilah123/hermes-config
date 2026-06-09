@@ -1,0 +1,14 @@
+batch-context-shape-collection
+******************************
+
+
+Description
+===========
+
+A collection of container instance shapes.
+
+
+Available Commands
+==================
+
+* list

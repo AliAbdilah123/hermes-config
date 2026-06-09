@@ -1,0 +1,18 @@
+batch-task
+**********
+
+
+Description
+===========
+
+A batch task contains common properties for all types of job tasks.
+
+
+Available Commands
+==================
+
+* get
+
+* list
+
+* list-batch-tasks

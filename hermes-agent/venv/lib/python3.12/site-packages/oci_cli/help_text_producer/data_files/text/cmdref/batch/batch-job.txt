@@ -1,0 +1,35 @@
+batch-job
+*********
+
+
+Description
+===========
+
+A batch job represents the execution unit that is invoked on a batch’s
+pools of compute resources. A job is composed of one or more tasks,
+which are the executable commands.
+
+To use any of the API operations, you must be authorized in an IAM
+policy. If you’re not authorized, talk to an administrator. If you’re
+an administrator who needs to write policies to give users access, see
+Getting Started with Policies.
+
+
+Available Commands
+==================
+
+* cancel
+
+* change-compartment
+
+* create
+
+* get
+
+* list
+
+* pause
+
+* unpause
+
+* update

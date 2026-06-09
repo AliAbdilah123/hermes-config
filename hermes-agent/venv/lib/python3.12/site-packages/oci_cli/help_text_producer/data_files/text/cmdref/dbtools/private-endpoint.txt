@@ -1,0 +1,29 @@
+private-endpoint
+****************
+
+
+Description
+===========
+
+Allows the Database Tools service to connect to databases in a
+customer’s virtual cloud network (VCN).
+
+
+Available Commands
+==================
+
+* add-lock
+
+* change-compartment
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* remove-lock
+
+* update

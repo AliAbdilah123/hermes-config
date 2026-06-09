@@ -13,3 +13,4 @@ User prefers replies in Discord threads when available; if a thread exists for t
 User wants coding project work mirrored into Hermes Kanban so it appears in the dashboard, even when using autonomous local branch/commit workflow without GitHub PR gates.
 §
 When presenting project or PRD links, include both public IP and Tailscale IP alternatives every time.
+Public IP: 168.110.213.104

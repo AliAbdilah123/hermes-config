@@ -1,0 +1,26 @@
+image
+*****
+
+
+Description
+===========
+
+Container image metadata.
+
+
+Available Commands
+==================
+
+* delete
+
+* get
+
+* list
+
+* lookup
+
+* remove-version
+
+* restore
+
+* update

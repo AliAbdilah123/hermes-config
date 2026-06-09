@@ -1,0 +1,24 @@
+cost-anomaly-monitor
+********************
+
+
+Description
+===========
+
+A CostAnomalyMonitor.
+
+
+Available Commands
+==================
+
+* create
+
+* delete
+
+* disable
+
+* enable
+
+* get
+
+* update

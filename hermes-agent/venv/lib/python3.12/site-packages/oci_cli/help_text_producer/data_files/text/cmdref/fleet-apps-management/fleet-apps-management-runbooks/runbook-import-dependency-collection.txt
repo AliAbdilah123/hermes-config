@@ -1,0 +1,21 @@
+runbook-import-dependency-collection
+************************************
+
+
+Description
+===========
+
+Results of a find runbook import dependency. Contains
+RunbookTransferDependencySummary.
+
+
+Available Commands
+==================
+
+* find-runbook-import-dependency
+
+* find-runbook-import-dependency-transfer-runbook-object-storage-
+  bucket-content-details
+
+* find-runbook-import-dependency-transfer-runbook-par-url-content-
+  details

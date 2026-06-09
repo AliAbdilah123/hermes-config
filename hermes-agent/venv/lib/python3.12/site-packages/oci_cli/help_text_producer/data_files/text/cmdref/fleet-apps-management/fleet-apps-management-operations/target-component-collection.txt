@@ -1,0 +1,14 @@
+target-component-collection
+***************************
+
+
+Description
+===========
+
+Results of an target component search.
+
+
+Available Commands
+==================
+
+* list-target-components

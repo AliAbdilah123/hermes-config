@@ -1,0 +1,14 @@
+imported-model-collection
+*************************
+
+
+Description
+===========
+
+Represents the result of a list operation for imported models.
+
+
+Available Commands
+==================
+
+* list-imported-models

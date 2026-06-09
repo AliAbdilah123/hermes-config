@@ -1,0 +1,22 @@
+autonomous-database-backup
+**************************
+
+
+Description
+===========
+
+An Autonomous AI Database backup.
+
+
+Available Commands
+==================
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* update

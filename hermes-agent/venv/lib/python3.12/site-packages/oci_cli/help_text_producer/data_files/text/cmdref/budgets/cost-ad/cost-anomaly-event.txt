@@ -1,0 +1,18 @@
+cost-anomaly-event
+******************
+
+
+Description
+===========
+
+A CostAnomalyEvent.
+
+
+Available Commands
+==================
+
+* anomaly-events-stats
+
+* get
+
+* update

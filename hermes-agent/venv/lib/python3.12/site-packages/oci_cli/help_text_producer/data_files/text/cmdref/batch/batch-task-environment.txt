@@ -1,0 +1,31 @@
+batch-task-environment
+**********************
+
+
+Description
+===========
+
+A batch task environment resource defines the software that is used to
+execute tasks. It mainly contains a URL to a container image along
+with other configurations that are needed by the image.
+
+To use any of the API operations, you must be authorized in an IAM
+policy. If you’re not authorized, talk to an administrator. If you’re
+an administrator who needs to write policies to give users access, see
+Getting Started with Policies.
+
+
+Available Commands
+==================
+
+* change-compartment
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* update

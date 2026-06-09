@@ -1,0 +1,32 @@
+identity
+********
+
+
+Description
+===========
+
+Manages credentials in a database to access service resources.
+
+
+Available Commands
+==================
+
+* add-lock
+
+* change-compartment
+
+* create-oracle-database-resource-principal
+
+* delete
+
+* get
+
+* list
+
+* refresh-oracle-database-resource-principal-credential
+
+* remove-lock
+
+* update-oracle-database-resource-principal
+
+* validate-oracle-database-resource-principal-credential

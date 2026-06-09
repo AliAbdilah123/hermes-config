@@ -1,0 +1,16 @@
+application-summary
+*******************
+
+
+Description
+===========
+
+The model for summary of an application in service catalog.
+
+
+Available Commands
+==================
+
+* list-all-applications
+
+* list-applications

@@ -140,6 +140,7 @@ Port ‘listening’ yet curl times out?
 ## Original references
 
 - `references/iptables-tailscale-port-block.md` — reproduction recipe and filter diff for the DROP+tailscale ACCEPT pattern.
+- `references/oci-public-ingress-verification.md` — OCI-side verification flow for externally unreachable but locally-reachable web services: metadata/VNIC facts, security-list ingress audit, and the required OCI CLI command form.
 - `references/network-service-binding-iptables-port-names-pitfall.md` — iptables port-name translation pitfall (numeric vs. service-name resolution).
 - `references/network-service-binding-service-exposure-checklist.md` — sample diagnostic output and environment facts.
 - `references/release-and-expose-nginx-root-return-fix.md` — patch pattern for returning a plain text body from `/` via `/etc/nginx/projects/default.conf`, reload checklist and root-return pitfalls.

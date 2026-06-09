@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T11:08:11.952455",
+  "updated_at": "2026-06-09T12:08:27.737424",
   "platforms": {
     "discord": [
       {
@@ -283,6 +283,12 @@
         "name": "Ali's workflow / #general / give me list of projects we have and their link / topic 1513187458601451590",
         "type": "thread",
         "thread_id": "1513187458601451590"
+      },
+      {
+        "id": "1513869275989803160:1513869275989803160",
+        "name": "Ali's workflow / #general / I have added oracle cloud configuation variables in /home/ubuntu/.oci. check ... / topic 1513869275989803160",
+        "type": "thread",
+        "thread_id": "1513869275989803160"
       }
     ],
     "telegram": [],

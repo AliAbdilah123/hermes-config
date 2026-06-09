@@ -1,0 +1,14 @@
+recommended-patch-collection
+****************************
+
+
+Description
+===========
+
+Results of an recommended patches search.
+
+
+Available Commands
+==================
+
+* list-recommended-patches
