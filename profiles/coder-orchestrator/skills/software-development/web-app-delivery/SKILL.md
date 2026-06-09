@@ -55,6 +55,16 @@ When the user supplies a design reference image or explicitly says to build the 
 
 Reference: `references/design-system-first-saas-bi-dashboard.md`.
 
+### Visual Reference Fidelity Pass
+
+If the user says the delivered app does not look like the supplied screenshot/reference, treat it as a fidelity bug, not as subjective polish:
+- Reconstruct the visible screen to match the reference's component inventory and grid before changing colors at the margins.
+- Make the reference-like state the first visible route for demo review; do not let a login screen or sparse empty state block visual comparison.
+- Seed or hardcode realistic mock data for dashboards so KPI cards, opportunity rows, inboxes, summaries, progress/checklists, and CTA panels are populated.
+- Rebuild, redeploy, then capture a real browser/headless screenshot of the served route and compare it to the source reference before reporting done.
+
+Reference: `references/visual-reference-fidelity-dashboard.md`.
+
 ## Build and Scaffold Workflow
 
 1. Create or use `~/projects/<projectName>` unless the user requested a different root.
@@ -95,6 +105,17 @@ Minimum real checks before reporting done:
 5. Public URL if network path allows. If same-host public-IP curl fails because of hairpin/NAT behavior but local nginx checks pass, report that caveat honestly.
 
 Always provide the real clickable URL; do not hand back placeholders like `<publicIP>`.
+
+## Mobile Responsive Layout Changes
+
+When the request is specifically about mobile/small-screen behavior (hamburger menus, sidebars, topbars, dense dashboard cards, responsive rows):
+- Preserve desktop behavior first; make the change breakpoint-scoped rather than rewriting the app shell.
+- Prefer reusing the existing navigation content inside a drawer/overlay instead of maintaining a second duplicate nav tree.
+- Add accessible controls: hamburger `aria-label`, `aria-expanded`, `aria-controls`; drawer/backdrop close affordances; Escape close where straightforward.
+- After building, deploy the new `dist/` to the nginx-served path if the live URL is part of the deliverable, then verify `index.html` references the new hashed assets.
+- Capture a real small-viewport screenshot (e.g. `390x844`) and confirm the persistent sidebar is gone and content stacks without horizontal squeezing.
+
+Reference: `references/mobile-responsive-navigation-verification.md`.
 
 ## UX Humanization Pass
 

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T09:04:21.340045",
+  "updated_at": "2026-06-09T10:04:21.585658",
   "platforms": {
     "discord": [
       {
@@ -175,6 +175,18 @@
         "name": "Ali's workflow / #coding / Create this app based on the given spec. And design the interface based on th... / topic 1513811089379557496",
         "type": "thread",
         "thread_id": "1513811089379557496"
+      },
+      {
+        "id": "1513844382514679850:1513844382514679850",
+        "name": "Ali's workflow / #coding / Make the bisnislokalOS navigation collapsed as hamburger menu in mobile/small... / topic 1513844382514679850",
+        "type": "thread",
+        "thread_id": "1513844382514679850"
+      },
+      {
+        "id": "1513844690250764399:1513844690250764399",
+        "name": "Ali's workflow / #coding / Give me a summary of the non technical spec of bisnislokalOS for me to pass t... / topic 1513844690250764399",
+        "type": "thread",
+        "thread_id": "1513844690250764399"
       }
     ],
     "telegram": [],
