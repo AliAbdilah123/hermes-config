@@ -34,10 +34,16 @@ When the orchestrator is asked to turn an idea into a PRD/API contract, create a
 
 Minimum flow:
 1. Draft concise PRD + API contract in one accessible HTML file: problem/goal, roles/personas, functional requirements, permission matrix, data model, API routes, key request/response examples, milestones, and open review questions.
-2. Use a stable slug plus UUID in the filename to avoid collisions, e.g. `fnb-pos-system-<uuid>.html`.
-3. Publish under the host's PRD web root (`/var/www/html/prds` when nginx uses a `/prds/` alias; otherwise configure an equivalent `/prds/` location), set world-readable permissions, reload/test nginx if config changed.
-4. Verify the artifact with real HTTP output (at minimum local `200 OK`; public URL too when network path allows) before telling the user it is ready.
-5. Ask for focused review decisions after the link, not a broad “thoughts?” — e.g. provider choices, offline requirement, single vs multi-tenant/outlet, MVP scope switches.
+2. If the user's environment has an established house stack or deployment convention, make that the default even when the supplied product spec recommends a different stack. Do not present the spec's stack as the primary option unless the user explicitly asks to follow it. For this user's web apps, prefer the standard React + TypeScript (Vite), Go API, SQLite, nginx `/projects/<project>/` deployment pattern unless overridden.
+3. Use a stable slug plus UUID in the filename to avoid collisions, e.g. `fnb-pos-system-<uuid>.html`.
+4. Publish under the host's PRD web root (`/var/www/html/prds` when nginx uses a `/prds/` alias; otherwise configure an equivalent `/prds/` location), set world-readable permissions, reload/test nginx if config changed.
+5. Verify the artifact with real HTTP output (at minimum local `200 OK`; public URL too when network path allows) before telling the user it is ready.
+6. Ask for focused review decisions after the link, not a broad “thoughts?” — e.g. provider choices, data-ingestion approach, auth depth, single vs multi-tenant/outlet, deployment target, MVP scope switches.
+
+Common review defaults for local-business/SaaS style projects when the user has not decided yet:
+- Prefer import/seeded data first, but support a pluggable connector layer so scraping/API collection can be added or swapped safely.
+- If generated customer websites are in scope, ask whether they deploy to this server/subdomains or to an external provider; do not assume Cloudflare Pages.
+- If the market is Indonesia, plan i18n from the start and default the UI copy to Bahasa Indonesia unless the user says otherwise.
 
 Pitfall: do not proceed directly to Kanban breakdown until the user has approved or refined the PRD/API contract.
 
