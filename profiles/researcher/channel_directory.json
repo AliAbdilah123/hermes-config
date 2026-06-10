@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-10T09:13:35.184461",
+  "updated_at": "2026-06-10T10:18:35.343401",
   "platforms": {
     "discord": [
       {
@@ -49,6 +49,12 @@
         "name": "Ali's workflow / #research / Research the potential of this app / topic 1513220839250595942",
         "type": "thread",
         "thread_id": "1513220839250595942"
+      },
+      {
+        "id": "1514207489699090493:1514207489699090493",
+        "name": "Ali's workflow / #research / Research how to create app that gets instagram chat and auto reply / topic 1514207489699090493",
+        "type": "thread",
+        "thread_id": "1514207489699090493"
       }
     ],
     "telegram": [],

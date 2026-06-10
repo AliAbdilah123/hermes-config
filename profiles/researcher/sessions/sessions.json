@@ -76,5 +76,44 @@
       "parent_chat_id": "1497849635786457138",
       "message_id": "1513220839250595942"
     }
+  },
+  "agent:main:discord:thread:1514207489699090493:1514207489699090493": {
+    "session_key": "agent:main:discord:thread:1514207489699090493:1514207489699090493",
+    "session_id": "20260610_100000_f5ba010c",
+    "created_at": "2026-06-10T10:00:00.268448",
+    "updated_at": "2026-06-10T10:16:13.944681",
+    "display_name": "Ali's workflow / #research / Research how to create app that gets instagram chat and auto reply",
+    "platform": "discord",
+    "chat_type": "thread",
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "total_tokens": 0,
+    "last_prompt_tokens": 20438,
+    "estimated_cost_usd": 0.0,
+    "cost_status": "unknown",
+    "expiry_finalized": false,
+    "suspended": false,
+    "resume_pending": false,
+    "resume_reason": null,
+    "last_resume_marked_at": null,
+    "is_fresh_reset": false,
+    "was_auto_reset": false,
+    "auto_reset_reason": null,
+    "reset_had_activity": false,
+    "origin": {
+      "platform": "discord",
+      "chat_id": "1514207489699090493",
+      "chat_name": "Ali's workflow / #research / Research how to create app that gets instagram chat and auto reply",
+      "chat_type": "thread",
+      "user_id": "846741144095686676",
+      "user_name": "Capt4ce",
+      "thread_id": "1514207489699090493",
+      "chat_topic": null,
+      "guild_id": "1497600893833445578",
+      "parent_chat_id": "1497849635786457138",
+      "message_id": "1514207489699090493"
+    }
   }
 }
