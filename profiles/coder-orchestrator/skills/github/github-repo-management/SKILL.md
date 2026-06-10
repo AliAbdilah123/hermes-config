@@ -18,6 +18,7 @@ Create, clone, fork, configure, and manage GitHub repositories. Each section sho
 ## Prerequisites
 
 - Authenticated with GitHub (see `github-auth` skill)
+- For repository creation/editing via `gh repo create` or GitHub REST API, confirm API authentication (`gh auth status` or `GH_TOKEN`/`GITHUB_TOKEN`). SSH auth (`ssh -T git@github.com`) is enough for git push/fetch, but it cannot create repositories or satisfy `gh` API calls by itself.
 
 ### Setup
 

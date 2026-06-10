@@ -1206,5 +1206,44 @@
       "parent_chat_id": "1510322701141803199",
       "message_id": "1514146205016260659"
     }
+  },
+  "agent:main:discord:thread:1514293467310850098:1514293467310850098": {
+    "session_key": "agent:main:discord:thread:1514293467310850098:1514293467310850098",
+    "session_id": "20260610_154139_c46c9ebd",
+    "created_at": "2026-06-10T15:41:39.928680",
+    "updated_at": "2026-06-10T15:56:08.249758",
+    "display_name": "Ali's workflow / #coding / Create repository for bisnis os project, and sync every update to that repo",
+    "platform": "discord",
+    "chat_type": "thread",
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "total_tokens": 0,
+    "last_prompt_tokens": 30447,
+    "estimated_cost_usd": 0.0,
+    "cost_status": "unknown",
+    "expiry_finalized": false,
+    "suspended": false,
+    "resume_pending": false,
+    "resume_reason": null,
+    "last_resume_marked_at": null,
+    "is_fresh_reset": false,
+    "was_auto_reset": false,
+    "auto_reset_reason": null,
+    "reset_had_activity": false,
+    "origin": {
+      "platform": "discord",
+      "chat_id": "1514293467310850098",
+      "chat_name": "Ali's workflow / #coding / Create repository for bisnis os project, and sync every update to that repo",
+      "chat_type": "thread",
+      "user_id": "846741144095686676",
+      "user_name": "Capt4ce",
+      "thread_id": "1514293467310850098",
+      "chat_topic": null,
+      "guild_id": "1497600893833445578",
+      "parent_chat_id": "1510322701141803199",
+      "message_id": "1514293467310850098"
+    }
   }
 }
