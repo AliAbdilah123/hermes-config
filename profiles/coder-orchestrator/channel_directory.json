@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-11T04:24:32.084617",
+  "updated_at": "2026-06-11T05:24:32.330205",
   "platforms": {
     "discord": [
       {
@@ -229,6 +229,12 @@
         "name": "Ali's workflow / #coding / Create repository for bisnis os project, and sync every update to that repo / topic 1514293467310850098",
         "type": "thread",
         "thread_id": "1514293467310850098"
+      },
+      {
+        "id": "1514490511874850866:1514490511874850866",
+        "name": "Ali's workflow / #coding / Remember to create UI that's user and mobile friendly too. And otherwise ment... / topic 1514490511874850866",
+        "type": "thread",
+        "thread_id": "1514490511874850866"
       }
     ],
     "telegram": [],

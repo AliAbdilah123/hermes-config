@@ -1,6 +1,6 @@
 In this Discord channel, every message should be handled by the coding agent unless explicitly specified otherwise.
 §
-User prefers concise, direct responses. Avoid verbose explanations unless asked. Once the user picks a stack (especially TS/React + Go + SQLite), do not substitute another stack without explicit approval. Coding projects should include responsive UI and production-grade backend/frontend by default. When presenting project app links, include both public IP and Tailscale IP alternatives.
+User prefers concise, direct responses. Avoid verbose explanations unless asked. Coding projects should include production-grade backend/frontend, responsive mobile-friendly B2C UI by default, and UI work should start with a design system plus matching base components. When presenting app links, include public IP and Tailscale IP alternatives.
 §
 User strongly prefers not switching tech stacks after they’ve confirmed one. Once they’ve chosen TS/React + Go + SQLite, do not replace the backend or frontend without explicit approval.
 §
