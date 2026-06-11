@@ -50,7 +50,9 @@ Pitfall: do not proceed directly to Kanban breakdown until the user has approved
 
 ## Local-autonomous execution after approval
 
-If the user approves the PRD and explicitly says to continue without creating a repo/PR or waiting for further review, switch from the GitHub/PR path to a local autonomous path:
+If the user approves the PRD and explicitly says to continue without creating a repo/PR or waiting for further review, switch from the GitHub/PR path to a local autonomous path.
+
+If the approval includes a small spec correction (for example swapping payment providers) plus “go ahead,” update the already-published PRD/API artifact in place first, verify the revised artifact still serves, then proceed without another approval round. Treat the correction as approved scope, not as a reason to restart PRD review.
 
 1. Keep the approved stack stable and work in the local project directory.
 2. Create local git branches using the usual task naming pattern, e.g. `kanban/<task_id>-<slug>`, but do not create a remote repository, GitHub issues, or pull requests.

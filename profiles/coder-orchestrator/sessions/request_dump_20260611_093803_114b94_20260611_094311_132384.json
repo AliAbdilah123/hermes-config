@@ -1,0 +1,414 @@
+{
+  "timestamp": "2026-06-11T09:43:11.132364",
+  "session_id": "20260611_093803_114b94",
+  "reason": "max_retries_exhausted",
+  "request": {
+    "method": "POST",
+    "url": "https://chatgpt.com/backend-api/codex/responses",
+    "headers": {
+      "Authorization": "Bearer eyJhbGci...suOM",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "model": "gpt-5.5",
+      "instructions": "You are Hermes Agent, an intelligent AI assistant created by Nous Research. You are helpful, knowledgeable, and direct. You assist users with a wide range of tasks including answering questions, writing and editing code, analyzing information, creative work, and executing actions via your tools. You communicate clearly, admit uncertainty when appropriate, and prioritize being genuinely useful over being verbose unless otherwise directed below. Be targeted and efficient in your exploration and investigations.\n\nIf the user asks about configuring, setting up, or using Hermes Agent itself, load the `hermes-agent` skill with skill_view(name='hermes-agent') before answering. Docs: https://hermes-agent.nousresearch.com/docs\n\n# Finishing the job\nWhen the user asks you to build, run, or verify something, the deliverable is a working artifact backed by real tool output — not a description of one. Do not stop after writing a stub, a plan, or a single command. Keep working until you have actually exercised the code or produced the requested result, then report what real execution returned.\nIf a tool, install, or network call fails and blocks the real path, say so directly and try an alternative (different package manager, different approach, ask the user). NEVER substitute plausible-looking fabricated output (made-up data, invented file contents, synthesised API responses) for results you couldn't actually produce. Reporting a blocker honestly is always better than inventing a result.\n\nHost: Linux (6.17.0-1011-oracle)\nUser home directory: /home/ubuntu\nCurrent working directory: /home/ubuntu\n\nActive Hermes profile: coder-orchestrator. This session reads and writes ~/.hermes/profiles/coder-orchestrator/. The default profile's data lives at ~/.hermes/skills/, ~/.hermes/plugins/, ~/.hermes/cron/, ~/.hermes/memories/ — those belong to a different session run from a different shell. Do NOT modify another profile's skills/plugins/cron/memories unless the user explicitly directs you to. The cross-profile write guard will refuse such writes by default; pass cross_profile=True only after explicit direction.\n\nYou are in a Discord server or group chat communicating with your user. You can send media files natively: include MEDIA:/absolute/path/to/file in your response. Images (.png, .jpg, .webp) are sent as photo attachments, audio as file attachments. You can also include image URLs in markdown format ![alt](url) and they will be sent as attachments.\n\nConversation started: Thursday, June 11, 2026\nModel: gpt-5.5\nProvider: openai-codex\n\nYou are a focused subagent working on a specific delegated task.\n\nYOUR TASK:\nImplement the SiapJasa MVP web app in /home/ubuntu/projects/siapjasa using the agreed stack and verify builds/tests. Return exact commands run and results.\n\nCONTEXT:\nYou are implementing for the user. Repo path: /home/ubuntu/projects/siapjasa (existing git repo). PRD/API contract: /var/www/html/prds/siapjasa-marketplace-prd-8f1a2c9e.html and public http://168.110.213.104/prds/siapjasa-marketplace-prd-8f1a2c9e.html. Important change: payment gateway is Xendit, not Midtrans. Use agreed stack: React + TypeScript + Vite frontend, Go net/http backend, SQLite. Public deployment later will be nginx at /projects/siapjasa/ with API /projects/siapjasa/api/v1/. Build production-grade but prototype-friendly MVP: mobile-first Indonesian UI for customer/provider/admin; Go API with SQLite schema, seed data, job state machine, immutable transactions, mock Xendit escrow adapter, disputes, reports/trust, admin endpoints, background auto-release loop. Avoid GitHub/PRs. Commit changes locally when done. Do not ask user questions; make pragmatic defaults. If full scope is too large, create a coherent working vertical slice covering browse booking, open call, proof, confirm/dispute, reports, admin queues with seeded data.\n\nWORKSPACE PATH:\n/home/ubuntu\nUse this exact path for local repository/workdir operations unless the task explicitly says otherwise.\n\nComplete this task using the tools available to you. When finished, provide a clear, concise summary of:\n- What you did\n- What you found or accomplished\n- Any files you created or modified\n- Any issues encountered\n\nImportant workspace rule: Never assume a repository lives at /workspace/... or any other container-style path unless the task/context explicitly gives that path. If no exact local path is provided, discover it first before issuing git/workdir-specific commands.\n\nBe thorough but concise -- your response is returned to the parent agent as a summary.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Implement the SiapJasa MVP web app in /home/ubuntu/projects/siapjasa using the agreed stack and verify builds/tests. Return exact commands run and results."
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqKoH9bH4wUCQQD1lmD6iq_3-rpQVgPI6t5e8wN8tU2Q9sTY8Qk3ebdUxEUiobX3UZd2m5rF9ZJPeDgaYJH-pRz7z1boxspK8BaDc3VR1UGRMwr_58sg-yWLEH8PxfuoeJXlLW6W3aRdN97B2Yl4lmtxkB5Vhy0XA1oMzNe31CqaTqEvwHUn_GQDbg4Zxee69yY9SmALL6EwZsv0iPZJI9HAjs1pwqzEJ3bt8pdkShEXO7eI-W412Lt7E1SbVS8XJbqSyqHQ8HJnnHSuHiDxt2P1vK4B_LTUECamd6E0Rbt9kn4faDm9fZdPmattMhYs76gni2KIQQbG5BmtYwPTZjIHsK1hhGCIh7c_8F1dv2kzPUSf6wINlOL_r3g99wjslxb0B0X6yzMBwJvRdueS07kGWmRFaWUzNWz8-5gHp-24UygUsBQ0azwJwjrqM55dnjVm05srySqJAZW9ipft5bIJe4st-Wbz3RUU3zx09dFsULwHYz-UG9-uNBzicnHwow1ukLkhkSsPiDWateXHDF5W8mGg1KJ_-JZ_Scfi0Kq1USdSJ1OzFigaXtDnGCC8rl9Y9VHGaldcZ7ihn7nbfvX0WZi4d78WJWMbHXQeAOKZPSW-qEN1tMv-yPGwsWv87W8Gbzhn4ChGLEyuyKtMbwGPi6XGtsdHfZkvDsoSHZz9EuRz7v7w0bhbY4PJHzv-mkkGg2ajPOaK0L7rnUqjXVCzKa7R4Zcf4P8ch-Efq-F3jk8HYWfBAeN1flVMqzglvAjUrkVseWJSLcHgz3exOHm6o6RwZsc2ZRdeIlQE7q6zbyoyc9IrxQIIFf7uOEUb1CyExEJCbIa4D3SJUm-pYzyuHgsHZ5iClCM0ehr0gtq6Zj5-koDnyODPW9J8EvborF2oY3Mf-W7c8iKurK_IcVlTMSa2wvdR7do2qE7ETGGtMYL_kujDj0M_VQ2Rexo4oAIRtW",
+          "summary": []
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_cL3Zaoi6BMnB6XjXezvdpbkk",
+          "name": "search_files",
+          "arguments": "{\"limit\":100,\"path\":\"/home/ubuntu/projects/siapjasa\",\"pattern\":\"*\",\"target\":\"files\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_cL3Zaoi6BMnB6XjXezvdpbkk",
+          "output": "{\"total_count\": 27, \"files\": [\"/home/ubuntu/projects/siapjasa/.git/config\", \"/home/ubuntu/projects/siapjasa/.git/HEAD\", \"/home/ubuntu/projects/siapjasa/.git/logs/HEAD\", \"/home/ubuntu/projects/siapjasa/.git/logs/refs/heads/main\", \"/home/ubuntu/projects/siapjasa/.git/refs/heads/main\", \"/home/ubuntu/projects/siapjasa/.git/index\", \"/home/ubuntu/projects/siapjasa/.git/objects/88/b43824eacdba50ddef18d42405b4e891d4fdb0\", \"/home/ubuntu/projects/siapjasa/.git/COMMIT_EDITMSG\", \"/home/ubuntu/projects/siapjasa/.git/objects/c3/16de582da6b9ed2ffb02d1f4e71d3ef255c76e\", \"/home/ubuntu/projects/siapjasa/.git/objects/72/bf917491066a594d0b2ff1ea258533c470d3cd\", \"/home/ubuntu/projects/siapjasa/README.md\", \"/home/ubuntu/projects/siapjasa/.git/info/exclude\", \"/home/ubuntu/projects/siapjasa/.git/hooks/pre-applypatch.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/post-update.sample\", \"/home/ubuntu/projects/siapjasa/.git/description\", \"/home/ubuntu/projects/siapjasa/.git/hooks/pre-commit.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/pre-merge-commit.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/pre-receive.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/pre-rebase.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/update.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/push-to-checkout.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/commit-msg.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/sendemail-validate.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/applypatch-msg.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/fsmonitor-watchman.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/pre-push.sample\", \"/home/ubuntu/projects/siapjasa/.git/hooks/prepare-commit-msg.sample\"]}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_h8DvMpfi5DByRW4LGSELiX8P",
+          "name": "read_file",
+          "arguments": "{\"path\":\"/home/ubuntu/projects/siapjasa/README.md\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_h8DvMpfi5DByRW4LGSELiX8P",
+          "output": "{\"content\": \"1|# SiapJasa\\n2|\\n3|Marketplace jasa lokal Balikpapan.\\n4|\", \"total_lines\": 3, \"file_size\": 47, \"truncated\": false, \"is_binary\": false, \"is_image\": false}"
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqKoIEqDJq32TEMQ-2w5y-x-JydHrrfoIt_utes1rfrcouqxtYV3tobadqnBLB7wPgfDhygiMHP162tPjULBnXgcHJZpkH5aNeDB6rTh0-nzmfRTTXy9eN_fz7YDCRCniG4XBreXyPqHSaJ9uWdm_v-i3juqb4TmwvxpYiqHsHxK3RdIvU3-QTHI5-oSwgauh2ZrJg-qX7MMiss4CrhQkuvrMvVCwcbs0wuAEGytzsnBkRSBpQHzp8HC6E9qPnjhwVfz_W-br4FBStrW5YQAiS75NSw9UEF6jK6noOsn5kYDtYjTwhuXaS03-Sx56hZrA_93WYW0_MZ0-DvXeehgN3R4zasKaRnCYzulrlQ8YMmJN_LmhANRkmlW5_qCSr6sYA3IprW4GfOZlTSWhZU9CnVqAocnZ3NsMFmyzOJwyV0vcTVlOemClcnmGpM4Pd1yVUAdh5kiQWb2KJueSAdqWckVcjnNAI-3jd1n6dG-sNCo_4LrxIc7bkkMVytggmObeLexi-TLT5TW8BnVCbNrBKUU7PMv5XElawhd4BWupM2e5CuaNSyLOWO40zhzUs2xFvx6WMREzJPfnjOKR1jpOK2sPejJtaSkcy-NVvm-Z9fG9A-CgHkzrNjcfpfmMsKjZ7WPgJ9Zxj6I6yoivZ6TzSoRmcQUpwxg48_UYR4tDS1-rU4TImkADjPR8q63QQBU86plzFIpVWyGZVaJskyWyttCh_iZb8xckSMCMTo9FXTFQ8XYnhpg5xQQkuIHxuPjdWJq_FK-JOh9wi5qJVyxBC4OnvwQcFBVz9wbkcp1Sj14mJpGl3o12w6zyxGTyZC6kddrFn3Ywy2KObRVpR2aKXypkR0Bv-fbvWpOGSnXVELXlTIypOqfEzODn4TH_aanArTGlpgXyz1tk95Ye1jgplJxCVwRCGCG4elcy3eEOnFaqjv9REYI28X3LA9MZVG4lAzAWnq0SYQb2BX81ilpiY2dasCx8c94va73gxtePFHBCR8uTLesbQqEKh5nQzwNKWRpDonTe_hQybHTkOIwAGj3sQCg==",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "**Exploring app creation**\n\nI need to create an app, so I’m thinking of inspecting the Product Requirement Document (PRD). It could be helpful to use Python in the terminal to parse some data. Maybe I should read a file in HTML format to gather the necessary information. There’s a lot to consider here, but I’ll figure it out as I go along! Let’s keep it organized and make sure I’m on the right track."
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_B98OS2hBAA6A4yK0hC91kERa",
+          "name": "read_file",
+          "arguments": "{\"limit\":200,\"path\":\"/var/www/html/prds/siapjasa-marketplace-prd-8f1a2c9e.html\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_B98OS2hBAA6A4yK0hC91kERa",
+          "output": "{\"content\": \"1|<!doctype html>\\n2|<html lang=\\\"id\\\">\\n3|<head>\\n4|  <meta charset=\\\"utf-8\\\" />\\n5|  <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\" />\\n6|  <title>SiapJasa — PRD & API Contract</title>\\n7|  <style>\\n8|    :root{--bg:#0b1220;--panel:#121b2f;--panel2:#17233b;--text:#eaf0ff;--muted:#a9b7d0;--brand:#38bdf8;--accent:#22c55e;--warn:#f59e0b;--danger:#ef4444;--line:#2a3958;--chip:#22324f}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#07111f,#0b1220 45%,#0f172a);color:var(--text);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}a{color:#7dd3fc}.wrap{max-width:1180px;margin:0 auto;padding:36px 20px 80px}.hero{padding:34px;border:1px solid var(--line);border-radius:28px;background:radial-gradient(circle at top right,rgba(56,189,248,.22),transparent 35%),linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));box-shadow:0 20px 80px rgba(0,0,0,.28)}h1{font-size:clamp(34px,5vw,58px);line-height:1;margin:0 0 12px}h2{margin-top:42px;font-size:28px;border-bottom:1px solid var(--line);padding-bottom:10px}h3{margin-top:26px;color:#dbeafe}.subtitle{font-size:20px;color:var(--muted);max-width:850px}.grid{display:grid;gap:16px}.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:rgba(18,27,47,.82);border:1px solid var(--line);border-radius:20px;padding:18px}.kpi{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.big{font-size:24px;font-weight:800}.chip{display:inline-block;background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:5px 10px;margin:3px;color:#dbeafe;font-size:13px}.ok{color:#86efac}.warn{color:#fbbf24}.bad{color:#fca5a5}table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px;margin:12px 0;background:rgba(18,27,47,.6)}th,td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}th{text-align:left;background:rgba(56,189,248,.12);color:#bfdbfe}code,pre{background:#081120;border:1px solid var(--line);border-radius:12px;color:#d1fae5}code{padding:2px 6px}pre{padding:14px;overflow:auto}.flow{display:flex;flex-wrap:wrap;gap:10px;align-ite... [truncated]\\n9|  </style>\\n10|</head>\\n11|<body>\\n12|  <main class=\\\"wrap\\\">\\n13|    <section class=\\\"hero\\\">\\n14|      <span class=\\\"chip\\\">PRD + API Contract</span><span class=\\\"chip\\\">MVP: Balikpapan</span><span class=\\\"chip\\\">Bahasa Indonesia</span><span class=\\\"chip\\\">IDR only</span>\\n15|      <h1>SiapJasa</h1>\\n16|      <p class=\\\"subtitle\\\">Marketplace jasa lokal untuk booking layanan on-site dari penyedia terverifikasi, dengan escrow, bukti foto, review window, dispute admin, dan flow open-call fixed-price.</p>\\n17|      <div class=\\\"grid cols-3\\\">\\n18|        <div class=\\\"card\\\"><div class=\\\"kpi\\\">Agreed stack</div><div class=\\\"big\\\">React/Vite + Go + SQLite</div><p>Override dari dokumen awal. Tidak memakai Express/Postgres untuk MVP lokal.</p></div>\\n19|        <div class=\\\"card\\\"><div class=\\\"kpi\\\">Launch scope</div><div class=\\\"big\\\">Balikpapan only</div><p>Geo, bahasa, mata uang, dan kategori awal fokus lokal.</p></div>\\n20|        <div class=\\\"card\\\"><div class=\\\"kpi\\\">Business model</div><div class=\\\"big\\\">Discovery marketplace</div><p>Fee provider per kategori, default 10%, harga customer all-in.</p></div>\\n21|      </div>\\n22|    </section>\\n23|\\n24|    <h2>1. Product Requirements</h2>\\n25|    <div class=\\\"grid cols-2\\\">\\n26|      <div class=\\\"card\\\"><h3>Goals</h3><ol><li>Prototype portfolio/community learning project.</li><li>Tool lokal yang bisa dipakai tetangga/komunitas.</li><li>Fondasi venture dengan fee marketplace dan opsi reliability network Phase 2.</li></ol></div>\\n27|      <div class=\\\"card\\\"><h3>Non-goals MVP</h3><ul><li>Multi-city expansion.</li><li>React Native apps.</li><li>Full automated KYC.</li><li>Bidding/chat realtime.</li><li>Provider auto-assignment Model B.</li></ul></div>\\n28|    </div>\\n29|\\n30|    <h3>Personas & Roles</h3>\\n31|    <table><thead><tr><th>Role</th><th>Capabilities</th><th>Constraints</th></tr></thead><tbody>\\n32|      <tr><td>Customer</td><td>Browse/book, post open call, pay, confirm/dispute, review, report.</td><td>Suspended users blocked; restricted users limited.</td></tr>\\n33|      <tr><td>Provider</td><td>Manage profile/skills, accept jobs, start/complete, submit proof, receive payout.</td><td>Requires manual admin approval and KYC status approved.</td></tr>\\n34|      <tr><td>Admin</td><td>Provider approval, skill verification, dispute/report resolution, categories/fees, trust overrides.</td><td>Every mutation needs reason and audit log.</td></tr>\\n35|    </tbody></table>\\n36|\\n37|    <h3>Core Booking Engine</h3>\\n38|    <div class=\\\"grid cols-2\\\">\\n39|      <div class=\\\"card\\\"><h3>Browse-and-Book</h3><p>Customer selects category → sees providers by rating/distance → books slot → pays → provider completes → proof/review/release.</p></div>\\n40|      <div class=\\\"card\\\"><h3>Post-a-Job / Open Call</h3><p>Customer posts fixed-price job → nearby qualified providers notified → first atomic accept wins → customer pays within 15 minutes → same lifecycle.</p></div>\\n41|    </div>\\n42|    <div class=\\\"flow\\\" aria-label=\\\"Job state machine\\\">\\n43|      <span class=\\\"step\\\">POSTED / BOOKED</span><span class=\\\"arrow\\\">→</span><span class=\\\"step\\\">ACCEPTED</span><span class=\\\"arrow\\\">→</span><span class=\\\"step\\\">IN_PROGRESS</span><span class=\\\"arrow\\\">→</span><span class=\\\"step\\\">PROOF_SUBMITTED</span><span class=\\\"arrow\\\">→</span><span class=\\\"step ok\\\">COMPLETED</span><span class=\\\"step warn\\\">DISPUTED</span><span class=\\\"step bad\\\">CANCELLED / EXPIRED</span>\\n44|    </div>\\n45|\\n46|    <h2>2. MVP Functional Scope</h2>\\n47|    <table><thead><tr><th>Area</th><th>Requirement</th><th>Priority</th></tr></thead><tbody>\\n48|      <tr><td>Auth</td><td>Phone/email login for prototype. Role flags: customer/provider/admin. Admin seed account via env.</td><td>P0</td></tr>\\n49|      <tr><td>Provider onboarding</td><td>Multi-step profile + KTP/selfie URL upload abstraction + initial skill; admin approve/reject.</td><td>P0</td></tr>\\n50|      <tr><td>Service catalog</td><td>Admin CRUD categories with fee %, review window, photo/certificate requirements, price range.</td><td>P0</td></tr>\\n51|      <tr><td>Skills</td><td>ProviderSkill CRUD, pause/resume, verification status, per-skill ratings.</td><td>P0</td></tr>\\n52|      <tr><td>Browse booking</td><td>Category search, provider/skill detail, booking confirmation, transaction snapshot, escrow hold mock/adapter.</td><td>P0</td></tr>\\n53|      <tr><td>Open call</td><td>Post job, qualified provider feed, first-to-accept transaction, 15-min payment window.</td><td>P0</td></tr>\\n54|      <tr><td>Escrow lifecycle</td><td>pending → held → proof submitted → customer confirm or auto-release timer → release/refund/partial refund.</td><td>P0</td></tr>\\n55|      <tr><td>Disputes/reports</td><td>Forms, trust gate auto-hide rules, admin queues, audit logs, violations.</td><td>P0</td></tr>\\n56|      <tr><td>Notifications</td><td>In-app notification table now; adapters for push/WhatsApp later.</td><td>P1</td></tr>\\n57|      <tr><td>Admin console</td><td>Dashboard, queues, user/profile/category management, audit trail.</td><td>P0</td></tr>\\n58|    </tbody></table>\\n59|\\n60|    <h2>3. Agreed Technical Architecture</h2>\\n61|    <div class=\\\"note decision\\\"><strong>Stack decision:</strong> use our agreed house stack: <b>React 19 + TypeScript + Vite</b> frontend, <b>Go HTTP API</b> backend, <b>SQLite</b> persistence, served locally through nginx at <code>/projects/siapjasa/</code>. External services are adapter interfaces in MVP so the prototype can run without live Xendit/Fonnte/R2 credentials.</div>\\n62|    <table><thead><tr><th>Layer</th><th>Choice</th><th>MVP implementation</th></tr></thead><tbody>\\n63|      <tr><td>Frontend</td><td>React + TS + Vite</td><td>Mobile-first B2C Indonesian UI, PWA-ready shell, role-gated routes.</td></tr>\\n64|      <tr><td>Backend</td><td>Go net/http</td><td>REST JSON, auth/session middleware, service-layer state machine, background worker goroutines.</td></tr>\\n65|      <tr><td>DB</td><td>SQLite</td><td>WAL mode, transactions for booking/acceptance, schema migrations in Go.</td></tr>\\n66|      <tr><td>Assets</td><td>Local filesystem adapter</td><td>Photo/KTP proof stored under app data for prototype; R2-compatible adapter later.</td></tr>\\n67|      <tr><td>Payments</td><td>Xendit adapter interface</td><td>Sandbox/mock implementation now; real webhook endpoints and reconciliation shape preserved.</td></tr>\\n68|      <tr><td>Notifications</td><td>In-app + adapter</td><td>Notification table; later push/Fonnte workers.</td></tr>\\n69|      <tr><td>Deployment</td><td>nginx</td><td>Frontend static at <code>/projects/siapjasa/</code>; API proxied at <code>/projects/siapjasa/api/v1/</code>.</td></tr>\\n70|    </tbody></table>\\n71|\\n72|    <h2>4. Data Model</h2>\\n73|    <p>SQLite tables mirror the supplied domain model, with JSON stored as TEXT and enum constraints via CHECK.</p>\\n74|    <table><thead><tr><th>Table</th><th>Purpose / key fields</th></tr></thead><tbody>\\n75|      <tr><td>users</td><td>roles, trust_level, customer_rating counters, auth fields, status.</td></tr>\\n76|      <tr><td>provider_profiles</td><td>one-to-one user provider profile, KYC, service area, aggregate rating.</td></tr>\\n77|      <tr><td>service_categories</td><td>slug, ID/EN names, review_window_minutes, fee_percentage, proof/certificate rules.</td></tr>\\n78|      <tr><td>provider_skills</td><td>provider/category service offer, price, duration, verification, credentials_json.</td></tr>\\n79|      <tr><td>jobs</td><td>customer/provider/category/skill, entry_mode, status, location, schedule, hidden_by_report_id.</td></tr>\\n80|      <tr><td>transactions</td><td>immutable price snapshot: customer_price, platform_fee_pct/idr, provider_payout.</td></tr>\\n81|      <tr><td>escrow_holds</td><td>mutable payment state and webhook payload snapshots.</td></tr>\\n82|      <tr><td>proof_submissions</td><td>job photo_urls_json, note, created_at.</td></tr>\\n83|      <tr><td>escrow_release_schedules</td><td>persisted auto-release timer state.</td></tr>\\n84|      <tr><td>job_events</td><td>append-only job state audit log.</td></tr>\\n85|      <tr><td>admin_actions</td><td>append-only non-job admin audit log.</td></tr>\\n86|      <tr><td>reviews</td><td>customer/provider review per completed job; unique role per job.</td></tr>\\n87|      <tr><td>reports</td><td>report + hide workflow with unique reporter/context constraint.</td></tr>\\n88|      <tr><td>user_violations</td><td>append-only trust-level inputs.</td></tr>\\n89|      <tr><td>notifications</td><td>queued/sent/failed/read in-app and external notification records.</td></tr>\\n90|    </tbody></table>\\n91|\\n92|    <h2>5. REST API Contract</h2>\\n93|    <p>Base path: <code>/api/v1</code> locally and <code>/projects/siapjasa/api/v1</code> through nginx. Responses use <code>{\\\"data\\\":...}</code> or <code>{\\\"error\\\":{\\\"code\\\":\\\"...\\\",\\\"message\\\":\\\"...\\\"}}</code>.</p>\\n94|    <table><thead><tr><th>Method</th><th>Route</th><th>Description</th><th>Auth</th></tr></thead><tbody>\\n95|      <tr><td>POST</td><td>/auth/register</td><td>Create customer account.</td><td>Public</td></tr>\\n96|      <tr><td>POST</td><td>/auth/login</td><td>Login and create session/token.</td><td>Public</td></tr>\\n97|      <tr><td>GET</td><td>/me</td><td>Current user, roles, provider profile summary.</td><td>User</td></tr>\\n98|      <tr><td>POST</td><td>/providers/applications</td><td>Submit provider onboarding + initial skill.</td><td>User</td></tr>\\n99|      <tr><td>GET</td><td>/categories</td><td>List active service categories.</td><td>Public</td></tr>\\n100|      <tr><td>GET</td><td>/skills</td><td>Browse provider skills by category/location.</td><td>Public</td></tr>\\n101|      <tr><td>POST</td><td>/skills</td><td>Create provider skill.</td><td>Provider</td></tr>\\n102|      <tr><td>POST</td><td>/jobs/bookings</td><td>Create browse-book job, transaction, escrow hold.</td><td>Customer</td></tr>\\n103|      <tr><td>POST</td><td>/jobs/open-calls</td><td>Create fixed-price posted job.</td><td>Customer</td></tr>\\n104|      <tr><td>GET</td><td>/jobs</td><td>List my jobs/open calls by role/status.</td><td>User</td></tr>\\n105|      <tr><td>POST</td><td>/jobs/{id}/accept</td><td>Atomic provider accept open call.</td><td>Provider</td></tr>\\n106|      <tr><td>POST</td><td>/jobs/{id}/pay/mock</td><td>Prototype payment hold; real Xendit adapter later.</td><td>Customer</td></tr>\\n107|      <tr><td>POST</td><td>/jobs/{id}/start</td><td>Transition to IN_PROGRESS.</td><td>Provider</td></tr>\\n108|      <tr><td>POST</td><td>/jobs/{id}/proofs</td><td>Submit 1-5 proof photos + note, schedule auto-release.</td><td>Provider</td></tr>\\n109|      <tr><td>POST</td><td>/jobs/{id}/confirm-complete</td><td>Release escrow and complete job.</td><td>Customer</td></tr>\\n110|      <tr><td>POST</td><td>/jobs/{id}/disputes</td><td>Open dispute, pause auto-release.</td><td>Customer</td></tr>\\n111|      <tr><td>POST</td><td>/jobs/{id}/cancel</td><td>Cancellation with reason and rules by status/actor.</td><td>Customer/Provider</td></tr>\\n112|      <tr><td>POST</td><td>/jobs/{id}/reviews</td><td>Create customer/provider review.</td><td>Participant</td></tr>\\n113|      <tr><td>POST</td><td>/reports</td><td>Report user/entity, apply trust gate.</td><td>User</td></tr>\\n114|      <tr><td>GET</td><td>/notifications</td><td>List my notifications.</td><td>User</td></tr>\\n115|      <tr><td>POST</td><td>/webhooks/xendit</td><td>Idempotent payment webhook endpoint.</td><td>Webhook secret</td></tr>\\n116|    </tbody></table>\\n117|\\n118|    <h3>Admin API</h3>\\n119|    <table><thead><tr><th>Method</th><th>Route</th><th>Description</th></tr></thead><tbody>\\n120|      <tr><td>GET</td><td>/admin/dashboard</td><td>Queues and daily metrics.</td></tr>\\n121|      <tr><td>GET</td><td>/admin/provider-applications</td><td>Pending provider KYC queue.</td></tr>\\n122|      <tr><td>POST</td><td>/admin/providers/{id}/approve</td><td>Approve provider, reason required.</td></tr>\\n123|      <tr><td>POST</td><td>/admin/providers/{id}/reject</td><td>Reject provider, reason required.</td></tr>\\n124|      <tr><td>GET</td><td>/admin/skill-verifications</td><td>Skill credential queue.</td></tr>\\n125|      <tr><td>POST</td><td>/admin/skills/{id}/verify</td><td>Verify/reject/revoke skill.</td></tr>\\n126|      <tr><td>GET</td><td>/admin/disputes</td><td>Open dispute queue.</td></tr>\\n127|      <tr><td>POST</td><td>/admin/disputes/{jobId}/resolve</td><td>release/refund/partial_refund + optional violation.</td></tr>\\n128|      <tr><td>GET</td><td>/admin/reports</td><td>Report queue.</td></tr>\\n129|      <tr><td>POST</td><td>/admin/reports/{id}/resolve</td><td>Resolve and unhide/keep hidden/penalize reporter.</td></tr>\\n130|      <tr><td>POST</td><td>/admin/categories</td><td>Create service category.</td></tr>\\n131|      <tr><td>PATCH</td><td>/admin/categories/{id}</td><td>Update fees, windows, proof rules.</td></tr>\\n132|      <tr><td>PATCH</td><td>/admin/users/{id}/trust-level</td><td>Manual trust override with reason.</td></tr>\\n133|    </tbody></table>\\n134|\\n135|    <h3>Example: Create Browse Booking</h3>\\n136|    <pre><code>POST /api/v1/jobs/bookings\\n137|{\\n138|  \\\"skill_id\\\": \\\"sk_123\\\",\\n139|  \\\"scheduled_at\\\": \\\"2026-07-01T09:00:00+08:00\\\",\\n140|  \\\"address\\\": \\\"Jl. MT Haryono, Balikpapan\\\",\\n141|  \\\"lat\\\": -1.2379,\\n142|  \\\"lng\\\": 116.8529\\n143|}\\n144|\\n145|201 Created\\n146|{\\n147|  \\\"data\\\": {\\n148|    \\\"job_id\\\": \\\"job_123\\\",\\n149|    \\\"status\\\": \\\"BOOKED\\\",\\n150|    \\\"transaction\\\": {\\n151|      \\\"customer_price_idr\\\": 75000,\\n152|      \\\"platform_fee_idr\\\": 7500,\\n153|      \\\"provider_payout_idr\\\": 67500\\n154|    },\\n155|    \\\"escrow\\\": { \\\"status\\\": \\\"pending_payment\\\" }\\n156|  }\\n157|}</code></pre>\\n158|\\n159|    <h2>6. Background Workers</h2>\\n160|    <table><thead><tr><th>Worker</th><th>Interval</th><th>MVP behavior</th></tr></thead><tbody>\\n161|      <tr><td>escrow-release-worker</td><td>60s</td><td>Find due pending schedules, verify job still PROOF_SUBMITTED, release mock escrow, complete job.</td></tr>\\n162|      <tr><td>payment-expiry-checker</td><td>5m</td><td>Expire accepted unpaid open calls after 15m and return to POSTED.</td></tr>\\n163|      <tr><td>open-call-expiry</td><td>15m</td><td>Expire unaccepted open calls after 24h or scheduled time.</td></tr>\\n164|      <tr><td>notification-fallback</td><td>2m</td><td>Mark fallback-needed records; Fonnte adapter later.</td></tr>\\n165|      <tr><td>admin-escalation</td><td>12h</td><td>Generate admin nag notifications after SLA.</td></tr>\\n166|      <tr><td>xendit-reconciler</td><td>15m</td><td>Adapter stub now; real API when credentials exist.</td></tr>\\n167|    </tbody></table>\\n168|\\n169|    <h2>7. UI / Design System Direction</h2>\\n170|    <div class=\\\"grid cols-3\\\">\\n171|      <div class=\\\"card\\\"><h3>Visual tone</h3><p>Warm, local, mobile-first B2C. Avoid corporate dashboard feel for customer/provider surfaces.</p></div>\\n172|      <div class=\\\"card\\\"><h3>Core components</h3><p>Service cards, provider cards, trust badges, price blocks, status timeline, proof gallery, admin queue tables.</p></div>\\n173|      <div class=\\\"card\\\"><h3>Primary screens</h3><p>Home, category browse, skill detail, booking checkout, open-call composer/feed, job detail, provider onboarding, admin queues.</p></div>\\n174|    </div>\\n175|\\n176|    <h2>8. Milestones / Kanban Breakdown After Approval</h2>\\n177|    <table><thead><tr><th>Milestone</th><th>Tasks</th><th>Complexity</th></tr></thead><tbody>\\n178|      <tr><td>M0 Foundation</td><td>Repo scaffold, migrations, auth/session, seed data, design tokens.</td><td>Medium</td></tr>\\n179|      <tr><td>M1 Domain engine</td><td>State machine, immutable transaction, escrow hold, audit events, workers.</td><td>High</td></tr>\\n180|      <tr><td>M2 Customer/provider flows</td><td>Browse-book, open call, provider onboarding, skills, proof submission.</td><td>High</td></tr>\\n181|      <tr><td>M3 Trust & admin</td><td>Reports, disputes, violations, trust derivation, admin console/actions.</td><td>High</td></tr>\\n182|      <tr><td>M4 Polish & deploy</td><td>Responsive UI, fixtures, tests, nginx/systemd deployment, smoke checks.</td><td>Medium</td></tr>\\n183|    </tbody></table>\\n184|\\n185|    <h2>9. Open Review Decisions</h2>\\n186|    <ol>\\n187|      <li><strong>Prototype payment mode:</strong> OK to launch MVP with mock Xendit escrow adapter while preserving real webhook/reconciler routes?</li>\\n188|      <li><strong>Auth depth:</strong> simple email/password/session first, or phone OTP must be in MVP?</li>\\n189|      <li><strong>Maps:</strong> use manual lat/lng + address in MVP, or integrate Google Maps immediately?</li>\\n190|      <li><strong>Initial categories:</strong> car wash, cleaning, handyman, errands — any category to cut for first demo?</li>\\n191|      <li><strong>Admin seed:</strong> one env-defined admin user acceptable for MVP?</li>\\n192|    </ol>\\n193|\\n194|    <div class=\\\"footer\\\">Generated for PRD review. Implementation should not start until the decisions above are approved or refined.</div>\\n195|  </main>\\n196|</body>\\n197|</html>\\n198|\", \"total_lines\": 197, \"file_size\": 18903, \"truncated\": false, \"is_binary\": false, \"is_image\": false}"
+        },
+        {
+          "type": "reasoning",
+          "encrypted_content": "gAAAAABqKoIJR4hpbqPj0H4pyH1aYEdAdJuhfHrsfQA_JwViHc4--7bOOCDn2k27vco4x45XXDPFOwKRSS3WOmBE1LlHy4OWMjT6s2CZPYmRCCRfWOkNPE_WiWi6RmTiMGuSL_7AjqbEso6Gt_fCoDIwFhpAmuQy169PG7AfeUGJhE-KNzA1pSkHg5PVNb7j5hxr8faJiT5xVpwVLN89TfT6A259yjMFG-9TVxfz6stIBtAdbY21QYVnQRtJBmhettXv8vGmouKtUFqgoivZpbovTVAFgjqete4vhi5sVZ9PU5PWQNFFmMjX-T6yGBbL9bKLcH4_nBV9zLc0ByewqCG9SjBtNElwtaHqMx-QhbAP5TRS6rS4_W9Q81WEXPIL_z7Fc567xibOZvAW5QxF48e2w3H5Fmje2pF4eKYPwFcIRzsNdPnftW0Aj5LG07PDFWm2A0VT9pwv_q0YPdwsed-ae2l06QzFhM_LbqN9EljSqOMd2HaQn2rOIFh2k68IYMKlvE6P65UU9CzlKHPGRwCJIHVLBpNSgOuGI1l_zBRt54cb1mEPn4MNO-ntEQXc00VptqSseMJUZNPJhurFrifxtfRWIdiYnAMfTnlY2JrVXJKY4MSQlZR3oSNyRsn2hbGVYelYceimzKaQvAolxhhKFOqflDgbw4jcO0G7blCNCphACmBeKHvhB5Zj3Dl9MaiXNnH1VqZZHPO2YcXT8keGQ7-tkkhrC_U1c8yvvrIY3_Znl3UKAfBWGKGiROlz-wC39b-CdxS71eitlXCe0npQ9V-d8A_yMGefdySOBxQ-3rpQit0jqfgDn8QvQQ4M4uyWEd3zs8rH-sI7WfrhqAYRxI5euM8ScG3Xdjriz7lKNPh9_SiJzKWqZSubIMxddhywSq0JMvq5mkGq-DkbNwxEZC3x7tEDan2iRh0jF2pQsDnc6OIsy7SrXm-YT7ueltERPs-ArTAp5kzoJAwRKcFXDPWwh8ry7q37S5MAASxU0GPQLO467GYD-AFtDi8PLnrL0mS0mV1N-0OCmywe7hER2qEelrZ_Kac6zoEOaoW2oU0MyQCHsWVgS-PAbPArTcIKfKx7BVZPzsYbEGK68TQMbRI7azFDpieBTQpRcv9Int8eb9zzDactEtnwunfLqPbrOfGC96Xf_GJe_8m0J56hLKqMWlKITUiuZQ96QFnFgHond8VNtrq2HRHWIB4P-VF6A-7rDZ7qxzldnB6hCtgk2E1oLx_qeSZjjpyzUG0yQUR3tsuF9MI=",
+          "summary": [
+            {
+              "type": "summary_text",
+              "text": "**Planning project setup**\n\nI'm considering how to structure this project and thinking about time management. I need a coherent implementation, potentially using Go with cgo for SQLite. It looks like I might need some packages and could opt for modernc.org/sqlite for pure Go support. Also, I'll need npm for the frontend. My plan is to create a backend server, likely a single main file. I'll make sure to include tests and necessary tools."
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": ""
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_SjSxjwAS8F0N2XwUFlBv1C70",
+          "name": "write_file",
+          "arguments": "{\"content\":\"module siapjasa\\n\\ngo 1.23\\n\\nrequire modernc.org/sqlite v1.34.5\\n\",\"path\":\"/home/ubuntu/projects/siapjasa/go.mod\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_SjSxjwAS8F0N2XwUFlBv1C70",
+          "output": "{\"bytes_written\": 61, \"dirs_created\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .mod files\"}, \"resolved_path\": \"/home/ubuntu/projects/siapjasa/go.mod\", \"files_modified\": [\"/home/ubuntu/projects/siapjasa/go.mod\"]}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_UmOFGwEF4kRYKT6GKBdpjlhA",
+          "name": "write_file",
+          "arguments": "{\"content\":\"{\\\"scripts\\\":{\\\"dev\\\":\\\"vite --host 0.0.0.0\\\",\\\"build\\\":\\\"tsc -b && vite build\\\",\\\"test\\\":\\\"vitest run\\\",\\\"preview\\\":\\\"vite preview --host 0.0.0.0\\\"},\\\"dependencies\\\":{\\\"@vitejs/plugin-react\\\":\\\"latest\\\",\\\"vite\\\":\\\"latest\\\",\\\"typescript\\\":\\\"latest\\\",\\\"react\\\":\\\"latest\\\",\\\"react-dom\\\":\\\"latest\\\",\\\"lucide-react\\\":\\\"latest\\\"},\\\"devDependencies\\\":{\\\"vitest\\\":\\\"latest\\\",\\\"jsdom\\\":\\\"latest\\\",\\\"@types/react\\\":\\\"latest\\\",\\\"@types/react-dom\\\":\\\"latest\\\"}}\\n\",\"path\":\"/home/ubuntu/projects/siapjasa/package.json\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_UmOFGwEF4kRYKT6GKBdpjlhA",
+          "output": "{\"bytes_written\": 389, \"dirs_created\": true, \"lint\": {\"status\": \"ok\", \"output\": \"\"}, \"resolved_path\": \"/home/ubuntu/projects/siapjasa/package.json\", \"files_modified\": [\"/home/ubuntu/projects/siapjasa/package.json\"]}"
+        },
+        {
+          "type": "function_call",
+          "call_id": "call_Imdh1ptE0z4MsYonQ3iJDqZr",
+          "name": "write_file",
+          "arguments": "{\"content\":\"node_modules/\\ndist/\\nsiapjasa.db\\n*.db\\n*.log\\n.DS_Store\\n\",\"path\":\"/home/ubuntu/projects/siapjasa/.gitignore\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_Imdh1ptE0z4MsYonQ3iJDqZr",
+          "output": "{\"bytes_written\": 53, \"dirs_created\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for  files\"}, \"resolved_path\": \"/home/ubuntu/projects/siapjasa/.gitignore\", \"files_modified\": [\"/home/ubuntu/projects/siapjasa/.gitignore\"]}"
+        }
+      ],
+      "store": false,
+      "tools": [
+        {
+          "type": "function",
+          "name": "patch",
+          "description": "Targeted find-and-replace edits in files. Use this instead of sed/awk in terminal. Uses fuzzy matching (9 strategies) so minor whitespace/indentation differences won't break it. Returns a unified diff. Auto-runs syntax checks after editing.\n\nREPLACE MODE (mode='replace', default): find a unique string and replace it. REQUIRED PARAMETERS: mode, path, old_string, new_string.\nPATCH MODE (mode='patch'): apply V4A multi-file patches for bulk changes. REQUIRED PARAMETERS: mode, patch.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "replace",
+                  "patch"
+                ],
+                "description": "Edit mode. 'replace' (default): requires path + old_string + new_string. 'patch': requires patch content only.",
+                "default": "replace"
+              },
+              "path": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. File path to edit."
+              },
+              "old_string": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. Exact text to find and replace. Must be unique in the file unless replace_all=true. Include surrounding context lines to ensure uniqueness."
+              },
+              "new_string": {
+                "type": "string",
+                "description": "REQUIRED when mode='replace'. Replacement text. Pass empty string '' to delete the matched text."
+              },
+              "replace_all": {
+                "type": "boolean",
+                "description": "Replace all occurrences instead of requiring a unique match (default: false)",
+                "default": false
+              },
+              "patch": {
+                "type": "string",
+                "description": "REQUIRED when mode='patch'. V4A format patch content. Format:\n*** Begin Patch\n*** Update File: path/to/file\n@@ context hint @@\n context line\n-removed line\n+added line\n*** End Patch"
+              },
+              "cross_profile": {
+                "type": "boolean",
+                "description": "Opt out of the cross-profile soft guard. Defaults to false. Set true ONLY after explicit user direction to edit another Hermes profile's skills/plugins/cron/memories.",
+                "default": false
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "process",
+          "description": "Manage background processes started with terminal(background=true). Actions: 'list' (show all), 'poll' (check status + new output), 'log' (full output with pagination), 'wait' (block until done or timeout), 'kill' (terminate), 'write' (send raw stdin data without newline), 'submit' (send data + Enter, for answering prompts), 'close' (close stdin/send EOF).",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "list",
+                  "poll",
+                  "log",
+                  "wait",
+                  "kill",
+                  "write",
+                  "submit",
+                  "close"
+                ],
+                "description": "Action to perform on background processes"
+              },
+              "session_id": {
+                "type": "string",
+                "description": "Process session ID (from terminal background output). Required for all actions except 'list'."
+              },
+              "data": {
+                "type": "string",
+                "description": "Text to send to process stdin (for 'write' and 'submit' actions)"
+              },
+              "timeout": {
+                "type": "integer",
+                "description": "Max seconds to block for 'wait' action. Returns partial output on timeout.",
+                "minimum": 1
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Line offset for 'log' action (default: last 200 lines)"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Max lines to return for 'log' action",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_file",
+          "description": "Read a text file with line numbers and pagination. Use this instead of cat/head/tail in terminal. Output format: 'LINE_NUM|CONTENT'. Suggests similar filenames if not found. Use offset and limit for large files. Reads exceeding ~100K characters are rejected; use offset and limit to read specific sections of large files. NOTE: Cannot read images or binary files — use vision_analyze for images.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to the file to read (absolute, relative, or ~/path)"
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Line number to start reading from (1-indexed, default: 1)",
+                "default": 1,
+                "minimum": 1
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Maximum number of lines to read (default: 500, max: 2000)",
+                "default": 500,
+                "maximum": 2000
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "search_files",
+          "description": "Search file contents or find files by name. Use this instead of grep/rg/find/ls in terminal. Ripgrep-backed, faster than shell equivalents.\n\nContent search (target='content'): Regex search inside files. Output modes: full matches with line numbers, file paths only, or match counts.\n\nFile search (target='files'): Find files by glob pattern (e.g., '*.py', '*config*'). Also use this instead of ls — results sorted by modification time.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern for content search, or glob pattern (e.g., '*.py') for file search"
+              },
+              "target": {
+                "type": "string",
+                "enum": [
+                  "content",
+                  "files"
+                ],
+                "description": "'content' searches inside file contents, 'files' searches for files by name",
+                "default": "content"
+              },
+              "path": {
+                "type": "string",
+                "description": "Directory or file to search in (default: current working directory)",
+                "default": "."
+              },
+              "file_glob": {
+                "type": "string",
+                "description": "Filter files by pattern in grep mode (e.g., '*.py' to only search Python files)"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Maximum number of results to return (default: 50)",
+                "default": 50
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Skip first N results for pagination (default: 0)",
+                "default": 0
+              },
+              "output_mode": {
+                "type": "string",
+                "enum": [
+                  "content",
+                  "files_only",
+                  "count"
+                ],
+                "description": "Output format for grep mode: 'content' shows matching lines with line numbers, 'files_only' lists file paths, 'count' shows match counts per file",
+                "default": "content"
+              },
+              "context": {
+                "type": "integer",
+                "description": "Number of context lines before and after each match (grep mode only)",
+                "default": 0
+              }
+            },
+            "required": [
+              "pattern"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "terminal",
+          "description": "Execute shell commands on a Linux environment. Filesystem usually persists between calls.\n\nDo NOT use cat/head/tail to read files — use read_file instead.\nDo NOT use grep/rg/find to search — use search_files instead.\nDo NOT use ls to list directories — use search_files(target='files') instead.\nDo NOT use sed/awk to edit files — use patch instead.\nDo NOT use echo/cat heredoc to create files — use write_file instead.\nReserve terminal for: builds, installs, git, processes, scripts, network, package managers, and anything that needs a shell.\n\nForeground (default): Commands return INSTANTLY when done, even if the timeout is high. Set timeout=300 for long builds/scripts — you'll still get the result in seconds if it's fast. Prefer foreground for short commands.\nBackground: Set background=true to get a session_id. Almost always pair with notify_on_complete=true — bg without notify runs SILENTLY and you have no way to learn it finished short of calling process(action='poll') yourself. Two legitimate uses:\n  (1) Long-lived processes that never exit (servers, watchers, daemons) — silent is correct, there's no exit to notify on.\n  (2) Long-running bounded tasks (tests, builds, deploys, CI pollers, batch jobs) — MUST set notify_on_complete=true. Without it you'll either forget to poll or sit blocked waiting for the user to surface the result.\nFor servers/watchers, do NOT use shell-level background wrappers (nohup/disown/setsid/trailing '&') in foreground mode. Use background=true so Hermes can track lifecycle and output.\nAfter starting a server, verify readiness with a health check or log signal, then run tests in a separate terminal() call. Avoid blind sleep loops.\nUse process(action=\"poll\") for progress checks, process(action=\"wait\") to block until done.\nWorking directory: Use 'workdir' for per-command cwd.\nPTY mode: Set pty=true for interactive CLI tools (Codex, Claude Code, Python REPL).\n\nDo NOT use vim/nano/interactive tools without pty=true — they hang without a pseudo-terminal. Pipe git output to cat if it might page.\n",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string",
+                "description": "The command to execute on the VM"
+              },
+              "background": {
+                "type": "boolean",
+                "description": "Run the command in the background. Almost always pair with notify_on_complete=true — without it, the process runs silently and you'll have no way to learn it finished short of calling process(action='poll') yourself (easy to forget, leading to silent blindness on long jobs). Two legitimate patterns: (1) Long-lived processes that never exit (servers, watchers, daemons) — these stay silent because there's no exit to notify on. (2) Long-running bounded tasks (tests, builds, deploys, CI pollers, batch jobs) — these MUST set notify_on_complete=true. For short commands, prefer foreground with a generous timeout instead.",
+                "default": false
+              },
+              "timeout": {
+                "type": "integer",
+                "description": "Max seconds to wait (default: 180, foreground max: 600). Returns INSTANTLY when command finishes — set high for long tasks, you won't wait unnecessarily. Foreground timeout above 600s is rejected; use background=true for longer commands.",
+                "minimum": 1
+              },
+              "workdir": {
+                "type": "string",
+                "description": "Working directory for this command (absolute path). Defaults to the session working directory."
+              },
+              "pty": {
+                "type": "boolean",
+                "description": "Run in pseudo-terminal (PTY) mode for interactive CLI tools like Codex, Claude Code, or Python REPL. Only works with local and SSH backends. Default: false.",
+                "default": false
+              },
+              "notify_on_complete": {
+                "type": "boolean",
+                "description": "When true (and background=true), you'll be automatically notified exactly once when the process finishes. **This is the right choice for almost every long-running task** — tests, builds, deployments, multi-item batch jobs, anything that takes over a minute and has a defined end. Use this and keep working on other things; the system notifies you on exit. MUTUALLY EXCLUSIVE with watch_patterns — when both are set, watch_patterns is dropped.",
+                "default": false
+              },
+              "watch_patterns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Strings to watch for in background process output. HARD RATE LIMIT: at most 1 notification per 15 seconds per process — matches arriving inside the cooldown are dropped. After 3 consecutive 15-second windows with dropped matches, watch_patterns is automatically disabled for that process and promoted to notify_on_complete behavior (one notification on exit, no more mid-process spam). USE ONLY for truly rare, one-shot mid-process signals on LONG-LIVED processes that will never exit on their own — e.g. ['Application startup complete'] on a server so you know when to hit its endpoint, or ['migration done'] on a daemon. DO NOT use for: (1) end-of-run markers like 'DONE'/'PASS' — use notify_on_complete instead; (2) error patterns like 'ERROR'/'Traceback' in loops or multi-item batch jobs — they fire on every iteration and you'll hit the strike limit fast; (3) anything you'd ever combine with notify_on_complete. When in doubt, choose notify_on_complete. MUTUALLY EXCLUSIVE with notify_on_complete — set one, not both."
+              }
+            },
+            "required": [
+              "command"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "write_file",
+          "description": "Write content to a file, completely replacing existing content. Use this instead of echo/cat heredoc in terminal. Creates parent directories automatically. OVERWRITES the entire file — use 'patch' for targeted edits. Auto-runs syntax checks on .py/.json/.yaml/.toml and other linted languages; only NEW errors introduced by this write are surfaced (pre-existing errors are filtered out).",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to the file to write (will be created if it doesn't exist, overwritten if it does)"
+              },
+              "content": {
+                "type": "string",
+                "description": "Complete content to write to the file"
+              },
+              "cross_profile": {
+                "type": "boolean",
+                "description": "Opt out of the cross-profile soft guard. Defaults to false. Set true ONLY after explicit user direction to edit another Hermes profile's skills/plugins/cron/memories — by default these writes are blocked with a warning because they affect a different profile than the one this session is running under.",
+                "default": false
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ]
+          }
+        }
+      ],
+      "reasoning": {
+        "effort": "medium",
+        "summary": "auto"
+      },
+      "include": [
+        "reasoning.encrypted_content"
+      ],
+      "tool_choice": "auto",
+      "parallel_tool_calls": true,
+      "prompt_cache_key": "20260611_093803_114b94",
+      "extra_headers": {
+        "session_id": "20260611_093803_114b94",
+        "x-client-request-id": "20260611_093803_114b94"
+      }
+    }
+  },
+  "error": {
+    "type": "TimeoutError",
+    "message": "Non-streaming API call timed out after 90s with no response (threshold: 90s). Codex backend appears to be silently rejecting 'gpt-5.5' on chatgpt.com/backend-api/codex (no stream events, no error). This is a known backend-side pattern that has affected ChatGPT Plus accounts intermittently. Workaround: try `gpt-5.4` on the same OAuth profile, or `gpt-5.3-codex`, or switch to a different model/provider in your fallback chain. Some ChatGPT Codex accounts do not support `gpt-5.4-codex`. See hermes-agent#21444 for symptom history."
+  }
+}

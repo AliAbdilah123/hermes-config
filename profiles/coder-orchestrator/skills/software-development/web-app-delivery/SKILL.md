@@ -104,6 +104,8 @@ Minimum real checks before reporting done:
 4. Browser/visual smoke check for user-facing UI when layout matters.
 5. Public URL if network path allows. If same-host public-IP curl fails because of hairpin/NAT behavior but local nginx checks pass, report that caveat honestly.
 
+When the built-in browser tool is slow or unavailable, a CLI headless Chromium screenshot is an acceptable visual smoke check if it produces a non-empty screenshot file and the rendered image is inspected. On Ubuntu snap Chromium, DBus/AppArmor warnings can appear while the screenshot still succeeds; verify the file exists and has bytes before treating it as failure.
+
 Always provide the real clickable URL; do not hand back placeholders like `<publicIP>`.
 
 ## Mobile Responsive Layout Changes
@@ -164,6 +166,7 @@ References:
 - `references/fullstack-app-production-hardening.md`
 - `references/production-admin-token-and-systemd-cutover.md`
 - `references/production-grade-saas-mvp-pages-disabled-states.md`
+- `references/siapjasa-xendit-mvp-delivery.md` — Xendit escrow mock, PRD provider correction, local Go toolchain pinning, and CLI Chromium visual smoke fallback from a marketplace MVP delivery.
 
 ## Exposure Debugging Playbook
 

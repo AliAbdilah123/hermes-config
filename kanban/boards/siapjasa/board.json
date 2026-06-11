@@ -1,0 +1,10 @@
+{
+  "slug": "siapjasa",
+  "name": "SiapJasa",
+  "description": "Balikpapan local services marketplace",
+  "icon": "🛠️",
+  "color": "#22c55e",
+  "default_workdir": "/home/ubuntu/projects/siapjasa",
+  "created_at": 1781170534,
+  "archived": false
+}
