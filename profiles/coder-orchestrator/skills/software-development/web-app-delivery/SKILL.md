@@ -167,9 +167,13 @@ When extending an existing business/CRM app with CSV imports, template messaging
 - Model businesses and contacts separately with many-to-many associations when contacts can belong to multiple businesses.
 - Support dotted template placeholders like `{{business.name}}` and render previews/sends through the same substitution logic.
 - Treat external messaging workers as sidecars: keep the main API as source of truth, persist send attempts, and report honest `mock`/`queued`/`not_connected` states until the worker is configured and connected.
+- For Baileys QR pairing, do not send only the raw QR payload to the frontend. Convert it in the worker to a browser-renderable PNG data URL, expose `qrAvailable` plus `qrDataUrl`/`qr`, proxy those fields through the authenticated app API, and make the UI poll while waiting to connect.
 - Use nullable foreign keys for inbox/conversation rows that may not yet be tied to a business/contact; never write zero IDs into FK columns.
+- Run sidecars under a supervised service for delivery; verify worker `/status`, backend-proxied status, frontend build, and deployed asset rather than stopping at code changes.
 
-Reference: `references/business-crm-import-inbox-mvp-delivery.md`.
+References:
+- `references/business-crm-import-inbox-mvp-delivery.md`
+- `references/business-crm-baileys-qr-display.md`
 
 ## Production Hardening Pass
 

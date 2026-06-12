@@ -129,6 +129,19 @@
     "use_count": 6,
     "view_count": 6
   },
+  "places-data-collection": {
+    "archived_at": null,
+    "created_at": "2026-06-12T14:50:38.576357+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-06-12T14:50:50.707407+00:00",
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 1,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
   "release-and-expose-web-app": {
     "archived_at": null,
     "created_at": "2026-05-30T17:48:20.394831+00:00",
