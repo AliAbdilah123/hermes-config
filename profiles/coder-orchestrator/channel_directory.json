@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-12T06:34:38.733704",
+  "updated_at": "2026-06-12T07:34:39.037962",
   "platforms": {
     "discord": [
       {
@@ -259,6 +259,18 @@
         "name": "Ali's workflow / #coding / Remember to always put docs related/generated about a project in `doc` direct... / topic 1514879645579870298",
         "type": "thread",
         "thread_id": "1514879645579870298"
+      },
+      {
+        "id": "1514884334283391056:1514884334283391056",
+        "name": "Ali's workflow / #coding / Update binis-local project: - add ability to import basic business data from ... / topic 1514884334283391056",
+        "type": "thread",
+        "thread_id": "1514884334283391056"
+      },
+      {
+        "id": "1514894465867714590:1514894465867714590",
+        "name": "Ali's workflow / #coding / update siapjasa project: - homepage shows all public services provided / serv... / topic 1514894465867714590",
+        "type": "thread",
+        "thread_id": "1514894465867714590"
       }
     ],
     "telegram": [],
