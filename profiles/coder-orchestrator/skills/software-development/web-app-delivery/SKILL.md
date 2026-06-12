@@ -124,6 +124,18 @@ References:
 - `references/mobile-responsive-navigation-verification.md`
 - `references/mobile-viewport-and-authenticated-visual-checks.md`
 
+## Frontend Navigation/Auth Refinement Pass
+
+When refining a deployed B2C/marketplace app's public homepage and header auth UX:
+- Keep public discovery content visible before login: hero, public service cards, categories, and services-needed/posting categories.
+- Put login/signup behind the nav entry point as a modal or dedicated page when the user asks for a cleaner header; avoid leaving demo-account selectors or auth forms floating/inline on the public landing.
+- In authenticated headers, use an avatar/profile menu with accessible state (`aria-haspopup`, `aria-expanded`) and include user name/email, role badges, dashboard navigation, profile page navigation, and logout.
+- Route dashboard to the best existing role-aware screen instead of creating a fake destination; implement a real profile page or visibly disable the item.
+- Update tests to assert public content is visible logged out, demo login labels stay hidden until the modal opens, and avatar menu actions are visible after authenticated mock `/me`.
+- Deploy and verify through nginx/public serving with DOM string checks plus a screenshot when the request is visual.
+
+Reference: `references/frontend-nav-auth-refinement.md`.
+
 ## UX Humanization Pass
 
 When the user says an app feels too corporate, dashboard-heavy, or data-first, treat it as an implementation request for a friendlier product surface — not just design advice. For member/community apps:
@@ -147,6 +159,17 @@ Use a people/action-first pass:
 - Verify tone with a screenshot or DOM phrase smoke check, not only a successful build.
 
 Reference: `references/consumer-community-ux-redesign.md`.
+
+## External Worker / CRM Import MVPs
+
+When extending an existing business/CRM app with CSV imports, template messaging, inboxes, or sidecar integrations such as Baileys/WhatsApp:
+- Make import schemas backend-owned with a downloadable sample CSV endpoint.
+- Model businesses and contacts separately with many-to-many associations when contacts can belong to multiple businesses.
+- Support dotted template placeholders like `{{business.name}}` and render previews/sends through the same substitution logic.
+- Treat external messaging workers as sidecars: keep the main API as source of truth, persist send attempts, and report honest `mock`/`queued`/`not_connected` states until the worker is configured and connected.
+- Use nullable foreign keys for inbox/conversation rows that may not yet be tied to a business/contact; never write zero IDs into FK columns.
+
+Reference: `references/business-crm-import-inbox-mvp-delivery.md`.
 
 ## Production Hardening Pass
 

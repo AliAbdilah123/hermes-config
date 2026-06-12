@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-12T07:34:39.037962",
+  "updated_at": "2026-06-12T08:34:39.335764",
   "platforms": {
     "discord": [
       {
@@ -271,6 +271,18 @@
         "name": "Ali's workflow / #coding / update siapjasa project: - homepage shows all public services provided / serv... / topic 1514894465867714590",
         "type": "thread",
         "thread_id": "1514894465867714590"
+      },
+      {
+        "id": "1514904689865658461:1514904689865658461",
+        "name": "Ali's workflow / #coding / update siapjasa to have the same info shown in the homepage whether for logge... / topic 1514904689865658461",
+        "type": "thread",
+        "thread_id": "1514904689865658461"
+      },
+      {
+        "id": "1514909343219318785:1514909343219318785",
+        "name": "Ali's workflow / #coding / implement the showing of qr to connect to baileys work in bisnis-lokal-os / topic 1514909343219318785",
+        "type": "thread",
+        "thread_id": "1514909343219318785"
       }
     ],
     "telegram": [],
