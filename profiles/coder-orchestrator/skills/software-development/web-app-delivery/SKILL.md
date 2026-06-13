@@ -106,6 +106,10 @@ Minimum real checks before reporting done:
 
 When the built-in browser tool is slow or unavailable, a CLI headless Chromium screenshot is an acceptable visual smoke check if it produces a non-empty screenshot file and the rendered image is inspected. On Ubuntu snap Chromium, DBus/AppArmor warnings can appear while the screenshot still succeeds; verify the file exists and has bytes before treating it as failure.
 
+For authenticated React UI checks where a screenshot is not required, use a Chrome DevTools Protocol DOM smoke check: launch Chromium with `--remote-debugging-port` and `--remote-allow-origins='*'`, connect to the page target, perform the real login fetch/session setup, reload through the nginx project URL, click/navigate to the feature, and assert exact DOM text. See `references/cdp-authenticated-dom-smoke.md`.
+
+After rebuilding a frontend, compare the asset filenames in `dist/index.html` against the nginx-served index before declaring the live site updated. If the served index still references an old hashed JS/CSS asset, sync `dist/` to the configured web root and re-check via curl.
+
 Always provide the real clickable URL; do not hand back placeholders like `<publicIP>`.
 
 ## Mobile Responsive Layout Changes
