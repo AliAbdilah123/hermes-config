@@ -162,18 +162,21 @@ Reference: `references/consumer-community-ux-redesign.md`.
 
 ## External Worker / CRM Import MVPs
 
-When extending an existing business/CRM app with CSV imports, template messaging, inboxes, or sidecar integrations such as Baileys/WhatsApp:
+When extending an existing business/CRM app with CSV imports, template messaging, editable business details, inboxes, or sidecar integrations such as Baileys/WhatsApp:
 - Make import schemas backend-owned with a downloadable sample CSV endpoint.
 - Model businesses and contacts separately with many-to-many associations when contacts can belong to multiple businesses.
+- For edit-detail requests on existing records, add a narrow authenticated `PATCH /api/v1/businesses/{id}` path, reuse the list/detail DTO, validate required fields, re-read and return the updated row, and update both the frontend list state and open detail modal after save. Verify with backend tests plus an authenticated CSRF curl smoke check against the deployed service. See `references/authenticated-business-detail-edit.md`.
 - Support dotted template placeholders like `{{business.name}}` and render previews/sends through the same substitution logic.
 - Treat external messaging workers as sidecars: keep the main API as source of truth, persist send attempts, and report honest `mock`/`queued`/`not_connected` states until the worker is configured and connected.
 - For Baileys QR pairing, do not send only the raw QR payload to the frontend. Convert it in the worker to a browser-renderable PNG data URL, expose `qrAvailable` plus `qrDataUrl`/`qr`, proxy those fields through the authenticated app API, and make the UI poll while waiting to connect.
+- For inbound WhatsApp inboxes, verify the whole worker → API → SQLite → list API → UI path. A connected worker that logs `messages.upsert` is not enough: set `WHATSAPP_WEBHOOK_URL` to the internal Go webhook URL, persist inbound messages idempotently by provider message id, list conversations with latest-message fields, and reply to inbound-only chats via `wa_id` before business phone fallbacks.
 - Use nullable foreign keys for inbox/conversation rows that may not yet be tied to a business/contact; never write zero IDs into FK columns.
-- Run sidecars under a supervised service for delivery; verify worker `/status`, backend-proxied status, frontend build, and deployed asset rather than stopping at code changes.
+- Run sidecars under a supervised service for delivery; verify worker `/status`, backend-proxied status, frontend build, deployed asset, and an actual or synthetic inbound webhook persisted through the nginx-proxied conversations endpoint rather than stopping at code changes.
 
 References:
 - `references/business-crm-import-inbox-mvp-delivery.md`
 - `references/business-crm-baileys-qr-display.md`
+- `references/business-crm-whatsapp-inbound-persistence.md`
 
 ## Production Hardening Pass
 

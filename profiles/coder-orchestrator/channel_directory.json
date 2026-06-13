@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-13T12:44:47.293254",
+  "updated_at": "2026-06-13T13:44:47.619317",
   "platforms": {
     "discord": [
       {
@@ -289,6 +289,24 @@
         "name": "Ali's workflow / #coding / Hi / topic 1514940655321878568",
         "type": "thread",
         "thread_id": "1514940655321878568"
+      },
+      {
+        "id": "1515342041477939301:1515342041477939301",
+        "name": "Ali's workflow / #coding / in bisnis-lokal project, add ability to edit details of the business / topic 1515342041477939301",
+        "type": "thread",
+        "thread_id": "1515342041477939301"
+      },
+      {
+        "id": "1515342982268715059:1515342982268715059",
+        "name": "Ali's workflow / #coding / make the whatsapp feature in bisnis-lokal also list and saves to db messages ... / topic 1515342982268715059",
+        "type": "thread",
+        "thread_id": "1515342982268715059"
+      },
+      {
+        "id": "1515347900849197208:1515347900849197208",
+        "name": "Ali's workflow / #coding / in template outreach in bisnis-lokal, add ability to create a template / topic 1515347900849197208",
+        "type": "thread",
+        "thread_id": "1515347900849197208"
       }
     ],
     "telegram": [],
