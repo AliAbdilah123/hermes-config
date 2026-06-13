@@ -1,9 +1,9 @@
 {
-  "last_report_path": "/home/ubuntu/.hermes/logs/curator/20260606-171741",
-  "last_run_at": "2026-06-06T17:17:41.599636+00:00",
-  "last_run_duration_seconds": 482.837535,
-  "last_run_summary": "auto: no changes; llm: ## Human-readable summary of this pass\n\nI identified one dominant cluster: **service-exposure + fullstack-deployment**. Five of the twelve candidate skills all describe the same end-to-end workflow — building a TS/React + Go/SQLite project,…\narchived 5 skill(s):\n  • default-web-stack → service-exposure-debugging\n  • fullstack-app → service-exposure-debugging\n  • network-service-binding → service-exposure-debugging\n  • release-and-expose-web-app → service-exposure-debugging\n  • standard-stack-scaffold → service-exposure-debugging\nfull report: hermes curator status\nkeep an umbrella stable: hermes curator pin service-exposure-debugging",
+  "last_report_path": "/home/ubuntu/.hermes/logs/curator/20260613-172200",
+  "last_run_at": "2026-06-13T17:22:00.562878+00:00",
+  "last_run_duration_seconds": 753.43803,
+  "last_run_summary": "auto: no changes; llm: ## Cluster consolidation summary\n\n- Hermes platform lifecycle cluster: `local-service-access`, `hermes-systemd-services`, `hermes-auto-backup`, and `hermes-s6-container-supervision` were all members of the same class — keeping a Hermes depl…\narchived 3 skill(s):\n  • hermes-systemd-services → gateway-ops\n  • local-service-access → gateway-ops\n  • hermes-auto-backup — pruned (stale)\nfull report: hermes curator status\nkeep an umbrella stable: hermes curator pin gateway-ops",
   "last_run_summary_shown_at": "2026-05-30T16:58:10.367202+00:00",
   "paused": false,
-  "run_count": 1
+  "run_count": 2
 }

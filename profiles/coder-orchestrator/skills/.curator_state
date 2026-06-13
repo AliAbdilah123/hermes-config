@@ -1,9 +1,9 @@
 {
-  "last_report_path": "/home/ubuntu/.hermes/profiles/coder-orchestrator/logs/curator/20260606-173906",
-  "last_run_at": "2026-06-06T17:39:06.499336+00:00",
-  "last_run_duration_seconds": 293.200871,
-  "last_run_summary": "auto: no changes; llm: Completed umbrella consolidation pass.\n\nHuman summary:\n- Created **`web-app-delivery`** as the broad class-level umbrella for default-stack web app work:\n  - default React/TypeScript + Go + SQLite stack\n  - scaffold/build workflow\n  - nginx…\narchived 10 skill(s):\n  • browser-arm64-headless — pruned (stale)\n  • default-web-stack — pruned (stale)\n  • discord-gateway-routing — pruned (stale)\n  • fullstack-app — pruned (stale)\n  • hermes-auto-backup — pruned (stale)\n  • hermes-systemd-services — pruned (stale)\n  • network-service-binding — pruned (stale)\n  • release-and-expose-web-app — pruned (stale)\n  • service-exposure-debugging — pruned (stale)\n  • standard-stack-scaffold — pruned (stale)\nfull report: hermes curator status",
+  "last_report_path": "/home/ubuntu/.hermes/profiles/coder-orchestrator/logs/curator/20260613-173948",
+  "last_run_at": "2026-06-13T17:39:48.785645+00:00",
+  "last_run_duration_seconds": 89.348402,
+  "last_run_summary": "auto: no changes; llm: Processed the full candidate list.\n\nOnly one agent-created, unpinned skill was provided:\n\n- `multi-agent-software-orchestration`\n\nI inspected it as a complete package, including its linked support file:\n\n- `SKILL.md`\n- `references/omnichann…",
   "last_run_summary_shown_at": "2026-05-30T16:58:10.367202+00:00",
   "paused": false,
-  "run_count": 1
+  "run_count": 2
 }

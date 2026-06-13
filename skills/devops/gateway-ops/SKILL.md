@@ -89,3 +89,71 @@ Pitfall: calling `hermes gateway restart` from inside the running gateway sessio
 
 ## References
 - `references/discord-unauthorized-user.md` — full remediation recipe and verification checklist.
+
+## Local Service Exposure (merged from local-service-access)
+
+When the goal is exposing a locally-bound service reachable from other devices:
+
+### A) Tailscale mesh access
+- Bind to `0.0.0.0`; peer uses the host's Tailscale IP.
+- Optional firewall restriction to Tailscale CIDR `100.64.0.0/10`.
+
+### B) SSH tunnel
+- Keep service bound to `127.0.0.1`.
+- `ssh -L <local_port>:localhost:<service_port> user@host`
+
+### C) Reverse proxy
+- Keep service on localhost; let nginx/caddy expose with HTTPS/auth.
+
+### Hermes dashboard applied example
+- Active compose file: `~/.hermes/hermes-agent/docker-compose.yml`
+- Change dashboard command host to `0.0.0.0` for Tailscale access.
+- Do not update only `./hermes-config/...` or `/tmp/hermes-config/...` copies.
+
+### Checklist
+- [ ] Service is bound to the intended interface (`0.0.0.0` or tunnel).
+- [ ] Firewall matches intended exposure.
+- [ ] A peer on the allowed path can reach the service.
+- [ ] Public internet exposure is not enabled unintentionally.
+
+## Systemd Hosting for Gateways and Dashboards (merged from hermes-systemd-services)
+
+When running Hermes components as systemd services on Oracle Linux or similar:
+
+### Required unit shape
+```
+[Unit]
+Description=...
+After=network.target
+
+[Service]
+Type=simple
+User=opc
+Group=opc
+Environment=HOME=/home/opc
+Environment=USER=opc
+WorkingDirectory=/home/opc
+ExecStart=/home/opc/.hermes/hermes-agent/venv/bin/python3 \
+          /home/opc/.hermes/hermes-agent/venv/bin/hermes <subcommand> \
+          [args]
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Pitfalls
+- Port conflicts (e.g. dashboard vs 9119): check with `sudo ss -ltnp | grep 9119` before enabling.
+- SELinux enforcing on Oracle Linux prevents naive `/etc` edits via interactive editors; prefer `sudo tee` when patching unit files.
+- Never silently swap backend stacks mid-flight.
+
+### Workflow
+1. `sudo tee` or `sudo vim` to edit unit, then `sudo systemctl daemon-reload`.
+2. `sudo systemctl reset-failed <unit>` then `sudo systemctl restart <unit>`.
+3. Use `journalctl -xeu <unit> -n 80` for the real failure cause.
+4. Verify executable path runs for the target user before declaring success.
+
+For deeper journalctl/systemctl recipes, see `references/systemd-debugging.md` (moved from `hermes-systemd-services`).

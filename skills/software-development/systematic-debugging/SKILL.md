@@ -330,8 +330,6 @@ Rationale: Import rewrites solve visibility but not contract drift. Fixing the s
 
 ## Hermes Agent Integration
 
-### Investigation Tools
-
 Use these Hermes tools during Phase 1:
 
 - **`search_files`** — Find error strings, trace function calls, locate patterns
