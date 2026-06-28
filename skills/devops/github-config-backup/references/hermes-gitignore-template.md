@@ -1,3 +1,20 @@
+# Validated .gitignore for `~/.hermes`
+
+Use this as a starting point for `~/.hermes/.gitignore`. It was built from a live
+survey of `/home/ubuntu/.hermes` and excludes:
+- secrets (`.env`, `auth.json`, `*.lock`, `*.key`, `*.token`, `*.secret`, `*.pem`)
+- databases and WAL/SHM files
+- runtime state (`gateway_state.json`, `processes.json`, `discord_threads.json`, etc.)
+- logs (all `**/*.log` and `logs/` dirs)
+- sessions (private conversation history)
+- caches (`cache/`, `audio_cache/`, `image_cache/`, `context_length_cache.yaml`, provider/model caches)
+- downloaded/vendored artefacts (`node/`, `bin/`, `node_modules/`, `venv/`, lockfiles)
+- large runtime directories (`home/`, `sandboxes/`, `pairing/`)
+- profile-specific runtime copies and lockfiles
+- nested agent source tree (`hermes-agent/`)
+- OS/editor junk
+
+```gitignore
 # ──────────────────────────────────────────────────────────────
 # ~/.hermes  –  Sensitive data, runtime artefacts, caches
 # ──────────────────────────────────────────────────────────────
@@ -31,9 +48,6 @@ discord_threads.json
 channel_directory.json
 *.prompt_snapshot.json
 .skills_prompt_snapshot.json
-
-# ── Runtime directories ──
-gateway/
 
 # ── Hermes-specific runtime artefacts ──
 .hermes_history
@@ -91,9 +105,11 @@ profiles/*/auth.json
 profiles/*/auth.lock
 profiles/*/cron/.tick.lock
 profiles/*/cron/.jobs.lock
+profiles/*/gateway_state.json
 profiles/*/discord_threads.json
 profiles/*/processes.json
 profiles/*/models_dev_cache.json
+profiles/*/channel_directory.json
 profiles/*/.skills_prompt_snapshot.json
 
 # ── Agent source tree (tracked in its own repo inside hermes-agent) ──
@@ -114,3 +130,10 @@ Thumbs.db
 *.swo
 *~
 .~*
+```
+
+## Validation checklist
+After writing this file:
+1. `git status --short` inside the target dir
+2. Confirm no `*.env`, `auth.json`, `*.lock`, `*.db`, `*.log`, `sessions/`, or `cache/` entries are staged
+3. Confirm `profiles/*/home/…` vendored paths (e.g. Go module cache) are absent from the index

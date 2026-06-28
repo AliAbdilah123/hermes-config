@@ -1,0 +1,47 @@
+{
+  "jobs": [
+    {
+      "id": "21d0f5158266",
+      "name": "hermes backup to github",
+      "prompt": "You are a routine Hermes backup job. Run `bash ~/.hermes/scripts/backup-to-github.sh` and report the stdout.",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 2 * * *",
+        "display": "0 2 * * *"
+      },
+      "schedule_display": "0 2 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-06-28T16:43:05.667937+00:00",
+      "next_run_at": "2026-06-29T02:00:00+00:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": {
+        "platform": "discord",
+        "chat_id": "1520830473247395952",
+        "chat_name": "Ali's workflow / #t-general / I want to backup `~/.hermes` periodically to github. updated configurations i...",
+        "thread_id": "1520830473247395952"
+      },
+      "enabled_toolsets": null,
+      "workdir": null
+    }
+  ],
+  "updated_at": "2026-06-28T16:43:05.670908+00:00"
+}
