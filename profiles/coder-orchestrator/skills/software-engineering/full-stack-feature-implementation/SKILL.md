@@ -1,0 +1,106 @@
+---
+name: full-stack-feature-implementation
+description: Implementing real features in an existing full-stack project, especially when env-driven integrations, frontend builds, backend services, and deployment verification are involved.
+---
+
+# Full-Stack Feature Implementation
+
+Use this skill when the user asks to update an existing project with a real implementation rather than stubs, mocks, or a plan. The goal is a working artifact backed by tool output.
+
+## Workflow
+
+1. **Locate the project and inspect context**
+   - Check the project tree, current branch/status, package scripts, backend/frontend layout, docs/specs, and recent commits.
+   - Search for `TODO`, `stub`, `mock`, `placeholder`, `not implemented`, and integration-specific feature flags.
+   - If the user references past work or an ongoing project, use session recall before asking them to repeat details.
+   - When the user asks to use kanban/subagents for a build, create a session `todo` board first, then dispatch scoped subagents after the project shell exists. Keep final integration, test/build fixes, deployment, and public verification in the parent agent. See `references/kanban-subagent-web-mvp-build.md`.
+   - When the user asks “where is X?” in a full-stack app, return a location map instead of a generic explanation: identify route registration, page/component, client/provider setup, env/config gate, backend middleware/API verification, and any public URL path. Use exact paths and line references; inspect only key names/examples for auth/env and never print secrets.
+   - When the task is an update to a PRD/review document or previously generated HTML artifact, find and edit the canonical file under the project `docs/` path rather than creating a new duplicate. Preserve the public-review convention: publish it under `/prd/<name>` via the nginx-served PRD directory/symlink, then verify both HTTP 200 and that the public response contains the newly requested content.
+
+- Treat env values as present but secret
+- Do not read or print secret-bearing `.env` contents.
+- Prefer `.env.example`, config code, and key-name-only inspection when needed.
+- When asked to populate missing env variables, audit key names from source/config loaders and env files without printing values; exclude generated directories like `dist` and `node_modules`, add safe placeholders/comments for missing optional keys, and verify no referenced keys remain missing.
+- If the project has provided env values but code does not load them, implement safe env loading without leaking values.
+   - When the user asks what runtime app/client ID or public integration config is used, inspect the deployed service definition and config-loading aliases, then extract only allowlisted non-secret keys (`*_APP_ID`, `*_CLIENT_ID`, redirect URIs, public URLs, graph versions). Never dump full env files or expose secrets.
+
+3. **Replace stubs with real integration paths**
+   - Identify where mocks/degraded behavior are gated by config.
+   - Wire runtime config through the actual app startup path, dev scripts, frontend API base handling, and service entrypoints.
+   - Preserve local degraded/mock paths only as explicit fallback behavior for missing config; do not let fallback shadow provided env values.
+
+4. **Verify both sides of the stack**
+   - Run frontend typecheck and production build.
+   - Run backend tests and backend build.
+   - When asked whether a frontend has been fully migrated to a design system/library (for example shadcn/ui), audit the actual integration markers, not just visual class names: package dependencies, config files such as `components.json`/Tailwind config, generated `components/ui/*` files, imports/usages, and remaining custom CSS. Report partial restyles honestly as partial migrations.
+   - Run test scripts as defined by the project first. Do not append Jest-only flags like `--runInBand` to Vitest commands; if an extra runner flag fails, rerun the project’s native test command before drawing conclusions.
+   - For live services, inspect service definitions and active status when relevant.
+   - When wiring a project-level `.env` into a deployed systemd service, prefer `EnvironmentFile=/path/to/project/.env` over copying secret values into the unit. Verify with `systemctl show <service> -p EnvironmentFiles -p ActiveState` and never print full env contents.
+   - Before copying a frontend build for deployment, verify the actual web-server alias/root currently serving the public URL (for example with nginx config/search plus a curl of the public index asset names). Do not rely only on docs that may point at an old deploy directory. For this user's nginx layout, PRDs commonly live under `/usr/share/nginx/html/prds/`, while generic project SPAs under `/projects/<slug>/` may be served from `/var/www/html/projects/<slug>/`.
+   - After copying build artifacts, curl the public index and referenced JS/CSS assets to confirm the deployed hashes changed and return 2xx. For Vite SPAs whose index only has an empty root element, verify app-specific text inside the deployed JS bundle instead of expecting it in `index.html`.
+   - For browser-only media export apps using FFmpeg.wasm, deploy `@ffmpeg/core` assets under the app base path and add COOP/COEP/CORP headers on the app route before trusting export behavior. See `references/vite-ffmpeg-wasm-browser-export.md`.
+   - When improving browser-only FFmpeg export speed, do not jump to a mobile/native rewrite first. Inspect generated args and implement a visible export strategy choice when appropriate: **Fast** default (`-ss` before `-i` plus `-c copy`, keyframe-near cuts) and **Exact** option (post-input seek plus re-encode for frame-accurate boundaries). Update command previews, progress copy, tests, production build, deployed bundle markers, and public UI screenshot/DOM verification.
+   - For apps deployed under a subpath (for example `/projects/<app>/`), verify any hard reload/redirect helpers after auth changes resolve routes against the deployed base path. `window.location.assign('/')` goes to the host root, not the SPA basename; use `import.meta.env.BASE_URL` or an equivalent base-aware helper for logout redirects.
+   - For visual-only frontend fixes, add a lightweight browser-level verification after deployment: use a headless browser screenshot when the normal browser tool is unavailable, then inspect the resulting image for the requested visual qualities. Keep this as a visual QA supplement, not a replacement for build/tests and public asset verification.
+   - For responsive mobile topbar/header simplification, check both public/site and dashboard/app-shell topbars. Preserve only mobile-essential controls in the visible topbar (brand/home, auth or notification/profile, required context switchers), move/hide secondary controls (dashboard shortcut, theme, language, long profile name), and verify with a narrow mobile screenshot that there is no extra navigation row or horizontal overflow. See `references/mobile-topbar-responsive-simplification.md`.
+   - If deployment or restart needs elevated/destructive action and is blocked, report that clearly rather than claiming production was updated.
+
+5. **Report concise grounded results**
+   - List changed files, exact verification commands, and pass/fail outcomes.
+   - Call out any blocked steps separately from completed implementation.
+   - For this user, when the work is a feature or fix implementation, end the final response with the project’s public link whenever a public URL exists or can be determined. If no project/public deployment URL applies, say so briefly rather than inventing one.
+- When publishing or updating a PRD/review HTML artifact for this user, avoid stale-cache confusion: publish a versioned/cache-busted URL or a fresh filename when appropriate, then `curl` the public URL and verify it contains the specific newly added text before finalizing.
+
+## Pitfalls
+
+- Do not stop after a minimal code edit; verify with real builds/tests.
+- When updating PRD/review HTML artifacts from user corrections, make the corrected concept visibly explicit using the user's exact terminology in headings/cards/schema/API sections. Do not rely on camelCase code blocks or scattered mentions if the user asked for an entity/concept; add a standalone section or prominent card (for example, "Status Flow entity") and verify the public page contains those exact visible labels.
+- Do not reveal `.env` values in logs, summaries, or tool output.
+- For payment-provider hookups such as Xendit, avoid routine smoke tests that create live provider-side invoices/charges unless the user explicitly asks for a live transaction; use fake-server integration tests plus service health checks instead. When smoke-testing checkout after an env refresh, prefer non-destructive quote/config endpoints and verify both known-good IDs and bad IDs: bad IDs should return controlled 4xx JSON errors, not panics/502s.
+- When migrating one project to a known local stack, keep that project’s git repo/current upstream commit as the source of truth for application/UI code. Do not wholesale-copy a different project’s working tree just because it already has the target stack; port only the backend/runtime seams and explicitly audit remaining diffs against the source repo.
+- Treat “migration” as distinct from “new project implementation”: clone/preserve the source project as the target and migrate it in place or on a migration branch. Use boilerplate/reference projects only for patterns unless the user explicitly asks to rebuild from boilerplate.
+- When a migration plan contains open decisions, update the plan with user answers before implementing, regenerate any public review artifact, then execute from the corrected plan.
+- Do not treat `command not found` as a durable project fact; try the repo’s package-manager shim or Corepack when available.
+- When migrating a cloned project to a local stack, preserve the cloned repo's application/frontend source of truth. Do not copy a donor project's UI just because it already has the target runtime; port only runtime seams, then verify rendered DOM markers from the source UI through the public path.
+- When migrating a Cloudflare/Neon/Stack Auth monorepo to the local Go + SQLite + Vite stack, first enumerate the frontend API-client surface and implement those endpoints in the local backend before chasing full backend parity. For Vite SPAs deployed under `/projects/<slug>/`, set both React Router basename and Vite `base`; then verify the public `index.html` references JS/CSS under the same subpath and those assets return 200. See `references/self-flow-cloudflare-to-local-go-sqlite-migration.md`.
+- For browser-only FFmpeg.wasm exports in Vite SPAs, do not rely on a CDN core URL or generic route handling. Ship `ffmpeg-core.js`/`.wasm` under the Vite `public/` base path, serve them under the same deployed subpath, add COOP/COEP/CORP headers, and verify both core files return 200. See `references/vite-ffmpeg-wasm-browser-export.md`.
+- For video/audio editor UIs, avoid letting source-file metadata consume the clipping workspace. Put file info directly below the preview in a closed-by-default accordion/details element unless the user explicitly asks for always-visible metadata.
+- When a user reports a generic UI error like “export failed,” preserve and surface the underlying runtime error in the UI while also mapping known deployment causes (missing isolation headers, missing WASM/core asset) to actionable text.
+- For subpath-deployed SPAs, do not use host-root hard redirects such as `window.location.assign('/')` after logout unless the host root is intentionally the app. React Router links are basename-aware, but browser hard reloads are not; route signed-out users to an app auth path resolved against the Vite/base public path.
+- When verifying a small scoped change in a repo with known broad lint debt, run the scoped tests and production build even if full `npm run lint` fails on unrelated pre-existing files. Report the lint failure as unrelated instead of fixing broad lint debt during a visual/UI task.
+- For Instagram publishing/scheduling integrations, do not stop at Instagram Basic Display OAuth (`api.instagram.com/oauth/authorize`, `user_profile,user_media`). Meta publishing flows generally need Facebook Login + Graph API Page discovery (`/me/accounts` with `instagram_business_account`) and callback query params that the frontend actually handles.
+- When replacing a local-stack no-auth fallback with email/password auth, make the fallback a real session client (not just UI forms): backend auth tables/endpoints, token/cookie validation in `currentUser`, frontend `useSession` reactivity, API token wiring, targeted auth tests, and public API smoke tests.
+- When a local Go + SQLite dashboard creates tasks for a selected date, trace whether the frontend drops `goalId` under `createForDate` and whether the backend only stamps `date` without linking a Daily goal. Fix both sides: preserve explicit goal IDs, otherwise find or auto-create the Daily goal for that date, attach subtasks, implement ignored batch payloads (`newSubtasks`, `existingSubtaskIds`, goal `newTasks`/selected task IDs), and smoke through the public subpath. See `references/local-go-sqlite-dashboard-date-task-auth.md`.
+- When implementing multi-tenant registration in local Go + SQLite apps, require registration to create user + tenant + owner membership transactionally, derive tenant context from the authenticated session, scope tenant-owned SQL by `tenant_id`, add first-login tenant rename UI, and provide owner/admin invite endpoints. See `references/local-go-sqlite-multitenant-registration.md`.
+- When a migrated app still has a demo/admin workspace fallback, keep it strictly unauthenticated/demo-only. A newly signed-up authenticated user with no persisted program membership must remain a basic user (`isSuperAdmin: false`, `programs: []`) and must not inherit synthetic program `admin`, `manager`, or `member` roles. See `references/local-auth-basic-user-role-default.md`.
+
+## References
+
+- See `references/env-population-audit.md` for safely populating missing app-referenced env keys across root/backend and frontend env files without leaking secret values.
+- See `references/brand-organizer-env-driven-update.md` for a concrete example of wiring `.env` loading into a React/Vite + Go/SQLite project and verifying without leaking secrets.
+- See `references/runtime-config-lookup.md` for safely answering “which app/client ID/config value is this deployed project using?” by inspecting service env/config aliases with a non-secret allowlist.
+- See `references/brand-organizer-upstream-diff-migration.md` for migrating new upstream Brand Organizer TS/Cloudflare commits into the local React/Vite + Go/SQLite stack without blindly copying incompatible Worker/Neon changes.
+- See `references/brand-organizer-parity-audit.md` for checking parity between the migrated React/Vite + Go/SQLite stack and upstream TS/Cloudflare, including UI/BE gap categories and verification/reporting format.
+- See `references/brand-organizer-parity-implementation.md` for implementing audited upstream parity gaps in the local Go/SQLite stack: test-first route/UI parity, auth/analytics shims, local SQLite equivalents for Worker/Graph/queue features, and deployment pitfalls.
+- See `references/socialzen-go-sqlite-migration.md` when cloning Scheduling-Post as SocialZen and fully migrating/deploying it from the Cloudflare/Neon stack to the local Go/SQLite + Vite `/projects/socialzen` stack using `/var/lib/socialzen/.env` safely.
+- See `references/self-flow-cloudflare-to-local-go-sqlite-migration.md` when migrating a cloned Cloudflare Worker + Neon/Stack Auth monorepo to the local Go + SQLite + Vite stack, preserving web UI source, replacing cloud-auth seams locally, configuring Vite subpath assets, and leaving mobile packages untouched.
+- See `references/komuna-local-stack-env-migration.md` when migrating Komuna to the local Go/SQLite + Vite stack while preserving original/env-compatible key names, project-root `.env`, systemd `EnvironmentFile`, and public nginx verification.
+- See `references/komuna-source-visual-parity-correction.md` when a Komuna migration looks unlike the cloned/Vercel app; it covers preserving `apps/web` as source of truth, subpath Router basename, dark/logged-in runtime parity, fallback pitfalls, local API DTO compatibility, and mobile DOM verification.
+- See `references/local-project-rename-deployment.md` when renaming an already-deployed local project and needing to update code, env paths, SQLite filenames, systemd service/unit names, nginx public paths, deployed static assets, redirects, and public verification without leaking `.env` values.
+- See `references/local-project-rename-deployment.md` when renaming an already-deployed local project and needing to update code, env paths, SQLite filenames, systemd service/unit names, nginx public paths, deployed static assets, redirects, and public verification without leaking `.env` values.
+- See `references/meta-instagram-oauth-for-publishing.md` when an Instagram publishing/scheduling connect flow must use Facebook Login + Graph API rather than Instagram Basic Display OAuth.
+- See `references/local-project-rename-deployment.md` when renaming an already-deployed local project and needing to update code, env paths, SQLite filenames, systemd service/unit names, nginx public paths, deployed static assets, redirects, and public verification without leaking `.env` values.
+- See `references/socialzen-source-of-truth-correction.md` for the corrective workflow when a migration accidentally copied frontend/UI files from another project instead of preserving the target repo as source of truth.
+- See `references/komuna-local-stack-env-migration.md` when migrating Komuna to the local Go/SQLite + Vite stack while preserving original/env-compatible key names, project-root `.env`, systemd `EnvironmentFile`, and public nginx verification.
+- See `references/komuna-source-of-truth-local-stack-correction.md` when a Komuna local-stack migration risks or accidentally uses `komuna-old`/donor UI instead of preserving the cloned repo's `apps/web`; it covers Vite basename, no-auth fallback, API compatibility endpoints, and DOM-level blank-page verification.
+- See `references/komuna-local-stack-source-preserving-migration.md` for a compact end-to-end Komuna migration pattern: confirmed decisions, local auth fallback without Better Auth relative-URL crashes, crypto.randomUUID polyfill, env aliases, nginx/systemd shape, and DOM marker verification.
+- See `references/meta-instagram-oauth-for-publishing.md` when an Instagram publishing/scheduling connect flow must use Facebook Login + Graph API rather than Instagram Basic Display OAuth.
+- See `references/socialzen-facebook-page-crossposting.md` when adding Facebook Page posting/crossposting to SocialZen’s local Go/SQLite + Vite stack; it covers `facebook_pages`, `post_targets`, all-pages OAuth discovery, UI pitfalls, and verification.
+- See `references/socialzen-inline-ui-autocomplete-go-stack.md` when a SocialZen feature plan references the old Cloudflare Worker/KV stack but the live project is the local Go/SQLite + Vite stack; it covers architecture translation, correct Go-module commands, deployment, and CDP-based headless browser QA fallback.
+- See `references/xendit-env-driven-payment-hookup.md` when replacing mock Xendit billing with env-driven real invoice checkout in a Go/API project and deploying it through systemd safely.
+- See `references/local-go-vite-env-refresh-smoke.md` when the user has updated `.env` and asks to refresh a deployed local Go API + Vite app; it covers safe systemd/nginx refresh, non-secret env handling, public smoke tests, and panic checks.
+- See `references/local-go-sqlite-email-password-auth.md` when adding first-party email/password auth to a migrated local Go+SQLite + React/Vite app that previously had a cloud-auth/no-auth fallback.
+- See `references/komuna-basic-signup-landing-redirect.md` when fixing Komuna local-stack sign-up/workspace behavior: newly-created users must remain basic authenticated users with no synthesized program/admin roles, sign-up should default to the landing page, and `/dashboard` should redirect no-workspace basic users to `/`.
+- See `references/subpath-spa-logout-redirects.md` when logout or auth redirects in a Vite/React SPA deployed under `/projects/<app>/` accidentally land on the host root instead of the app; it covers `import.meta.env.BASE_URL`, caller updates, tests, and public verification.
+- See `references/full-stack-auth-location-map.md` when the user asks where a login/auth integration lives; it covers mapping frontend routes, provider UI, client setup, env gates, backend JWT verification, and public path without exposing secrets.
+- See `references/react-vite-shadcn-migration.md` when a React/Vite frontend must be migrated from custom widgets/CSS to a real shadcn-style setup with Tailwind v4, `components.json`, `cn`, and Radix-backed UI primitives.

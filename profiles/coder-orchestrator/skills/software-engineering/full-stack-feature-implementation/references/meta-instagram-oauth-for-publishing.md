@@ -1,0 +1,60 @@
+# Meta/Facebook OAuth for Instagram Publishing
+
+Use this reference when a React/Vite + Go backend project says "Instagram connect" works in mock/degraded mode but real accounts still cannot connect for scheduling/publishing.
+
+## Durable lesson
+
+For third-party Instagram scheduling/publishing, do **not** wire only Instagram Basic Display OAuth (`https://api.instagram.com/oauth/authorize`, scopes like `user_profile,user_media`). Meta publishing flows require **Facebook Login + Facebook Graph API** because the app must discover the Facebook Page and its linked Instagram Professional account.
+
+## Backend shape
+
+- OAuth start should redirect to Facebook Login:
+  - `https://www.facebook.com/{graphVersion}/dialog/oauth`
+- Scopes should include the Page + Instagram permissions needed by the product, commonly:
+  - `pages_show_list`
+  - `pages_read_engagement`
+  - `instagram_basic`
+  - `instagram_content_publish`
+  - `business_management` when the app needs business/Page access discovery
+- Exchange the callback `code` through Facebook Graph:
+  - `GET https://graph.facebook.com/{graphVersion}/oauth/access_token?...`
+- Discover Instagram accounts from the user’s Pages:
+  - `GET https://graph.facebook.com/{graphVersion}/me/accounts?fields=id,name,access_token,instagram_business_account{id,username,profile_picture_url}`
+- Save the `instagram_business_account` data as the connected publishing account.
+- If no Page has an `instagram_business_account`, redirect to a user-facing error such as `no_ig_business_account` rather than returning a raw callback JSON error.
+
+## Frontend/path pitfalls
+
+- Callback redirects must match the frontend route/query handling. If the settings page expects `?tab=accounts&connected=1`, do not redirect to stale params like `?instagram=connected`.
+- Login redirects in frontend helper functions should respect `import.meta.env.BASE_URL`; hardcoded `/login` breaks subpath deployments such as `/projects/brand-organizer/`.
+
+## Env aliases that make deployments less brittle
+
+Support both product-specific and Meta/Facebook key names where possible:
+
+```text
+INSTAGRAM_CLIENT_ID / META_APP_ID / FACEBOOK_APP_ID
+INSTAGRAM_CLIENT_SECRET / META_APP_SECRET / FACEBOOK_APP_SECRET
+INSTAGRAM_CONNECT_REDIRECT_URI / INSTAGRAM_REDIRECT_URI / FACEBOOK_REDIRECT_URI / META_REDIRECT_URI
+FACEBOOK_GRAPH_VERSION / META_GRAPH_VERSION
+OAUTH_STATE_SECRET
+```
+
+## Verification pattern
+
+Add a backend test that configures fake app credentials and asserts `/api/instagram/connect/start` returns an auth URL containing:
+
+- `https://www.facebook.com/{version}/dialog/oauth`
+- `pages_show_list`
+- `instagram_basic`
+- `instagram_content_publish`
+
+Then run the standard stack verification:
+
+```bash
+cd apps/backend-go && go test ./... && go build ./...
+corepack pnpm --filter frontend typecheck
+corepack pnpm --filter frontend build
+```
+
+Do not claim live deployment until the systemd binary/frontend webroot are actually replaced and the service is restarted/smoke-tested.

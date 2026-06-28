@@ -1,0 +1,118 @@
+# ──────────────────────────────────────────────────────────────
+# ~/.hermes  –  Sensitive data, runtime artefacts, caches
+# ──────────────────────────────────────────────────────────────
+
+# ── Secrets / tokens / auth ──
+.env
+auth.json
+auth.lock
+shared/nous_auth.json
+shared/nous_auth.lock
+*.secret
+*.token
+*.key
+*.pem
+
+# ── Databases / state ──
+*.db
+*.db-wal
+*.db-shm
+state.db*
+kanban.db*
+
+# ── Locks ──
+*.lock
+
+# ── Runtime JSON state (non-config) ──
+gateway_state.json
+gateway.lock
+processes.json
+discord_threads.json
+channel_directory.json
+*.prompt_snapshot.json
+.skills_prompt_snapshot.json
+
+# ── Runtime directories ──
+gateway/
+
+# ── Hermes-specific runtime artefacts ──
+.hermes_history
+gateway.pid
+.update_check
+interrupt_debug.log
+
+# ── Logs ──
+**/*.log
+**/*.diag.log
+logs/
+**/logs/
+
+# ── Sessions (private conversation history) ──
+sessions/
+**/sessions/
+
+# ── Caches ──
+cache/
+audio_cache/
+image_cache/
+*.cache
+context_length_cache.yaml
+provider_models_cache.json
+models_dev_cache.json
+ollama_cloud_models_cache.json
+*.recommended_cache.json
+*.openrouter_model_metadata.json
+
+# ── Downloaded / compiled / vendored artefacts ──
+bin/
+node/
+lsp/node_modules/
+**/node_modules/
+**/venv/
+package-lock.json
+uv.lock
+flake.lock
+*.lock
+
+# ── Large runtime directories not needed for backup ──
+home/
+sandboxes/
+pairing/
+profiles/*/home/
+profiles/*/sandboxes/
+profiles/*/pairing/
+profiles/*/cache/
+profiles/*/lsp/node_modules/
+profiles/*/bin/
+profiles/*/state.db*
+profiles/*/gateway.lock
+profiles/*/.env
+profiles/*/auth.json
+profiles/*/auth.lock
+profiles/*/cron/.tick.lock
+profiles/*/cron/.jobs.lock
+profiles/*/gateway_state.json
+profiles/*/discord_threads.json
+profiles/*/processes.json
+profiles/*/models_dev_cache.json
+profiles/*/channel_directory.json
+profiles/*/.skills_prompt_snapshot.json
+
+# ── Agent source tree (tracked in its own repo inside hermes-agent) ──
+hermes-agent/
+
+# ── Cron runtime files ──
+cron/.tick.lock
+cron/.jobs.lock
+cron/output/
+
+# ── Plan-specific artifacts ──
+*.bak.*
+
+# ── OS / editor junk ──
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.~*
