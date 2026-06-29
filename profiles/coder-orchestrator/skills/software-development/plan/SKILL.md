@@ -316,6 +316,21 @@ git commit -m "type: description"
 
 ## Common Mistakes
 
+### Feature breakdown requests need grouped implementation sections
+
+When the user asks to "break down" an existing implementation plan "by feature" or "group the implementation plan on each feature," update the review artifact into feature-group sections instead of only adding more prose. Each feature group should include:
+- outcome/capabilities,
+- backend/data tasks,
+- frontend/UX tasks,
+- tests and acceptance checks,
+- MVP/V1/V2 or other phase label.
+
+Keep the original full-scope plan intact, but make it easier to review feature-by-feature. Update both the canonical markdown/source plan and the published styled HTML, then verify the public/cache-busted URL contains exact new feature headings.
+
+### Over-narrowing a plan after recent corrections
+
+When the user asks for an implementation plan "based on" an existing PRD/review artifact after a narrower correction was discussed, do not make the plan only about the latest correction. Re-read or inspect the source artifact and cover the full product scope: data model, backend/API, frontend UX, automation/jobs, integrations, testing, deployment, risks, and phased acceptance criteria. The recent correction should appear as one module or principle inside the broader plan, not as the whole plan.
+
 ### Vague Tasks
 
 **Bad:** "Add authentication"

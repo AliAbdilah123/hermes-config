@@ -407,6 +407,8 @@ discord:
   - '1520452705133527231'
   - '1518958014626005154'
   - '1520812080180232312'
+  - '1520955074334167130'
+  - '1520945224757678160'
   auto_thread: true
   thread_require_mention: false
   history_backfill: true

@@ -263,14 +263,14 @@
     "archived_at": null,
     "created_at": "2026-06-18T15:29:18.028685+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-06-28T16:04:58.196348+00:00",
-    "last_used_at": "2026-06-28T16:05:51.251638+00:00",
-    "last_viewed_at": "2026-06-28T16:05:51.247783+00:00",
-    "patch_count": 104,
+    "last_patched_at": "2026-06-29T00:44:39.277842+00:00",
+    "last_used_at": "2026-06-29T01:04:43.483452+00:00",
+    "last_viewed_at": "2026-06-29T01:04:43.477791+00:00",
+    "patch_count": 119,
     "pinned": false,
     "state": "active",
-    "use_count": 55,
-    "view_count": 55
+    "use_count": 68,
+    "view_count": 68
   },
   "gif-search": {
     "archived_at": null,
@@ -381,13 +381,13 @@
     "created_at": "2026-06-22T05:30:56.144122+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-06-28T15:34:20.283180+00:00",
-    "last_viewed_at": "2026-06-28T15:34:20.279263+00:00",
+    "last_used_at": "2026-06-29T01:04:28.131310+00:00",
+    "last_viewed_at": "2026-06-29T01:04:28.127232+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 8,
-    "view_count": 8
+    "use_count": 12,
+    "view_count": 12
   },
   "hermes-agent-skill-authoring": {
     "archived_at": null,
@@ -571,6 +571,32 @@
     "use_count": 0,
     "view_count": 0
   },
+  "messaging-gateway-triage": {
+    "archived_at": null,
+    "created_at": "2026-06-29T01:06:19.209523+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-06-29T01:06:30.313205+00:00",
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 1,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
+  "multi-agent-delivery-workflows": {
+    "archived_at": null,
+    "created_at": "2026-06-28T23:13:52.879956+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-06-28T23:14:14.915348+00:00",
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 1,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
   "nano-pdf": {
     "archived_at": null,
     "created_at": "2026-06-25T05:56:09.427948+00:00",
@@ -679,14 +705,14 @@
     "archived_at": null,
     "created_at": "2026-06-26T16:43:38.243882+00:00",
     "created_by": null,
-    "last_patched_at": "2026-06-26T17:47:13.745292+00:00",
-    "last_used_at": "2026-06-28T15:55:09.018434+00:00",
-    "last_viewed_at": "2026-06-28T15:55:08.998955+00:00",
-    "patch_count": 5,
+    "last_patched_at": "2026-06-28T23:40:24.306214+00:00",
+    "last_used_at": "2026-06-29T01:04:19.366805+00:00",
+    "last_viewed_at": "2026-06-29T01:04:19.360151+00:00",
+    "patch_count": 9,
     "pinned": false,
     "state": "active",
-    "use_count": 11,
-    "view_count": 11
+    "use_count": 21,
+    "view_count": 21
   },
   "polymarket": {
     "archived_at": null,
@@ -745,13 +771,13 @@
     "created_at": "2026-06-27T09:31:17.418962+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-06-27T09:31:30.700430+00:00",
-    "last_used_at": "2026-06-28T14:38:59.315378+00:00",
-    "last_viewed_at": "2026-06-28T14:38:59.301068+00:00",
+    "last_used_at": "2026-06-29T01:04:19.345062+00:00",
+    "last_viewed_at": "2026-06-29T01:04:19.335198+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 2,
-    "view_count": 2
+    "use_count": 4,
+    "view_count": 4
   },
   "python-debugpy": {
     "archived_at": null,
@@ -900,14 +926,14 @@
     "archived_at": null,
     "created_at": "2026-06-22T07:20:34.959663+00:00",
     "created_by": null,
-    "last_patched_at": "2026-06-28T07:45:56.430370+00:00",
-    "last_used_at": "2026-06-28T15:50:14.357527+00:00",
-    "last_viewed_at": "2026-06-28T15:50:14.353119+00:00",
-    "patch_count": 15,
+    "last_patched_at": "2026-06-29T00:21:39.170003+00:00",
+    "last_used_at": "2026-06-29T00:15:22.918584+00:00",
+    "last_viewed_at": "2026-06-29T00:15:22.914636+00:00",
+    "patch_count": 17,
     "pinned": false,
     "state": "active",
-    "use_count": 9,
-    "view_count": 9
+    "use_count": 12,
+    "view_count": 12
   },
   "teams-meeting-pipeline": {
     "archived_at": null,
@@ -927,13 +953,13 @@
     "created_at": "2026-06-22T06:47:16.423413+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-06-28T15:32:29.588842+00:00",
-    "last_viewed_at": "2026-06-28T15:32:29.574489+00:00",
+    "last_used_at": "2026-06-29T00:11:29.105516+00:00",
+    "last_viewed_at": "2026-06-29T00:11:29.093575+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 9,
-    "view_count": 9
+    "use_count": 13,
+    "view_count": 13
   },
   "touchdesigner-mcp": {
     "archived_at": null,

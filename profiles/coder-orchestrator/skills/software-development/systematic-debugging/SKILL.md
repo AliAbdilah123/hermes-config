@@ -153,6 +153,16 @@ When a Vite/React production page renders a fallback UI instead of a provider in
 
 See `references/vite-deployed-env-triage.md` for a compact reproduction/fix recipe.
 
+### 4b. SPA Subpath API Routing
+
+When a deployed SPA lives under a subpath (for example `/projects/<app>/`) and login or API actions show generic `request_failed` while the backend is healthy:
+- Compare the root-relative API URL (`/api/v1/...`) against the mounted proxy URL (`/projects/<app>/api/v1/...`). A root-relative request can bypass the app's Nginx location and return 404 or hit the wrong service.
+- Inspect the **served production JS bundle** for API URL construction. A source helper may use `import.meta.env.BASE_URL`, but code like `path.startsWith('/api/') ? path : apiPath(path)` silently skips the base path for the exact API routes that need it.
+- Fix at the API-path helper so all API calls normalize through the base-aware route builder; do not patch individual login calls only.
+- Verify with browser/network evidence that login, `/me`, and post-login workspace/data requests all target `/projects/<app>/api/...` and return 200.
+
+See `references/spa-subpath-api-routing.md` for the detailed checklist and fix pattern.
+
 ### 4c. Browser FFmpeg / Video Export Performance Triage
 
 When a browser video editor/export flow feels slow:

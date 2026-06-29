@@ -14,6 +14,7 @@ Use this reference when a migrated local-stack app previously had cloud auth (Ne
   - `POST /auth/sign-out` deletes the session and clears the cookie.
 - Accept `Authorization: Bearer <token>` and an HttpOnly cookie so both API-client and browser-cookie paths work.
 - Update the app's `currentUser(request)` equivalent to prefer a verified session user before falling back to the local dev/demo user.
+- Scope every persisted collection read/write/mutation by the resolved request user ID. Creation helpers, nested payload helpers (for example goal-created tasks or task-created subtasks), date auto-created daily goals, bulk updates, reorder, subtask counts, and generic CRUD must use the signed-in user's ID. The demo user fallback should apply only to unauthenticated/demo requests, not authenticated accounts.
 - Do not print auth tokens in smoke-test commands or final summaries. If shell quoting would expose tokens in process args/logs, use a short Python/stdlib script that keeps the token in memory.
 
 ## Frontend pattern
