@@ -158,5 +158,7 @@ Save the report to `{output_dir}/report.md`.
 - **Scroll through long pages** — content below the fold may have rendering issues.
 - **Test navigation flows** — click through multi-step processes end-to-end.
 - **Check responsive behavior** by noting any layout issues visible in screenshots.
+- **For toggle QA, verify the underlying state/data semantics, not just the visual label.** Example: an IDR/USD or language/currency toggle may change `Rp`/`$` formatting while failing to apply an exchange rate, failing to update already-prefixed prices, or failing to pass locale into listing cards. Inspect the formatter/call sites and run a minimal formatter probe or relevant unit test when visual testing alone is ambiguous.
+- **Triangulate feature behavior with source and built assets when needed.** If the UI is slow, auth-gated, or hard to drive interactively, use static source search plus targeted tests/probes to answer the specific QA question; report the confidence and any limits instead of pretending a full click-through happened.
 - **Don't forget edge cases**: empty states, very long text, special characters, rapid clicking.
 - When reporting screenshots to the user, include `MEDIA:<screenshot_path>` so they can see the evidence inline.

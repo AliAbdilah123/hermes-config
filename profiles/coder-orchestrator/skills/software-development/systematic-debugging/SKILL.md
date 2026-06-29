@@ -193,6 +193,17 @@ search_files("function_name(", path="src/", file_glob="*.py")
 search_files("variable_name\\s*=", path="src/", file_glob="*.py")
 ```
 
+### 5a. Frontend/API Shape Drift (`.filter` / `.map` is not a function)
+
+When a React/Vite page shows a runtime collection error such as `t.filter is not a function`:
+- Trace the value back to the `apiClient.get<T>()` boundary; the generic type may not match runtime JSON.
+- Probe the real deployed/local endpoint and inspect the top-level JSON shape. A common mismatch is frontend expecting `Item[]` while the API returns `{ data: Item[] }` or a paginated envelope.
+- Fix with a small typed response normalizer/unwrap helper at the API consumption boundary, not by hiding the symptom with optional chaining around array methods.
+- Add a regression test whose mock uses the real API envelope shape that previously failed.
+- Verify the targeted test, build/typecheck, and if deployed, fetch the served bundle/API to confirm the deployed artifact includes the normalizer and the endpoint shape is understood.
+
+See `references/frontend-api-shape-drift.md` for a compact recipe and minimal TypeScript pattern.
+
 ### 6. External OAuth Provider Errors
 
 **WHEN a social login/connect flow fails with provider errors (Meta/Facebook/Instagram, Google, etc.):**

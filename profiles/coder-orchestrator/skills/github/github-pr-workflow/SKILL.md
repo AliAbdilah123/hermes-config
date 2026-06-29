@@ -109,11 +109,11 @@ When the user explicitly asks to push all updated code to `master`/`main` instea
 2. Inspect the change set before staging (`git diff --stat`, targeted diffs). Do not print secret-bearing `.env` values; if env files are already tracked and modified, summarize keys/redacted diffs only.
 3. Run the project’s available tests/typechecks/builds before committing. Treat warnings separately from failing exit codes.
 4. Remove or ignore generated artifacts created by verification commands before staging (for example Go binaries produced by `go build` inside an app directory, local DBs, caches, `dist/` if ignored). Add durable generated-artifact ignores to `.gitignore` when appropriate.
-5. `git fetch origin <branch>` before committing/pushing so the final status shows whether the local branch is based on current remote.
+5. `git fetch origin <branch>` before committing/pushing so the final status shows whether the local branch is based on current remote. If this returns `fatal: couldn't find remote ref <branch>`, do not stop: confirm the local branch and remote heads with `git branch -vv` and `git ls-remote --heads origin`, then proceed with `git push -u origin <branch>` if the local branch is intentionally new.
 6. Commit with a conventional message that describes the bundled updates.
-7. Push the exact branch requested: `git push origin master` or `git push origin main`.
+7. Push the exact branch requested: `git push origin master` or `git push origin main`. For a current local feature/migration branch with no upstream yet, push it explicitly with `git push -u origin $(git branch --show-current)` unless the user specifically requested pushing to `master`/`main`.
 8. Verify the push, not just the local commit: run `git status --short --branch`, `git ls-remote origin refs/heads/<branch>`, and compare it with `git rev-parse HEAD`.
-9. Final response should include the branch, commit short SHA, verification commands that passed, and any project public link the user expects.
+9. Final response should include the branch, commit short SHA, verification commands that passed, any verification commands that failed with a concise reason, and any project public link the user expects.
 
 ## 3. Pushing and Creating a PR
 

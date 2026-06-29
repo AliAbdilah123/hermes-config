@@ -211,14 +211,14 @@
     "archived_at": null,
     "created_at": "2026-06-25T05:56:09.323354+00:00",
     "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
-    "patch_count": 0,
+    "last_patched_at": "2026-06-29T05:25:47.592304+00:00",
+    "last_used_at": "2026-06-29T05:17:03.075657+00:00",
+    "last_viewed_at": "2026-06-29T05:17:03.069807+00:00",
+    "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "evaluating-llms-harness": {
     "archived_at": null,
@@ -263,14 +263,14 @@
     "archived_at": null,
     "created_at": "2026-06-18T15:29:18.028685+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-06-29T00:44:39.277842+00:00",
-    "last_used_at": "2026-06-29T01:04:43.483452+00:00",
-    "last_viewed_at": "2026-06-29T01:04:43.477791+00:00",
-    "patch_count": 119,
+    "last_patched_at": "2026-06-29T08:30:09.457204+00:00",
+    "last_used_at": "2026-06-29T07:23:07.826073+00:00",
+    "last_viewed_at": "2026-06-29T07:23:07.821533+00:00",
+    "patch_count": 137,
     "pinned": false,
     "state": "active",
-    "use_count": 68,
-    "view_count": 68
+    "use_count": 77,
+    "view_count": 77
   },
   "gif-search": {
     "archived_at": null,
@@ -328,14 +328,14 @@
     "archived_at": null,
     "created_at": "2026-06-22T05:08:02.894036+00:00",
     "created_by": null,
-    "last_patched_at": "2026-06-27T15:25:43.944509+00:00",
-    "last_used_at": "2026-06-27T15:22:22.235544+00:00",
-    "last_viewed_at": "2026-06-27T15:22:22.229380+00:00",
-    "patch_count": 3,
+    "last_patched_at": "2026-06-29T05:54:32.701961+00:00",
+    "last_used_at": "2026-06-29T07:17:41.528477+00:00",
+    "last_viewed_at": "2026-06-29T07:17:41.520689+00:00",
+    "patch_count": 4,
     "pinned": false,
     "state": "active",
-    "use_count": 5,
-    "view_count": 5
+    "use_count": 7,
+    "view_count": 7
   },
   "github-repo-management": {
     "archived_at": null,
@@ -706,13 +706,13 @@
     "created_at": "2026-06-26T16:43:38.243882+00:00",
     "created_by": null,
     "last_patched_at": "2026-06-28T23:40:24.306214+00:00",
-    "last_used_at": "2026-06-29T01:04:19.366805+00:00",
-    "last_viewed_at": "2026-06-29T01:04:19.360151+00:00",
+    "last_used_at": "2026-06-29T07:23:07.834969+00:00",
+    "last_viewed_at": "2026-06-29T07:23:07.809525+00:00",
     "patch_count": 9,
     "pinned": false,
     "state": "active",
-    "use_count": 21,
-    "view_count": 21
+    "use_count": 23,
+    "view_count": 23
   },
   "polymarket": {
     "archived_at": null,
@@ -926,14 +926,14 @@
     "archived_at": null,
     "created_at": "2026-06-22T07:20:34.959663+00:00",
     "created_by": null,
-    "last_patched_at": "2026-06-29T00:21:39.170003+00:00",
-    "last_used_at": "2026-06-29T00:15:22.918584+00:00",
-    "last_viewed_at": "2026-06-29T00:15:22.914636+00:00",
-    "patch_count": 17,
+    "last_patched_at": "2026-06-29T05:25:05.214704+00:00",
+    "last_used_at": "2026-06-29T05:13:06.042772+00:00",
+    "last_viewed_at": "2026-06-29T05:13:06.038717+00:00",
+    "patch_count": 19,
     "pinned": false,
     "state": "active",
-    "use_count": 12,
-    "view_count": 12
+    "use_count": 13,
+    "view_count": 13
   },
   "teams-meeting-pipeline": {
     "archived_at": null,
@@ -953,13 +953,13 @@
     "created_at": "2026-06-22T06:47:16.423413+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-06-29T00:11:29.105516+00:00",
-    "last_viewed_at": "2026-06-29T00:11:29.093575+00:00",
+    "last_used_at": "2026-06-29T07:23:07.839408+00:00",
+    "last_viewed_at": "2026-06-29T07:23:07.830308+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 13,
-    "view_count": 13
+    "use_count": 16,
+    "view_count": 16
   },
   "touchdesigner-mcp": {
     "archived_at": null,

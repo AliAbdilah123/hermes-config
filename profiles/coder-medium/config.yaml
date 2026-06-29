@@ -1,16 +1,20 @@
 model:
+  default: coder-medium
   provider: custom
   base_url: http://localhost:20128/v1
-  default: coder-strong
   api_key: sk-67285f26a531c155-wqkius-97664fd8
 providers: {}
-fallback_providers: []
+fallback_providers:
+- provider: opencode-go
+  model: glm-5.1
+  base_url: https://opencode.ai/zen/go/v1
+  api_mode: chat_completions
 credential_pool_strategies: {}
 toolsets:
 - hermes-cli
 max_concurrent_sessions: null
 agent:
-  max_turns: 10000
+  max_turns: 90
   gateway_timeout: 1800
   restart_drain_timeout: 180
   api_max_retries: 3
@@ -249,7 +253,7 @@ display:
   user_message_preview:
     first_lines: 2
     last_lines: 2
-  interim_assistant_messages: false
+  interim_assistant_messages: true
   tool_progress_command: false
   tool_progress_overrides: {}
   tool_preview_length: 0
@@ -267,7 +271,6 @@ display:
     - context_pct
     - cwd
   copy_shortcut: auto
-  tool_progress: false
 dashboard:
   theme: default
   show_token_analytics: false
@@ -392,24 +395,9 @@ slack:
   allowed_channels: ''
   channel_prompts: {}
 discord:
-  require_mention: false
-  free_response_channels: 1518488407532114062,1519229663681970258
-  allowed_channels:
-  - '1510322701141803199'
-  - '1518954680510578830'
-  - '1518954766594736282'
-  - '1519230057908797500'
-  - '1519229663681970258'
-  - '1520023883854512159'
-  - '1520023633718677606'
-  - '1520216764238270624'
-  - 1520216764238270624:1520217096276021258
-  - '1497608933567631490'
-  - '1520452705133527231'
-  - '1518958014626005154'
-  - '1520812080180232312'
-  - '1520955074334167130'
-  - '1520945224757678160'
+  require_mention: true
+  free_response_channels: ''
+  allowed_channels: ''
   auto_thread: true
   thread_require_mention: false
   history_backfill: true
@@ -451,7 +439,7 @@ matrix:
   free_response_rooms: ''
   allowed_rooms: ''
 approvals:
-  mode: false
+  mode: manual
   timeout: 60
   cron_mode: deny
   mcp_reload_confirm: true
@@ -529,9 +517,7 @@ sessions:
   min_interval_hours: 24
   write_json_snapshots: false
 onboarding:
-  seen:
-    profile_build_offered: true
-    busy_input_prompt: true
+  seen: {}
   profile_build: ask
 updates:
   pre_update_backup: false
@@ -561,10 +547,10 @@ paste_collapse_threshold_fallback: 5
 paste_collapse_char_threshold: 2000
 _config_version: 30
 custom_providers:
-- name: 9router-coder-strong
+- name: coder-medium
   base_url: http://localhost:20128/v1
   api_key: sk-67285f26a531c155-wqkius-97664fd8
-  model: coder-strong
+  model: coder-medium
 
 # ── Fallback Model ────────────────────────────────────────────────────
 # Automatic provider failover when primary is unavailable.
