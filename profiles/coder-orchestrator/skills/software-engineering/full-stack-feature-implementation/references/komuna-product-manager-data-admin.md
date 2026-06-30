@@ -45,7 +45,12 @@ A member assignment should point at the same `UserID` as the row in `auth_users`
 
 ## Pitfalls
 
+## Pitfalls
+
 - Do not assign a program-level manager role with `product_id: null` when the user asked for manager of a product.
 - Do not guess which product if a program has multiple active products; ask the user.
 - Do not print `.env` contents or secrets while locating the database.
 - Host-root `/api/v1` may 404 publicly for Komuna; use `/projects/komuna/api/v1` through nginx.
+- The local Go `/me/workspace` response is consumed by React as camelCase. Product-scoped manager roles must expose `productId` and `productName`; if the Go API returns only `product_id`, manager users can reach the selector but see “No assigned products” even though SQLite data is correct.
+- Manager dashboard subroutes must preserve endpoint-specific envelopes. In particular `/programs/:programId/manage/products/:productId/session-claims` must return `{ "data": [...] }`, not the manager dashboard summary object; otherwise the frontend may crash with minified “e is not iterable” when it iterates `claimsData.data`.
+- After Go API changes, rebuild `/home/ubuntu/projects/komuna/api/server`, restart `komuna-api.service`, then smoke the public nginx path. Rebuilding/deploying the Vite frontend alone does not update the API shape.

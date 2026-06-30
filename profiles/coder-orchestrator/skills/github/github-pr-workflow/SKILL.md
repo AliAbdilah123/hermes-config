@@ -341,7 +341,19 @@ curl -s -X POST \
   -d "{\"query\": \"mutation { enablePullRequestAutoMerge(input: {pullRequestId: \\\"$PR_NODE_ID\\\", mergeMethod: SQUASH}) { clientMutationId } }\"}"
 ```
 
-## 7. Remote Access / Push/Pull Blockers
+## 7. Pull Latest Shared Branch and Restart a Deployed Service
+
+When the user asks to "pull all updates in master/main and restart the service", treat it as a deployment operation, not just a git operation:
+
+1. Identify the repo and runtime service from the project context, then verify with `git status --short --branch`, `git remote -v`, and the service manager (`systemctl cat <service>` / `systemctl status <service>` when systemd is used).
+2. Confirm the working tree is clean before pulling. If uncommitted changes exist, inspect and preserve them before `git pull`; do not overwrite local work silently.
+3. Fetch and fast-forward only: `git fetch origin <branch> --prune && git pull --ff-only origin <branch>`. Report the final commit SHA.
+4. Rebuild the actual deployed artifact before restarting when the service runs a compiled/static artifact rather than the repo directly. Examples: Go API binary copied to `/opt/<app>/`, frontend `dist/` copied to an nginx-served directory, container image rebuilt, etc. Back up the previous runtime artifact when replacing binaries.
+5. Restart via the real service manager (`sudo systemctl restart <service>` for systemd) and verify `systemctl is-active <service>` plus recent logs.
+6. Run smoke checks against the internal service endpoint and the public routed URL if one exists. For this user's projects, include the public project link in the final update.
+7. If tests fail but the runtime build succeeds, do not hide it: deploy only if the requested restart path is otherwise healthy, then clearly report which verification failed and why.
+
+## 8. Remote Access / Push/Pull Blockers
 
 When the repo remote is inaccessible (`Repository not found`, auth denied, or `gh repo view` cannot resolve it), do not let the GitHub blocker erase verified local work, but do not claim an upstream pull/update happened until it is actually fetched.
 

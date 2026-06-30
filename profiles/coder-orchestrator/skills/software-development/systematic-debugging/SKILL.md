@@ -193,7 +193,17 @@ search_files("function_name(", path="src/", file_glob="*.py")
 search_files("variable_name\\s*=", path="src/", file_glob="*.py")
 ```
 
-### 5a. Frontend/API Shape Drift (`.filter` / `.map` is not a function)
+### 4d. SQLite Runtime DB Deleted / Misleading Auth Errors
+
+When a deployed SQLite-backed app suddenly reports duplicate-user errors for brand-new signup attempts, or login succeeds but the next session check is `null`:
+- Inspect the running service's configured DB path and the process file descriptors before restarting. If the DB was deleted while open, `/proc/<pid>/fd` may show `app.db (deleted)`.
+- Recover the live DB from the open file descriptor before restart, then restore the configured runtime DB path with correct ownership.
+- Treat this as two bugs: runtime data-path loss plus auth error masking. Fix auth handlers so only unique constraint failures return `USER_ALREADY_EXISTS`; generic DB/session failures should return explicit 500 errors and must not be ignored.
+- Verify with direct public-route signup, session, signout, login, and session checks using a cookie jar.
+
+See `references/sqlite-runtime-db-recovery-and-auth-errors.md` for commands and the full recovery/fix recipe.
+
+### 5a. Frontend/API Shape Drift (`.filter` / `.map` is not a function`)
 
 When a React/Vite page shows a runtime collection error such as `t.filter is not a function`:
 - Trace the value back to the `apiClient.get<T>()` boundary; the generic type may not match runtime JSON.
@@ -203,6 +213,24 @@ When a React/Vite page shows a runtime collection error such as `t.filter is not
 - Verify the targeted test, build/typecheck, and if deployed, fetch the served bundle/API to confirm the deployed artifact includes the normalizer and the endpoint shape is understood.
 
 See `references/frontend-api-shape-drift.md` for a compact recipe and minimal TypeScript pattern.
+
+### 5b. UI Metric vs. Global Data Count Questions
+
+When a user asks whether a displayed count (for example `18/18 TAKEN`, badge counts, usage counters, quota indicators) implies a global entity count:
+- Treat the screenshot as a symptom label, not proof of the underlying data model. Identify the UI field's source before answering.
+- Distinguish **scoped operational metrics** (session seats taken, pending approvals for one program, per-product capacity) from **global records** (registered users, program members, claims/bookings across the site).
+- Inspect the runtime state or API response that feeds the screen and separately count the relevant global table/list. If the app uses a mock/blob state store, parse the blob and report both the stored display metric and the actual backing records visible in that store.
+- If a displayed count is seeded/demo aggregate data rather than derived from individual records, say so explicitly; do not imply that each unit has a visible row unless verified.
+- Final answer should be concise: “X means scoped metric A, not global count B; verified global count is N; caveat if demo/seeded aggregate.”
+
+### 5c. SQLite JSON-State Role Seeding / Demo Admin Access
+
+When a SQLite-backed app stores auth records in normal tables but product/domain state in a JSON blob (for example `app_state.payload`) and users appear to gain admin/manager dashboards unexpectedly:
+- Inspect auth tables and JSON blob state separately. `auth_users`/sessions answer who can log in; JSON `Members`/`Roles` often answers what dashboards they see.
+- Preserve existing auth identities while seeding: upsert by email/id, then assign them into programs in the blob. Do not overwrite existing users with fixture-only accounts unless requested.
+- Search for fallback workspace/access code that grants default admin/superadmin roles when unauthenticated, no membership exists, or a dev user is active. If present, remove/fix the fallback; changing roles in seed data will not solve automatic admin access.
+- Back up the DB before rewriting the JSON blob, then verify role aggregates and real signed-in `/me/workspace` responses for the intended manager, ordinary user, and superadmin.
+- See `references/sqlite-json-state-role-seeding.md` for the compact recipe and verification checklist.
 
 ### 6. External OAuth Provider Errors
 
@@ -233,6 +261,7 @@ When the issue is a responsive layout regression, especially one described as "n
 - First identify shared layout components used by all affected routes; fix the shared component before duplicating route-level tweaks.
 - Compare against the original/reference implementation, but convert fixed inline dimensions/positions into breakpoint-aware classes rather than restoring rigid values.
 - Verify both the component and its parent wrapper; a responsive child can still fail if the parent is hidden at the wrong breakpoint or uses height classes without a concrete containing height.
+- For data-heavy tables that overlap or clip on phones, inspect fixed table widths, long unwrapped cell contents, and horizontal-scroll state. Prefer a mobile card presentation below phone breakpoints while preserving desktop tables. See `references/responsive-data-table-mobile-cards.md`.
 - Use screenshot-based viewport checks after implementation. See `references/responsive-ui-regression-qa.md` for a compact recipe, including Vite base-path and Chromium `--virtual-time-budget` tips.
 
 ### SPA Auth Provider / Login UI Notes
