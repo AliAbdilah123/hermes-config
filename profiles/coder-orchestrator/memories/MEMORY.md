@@ -4,14 +4,16 @@ When implementing a new project, copy the boilerplate project as the base by def
 §
 For this user's projects, `.env` and `sqlite.db` are placed in each project's directory/root unless specified otherwise.
 §
-The user's current public project host IP is http://168.110.213.104. Do not use the earlier private/local IP 10.0.0.105 as a public project link.
+Public host IP 168.110.213.104 (not the old 10.0.0.105). HTTP on :80, HTTPS on :443 (self-signed cert, /etc/nginx/ssl/). OCI Security List must allow new ports (cannot be done from terminal). See nginx-server-admin skill.
 §
-For migration tasks, do not recreate the target project from the boilerplate by default. Treat migration as porting/converting the existing source project in place or into a cloned target while preserving project identity; use boilerplate only as a reference for stack patterns, not as the base, unless the user explicitly asks.
+For migrations, don't recreate from boilerplate by default; port/convert the source project in place or into a clone, preserving identity. Use boilerplate only as a pattern reference unless user says otherwise.
 §
 For this user, after updating a public PRD/document HTML, publish or provide a versioned/cache-busted URL and verify the public URL contains the specific new text before finalizing; do not rely on a previously shared URL that may be cached.
 §
-Komuna Vite frontend builds from apps/web, so Vite only auto-loads env files in apps/web; root /home/ubuntu/projects/komuna/.env is not auto-loaded. VITE_NEON_AUTH_URL must be exported or copied into apps/web/.env.local before building, otherwise the deployed login falls back to the basic local email/password page.
-§
 Komuna login should use the basic SQLite/local email-password flow by default, not Neon Auth or Google OAuth, unless the user explicitly asks to switch auth providers.
 §
-Discord project default: <#1520812080180232312>=self-flow. Conversations in that channel are about the self-flow project by default unless stated otherwise.
+Discord project default: <#1520812080180232312>=self-flow. Self-flow backend is local Go+SQLite (api/v1/main.go, port 8096, JSON-state-in-SQLite, local email/password auth, deployed at /projects/self-flow/). Previous Node.js implementation preserved in packages/be-serverless+be-services+db. Go API production-hardened 2026-06-30.
+§
+SocialZen: URL http://168.110.213.104/projects/socialzen. Service: systemd socialzen.service, env /home/ubuntu/socialzen/.env, Go source apps/backend-go/. Listen via ADDR env (not PORT), must be ADDR=:8089 (8080=fnb-pos-server). Health: /api/health on :8089.
+§
+Komuna Vite builds from apps/web; root .env not auto-loaded. For local basic auth, VITE_NEON_AUTH_URL must NOT be set during build — if it leaks, auth page flips to broken Neon widget.

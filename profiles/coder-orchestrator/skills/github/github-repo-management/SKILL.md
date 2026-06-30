@@ -513,6 +513,33 @@ for g in json.load(sys.stdin):
     print(f\"  {g['id']}  {g['description'] or '(no desc)':40}  {files}\")"
 ```
 
+## 11. Pulling a Deployed Repo and Restarting Its Service
+
+When the user asks to "pull master/main and restart service", keep it mechanical and verify the real service:
+
+```bash
+# 1) Identify repo + service, then confirm current branch and local changes
+git -C /path/to/repo status --short --branch
+git -C /path/to/repo remote -v
+
+# 2) Pull the requested branch without creating merge commits
+git -C /path/to/repo pull --ff-only origin master   # or main
+
+# 3) Restart the actual runtime manager and verify health
+sudo systemctl restart <service>.service
+systemctl is-active <service>.service
+systemctl status <service>.service --no-pager -l | sed -n '1,12p'
+
+# 4) Verify the public URL and, if available, localhost health endpoint
+curl -I --max-time 10 http://public-host/path/
+curl -sS --max-time 10 http://127.0.0.1:<port>/health
+```
+
+Pitfalls:
+- Do not assume `git pull` deployed new code if systemd runs a copied binary or build artifact outside the repo; check `systemctl cat <service>` for `WorkingDirectory`, `EnvironmentFile`, and `ExecStart`.
+- If `git pull --ff-only` refuses because of local changes, stop and report the dirty files instead of stashing or overwriting without direction.
+- Final response should include pull result, service active state, and the public link checked.
+
 ## Quick Reference Table
 
 | Action | gh | git + curl |

@@ -27,7 +27,8 @@ A deployed app can still generate a bad provider authorize URL when multiple leg
 
 - Prefer canonical provider app id envs over legacy product-specific aliases, e.g. for Meta/Facebook OAuth prefer `META_APP_ID` / `FACEBOOK_APP_ID` / `INSTAGRAM_APP_ID` before a stale `INSTAGRAM_CLIENT_ID` alias.
 - Keep secrets separate from IDs. Do not allow `*_SECRET`, `*_SECRET_ID`, or secret-shaped values to act as `client_id`.
-- Add a regression test that sets both a stale legacy client-id alias and a canonical app id, then asserts config chooses the canonical app id.
+- Do not let unconfigured OAuth providers return a local/mock settings success URL from production endpoints. That masks missing `client_id`/`redirect_uri` as “button bounced back to Settings.” Return an explicit non-2xx `OAUTH_NOT_CONFIGURED`-style API error and make the frontend show a clear message instead of redirecting.
+- Add regression tests for both precedence and unconfigured-provider behavior: with missing app id/redirect URI, the start endpoint must fail explicitly and must not include the provider success redirect as `authUrl`.
 - Update deployment env redirect URIs to the current public project path and restart the running service.
 - Verify end-to-end by checking both the local service endpoint and the public routed endpoint.
 

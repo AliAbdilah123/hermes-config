@@ -203,6 +203,26 @@ When a deployed SQLite-backed app suddenly reports duplicate-user errors for bra
 
 See `references/sqlite-runtime-db-recovery-and-auth-errors.md` for commands and the full recovery/fix recipe.
 
+### 4e. Systemd Restart After `.env` Changes
+
+When the user updates `.env` and asks to restart a deployed Linux service:
+- Inspect the unit (`systemctl cat`) to confirm the actual `EnvironmentFile=` and `WorkingDirectory=`. Do not assume the edited `.env` is the one the service reads.
+- After `systemctl restart`, verify the service after a short delay; it may enter an auto-restart loop even though the restart command returned successfully.
+- If logs show `bind: address already in use`, identify the listener with `ss -ltnp` and compare the app's actual env variable names (`ADDR` vs `PORT`, etc.) before changing ports or killing processes.
+- Fix the persistent env file read by systemd, restart, then verify both unit state and the expected listening socket.
+
+See `references/systemd-service-restart-env-port-triage.md` for commands and pitfalls.
+
+### 4f. Deployed SPA API 502 / Stopped Upstream Service
+
+When a deployed SPA shows an API-load error and the public subpath API returns Nginx `502 Bad Gateway`:
+- Confirm whether the expected upstream service is inactive or the upstream port is unbound before touching application code.
+- Probe both the local upstream route and the public proxied route; a stopped API usually yields local connection failure plus public `502`.
+- Check `systemctl status` and recent `journalctl` logs for the app API service. If it is simply `inactive (dead)`, restart it and verify it stays `active` after a short delay.
+- Verify the exact deployed API prefix after recovery (`/projects/<app>/api/v1/...` vs `/api/...`), because a wrong prefix can still return `404` even when the API is healthy.
+
+See `references/deployed-api-stopped-nginx-502.md` for a compact command recipe.
+
 ### 5a. Frontend/API Shape Drift (`.filter` / `.map` is not a function`)
 
 When a React/Vite page shows a runtime collection error such as `t.filter is not a function`:
@@ -214,6 +234,16 @@ When a React/Vite page shows a runtime collection error such as `t.filter is not
 
 See `references/frontend-api-shape-drift.md` for a compact recipe and minimal TypeScript pattern.
 
+### 5a.1 Frontend/API Unknown Enum Runtime Crash
+
+When a deployed React/Vite page is blank even though HTML/assets return 200, and the browser console shows a render-time lookup error like `Cannot read properties of undefined (reading 'bg')`:
+- Treat frontend DTO unions as hypotheses, not proof. Probe the real deployed API payload for enum-ish fields used as lookup keys (`imageTone`, status, variant, theme, etc.).
+- Compare runtime values against object-map keys. New backend values such as `green`/`blue` can crash code that assumes only `warm`/`cool`/`ink`/`accent`.
+- Fix at the lookup boundary with a safe fallback (`MAP[value] ?? MAP.default`) and, if values are legitimate, add/normalize supported styles/types deliberately.
+- Apply the pattern across similar lookup tables and verify with a real browser/CDP runtime exception check plus a public cache-busted URL.
+
+See `references/frontend-unknown-enum-runtime-crash.md` for the reproduction/fix recipe.
+
 ### 5b. UI Metric vs. Global Data Count Questions
 
 When a user asks whether a displayed count (for example `18/18 TAKEN`, badge counts, usage counters, quota indicators) implies a global entity count:
@@ -223,6 +253,18 @@ When a user asks whether a displayed count (for example `18/18 TAKEN`, badge cou
 - If a displayed count is seeded/demo aggregate data rather than derived from individual records, say so explicitly; do not imply that each unit has a visible row unless verified.
 - Final answer should be concise: “X means scoped metric A, not global count B; verified global count is N; caveat if demo/seeded aggregate.”
 
+### 5b.1 Frontend Filter / API Query Triage
+
+When UI filter pills/tabs visually switch but the results stay on the default set (for example session filters where Ongoing/Past still show Upcoming):
+- First verify the frontend actually sends the selected filter value in the API params; add an interaction test that clicks the filter and asserts the request shape.
+- Probe the active API endpoint directly for each query value and inspect distinct returned item statuses, not just HTTP 200.
+- Check the backend list handler for ignored query params, especially branches that return all rows when pagination params are present.
+- For time-range status, compute with both start and end (`now < start` upcoming, `start <= now < end` ongoing, `now >= end` past); start-only logic can never produce ongoing.
+- If routes use slugs, resolve slug to canonical ID before comparing foreign keys in subresource handlers.
+- Preserve already-correct layouts unless the user explicitly asks for visual changes; fix data/status and dynamic headings only.
+
+See `references/frontend-filter-api-query-triage.md` for a compact reproduction/fix checklist.
+
 ### 5c. SQLite JSON-State Role Seeding / Demo Admin Access
 
 When a SQLite-backed app stores auth records in normal tables but product/domain state in a JSON blob (for example `app_state.payload`) and users appear to gain admin/manager dashboards unexpectedly:
@@ -231,6 +273,16 @@ When a SQLite-backed app stores auth records in normal tables but product/domain
 - Search for fallback workspace/access code that grants default admin/superadmin roles when unauthenticated, no membership exists, or a dev user is active. If present, remove/fix the fallback; changing roles in seed data will not solve automatic admin access.
 - Back up the DB before rewriting the JSON blob, then verify role aggregates and real signed-in `/me/workspace` responses for the intended manager, ordinary user, and superadmin.
 - See `references/sqlite-json-state-role-seeding.md` for the compact recipe and verification checklist.
+
+### 5d. Payment Provider Active-vs-Stub Triage
+
+When the user asks whether a deployed payment integration is active (Xendit, Stripe, Midtrans, etc.):
+- Do not stop at source-code presence or env-file values. Inspect the **running service environment** and the **actual deployed checkout response**.
+- Separate three states explicitly: provider credentials valid, provider mode (`test`/`live`), and application flow active. A valid provider key can coexist with a stub checkout path.
+- Probe the provider with a safe read-only endpoint when credentials are available (for Xendit, a basic-auth `GET /v2/invoices?limit=1` is enough to validate the key without creating a payment).
+- Trigger the local/public checkout endpoint with a harmless/demo package if available and inspect whether it returns a real provider invoice/hosted-checkout URL or a stub/local URL such as `checkout-stub.local`.
+- Check the running implementation, not only the newer/reference implementation in the repo; deployed services may use a fallback Go/SQLite or mock API while TypeScript provider code exists elsewhere.
+- Final answer should distinguish: “credentials are valid/test/live” from “website checkout uses real provider” and include the public URL plus concise root cause if inactive.
 
 ### 6. External OAuth Provider Errors
 
@@ -254,6 +306,26 @@ For Meta/Facebook-specific diagnostics, see `references/meta-oauth-app-id-active
 - [ ] Root cause hypothesis formed
 
 **STOP:** Do not proceed to Phase 2 until you understand WHY it's happening.
+
+### Hardcoded Mock Values Left in Production Handlers
+
+When a user reports that a metric or quota is wrong (e.g. "Avg Engagement Rate is 4.7% with 0 posts", "post quota didn't increase after payment"), before assuming a data-flow or DB issue, **grep the API handler for hardcoded literal values**:
+
+- Dashboard handlers that return `tier: "FREE"` or `publishedLimit: 10` regardless of the actual subscription row.
+- Analytics handlers that return fixed `avgEngagementRate: 4.7, totalReach: 4200` regardless of post count.
+- Any handler that constructs a response map with literal numbers/strings instead of querying or computing from real data.
+
+This is common in migrated/parity apps where placeholder values were left during initial stubbing and never replaced with real queries. The fix is to call the real data function (e.g. `models.SubscriptionData(db, userID)` or a computed summary) and use its output in the response map. Add a unit test that verifies zero/empty input produces zero output.
+
+### Frontend Theme / Mobile Dark-Mode Notes
+
+When a mobile browser appears dark while the app state says light, or toggling dark mode makes text/logo contrast worse:
+- Inspect theme state (`localStorage`, root `.dark` class) separately from browser color-scheme behavior.
+- Check the actual CSS variables used by components, not only framework tokens. If components use `var(--ink)`, `.dark` must make `--ink` a light/readable color.
+- Add `color-scheme` hints (`:root`, `.dark`, and the HTML meta tag) to prevent mobile browser auto-darkening/form-control mismatch.
+- Keep logo/brand colors on stable brand tokens instead of text tokens so the logo is not inverted or washed out by theme changes.
+- Avoid active states like `bg-[var(--ink)] text-white` if `--ink` changes across themes; use primary/dedicated semantic tokens.
+- See `references/frontend-theme-color-scheme-and-dark-mode.md` for a compact recipe and regression-test pattern.
 
 ### Responsive UI Regression Notes
 
