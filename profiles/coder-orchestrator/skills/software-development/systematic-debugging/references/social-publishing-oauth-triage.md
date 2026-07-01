@@ -1,19 +1,39 @@
-# Social publishing OAuth + false-published triage
+# Social Publishing + OAuth Triage
 
-Use this when a social scheduler reports posts as `PUBLISHED` but they do not appear on Facebook/Instagram, or when connecting one provider makes another provider appear connected.
+Use when a social scheduler reports published posts that do not appear on Facebook/Instagram, account-connect state is wrong, or reconnect/disconnect UX is misleading.
 
-## Checks
+## Durable checks
 
-1. **Trace status transitions before provider code.** Search for background/GET/list handlers that update scheduled posts without making provider API calls. A common bug is a convenience auto-publish update such as `UPDATE posts SET status='PUBLISHED'` in a read handler or scheduler stub.
-2. **Separate parent post status from per-platform target status.** Only mark the parent `PUBLISHED` if every required `post_targets` row succeeded. If a target fails, store provider error in `post_targets.error_message` and avoid billing/quota increments that count parent `PUBLISHED` blindly.
-3. **Verify credentials needed for real publish are persisted.** Instagram media publish needs an IG user id plus a usable access token. If the account table only stores id/username/expiry, publishing cannot work; fail truthfully and require reconnect after adding token storage.
-4. **Do not auto-create Instagram accounts from Facebook connect unless product explicitly wants that.** Facebook Pages may expose `instagram_business_account`, but inserting it into the same `instagram_accounts` list makes the UI think Instagram was connected directly and can cause duplicate/wrong account selection. Save Facebook Pages separately; require explicit Instagram connect for IG publishing.
-5. **Use the provider's real publish success signal.** For Instagram images: create a media container, then call `media_publish`; mark success only when the publish response includes a media id. For Facebook: publish to the real external `page_id`, not the local DB row id.
-6. **Token expiry UX must follow stored token reality.** If short-lived OAuth tokens are exchanged for long-lived tokens, store the long-lived token and returned expiry. If exchange fails, use a conservative fallback and show reconnect only when the stored expiry is actually near/after expiry.
+1. Trace publish status transitions before fixing UI.
+   - Search for handlers or polling/read paths that mutate `SCHEDULED`/`PUBLISHING` to `PUBLISHED` without a provider API response.
+   - Parent post status is not enough; inspect per-platform target rows (`post_targets` or equivalent).
+   - Billing/quota should count only provider-confirmed publish successes.
 
-## Minimal verification
+2. Verify required publish credentials are actually persisted.
+   - Facebook Page publishing needs the external `page_id` and page access token, not the internal DB row id.
+   - Instagram image publishing needs IG user id + stored access token, then the Graph media-container flow:
+     - `POST /{ig_user_id}/media` with `image_url`, `caption`, `access_token`.
+     - `POST /{ig_user_id}/media_publish` with `creation_id`, `access_token`.
+     - Mark published only after the returned media id exists.
+   - If token storage was added after users connected accounts, old rows may need reconnect; do not fake success for tokenless rows.
 
-- Unit-test that an empty/no-op publisher does not fake success.
-- Inspect DB schema for required token columns before claiming real publish works.
-- Trigger/observe the scheduler interval from service logs or status after deploy.
-- Public app health and SPA HTTP 200 are not enough; check provider target rows/errors when possible.
+3. Keep provider account models separate unless product explicitly asks for cross-linking.
+   - Facebook Pages can expose `instagram_business_account`, but if the UI has separate direct Instagram connect, do not auto-create direct Instagram accounts from Facebook connect.
+   - Historical bad rows (for example provider=`facebook` inside an Instagram accounts table) can trigger stale reconnect banners even after direct Instagram reconnect. Filter banners/UX by real provider and clean unused bad rows only after checking references.
+
+4. OAuth URL/provider-flow checks.
+   - Parse generated OAuth URLs: host/path, `client_id`, `redirect_uri`, scopes, state, and provider-specific params.
+   - For Meta/Facebook Business Login, a normal `/dialog/oauth` may drop users into an already-authenticated Facebook/social experience. Force permission/login dialog with params such as `auth_type=rerequest`, `display=popup`, `enable_profile_selector=1` and support a dashboard-provided Business Login `config_id` (commonly exposed as `FACEBOOK_LOGIN_CONFIG_ID`/`FACEBOOK_CONFIG_ID`). Without the config id, code can force a permission dialog but cannot guarantee the exact Business onboarding screen.
+   - For Instagram long-lived tokens, exchange the short token (`grant_type=ig_exchange_token`) and store the provider's actual expiry; use a safe fallback only for UI expiry, not as proof the provider token is valid.
+
+5. Reconnect/disconnect UX pitfalls.
+   - A request to “add disconnect” can mean “always let me disconnect, even when expired.” Do not replace disconnect with reconnect for expired accounts; offer reconnect via the add/connect button or a separate action.
+   - Reconnect warning banners should ignore mock/demo accounts and other providers unless the banner is explicitly multi-provider.
+
+## Verification pattern
+
+- Run the narrow backend publisher tests or add one if absent.
+- Build the backend and frontend artifacts that are actually deployed.
+- Restart the service, verify health, and confirm DB migrations/columns with a read-only schema probe.
+- Fetch public domain and path-based URLs if both are deployed.
+- If cleaning stale account rows, first count rows referenced by posts/targets; delete only unreferenced stale rows.

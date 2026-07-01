@@ -81,7 +81,7 @@ User-specific review-document deliverable:
 User-specific PRD deliverable:
 
 - When the user asks for app/project/product ideation, specs, or a PRD, produce a designed PRD-style HTML artifact rather than a plain-text PRD unless they explicitly ask otherwise.
-- See `references/prd-html-publication.md` for the concrete PRD publication workflow and verification checklist; for plans, also check the `plan` skill's `references/review-doc-html-publication.md` workflow.
+- See `references/prd-html-publication.md` for the concrete PRD publication workflow and verification checklist; for plans, also check the `plan` skill's `references/review-doc-html-publication.md` workflow. For ticket/voucher/coupon UI effects — perforation lines, punch holes, scissor-cut torn edges, "USED" stamps — see `references/css-ticket-effects.md`.
 
 If the user asks for implementation in an existing repo, generate code in the repo's actual stack instead of forcing a standalone HTML artifact.
 

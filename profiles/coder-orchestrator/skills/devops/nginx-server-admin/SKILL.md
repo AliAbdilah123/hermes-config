@@ -81,24 +81,105 @@ sudo certbot --nginx -d <domain>
 
 Let's Encrypt cannot issue certs for bare IP addresses — a domain is required.
 
-## Domain Integration for Path-Based Projects
+## Domain Integration for Path-Based Projects (Single Build, Clean Root URL)
 
-When a user wants to serve an existing project (currently at `http://168.110.213.104/projects/<slug>/`) at a custom domain root (`https://<domain>/`), the Vite frontend must be rebuilt with a different base path. The same source serves both deployments.
+When a user wants a custom domain for a path-based Vite/React project, use a **single build** with `VITE_BASE=/` plus nginx `sub_filter` on the path-based deployment. The domain gets clean root URLs, the IP path continues to work — **one canonical build directory** (`/var/www/html/projects/<slug>/`).
 
-See `references/vite-domain-deployment.md` for the full step-by-step pattern. Summary:
+```
+https://<domain>/          → root /var/www/html/projects/<slug>/   (native, no sub_filter)
+http://<ip>/projects/<slug>/ → alias + sub_filter rewrites assets  (injects runtime overrides)
+```
 
-1. **Patch vite.config.ts** to make `base` configurable: `base: process.env.VITE_BASE || "/projects/<slug>/"`
-2. **Rebuild for domain root**: `VITE_API_URL=/ VITE_BASE=/ VITE_API_BASE_URL=/ pnpm build` (env vars override .env.production; process env takes precedence in Vite)
-3. **Deploy to separate dir**: `/var/www/html/<slug>/` (not `/var/www/html/projects/<slug>/`) — both builds coexist
-4. **Create nginx server block** (`/etc/nginx/projects/<slug>-domain.conf`): `server_name <domain>`, `root /var/www/html/<slug>`, proxy `/api/` and `/media/` to the backend port
-5. **Reload nginx**, verify locally with `curl -H "Host: <domain>" http://localhost/`
-6. **Run certbot** once DNS propagates and OCI port 443 is open
+This avoids maintaining two separate build directories and two separate Vite builds. Clean domain URLs without redirect.
 
-⚠️ **Critical pitfalls** (see `references/vite-domain-deployment.md` for details):
-- Go backend redirect helpers must NOT append `projectPrefix` for domain deployments → white page
-- `VITE_API_URL=/` causes double-slash URLs (`//api/...`) — frontend's `normalizeApiBase` must handle `"/"` → `""`
-- Build order matters when sharing `dist/` — domain build first, then path-based
-- Monorepo root lacks `.env.production` — pass env vars explicitly via CLI
+### Code Prerequisites (one-time per project)
+
+The frontend must support runtime overrides for React Router `basename` and API base URL. See `references/single-build-subfilter.md` for the exact code patches.
+
+### Setting Up the Domain Config
+
+```nginx
+# /etc/nginx/projects/<slug>-domain.conf
+server {
+    listen 80;
+    listen [::]:80;
+    server_name <domain>;
+
+    root /var/www/html/projects/<slug>;          # ← canonical build dir
+    index index.html;
+
+    # API/webhook proxied at root level AND path-prefixed (DB may store both)
+    location ^~ /api/ { proxy_pass http://127.0.0.1:<port>/api/; ... }
+    location ^~ /projects/<slug>/api/ { proxy_pass http://127.0.0.1:<port>/api/; ... }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    listen 443 ssl; ... # certbot
+}
+```
+
+### Setting Up the Path-Based Config (sub_filter)
+
+The path-based deployment in `/etc/nginx/projects/default.conf` must rewrite asset paths and inject runtime overrides:
+
+```nginx
+location /projects/<slug>/ {
+    alias /var/www/html/projects/<slug>/;
+    index index.html;
+    try_files $uri $uri/ /projects/<slug>/index.html;
+    sub_filter_types text/html;
+    sub_filter 'src="/assets/' 'src="/projects/<slug>/assets/';
+    sub_filter 'href="/assets/' 'href="/projects/<slug>/assets/';
+    sub_filter '</head>' '<script>window.__BASENAME__="/projects/<slug>";window.__API_BASE__="/projects/<slug>/api/v1"</script></head>';
+    sub_filter_once off;
+}
+```
+
+`sub_filter` requires `ngx_http_sub_module` — included by default in Ubuntu's nginx. Verify: `sudo nginx -V 2>&1 | grep sub_module`.
+
+### Deploy
+
+```bash
+# Build with root base
+cd <project>/apps/web
+rm -rf dist
+VITE_BASE=/ VITE_API_BASE_URL=/api/v1 npm run build   # (or pnpm build for pnpm projects)
+
+# Deploy to canonical directory (updates BOTH domain and IP path)
+sudo rsync -a --delete dist/ /var/www/html/projects/<slug>/
+
+# Reload
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+### Verify
+
+```bash
+# Domain: clean root URL, no redirect, assets at /assets/...
+curl -k https://<domain>/
+curl -k https://<domain>/some-deep-route   # SPA fallback works
+
+# IP path: assets rewritten to /projects/<slug>/assets/..., overrides injected
+curl http://168.110.213.104/projects/<slug>/
+
+# Both should return 200 with correct asset hashes
+```
+
+### Cleanup Old Duplicate Directory
+
+```bash
+sudo rm -rf /var/www/html/<slug>   # if an old domain-specific build dir exists
+```
+
+⚠️ **Pitfalls for this approach:**
+- The frontend MUST support `window.__BASENAME__` and `window.__API_BASE__` runtime overrides. Without these code changes, the path-based deployment will have broken routing and API calls. See `references/single-build-subfilter.md`.
+- `sub_filter_once off` is critical — without it, only the first match in the HTML is rewritten, leaving other asset references broken.
+- The API base value injected via `__API_BASE__` must match what the path-based nginx config proxies. For komuna: `/projects/komuna/api/v1`. For socialzen: `/projects/socialzen` (its code appends `/api` separately).
+- The `location ^~ /api/` block on the domain server block is for the domain deployment (root build calls `/api/...`). The path-based deployment injects `__API_BASE__` so it calls the correct path-prefixed URL.
+- `sub_filter_types text/html` may produce a harmless warning about duplicate MIME types if multiple projects use it — this is safe to ignore.
+- Never redirect the domain root to `/projects/<slug>/`. The user wants clean URLs.
 
 ## Adding a New Project Route
 
@@ -138,15 +219,29 @@ The `patch` tool refuses to write to `/etc/nginx/`. Use terminal with `sudo`:
 ## Pitfalls
 
 - **Dist not auto-deployed to nginx**: After `npm run build` / `npx vite build` completes, the build output sits in the project's local `dist/` directory. There is no CI/CD auto-deploy. You MUST manually copy it to the nginx-served directory: `cp -r dist/* /var/www/html/projects/<slug>/`. If the user says they "don't see" a change you know you made, check `md5sum` of the deployed `index.html` against the built `dist/index.html` — stale deployment is the #1 suspect.
+- **Domain deploys use the same directory now**: Domains are served from `/var/www/html/projects/<slug>/` via the single-build + sub_filter pattern. Deploying to that one directory updates BOTH the IP path and the domain. If a domain existed before this change, it may have had a stale `/var/www/html/<slug>/` copy — remove it. The #1 stale-domain suspect is an out-of-date `/var/www/html/projects/<slug>/` — check `md5sum` against the source `dist/index.html`.
+- **Single canonical build directory**: All deploys go to `/var/www/html/projects/<slug>/` — this is the ONLY build directory for the project. Both the domain and the IP path serve from here. If you find a `/var/www/html/<slug>/` directory (without `projects/`), it is a stale duplicate from an old dual-build setup — remove it after confirming the new single-build config is active.
 - **Forgetting the OCI Security List**: Opening ufw alone is not enough. If public access times out but localhost works, the Security List is the blocker — you cannot fix it from the terminal.
 - **Self-signed cert browser warnings**: Browsers show "Not Secure" / "Your connection is not private". Users must click Advanced then Proceed. This is expected, not a bug. Mention the upgrade path to Let's Encrypt if they get a domain.
 - **Cert expiry**: Self-signed certs expire. Regenerate with the same openssl command or set up a calendar reminder. Let's Encrypt auto-renews via systemd timer.
 - **nginx config syntax**: Always run `sudo nginx -t` before reload. A syntax error in the config will prevent nginx from starting on reload.
 - **Vite base path mismatch**: If a Vite SPA built with `base: "/projects/foo/"` is served at a different path (e.g. domain root `/`), all asset requests 404 because the built HTML references `/projects/foo/assets/...`. You must rebuild with the correct `base` for each deployment path. See "Domain Integration for Path-Based Projects" above.
+- **Domain config missing path-prefixed media/api blocks**: When a project migrates from path-based (`/projects/<slug>/`) to a custom domain, the domain nginx config typically adds `location ^~ /api/` and `location ^~ /media/`. But URLs stored in the database (e.g. media paths from `SaveUpload`) still use the FULL prefix `/projects/<slug>/media/user_.../upload_...jpg`. If the domain config does NOT also proxy `location ^~ /projects/<slug>/media/` and `location ^~ /projects/<slug>/api/`, those URLs fall through to the SPA catch-all (`location /`) and return HTML instead of the actual image. External platforms (Instagram/Facebook Graph API) silently receive HTML, causing publish failures with no visible error. Always add BOTH the root-level and path-prefixed location blocks to the domain config. Verify with `curl -sI https://<domain>/projects/<slug>/media/<test-file>` returning `Content-Type: image/jpeg` — not `text/html`. **Follow-on**: even after fixing the nginx config, Cloudflare may have cached the old HTML fallback (200 OK with wrong content-type) for hours. See `references/cloudflare-stale-cache-nginx-routing.md` for diagnosis and cache-busting fix.
 - **Vite env var precedence**: Process env vars (e.g. `VITE_API_URL=/ vite build`) override `.env.production` values. Use this to build the same source for different deployment targets without modifying env files.
 - **Backend redirect URLs for dual deployment**: When the backend constructs redirect URLs (OAuth callbacks, payment returns), it must use the correct base for each deployment. A common bug: the backend's `frontendURL()` helper appends a hardcoded project prefix even when the domain SPA is served at root. See `references/vite-domain-deployment.md` Pitfalls 1–3 for the full pattern.
+- **Cloudflare proxied DNS + certbot redirect loop**: If `curl -L https://<domain>/` stays at `301 Location: https://<same-domain>/`, Cloudflare may be hitting origin HTTP while certbot's HTTP block redirects to HTTPS. Serve the app on both HTTP and HTTPS in the main domain server block and remove the redirect-only HTTP block; see `references/vite-domain-deployment.md` HTTPS section.
+- **Domain config blank page (missing reverse sub_filter)**: If the build was deployed with a non-root base (e.g. `/projects/<slug>/assets/...`), the domain config needs reverse `sub_filter` to STRIP the path prefix, otherwise assets 404 → blank page. Add to the domain's `location /` block:
+  ```nginx
+  sub_filter 'src="/projects/<slug>/assets/' 'src="/assets/';
+  sub_filter 'href="/projects/<slug>/assets/' 'href="/assets/';
+  sub_filter '</head>' '<script>window.__BASENAME__="/";window.__API_BASE__="/api/v1"</script></head>';
+  sub_filter_once off;
+  ```
+  The preferred fix is rebuilding with `VITE_BASE=/` so no sub_filter is needed on the domain side — only on the path-based deployment. But when you can't rebuild (hotfix, shared build directory), the reverse sub_filter works.
 
 ## References
 
 - See `references/oracle-cloud-security-list.md` for step-by-step instructions to open a port in the OCI Security List (the network-level firewall that cannot be configured from the server).
-- See `references/vite-domain-deployment.md` for the full multi-base-path rebuild pattern when integrating a custom domain for a path-based Vite project.
+- See `references/single-build-subfilter.md` for the full code patches, nginx sub_filter config, and verification steps for the single-build domain + path deployment pattern (the current preferred approach).
+- See `references/vite-domain-deployment.md` for the legacy dual-build pattern (historical reference only — do NOT use for new setups).
+- See `references/cloudflare-stale-cache-nginx-routing.md` for diagnosing and fixing stale Cloudflare cache after nginx routing changes (HTML cached as images, wrong content-type).

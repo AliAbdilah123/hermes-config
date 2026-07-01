@@ -80,6 +80,10 @@ Use the `claude-design` skill/reference workflow for the publication mechanics.
 - If the request is clear enough, write the plan directly.
 - If no explicit instruction accompanies `/plan`, infer the task from the current conversation context.
 - If it is genuinely underspecified, ask a brief clarifying question instead of guessing.
+- When the user asks to "ask clarifying questions as you go" but also requests a reviewable plan/design before implementation, include a visible **Open Questions for Approval** section in both the markdown plan and HTML review artifact. Ask only the questions that block design approval; do not interrupt with low-stakes questions before producing the review artifact.
+- If the user asks not to implement until approval, add an explicit **Implementation Gate** section to the plan/artifact and final response. Do not treat plan approval, route-label answers, or design-choice answers as deployment permission unless the user explicitly says to implement.
+- If the user corrects the proposed design or answers design options, update the plan/review artifact and wait for explicit implementation/deployment instruction; do not treat design-choice answers as permission to deploy.
+- For mobile/UI design work, when the user says the design is not visible or unchanged, update and republish the styled review artifact first; do not silently patch or deploy the app. Provide the public review URL and explicitly state whether it is a static design preview or the live site.
 - After saving the plan, reply briefly with what you planned and the saved path.
 
 ---

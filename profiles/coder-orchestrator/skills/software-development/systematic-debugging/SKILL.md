@@ -223,6 +223,31 @@ When a deployed SPA shows an API-load error and the public subpath API returns N
 
 See `references/deployed-api-stopped-nginx-502.md` for a compact command recipe.
 
+### 4h. Cloudflare CDN Stale Cache (Images Served as HTML / Wrong Content-Type)
+
+When a deployed SPA has broken image previews (showing broken/blank thumbnails) even though the origin serves the correct image:
+
+- Check **origin directly** (curl 127.0.0.1) vs **public CDN-proxied URL**. If origin returns `Content-Type: image/jpeg` and the public URL returns `content-type: text/html` with `cf-cache-status: HIT`, Cloudflare has cached an HTML fallback page (SPA index or nginx error page) as the image.
+- Root cause: the nginx config was missing the proxy location for the image path when the URL was first requested. The SPA fallback HTML got cached with the image URL and a high `max-age` (typically 14400s / 4 hours).
+- **Two-pronged fix:**
+  1. Add proper `Cache-Control: public, max-age=31536000, immutable` at the origin handler so future CDN entries are correct image types with long-lived cache.
+  2. Append a cache-buster query parameter (`?v=<updatedAt or mtime>`) to image URLs in API responses so the frontend requests bypass stale CDN entries immediately.
+- Verify with: `curl -sI '<public-url>' | grep -E 'content-type|cf-cache-status'` — MISS or EXPIRED for the cache-busted URL, HIT with `text/html` for the stale URL.
+- For new uploads, unique filenames avoid the problem. The cache-buster is only needed for recently-cached stale entries.
+
+See `references/cloudflare-cdn-stale-image-cache.md` for the command recipe and nginx/origin header patterns.
+
+### 4g. SQLite-Backed Go API Hangs While Health Is OK
+
+When a Go API using SQLite shows client-side `Request timed out` on login/signup or slow dashboard rendering, but `/health` and `systemctl status` look healthy:
+- Reproduce locally against `127.0.0.1:<port>` before assuming browser, DNS, Cloudflare, or nginx issues.
+- Compare endpoints: `/health` (no DB), a DB GET (`get-session`/dashboard), a POST without DB/body, then auth POST with JSON. If health works and auth POST hangs, suspect a blocked DB connection or request goroutine.
+- For SQLite with `db.SetMaxOpenConns(1)`, inspect background goroutines (publishers/schedulers/sync jobs). A goroutine that holds the only DB connection while doing external HTTP calls can starve login and dashboard requests.
+- A service restart is a valid immediate mitigation, but the permanent fix is to release DB rows before network calls, use a separate publisher DB handle, raise connection capacity carefully, and set strict publisher HTTP timeouts.
+- Verify by making auth POST return quickly with either `401` for bad credentials or `200` for valid credentials.
+
+See `references/go-sqlite-backend-hang-timeout.md` for the detailed triage and fix recipe.
+
 ### 5a. Frontend/API Shape Drift (`.filter` / `.map` is not a function`)
 
 When a React/Vite page shows a runtime collection error such as `t.filter is not a function`:
@@ -264,6 +289,17 @@ When UI filter pills/tabs visually switch but the results stay on the default se
 - Preserve already-correct layouts unless the user explicitly asks for visual changes; fix data/status and dynamic headings only.
 
 See `references/frontend-filter-api-query-triage.md` for a compact reproduction/fix checklist.
+
+### 5b.2 Client-Side Filter Hardcoded Stubs
+
+When a location/permission-based UI filter shows "no results found" even after the user grants the permission (geolocation, camera, etc.), or when a filter with multiple options always produces the same fixed subset — suspect a hardcoded stub left in production:
+
+- Trace the permission callback: does it capture the actual data (coordinates) or just flip UI state?
+- Inspect the filter function body for hardcoded literal comparisons (`p.location === 'Brooklyn, NY'`, `return false`) in switch/case or if/else branches.
+- If the backend stores location as text only, you may need a static city→[lat,lng] map + Haversine formula for client-side distance calculation.
+- Clarify with the user whether they want filtering (exclude far items) or sorting (show all, nearest first) — the implementation strategy differs.
+
+See `references/client-side-filter-hardcoded-stubs.md` for the full triage checklist, fix pattern, and Haversine reference.
 
 ### 5c. SQLite JSON-State Role Seeding / Demo Admin Access
 
@@ -313,9 +349,12 @@ When a social scheduler says a post is published but it does not appear on Faceb
 - Verify per-platform target rows, not just parent post status. Billing/quota should count only provider-confirmed target success.
 - Check account tables store the credentials required for the publish API. Instagram image publishing needs an IG user id and access token; if only id/username/expiry are persisted, real publishing is impossible until reconnect after adding token storage.
 - Keep provider account models separate unless the product explicitly wants cross-provider linking. Facebook Pages exposing `instagram_business_account` should not automatically create direct Instagram accounts if the UI treats direct IG connect separately.
+- Filter reconnect/expiry banners by the real provider; stale cross-provider rows can keep warning users after a successful direct reconnect.
+- Do not replace **Disconnect** with **Reconnect** for expired accounts when the user asks for disconnect; always let users disconnect stale/broken social accounts.
 - Use real provider success signals: Instagram media container + `media_publish` media id, Facebook external `page_id` publish id.
+- For Meta Business Login, support a dashboard-provided `config_id`; forcing `auth_type=rerequest`/profile selector helps but does not guarantee the Business onboarding screen without the config id.
 
-See `references/social-publishing-oauth-triage.md` for the compact checklist.
+See `references/social-publishing-oauth-triage.md` for the compact checklist and provider-specific pitfalls.
 
 ### Phase 1 Completion Checklist
 
@@ -463,6 +502,14 @@ pytest tests/test_module.py::test_regression -v
 # Run full suite — no regressions
 pytest tests/ -q
 ```
+
+### 3a. Go refactor compile-failure loop guard
+
+When splitting large Go files into smaller files during a refactor and compile errors start cascading:
+- Inspect the package directory for already-existing split files before generating new ones; duplicate methods/functions are common after partial refactors.
+- Remember that Go package membership is directory-based: files in a subdirectory such as `apis/` are a different package/import path, not a way to organize same-package methods.
+- For plugin-owned migrations, prefer embedding migration files in the owning plugin package (`//go:embed migrations/*.sql`) and registering SQL text with the core migration registry; avoid a central app-level migration embed once migrations move under plugins.
+- After any automated file split, run `gofmt` first, then one targeted `go test ./...`; if the same command fails repeatedly, stop and inspect the exact named files/functions rather than rerunning unchanged.
 
 ### 4. If Fix Doesn't Work — The Rule of Three
 

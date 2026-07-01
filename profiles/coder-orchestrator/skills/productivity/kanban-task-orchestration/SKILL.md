@@ -47,6 +47,18 @@ For this user, do **not** require confirmations between individual kanban tasks 
 - If a worker says tests passed, quote the command and status from the run/comment.
 - Final updates after feature/fix work should include the project public link when known.
 
+## CLI syntax pitfall
+
+`--board` is a global option for `hermes kanban`, so place it before the subcommand:
+
+```bash
+hermes kanban --board <board> create "Task title" --body "..." --assignee <profile>
+hermes kanban --board <board> list
+hermes kanban --board <board> complete <task_id> --result "..."
+```
+
+Do **not** run `hermes kanban create --board ...`; argparse treats `--board` as an unrecognized subcommand argument.
+
 ## Safety boundaries
 
 Do not skip explicit confirmation for destructive production deploy/copy operations if the user has not already authorized that class of action. Completing kanban review gates is not the same as deploying to production.

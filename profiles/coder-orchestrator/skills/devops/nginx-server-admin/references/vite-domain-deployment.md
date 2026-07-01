@@ -1,4 +1,6 @@
-# Vite Domain Deployment — Multi-Base-Path Pattern
+# Vite Domain Deployment — Multi-Base-Path Pattern (LEGACY)
+
+> **⚠️ This is the legacy dual-build approach. Prefer the single-build redirect+alias pattern described in the main SKILL.md instead.** The single-build pattern avoids maintaining two separate build directories, two separate Vite builds, and all the pitfalls below. Only use this dual-build approach if the user explicitly insists on clean domain root URLs (no `/projects/<slug>/` in the URL bar).
 
 When serving the same Vite SPA at both an IP path (`/projects/<slug>/`) and a domain root (`https://<domain>/`), you need two builds with different `base` paths. This reference covers the full workflow.
 
@@ -115,6 +117,8 @@ curl -k --connect-timeout 5 https://168.110.213.104/health
 # Run certbot — auto-configures 443 ssl + HTTP→HTTPS redirect
 sudo certbot --nginx -d <domain>
 ```
+
+If DNS is proxied through Cloudflare and public HTTPS returns a self-redirect loop (`301 Location: https://<same-domain>/`), Cloudflare is likely connecting to origin over HTTP while the certbot-generated HTTP server redirects to HTTPS. Fix the nginx domain config so the main app server block listens on **both** `80` and `443 ssl`, remove the separate certbot redirect-only `server { listen 80; return 301 ... }`, then `sudo nginx -t && sudo systemctl reload nginx`. Verify with `curl -L --max-redirs 5 https://<domain>/`.
 
 ## Backend CORS
 

@@ -89,6 +89,8 @@ Each variant is a **single self-contained HTML file**:
 
 Open it in a browser. If it looks broken, fix it before showing the user.
 
+For this user, design-review prototypes are usually expected as styled HTML artifacts at a public `/prd/...` URL when working inside their web projects. Preserve earlier approved prototypes instead of overwriting them; create a new review artifact for each new animation/design direction unless the user explicitly asks to replace it.
+
 **Verify variants visually — use Hermes' browser tools.** Don't just write HTML and hope it renders; load each variant and look at it:
 
 ```
@@ -97,6 +99,10 @@ browser_vision(question="Does this layout look clean and readable? Any visible b
 ```
 
 `browser_vision` returns an AI description of what's actually on the page plus a screenshot path — catches layout bugs that pure source inspection misses (e.g. a font import that silently failed, a flex container that collapsed). Fix and re-navigate until each variant looks right.
+
+If browser visual verification is unavailable, do not stop at source inspection for CSS-heavy prototypes: use a quick public/local smoke check (`curl` for the exact URL and key class names) and then explicitly tell the user to hard-refresh/review the artifact. When a user reports a visual bug, patch the prototype immediately and republish the same review URL only if they were already reviewing that artifact.
+
+**CSS `clip-path` pitfall:** for torn/zigzag edges, the polygon must include the full element rectangle plus the jagged edge path. A polygon made only of edge points clips the entire ticket/card down to a thin strip, making the voucher content invisible. Close the shape like `0 0 → 100% 0 → jagged edge → 100% 100 → 0 100` (or the mirrored equivalent).
 
 **Default CSS reset + system font stack** for fast starts:
 
