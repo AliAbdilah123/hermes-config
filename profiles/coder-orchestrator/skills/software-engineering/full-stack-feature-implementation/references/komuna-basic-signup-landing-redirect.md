@@ -9,7 +9,7 @@ Use when fixing Komuna local-stack auth behavior for newly-created/basic users.
 - Do **not** mark newly signed-up users as `isSuperAdmin`.
 - After sign-up, default redirect should be the landing/discovery page (`/`), not `/dashboard` / workspace chooser.
 - If a no-workspace basic user reaches `/dashboard`, redirect them back to `/` rather than showing the workspace picker/no-workspace page.
-- Pending program memberships may still show the pending-access explanation.
+- Basic members with pending program memberships are also redirected to `/` — the pending-access explanation page is only for users who have pending admin/manager roles (checked via `manageableRoleFor(program)` on pending programs).
 
 ## Backend pattern
 
@@ -32,13 +32,14 @@ Regression test shape:
   - sign-up: `/`
   - sign-in: `/dashboard`
   - preserve a safe same-origin `redirectTo` if present.
-- In `DashboardEntryPage`, when there are no manageable choices and no pending memberships, return `<Navigate to="/" replace />`.
-- Keep pending memberships on the pending/no-access explanatory state.
+- In `DashboardEntryPage`, when there are no manageable choices, check pending programs for admin/manager roles via `manageableRoleFor(program)`. If none have manageable roles, return `<Navigate to="/" replace />` — this covers both no-workspace users and basic members with pending memberships. Only show the pending-access explanation page when a pending program has an admin or manager role.
 
 Regression test shape:
 
 - `AuthPage.test.tsx`: authenticated `/auth/sign-up` with no `redirectTo` lands on a route marker for `/`, not `/dashboard`.
 - `DashboardEntryPage.test.tsx`: workspace `{ isSuperAdmin:false, programs:[] }` redirects to `/` and does not render `dashboard-entry-empty`.
+- `DashboardEntryPage.test.tsx`: workspace with a pending program membership where the role is `member` (not admin/manager) also redirects to `/` and does not render `dashboard-entry-empty`.
+- `DashboardEntryPage.test.tsx`: workspace with a pending program membership where the role is `admin` or `manager` renders `dashboard-entry-empty` with the pending approval heading.
 
 ## Deployment verification
 

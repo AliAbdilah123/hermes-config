@@ -640,14 +640,14 @@
     "archived_at": null,
     "created_at": "2026-06-19T08:53:25.037243+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-06-26T11:33:30.239481+00:00",
-    "last_used_at": "2026-06-29T08:35:28.795654+00:00",
-    "last_viewed_at": "2026-06-29T08:35:28.787500+00:00",
-    "patch_count": 7,
+    "last_patched_at": "2026-06-30T11:11:04.797011+00:00",
+    "last_used_at": "2026-06-30T11:09:27.518253+00:00",
+    "last_viewed_at": "2026-06-30T11:09:27.514228+00:00",
+    "patch_count": 15,
     "pinned": false,
     "state": "active",
-    "use_count": 12,
-    "view_count": 12
+    "use_count": 18,
+    "view_count": 18
   },
   "node-inspect-debugger": {
     "archived_at": null,
@@ -939,14 +939,14 @@
     "archived_at": null,
     "created_at": "2026-06-29T08:35:48.153576+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-06-29T08:36:06.876583+00:00",
-    "last_used_at": null,
-    "last_viewed_at": null,
-    "patch_count": 3,
+    "last_patched_at": "2026-06-30T11:11:32.433718+00:00",
+    "last_used_at": "2026-06-30T11:11:22.450215+00:00",
+    "last_viewed_at": "2026-06-30T11:11:22.446001+00:00",
+    "patch_count": 5,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 3,
+    "view_count": 3
   },
   "teams-meeting-pipeline": {
     "archived_at": null,

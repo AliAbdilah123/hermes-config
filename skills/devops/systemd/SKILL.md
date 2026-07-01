@@ -56,7 +56,8 @@ Use when the user wants to "create a systemd service", "run X as a service", or 
 
 ## Pitfalls
 
-- **`Group=` in user units causes `Failed with result 'exit-code' status=216/GROUP`.** Remove it; user unit runs as `User=` and inherits that user’s primary group.
+- **`Group=` in user units causes `Failed with result 'exit-code' status=216/GROUP`.** Remove it; user unit runs as `User=` and inherits that user's primary group.
+- **`User=` in a user-level unit also triggers `status=216/GROUP` ("Failed to determine supplementary groups").** Remove the `User=` line entirely; a user manager already runs as the owning user and cannot re-resolve supplementary groups.
 - **TTY/dbus issues:** Tray/OSC apps may misbehave under `Type=notify` or without a session bus. Prefer `--no-tray`/`--headless` under systemd.
 - **Env drift:** don’t inherit a shell env blindly. Set only what the service needs (`PATH`, `HOME`, app vars) and use absolute paths for everything.
 - **Double activation:** if you’re replacing a manual foreground launch, ensure the old PID exits before `start`-ing the unit, or the bind will fail.

@@ -4,7 +4,7 @@ When implementing a new project, copy the boilerplate project as the base by def
 §
 For this user's projects, `.env` and `sqlite.db` are placed in each project's directory/root unless specified otherwise.
 §
-Public host IP 168.110.213.104 (not the old 10.0.0.105). HTTP on :80, HTTPS on :443 (self-signed cert, /etc/nginx/ssl/). OCI Security List must allow new ports (cannot be done from terminal). See nginx-server-admin skill.
+Public host IP 168.110.213.104. HTTP :80, HTTPS :443 (self-signed /etc/nginx/ssl/). Certbot installed. OCI Security List must allow new ports (cannot be done from terminal). See nginx-server-admin skill.
 §
 For migrations, don't recreate from boilerplate by default; port/convert the source project in place or into a clone, preserving identity. Use boilerplate only as a pattern reference unless user says otherwise.
 §
@@ -14,6 +14,6 @@ Komuna login should use the basic SQLite/local email-password flow by default, n
 §
 Discord project default: <#1520812080180232312>=self-flow. Self-flow backend is local Go+SQLite (api/v1/main.go, port 8096, JSON-state-in-SQLite, local email/password auth, deployed at /projects/self-flow/). Previous Node.js implementation preserved in packages/be-serverless+be-services+db. Go API production-hardened 2026-06-30.
 §
-SocialZen: URL http://168.110.213.104/projects/socialzen. Service: systemd socialzen.service, env /home/ubuntu/socialzen/.env, Go source apps/backend-go/. Listen via ADDR env (not PORT), must be ADDR=:8089 (8080=fnb-pos-server). Health: /api/health on :8089.
+SocialZen: IP path /projects/socialzen/. Domain socialzen.ahsanworks.com pending (DNS+certbot). systemd socialzen.service, env /home/ubuntu/socialzen/.env, Go apps/backend-go/, ADDR=:8089 (8080=fnb-pos). Health: /api/health on :8089.
 §
 Komuna Vite builds from apps/web; root .env not auto-loaded. For local basic auth, VITE_NEON_AUTH_URL must NOT be set during build — if it leaks, auth page flips to broken Neon widget.

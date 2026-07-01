@@ -284,6 +284,16 @@ When the user asks whether a deployed payment integration is active (Xendit, Str
 - Check the running implementation, not only the newer/reference implementation in the repo; deployed services may use a fallback Go/SQLite or mock API while TypeScript provider code exists elsewhere.
 - Final answer should distinguish: “credentials are valid/test/live” from “website checkout uses real provider” and include the public URL plus concise root cause if inactive.
 
+### 5e. Hermes Kanban Blocked Task Triage
+
+When the user asks why tasks are blocked in a Hermes kanban board:
+- Inspect the board's SQLite state and logs, not just the visible status label. Board data commonly lives under `~/.hermes/kanban/boards/<board>/` with `kanban.db`, `board.json`, and per-task logs.
+- Query `tasks`, `task_events`, `task_runs`, `task_comments`, and `task_links` to distinguish actual failure from review handoff, manual reclaim, dependency blocking, or stale auto-claim cleanup.
+- Treat `blocked` with a run summary like `review-required: ...` as an intentional human-review gate, not a task failure.
+- If events show `claimed/spawned` followed by `reclaimed` with a reason such as “auto-claimed before dependencies complete,” report that the task was stopped because its parents were incomplete, then identify the dependency chain from `task_links`.
+- Read the specific task log only after event/run metadata identifies which task needs explanation; logs may be empty if the task was reclaimed immediately.
+- Final answer should list the blocked tasks by ID/title and state the root cause category for each: review-required, dependency chain, failed run, or stale/manual reclaim.
+
 ### 6. External OAuth Provider Errors
 
 **WHEN a social login/connect flow fails with provider errors (Meta/Facebook/Instagram, Google, etc.):**
@@ -295,6 +305,17 @@ When the user asks whether a deployed payment integration is active (Xendit, Str
 - If app id is accepted but provider says the app is inactive/not available, stop code changes and check provider dashboard mode, roles/testers, products, and permission approval.
 
 For Meta/Facebook-specific diagnostics, see `references/meta-oauth-app-id-active-status.md`.
+
+### 6a. Social Scheduler False-Published / Cross-Provider Account Bugs
+
+When a social scheduler says a post is published but it does not appear on Facebook/Instagram, or connecting Facebook makes Instagram look connected:
+- Trace status transitions first; remove any read-handler/scheduler stub that marks posts `PUBLISHED` without provider API calls.
+- Verify per-platform target rows, not just parent post status. Billing/quota should count only provider-confirmed target success.
+- Check account tables store the credentials required for the publish API. Instagram image publishing needs an IG user id and access token; if only id/username/expiry are persisted, real publishing is impossible until reconnect after adding token storage.
+- Keep provider account models separate unless the product explicitly wants cross-provider linking. Facebook Pages exposing `instagram_business_account` should not automatically create direct Instagram accounts if the UI treats direct IG connect separately.
+- Use real provider success signals: Instagram media container + `media_publish` media id, Facebook external `page_id` publish id.
+
+See `references/social-publishing-oauth-triage.md` for the compact checklist.
 
 ### Phase 1 Completion Checklist
 
@@ -325,6 +346,7 @@ When a mobile browser appears dark while the app state says light, or toggling d
 - Add `color-scheme` hints (`:root`, `.dark`, and the HTML meta tag) to prevent mobile browser auto-darkening/form-control mismatch.
 - Keep logo/brand colors on stable brand tokens instead of text tokens so the logo is not inverted or washed out by theme changes.
 - Avoid active states like `bg-[var(--ink)] text-white` if `--ink` changes across themes; use primary/dedicated semantic tokens.
+- For depth/shadow effects, do not reuse light-mode text tokens as shadow colors. In dark mode `--ink-*` is often light, so `box-shadow: ... var(--ink-1)` creates pale mist/glow instead of realistic depth. Add `.dark` overrides that use real black/transparent black shadows and reduce accent/noise opacity.
 - See `references/frontend-theme-color-scheme-and-dark-mode.md` for a compact recipe and regression-test pattern.
 
 ### Responsive UI Regression Notes

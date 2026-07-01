@@ -1,0 +1,3 @@
+User communication style: prefers direct action-first replies. Avoid long explanations unless asked. "Fix it", "Give me the link", short confirmations are typical signals.
+§
+User (Discord handle Capt4ce) builds and runs server-status monitoring dashboards on this Oracle Cloud host (168.110.213.104). Prefers fast-loading UIs with separate/split queries for slow data (filesystem walks), clean functional inline styling over Tailwind, and CPU usage prominently shown alongside memory and disk. Uses Go backends + React frontends deployed under nginx `/projects/<name>/` prefixes with systemd user services for auto-restart.

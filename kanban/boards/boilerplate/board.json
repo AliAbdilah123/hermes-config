@@ -1,0 +1,10 @@
+{
+  "slug": "boilerplate",
+  "name": "Boilerplate Plugin Architecture",
+  "description": "",
+  "icon": "",
+  "color": "",
+  "default_workdir": "/home/ubuntu/projects/boilerplate",
+  "created_at": 1782828573,
+  "archived": false
+}

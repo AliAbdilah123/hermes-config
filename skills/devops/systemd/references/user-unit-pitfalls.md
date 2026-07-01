@@ -24,3 +24,33 @@
 - `StartLimitIntervalSec=0` during active debugging to prevent the 5-retry-per-30s cutoff.
 - `Restart=always` for routers/proxies. `on-failure` for batch jobs.
 - `KillMode=mixed` + `KillSignal=SIGTERM` + `TimeoutStopSec=210` to match graceful shutdown expectations while still killing stragglers.
+
+## `User=` in user units -> exit 216/GROUP
+
+- Symptom: `server-monitor.service: Failed to determine supplementary groups: Operation not permitted` + `status=216/GROUP`, repeated restart loop.
+- Cause: the user manager already runs as the owning user. Adding `User=` triggers a redundant group-resolution step that fails without elevated privileges.
+- Fix: remove the `User=` line entirely from `~/.config/systemd/user/*.service`.
+
+## Tested service recipe (Go binary)
+
+```ini
+[Unit]
+Description=Server Monitor
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ubuntu/projects/server-monitor/backend
+ExecStart=/home/ubuntu/projects/server-monitor/backend/server
+Environment=PORT=8081
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
+```
+
+Notes:
+- No `User=` line.
+- Use absolute paths for `ExecStart` and `WorkingDirectory`.
+- Reload with `systemctl --user daemon-reload` after edits.

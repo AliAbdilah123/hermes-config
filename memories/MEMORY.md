@@ -5,3 +5,11 @@ Hermes multi-profile Discord channel routing: whitelist config is in $HERMES_HOM
 Hermes dashboard may fail silently if web/dist is missing; run npm install && npm run build in hermes-agent/web before starting.
 §
 9router is managed by a user-level systemd service at /home/ubuntu/.config/systemd/user/9router.service; runs ubuntu-owned node /home/ubuntu/.local/bin/9router, binds port 20128. Do NOT use Group= in user systemd units (status=216/GROUP failure).
+§
+Go+React projects deployed under nginx `/projects/<name>/` require: build frontend, copy `dist/` to `/var/www/html/projects/<name>/`, update Go `serveReact` path, add nginx proxy + alias blocks inside existing server config.
+§
+User systemd services must NOT include `User=` nor `Group=`; user manager already runs as the owning user and re-setting groups triggers `Failed to determine supplementary groups` / `status=216/GROUP`.
+§
+Project `system` renamed/moved to `/home/ubuntu/projects/server-monitor/`, backend built, frontend built, nginx config added, systemd user unit created, verified at `http://168.110.213.104/projects/server-monitor/`.
+§
+This host runs nginx with config at /etc/nginx/projects/default.conf (single server block). User-level systemd services live at /home/ubuntu/.config/systemd/user/.

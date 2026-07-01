@@ -11,3 +11,7 @@ User prefers clean code practices when designing or writing code: DRY, meaningfu
 User prefers using kanban/task tracking when working on big or complicated features and bugs.
 §
 User prefers bug-fix final reports to include the root cause of the bug.
+§
+User does not want destructive website changes or production deploy/copy operations without explicit confirmation; verify routes and live behavior before claiming changes are visible.
+§
+User reviews the plan before tasks start and reviews after all tasks are done only; do not require confirmations between individual kanban tasks.

@@ -124,7 +124,15 @@ Review tasks should check:
 - Data migration safety.
 - Code quality: DRY, readable, bounded file size, comments only where helpful.
 
-If failed, the reviewer should mark changes requested and create/route a fix task to `coder-strong`, including concrete reviewer notes. If passed, mark merge-ready rather than immediately merging from a worker.
+Default review cadence for this user's Kanban delivery work:
+
+- The user reviews the plan before implementation starts.
+- Workers should **not** block every finished implementation task as `review-required` unless the task or user explicitly asks for per-task review.
+- After a plan is approved, workers should complete verified tasks with structured `kanban_complete(summary=..., metadata=...)` so dependent tasks can continue.
+- Reserve `kanban_block` for genuine blockers: missing credentials, ambiguous requirement, destructive production/deploy action needing explicit approval, failed verification the worker cannot resolve, or unavailable dependency.
+- The user reviews again after the task graph or milestone is done.
+
+If a dedicated reviewer profile is part of the graph, reviewer tasks should mark changes requested and create/route a fix task to `coder-strong` only when review fails. If passed, mark merge-ready rather than immediately merging from a worker.
 
 ## User-facing artifact pattern
 

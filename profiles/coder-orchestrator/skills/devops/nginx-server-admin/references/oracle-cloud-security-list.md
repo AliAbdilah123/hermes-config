@@ -38,6 +38,6 @@ If it still times out, also check:
 |------|----------|---------|
 | 22   | TCP      | SSH     |
 | 80   | TCP      | HTTP (nginx) |
-| 443  | TCP      | HTTPS (nginx, self-signed) — opened this session |
+| 443  | TCP      | HTTPS (nginx) — ufw opened, **OCI Security List rule NOT yet confirmed** |
 
-Port 443 was opened in ufw (`sudo ufw allow 443/tcp`) and requires the user to add the corresponding OCI Security List ingress rule.
+Port 443 was opened in ufw (`sudo ufw allow 443/tcp`) on 2026-06-30. The user was instructed to add the corresponding OCI Security List ingress rule but has not yet confirmed doing so. If `curl -k https://168.110.213.104/health` times out but `curl -k https://localhost/health` works, the OCI rule is still missing.

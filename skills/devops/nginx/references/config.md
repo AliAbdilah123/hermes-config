@@ -38,7 +38,7 @@ PHP `shell_exec()` runs as the `www-data` user, which lacks `$HOME` and access t
 2. The config/auth file (`/home/ubuntu/.codex/auth.json`) must be readable if the script reads it.
 3. If the binary emits noisy startup warnings to stderr (e.g., Codex PATH alias warnings), wrap it in a script that redirects stderr: `/usr/local/bin/codex-wrapper` with `exec /home/ubuntu/.local/bin/codex "$@" 2>/dev/null`.
 
-## Project-to-port map (observed 2026-06-26)
+## Project-to-port map (observed 2026-06-30)
 
 | Project | Nginx prefix | Upstream |
 |---|---|---|
@@ -51,8 +51,25 @@ PHP `shell_exec()` runs as the `www-data` user, which lacks `$HOME` and access t
 | siapjasa | `/projects/siapjasa/api/v1/` | `http://127.0.0.1:8094/api/v1/` |
 | komuna-api | `/projects/Komuna/api/v1/` | `http://127.0.0.1:8091/api/v1/` |
 | socialzen | `/projects/socialzen/api/` | `http://127.0.0.1:8089/api/` |
+| server-monitor | `/projects/server-monitor/api/v1/` | `http://127.0.0.1:8081/api/v1/` |
 
 Add new `location ^~` blocks into the existing `server` block in `/etc/nginx/projects/default.conf`. Validate with `sudo nginx -t` and reload with `sudo systemctl reload nginx`.
+
+When deploying or renaming a Go backend serving a Vite-built React app:
+
+1. Update `vite.config.ts` `base` to match the nginx prefix.
+2. Update the React app's API fetch base path to the same prefix.
+3. Grep the Go backend for any hardcoded frontend/dist paths (e.g. `serveReact("/home/opc/system/frontend/dist")`) and update to the new project directory.
+4. Rebuild the Go binary.
+5. Copy `frontend/dist/` contents into `/var/www/html/projects/<name>/` and `chown -R www-data:www-data`.
+6. Add matching nginx `location ^~ /projects/<name>/ { alias ... try_files ... }` and `location ^~ /projects/<name>/api/v1/ { proxy_pass ... }`.
+7. Start the Go server binding `127.0.0.1:PORT`.
+
+Missing any of these produces a blank page because the HTML loads but asset scripts/CSS fetch from the wrong prefix.
+
+## User systemd `status=216/GROUP` pitfall
+
+For `~/.config/systemd/user/*.service`, do **not** add `User=ubuntu`. The service already runs as the owning user; adding `User=` causes systemd to attempt group resolution and fail with `status=216/GROUP`, then auto-restart-loop.
 
 ## Codex CLI status fields (v0.141.0)
 

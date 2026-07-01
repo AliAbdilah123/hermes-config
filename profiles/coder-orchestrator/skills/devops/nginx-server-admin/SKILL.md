@@ -67,13 +67,38 @@ After server-side setup, the user must open port 443 in the OCI Security List (s
 
 Use when the user has a domain pointed at `168.110.213.104`. Free, auto-renewing, no browser warnings.
 
+**Prerequisites** (all three must be true before running certbot):
+1. DNS A record for the domain resolves to `168.110.213.104` — verify: `python3 -c "import socket; print(socket.gethostbyname('<domain>'))"`
+2. OCI Security List has port 443 open (see `references/oracle-cloud-security-list.md`)
+3. nginx server block for the domain exists and is loaded (certbot will modify it)
+
 ```bash
 sudo apt install certbot python3-certbot-nginx
 sudo certbot --nginx -d <domain>
-# Certbot auto-edits nginx config and sets up renewal timer
+# Certbot auto-edits the nginx server block: adds listen 443 ssl, cert paths, and HTTP→HTTPS redirect
+# Renewal timer is set up automatically via systemd
 ```
 
 Let's Encrypt cannot issue certs for bare IP addresses — a domain is required.
+
+## Domain Integration for Path-Based Projects
+
+When a user wants to serve an existing project (currently at `http://168.110.213.104/projects/<slug>/`) at a custom domain root (`https://<domain>/`), the Vite frontend must be rebuilt with a different base path. The same source serves both deployments.
+
+See `references/vite-domain-deployment.md` for the full step-by-step pattern. Summary:
+
+1. **Patch vite.config.ts** to make `base` configurable: `base: process.env.VITE_BASE || "/projects/<slug>/"`
+2. **Rebuild for domain root**: `VITE_API_URL=/ VITE_BASE=/ VITE_API_BASE_URL=/ pnpm build` (env vars override .env.production; process env takes precedence in Vite)
+3. **Deploy to separate dir**: `/var/www/html/<slug>/` (not `/var/www/html/projects/<slug>/`) — both builds coexist
+4. **Create nginx server block** (`/etc/nginx/projects/<slug>-domain.conf`): `server_name <domain>`, `root /var/www/html/<slug>`, proxy `/api/` and `/media/` to the backend port
+5. **Reload nginx**, verify locally with `curl -H "Host: <domain>" http://localhost/`
+6. **Run certbot** once DNS propagates and OCI port 443 is open
+
+⚠️ **Critical pitfalls** (see `references/vite-domain-deployment.md` for details):
+- Go backend redirect helpers must NOT append `projectPrefix` for domain deployments → white page
+- `VITE_API_URL=/` causes double-slash URLs (`//api/...`) — frontend's `normalizeApiBase` must handle `"/"` → `""`
+- Build order matters when sharing `dist/` — domain build first, then path-based
+- Monorepo root lacks `.env.production` — pass env vars explicitly via CLI
 
 ## Adding a New Project Route
 
@@ -112,11 +137,16 @@ The `patch` tool refuses to write to `/etc/nginx/`. Use terminal with `sudo`:
 
 ## Pitfalls
 
+- **Dist not auto-deployed to nginx**: After `npm run build` / `npx vite build` completes, the build output sits in the project's local `dist/` directory. There is no CI/CD auto-deploy. You MUST manually copy it to the nginx-served directory: `cp -r dist/* /var/www/html/projects/<slug>/`. If the user says they "don't see" a change you know you made, check `md5sum` of the deployed `index.html` against the built `dist/index.html` — stale deployment is the #1 suspect.
 - **Forgetting the OCI Security List**: Opening ufw alone is not enough. If public access times out but localhost works, the Security List is the blocker — you cannot fix it from the terminal.
 - **Self-signed cert browser warnings**: Browsers show "Not Secure" / "Your connection is not private". Users must click Advanced then Proceed. This is expected, not a bug. Mention the upgrade path to Let's Encrypt if they get a domain.
 - **Cert expiry**: Self-signed certs expire. Regenerate with the same openssl command or set up a calendar reminder. Let's Encrypt auto-renews via systemd timer.
 - **nginx config syntax**: Always run `sudo nginx -t` before reload. A syntax error in the config will prevent nginx from starting on reload.
+- **Vite base path mismatch**: If a Vite SPA built with `base: "/projects/foo/"` is served at a different path (e.g. domain root `/`), all asset requests 404 because the built HTML references `/projects/foo/assets/...`. You must rebuild with the correct `base` for each deployment path. See "Domain Integration for Path-Based Projects" above.
+- **Vite env var precedence**: Process env vars (e.g. `VITE_API_URL=/ vite build`) override `.env.production` values. Use this to build the same source for different deployment targets without modifying env files.
+- **Backend redirect URLs for dual deployment**: When the backend constructs redirect URLs (OAuth callbacks, payment returns), it must use the correct base for each deployment. A common bug: the backend's `frontendURL()` helper appends a hardcoded project prefix even when the domain SPA is served at root. See `references/vite-domain-deployment.md` Pitfalls 1–3 for the full pattern.
 
 ## References
 
 - See `references/oracle-cloud-security-list.md` for step-by-step instructions to open a port in the OCI Security List (the network-level firewall that cannot be configured from the server).
+- See `references/vite-domain-deployment.md` for the full multi-base-path rebuild pattern when integrating a custom domain for a path-based Vite project.

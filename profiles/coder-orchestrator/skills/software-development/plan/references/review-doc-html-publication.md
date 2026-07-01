@@ -43,4 +43,5 @@ For each requirement amendment:
 ## Pitfalls
 
 - If direct symlink creation under `/usr/share/nginx/html/prds/` fails with permissions, use `sudo ln -sfn` rather than moving the artifact elsewhere.
+- If the symlink exists but local/public `curl` returns `403 Forbidden`, inspect the target file permissions (`namei -l ...` is useful) and `chmod 644 <project>/docs/<slug>.html`; Hermes `write_file` may create review HTML as owner-readable only.
 - Do not encode a transient browser-preview timeout as a blocker if `curl` verifies HTTP 200 and content checks pass; report browser verification limitations only if relevant.
