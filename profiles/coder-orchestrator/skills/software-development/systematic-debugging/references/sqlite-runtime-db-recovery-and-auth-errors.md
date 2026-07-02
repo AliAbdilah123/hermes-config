@@ -8,6 +8,7 @@ Use this when a deployed service uses SQLite and auth/signup suddenly reports mi
 - Login returns success but the next `/get-session` is `null`, or the frontend says the session was not established.
 - The SQLite DB path from the service env does not exist on disk, but the service is still running.
 - `/proc/<pid>/fd` shows an open handle to `.../socialzen.db (deleted)`.
+- **User reports "missing" data (projects, accounts, subscriptions) that should exist** — check whether the running service's `WorkingDirectory` puts the DB at a different path than the repo directory. A `systemd` service with `WorkingDirectory=/opt/app` and a relative DB path `data/app.db` writes to `/opt/app/data/app.db`, while the repo at `/home/user/projects/app/data/app.db` may contain a stale copy from a different era.
 
 ## Root-cause pattern
 

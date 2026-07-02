@@ -35,13 +35,75 @@ Public URL: `https://komuna.ahsanworks.com/`
 
 ## CRITICAL: Database Safety Rules
 
-**NEVER delete `sqlite.db` to re-seed.** This wipes all auth_users, auth_sessions, members, vouchers, claims, purchases, and any runtime data. Instead, always **merge data into the live database** using Python/SQLite.
+**NEVER delete `sqlite.db` to re-seed.** This wipes all auth_users, auth_sessions, members, vouchers, claims, purchases, and any runtime data. The user WILL lose accounts they created and will be unable to log in. Instead, always **merge data into the live database** using Python/SQLite DELETE+INSERT patterns, never `rm`.
 
-The database has two layers:
-1. **`app_state` table** — a single-row JSON payload containing programs, members, vouchers, claims, sessions, packages, products, requests, audit log, notifications, and settings. This is the entire application state.
-2. **`auth_users` and `auth_sessions` tables** — separate tables for authentication.
+### Schema Versions
 
-### Safe Pattern: Read-Modify-Write app_state via Python
+The API has two schema generations. Know which one you're working with before touching the DB:
+
+**V2 (current — relational schema):** `main.go` is ~2240 lines. Separate tables for every entity:
+- `programs`, `products`, `users`, `auth_users`, `program_members`, `program_member_roles`, `product_managers`
+- `purchase_packages`, `package_entries`, `sessions`, `vouchers`, `voucher_claims`, `subscriptions`
+- `purchases`, `purchase_items`, `session_templates`, `session_managers`
+- `requests`, `audit_logs`, `notifications`, `platform_settings`, `platform_admins`
+- `custom_fields`, `custom_field_answers`, `program_invitations`
+
+**V1 (legacy — `app_state` JSON blob):** `main.go` is ~1700 lines. A single `app_state` table with one row containing the entire state as JSON.
+
+To determine the version: check if `app_state` table exists:
+```sql
+SELECT name FROM sqlite_master WHERE type='table' AND name='app_state';
+```
+If it returns a row → V1. If not (and there are 25+ tables instead) → V2.
+
+### V2 Safe Pattern: DELETE + INSERT in relational tables
+
+```python
+# Disable FK during bulk seed to avoid cascade issues
+con.execute("PRAGMA foreign_keys=OFF")
+
+# Delete seed data in dependency order (children first)
+for t in ["voucher_claims","custom_field_answers","subscriptions","vouchers",
+           "purchases","purchase_items","session_managers","session_templates",
+           "sessions","package_entries","purchase_packages",
+           "product_managers","custom_fields","products",
+           "program_member_roles","program_members","program_invitations",
+           "requests","audit_logs","notifications","programs"]:
+    con.execute(f"DELETE FROM {t}")
+
+# Insert programs (use INSERT, not INSERT OR REPLACE)
+for p in all_progs:
+    con.execute("INSERT INTO programs(id,name,description,...) VALUES(?,?,?,...)",
+                (p["id"], p["name"], p["desc"], ...))
+
+# Insert products (each references a program_id)
+for p in all_products:
+    con.execute("INSERT INTO products(id,program_id,name,...) VALUES(?,?,?,...)",
+                (p["id"], p["pid"], p["name"], ...))
+
+# Insert users + auth_users (both tables must have matching IDs)
+for email, name in user_names.items():
+    uid = f"user-{hash(email) & mask:016x}"
+    con.execute("INSERT OR IGNORE INTO users(id,email,name,created_at) VALUES(?,?,?,?)", ...)
+    con.execute("INSERT OR IGNORE INTO auth_users(id,email,name,password_hash,created_at) VALUES(?,?,?,?,?)", ...)
+
+# Insert program_members + roles + product_managers
+for prog_id, roles, status in member_spec:
+    pmid = gen_id("pm")
+    con.execute("INSERT INTO program_members(id,user_id,program_id,status,joined_at) VALUES(...)", ...)
+    for role in roles:
+        con.execute("INSERT INTO program_member_roles(id,program_member_id,role) VALUES(...)", ...)
+    # Manager roles get product_managers entries too
+    if "manager" in roles:
+        for prod_id in manager_products[email][prog_id]:
+            con.execute("INSERT INTO product_managers(id,program_member_id,product_id) VALUES(...)", ...)
+
+con.commit()
+```
+
+Then restart the service: `sudo systemctl restart komuna-api.service`
+
+### V1 (Legacy) Safe Pattern: Read-Modify-Write app_state via Python
 
 ```python
 import sqlite3, json
@@ -69,7 +131,9 @@ con.close()
 
 Then restart the service: `sudo systemctl restart komuna-api.service`
 
-### Adding Seed Programs Without Damage
+### Adding Seed Programs Without Damage (V1 Legacy)
+
+**This applies only to the V1 `app_state` JSON blob API.** For V2 relational, use the DELETE+INSERT pattern in the V2 section above.
 
 1. Read current programs from live DB via `curl http://127.0.0.1:8095/api/v1/programs`
 2. Identify which programs need adding (check by ID)
@@ -77,9 +141,9 @@ Then restart the service: `sudo systemctl restart komuna-api.service`
 4. Restart service
 5. Verify via `curl http://127.0.0.1:8095/api/v1/programs | python3 -c "import json,sys; print(len(json.load(sys.stdin)['data']))"`
 
-### WAL Checkpointing
+### WAL Checkpointing (V1 Legacy)
 
-When the Go service is running, SQLite WAL mode means recent writes live in `sqlite.db-wal`, not the main file. Always run `PRAGMA wal_checkpoint(TRUNCATE)` before reading from Python to get the full current state.
+**V1 only.** When the Go service was running the V1 `app_state` API, SQLite WAL mode meant recent writes lived in `sqlite.db-wal`, not the main file. Always run `PRAGMA wal_checkpoint(TRUNCATE)` before reading from Python to get the full current state. V2's relational schema with multiple tables doesn't typically need this for reads.
 
 ## Auth System
 
@@ -125,24 +189,74 @@ When the DB was accidentally wiped and a user can't log in:
 
 ```
 /home/ubuntu/projects/komuna/
-├── api/v1/main.go       # Go API — single-file, ~1700 lines
-├── api/server           # Compiled binary
+├── api/v1/main.go       # Go API — single-file, ~2240 lines (V2 relational schema)
 ├── api/v1/main_test.go  # Tests
-├── sqlite.db            # Live database (DO NOT DELETE)
+├── api/server           # Compiled binary
+├── sqlite.db            # Live database (DO NOT DELETE, DO NOT rm -f)
+├── sqlite.db.bak-*      # Backups created before seed operations
 ├── apps/api/            # Cloudflare Worker (TypeScript, separate deployment)
 ├── apps/web/            # React SPA (Vite)
+│   ├── .env             # Build-time env vars (VITE_ prefixed — see pitfall below)
+│   ├── dist/            # Production build output
+│   └── .env.example     # Template (does NOT include VITE_USD_TO_IDR_RATE)
 └── docs/                # Project documentation
 ```
+
+## Frontend Build & Deploy
+
+```bash
+cd /home/ubuntu/projects/komuna/apps/web
+
+# Build (tsc + vite build)
+npm run build
+
+# Deploy to nginx static dir
+sudo rsync -a --delete dist/ /var/www/html/projects/komuna/
+sudo chown -R www-data:www-data /var/www/html/projects/komuna/
+```
+
+The frontend is served by nginx from `/var/www/html/projects/komuna/` at the path prefix `/projects/komuna/`. The Vite build reads env vars from `apps/web/.env`, NOT from the root `/home/ubuntu/projects/komuna/.env`.
+
+### Vite Env Var Pitfall
+
+**CRITICAL:** Vite only exposes env vars prefixed with `VITE_` to client code (`import.meta.env`). The root `.env` has variables like `USD_TO_IDR_RATE=16000` — these are for the Go API, NOT accessible to the frontend. If a frontend feature depends on a build-time value:
+
+1. The var MUST be in `apps/web/.env` (not root `.env`)
+2. The var MUST be prefixed with `VITE_` (e.g., `VITE_USD_TO_IDR_RATE=16000`)
+3. Rebuild and redeploy after adding/changing
+
+**Symptom of this bug:** Currency conversion (IDR → USD) silently does nothing — `getUsdToIdrRate()` returns 0, the `if (rate)` guard skips conversion, prices display in IDR amounts with USD currency symbols (e.g., "$425,000" instead of "$26.56").
 
 ### Linked Files
 
 - `scripts/hash_password.py` — standalone script to hash a password matching Go API's algorithm. Run directly: `python3 scripts/hash_password.py somepassword`
+- `references/v2-schema.md` — complete V2 relational schema reference (tables, columns, FK relationships, seeding pattern, role assignment)
+
+### External Seed Scripts
+
+- `/tmp/komuna-reseed-v2.py` — full 40-user, 25-program seed script for the V2 relational schema. Run with: `sudo systemctl stop komuna-api.service && python3 /tmp/komuna-reseed-v2.py && sudo systemctl start komuna-api.service`
 
 ## Full-State Reseeding (Complete DB Replacement)
 
-When the user provides a full spec (users + programs + memberships + roles), write a Python script that builds the entire `app_state` payload and populates `auth_users`. The script must produce JSON that Go's `json.Unmarshal` can deserialize into the `State` struct.
+When the user provides a full spec (users + programs + memberships + roles), write a Python script that populates all relevant tables. The approach differs by schema version.
 
-### JSON Type Pitfalls (Go → Python)
+### V2 Relational Schema Seed Script
+
+For the current V2 relational schema, always:
+1. `PRAGMA foreign_keys=OFF` before DELETE operations
+2. Delete seed data in dependency order (children before parents)
+3. Insert programs, products, users, auth_users, program_members, roles, product_managers
+4. Insert packages, sessions, vouchers, requests as needed
+5. Restart the service: `sudo systemctl restart komuna-api.service`
+6. Verify with curl health check + programs endpoint + login test + workspace test
+
+See `scripts/komuna-reseed-v2.py` for a working 40-user, 25-program seed script with the full relational schema pattern.
+
+### V1 (Legacy) app_state JSON Seed Script
+
+For the V1 `app_state` JSON blob API: build the entire `app_state` payload and populate `auth_users`. The script must produce JSON that Go's `json.Unmarshal` can deserialize into the `State` struct.
+
+### JSON Type Pitfalls (V1 Legacy — Go `app_state` JSON → Python)
 
 These Go struct fields will cause silent `load_failed` 500 errors if the JSON types don't match:
 
@@ -180,7 +294,167 @@ ts = lambda h_offset=0: (t + timedelta(hours=h_offset)).strftime('%Y-%m-%dT%H:%M
 now_str = lambda: datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 ```
 
-## Verification Checklist
+## Common Issues & Troubleshooting
+
+### ⚠️ Dual-Stack Architecture (Go + Cloudflare Workers)
+
+The Komuna project has **two API stacks**:
+
+| Stack | Location | Status | API Prefix |
+|-------|----------|--------|------------|
+| **Go+SQLite** | `api/v1/main.go`, port 8095 | Production (served by nginx) | `/api/v1/`, `/projects/komuna/api/v1/` |
+| **Cloudflare Workers** | `apps/api/src/` (Hono+Drizzle+NeonDB) | New codebase (deployed separately) | Depends on `VITE_API_BASE_URL` |
+
+The frontend (`apps/web/`) hits whichever API `VITE_API_BASE_URL` points to. When debugging API issues:
+- Check `apps/web/.env` for the active `VITE_API_BASE_URL`
+- The Go API uses custom auth (salted SHA256), the Worker API uses Neon Auth
+- DB state lives in different places (local `sqlite.db` vs NeonDB Postgres)
+- **Before touching the Go DB, verify which stack the frontend is configured to hit**
+
+### Attendance CRUD Buttons Not Working
+
+**Symptom:** Attended/No-show toggle buttons on the manager dashboard flash a loading spinner briefly but don't persist. Alias edit works fine. No console errors.
+
+#### Production Stack (Go API — `api/v1/main.go`)
+
+This is the **more common scenario** since the production nginx proxies `/api/v1/` to the Go API on port 8095.
+
+**Root cause:** The Go API's `sessionTree` function at line 1599 was a **stub**: it returned a fake response without ever touching the database:
+```go
+// STUB — returned fake success without writing to DB
+jsonOut(w, map[string]any{"claim_id": "", "session_id": sid, "attendance_status": "present", "marked_at": now(), "method": "manual"})
+```
+The frontend sends `POST /sessions/:id/attendance/override` → stub returns HTTP 200 with fake data → frontend calls `fetchData()` to refresh → DB was never updated → old status reappears.
+
+**Fix:** Implement real body parsing and DB update in `sessionTree`:
+```go
+if len(parts) >= 2 && parts[1] == "attendance" {
+    // /override sub-path for manual status changes
+    if len(parts) >= 3 && parts[2] == "override" {
+        var in struct {
+            ClaimID   string `json:"claim_id"`
+            NewStatus string `json:"new_status"`
+        }
+        json.NewDecoder(r.Body).Decode(&in)
+        a.db.Exec("UPDATE voucher_claims SET attendance_status=? WHERE id=? AND session_id=?", in.NewStatus, in.ClaimID, sid)
+        jsonOut(w, map[string]any{"claim_id": in.ClaimID, "session_id": sid, "attendance_status": in.NewStatus})
+        return
+    }
+    // Base /attendance — marks present (QR/manual flow)
+    var in struct { ClaimID string `json:"claim_id"`; Method string `json:"method"` }
+    json.NewDecoder(r.Body).Decode(&in)
+    a.db.Exec("UPDATE voucher_claims SET attendance_status='present' WHERE id=? AND session_id=?", in.ClaimID, sid)
+    jsonOut(w, map[string]any{"claim_id": in.ClaimID, "session_id": sid, "attendance_status": "present"})
+    return
+}
+```
+
+**Pitfall — `claimByID` returns nil:** The `claimByID` helper function uses `rows.Scan` into plain `string` fields, which fails silently when `cancelled_at` is NULL (see "Go `rows.Scan` Silent Failure" below). Do NOT call `claimByID` in attendance responses — return a synthetic JSON response instead (the frontend doesn't use the claim detail, it calls `fetchData()` separately).
+
+**Test:** `curl -X POST http://127.0.0.1:8095/api/v1/sessions/<sid>/attendance/override -H 'Content-Type: application/json' -d '{"claim_id":"clm-xxx","new_status":"present"}'` → verify DB updated: `sqlite3 sqlite.db "SELECT attendance_status FROM voucher_claims WHERE id='clm-xxx'"`.
+
+#### Worker API Stack (`apps/api/src/`)
+
+**Root cause (different):** Frontend `apiClient.markAttendance()` sends `{ claim_id, status }` to `POST /sessions/:id/attendance`, but the Worker API Zod validator expects `{ claim_id, method: 'qr_scan' | 'manual' }`. Zod strips unknown fields silently — no error, no network failure, just no data change.
+
+Additionally, the `markAttendance` service always sets status to `'present'` (for QR/mobile flow), so `'absent'` would be wrong even if the payload matched.
+
+**Fix:** Route to `POST /sessions/:id/attendance/override` with `{ claim_id, new_status }` instead. This endpoint accepts both `'present'` and `'absent'` and has no `already_marked` guard.
+
+**Files (Worker stack):**
+- Frontend: `apps/web/src/lib/api.ts` — `markAttendance` method (change endpoint path + payload)
+- Backend validator: `apps/api/src/validators/attendance.ts` — `markAttendanceBodySchema` vs `overrideAttendanceBodySchema`
+- Backend service: `apps/api/src/services/attendance.ts` — `markAttendance` vs `overrideAttendance`
+
+### Dashboard Shows "No assigned products" for Managers
+
+**Symptom:** Manager logs in, navigates to a program, sees "No assigned products are available for this program."
+
+**Root cause:** The workspace handler (`/me/workspace`) reads manager product assignments from `program_member_roles.product_id`, NOT from the `product_managers` table. If `program_member_roles` has `role='manager'` but `product_id IS NULL`, the workspace returns roles without `productId` → frontend shows empty state.
+
+**Check:**
+```sql
+-- Manager roles with NULL product_id (these are broken)
+SELECT pmr.id, pmr.program_member_id, pmr.product_id, u.email
+FROM program_member_roles pmr
+JOIN program_members pmm ON pmr.program_member_id = pmm.id
+JOIN users u ON pmm.user_id = u.id
+WHERE pmr.role = 'manager' AND (pmr.product_id IS NULL OR pmr.product_id = '');
+
+-- Compare against product_managers (which has the real assignments)
+SELECT pm.program_member_id, pm.product_id, u.email
+FROM product_managers pm
+JOIN program_members pmm ON pm.program_member_id = pmm.id
+JOIN users u ON pmm.user_id = u.id;
+```
+
+**Fix:** Backfill `program_member_roles.product_id` from `product_managers` where the manager role's `product_id` is NULL. One `program_member` can manage multiple products — each gets its own `program_member_roles` row with the specific `product_id`.
+
+**⚠ Multi-product pitfall:** If a manager has 1 row in `program_member_roles` (with NULL product_id) but 2 rows in `product_managers` (prod-A, prod-B), do NOT just UPDATE the single role row. That would only cover one product — the other stays invisible. Instead:
+
+```sql
+-- Step 1: UPDATE the existing NULL row for the first product
+UPDATE program_member_roles
+SET product_id = (SELECT product_id FROM product_managers WHERE program_member_id = ? LIMIT 1)
+WHERE program_member_id = ? AND role = 'manager' AND product_id IS NULL;
+
+-- Step 2: INSERT new rows for any additional products (skip the first)
+INSERT INTO program_member_roles (id, program_member_id, role, product_id)
+SELECT 'pmr-' || printf('%04x', abs(random()) % 65536),
+       pm.program_member_id, 'manager', pm.product_id
+FROM product_managers pm
+WHERE pm.program_member_id = ?
+  AND pm.product_id NOT IN (
+    SELECT product_id FROM program_member_roles
+    WHERE program_member_id = pm.program_member_id AND role = 'manager'
+  );
+```
+
+Run the check query again after the fix — zero rows with NULL product_id means success.
+
+### Pre-filling Sessions with Bookings
+
+When testing requires booked members in a session, create voucher_claims directly. See `references/session-booking-flow.md` for the complete data flow and SQL patterns (vouchers → claims → sessions.taken).
+
+Quick pattern:
+1. Find or create giveaway vouchers for members scoped to the session's product
+2. Create `voucher_claims` rows linking vouchers to the session
+3. Mark vouchers `claimed`
+4. Update `sessions.taken` to match claim count
+5. Always stop service + backup DB first
+
+### Go `rows.Scan` Silent Failure with SQLite NULL Columns
+
+**Symptom:** API endpoint returns some fields populated (e.g., `id`, `voucher_id`) but ALL subsequent columns are empty/null (e.g., `member_name: null`, `member_email: ""`, `member_id: ""`). The DB query run directly in sqlite3 returns correct data, but the API response is empty.
+
+**Root cause:** Scanning a SQLite NULL value into a plain Go `string` variable causes `rows.Scan` to fail silently **for all remaining columns**. If column 5 (`alias`) is NULL, columns 6–12 (`attendance_status`, `cancelled_at`, ..., `member_name`) all stay at their zero values (empty string). Because the Go code at `main.go:1162` ignores the `rows.Scan` error return, this failure is invisible — the row is still appended to the array with empty fields.
+
+**Check:** Scan errors are silent when the error return is dropped:
+```go
+// BROKEN — ignores scan error, silent corruption
+rows.Scan(&id, &vid, &subID, &sessionID, &alias, &att, &cancelled, ...)
+```
+
+**Fix:** Use `sql.NullString` for all nullable columns AND check the error:
+```go
+// FIXED — sql.NullString for nullable columns, error check
+var subID, alias, att, cancelled sql.NullString
+if err := rows.Scan(&id, &vid, &subID, &sessionID, &alias, &att, &cancelled, ...); err != nil {
+    continue  // skip rows that fail scan
+}
+attendance := "pending"
+if att.Valid && att.String != "" {
+    attendance = att.String
+}
+```
+
+**Affected columns** (any of these being NULL silently corrupts all columns scanned after them): `vc.alias`, `vc.attendance_status`, `vc.cancelled_at`, `vc.subscription_id`.
+
+**Practical consequence:** `claimByID()` (line 1827) returns `nil` for most claims because `cancelled_at` is commonly NULL. When writing new endpoint code, avoid calling `claimByID` — construct a synthetic JSON response instead. Only use it for claims you know have non-NULL `cancelled_at`.
+
+**Debugging approach:** Add a one-line `log.Printf` after the scan to see if values are populated, then rebuild + restart + curl. If the log shows empty strings but sqlite3 shows real data, the scan is failing on a nullable column earlier in the list.
+
+### Verification Checklist
 
 - [ ] `go test ./...` passes before deploying
 - [ ] `go build -o ../server .` succeeds

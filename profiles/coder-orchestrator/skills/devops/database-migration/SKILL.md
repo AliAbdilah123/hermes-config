@@ -16,6 +16,14 @@ Cross-engine database copy/migration with schema mapping between different ORM b
 
 **ALWAYS confirm source → target before writing any code.** Ask the user explicitly if the direction is ambiguous. A wrong-direction copy wastes time and may dirty the target.
 
+## Setup
+
+Install psycopg2-binary (not in stdlib, needed for PG connections):
+
+```bash
+uv pip install psycopg2-binary
+```
+
 ## Step 2: Inspect both schemas
 
 Before writing migration code, inspect BOTH sides:
@@ -132,16 +140,18 @@ conn = psycopg2.connect(host=host, port=port, dbname=db, user=user, password=pwd
 - `references/neon-connection.md` — Neon PostgreSQL connection quirks and setup
 - `references/pg-to-sqlite-mapping.md` — Session-specific schema mapping notes (Drizzle → Go API)
 - `references/drizzle-pg-to-go-sqlite-relational.md` — Komuna full 25-table migration: Drizzle/Postgres → Go/SQLite with type mapping, pitfalls, and seed patterns
+- `references/self-flow-schema-mapping.md` — Self-Flow Drizzle/Neon ↔ Go/SQLite schema map and migration notes
 - `templates/pg_to_sqlite_migrate.py` — Reusable migration script template
 
 ## Pitfalls
 
 - **Wrong direction**: Always confirm source→target. Starting the wrong way dirties the target.
-- **Schema column name mismatch**: Check BOTH schemas before writing mapping code. Drizzle's camelCase vs Go's snake_case is a common surprise.
+- **Junction table survives alongside direct FK**: Some SQLite schemas keep BOTH a `task_goals` junction table AND a `tasks.goal_id` direct FK column. Always check `.schema` — if the junction table exists, populate it in addition to the direct column. Inspect both schemas before writing mapping code.
 - **Missing FK parents**: If the source has referenced IDs with no parent rows, create placeholder parents rather than dropping the data.
 - **Bool ↔ int conversion**: SQLite stores bools as 0/1 integers, PG uses proper boolean. Convert explicitly.
 - **No rollback on SQLite**: Back up before running migration scripts. Keep the backup until verified.
 - **Live API during data fixes creates duplicates**: When an API server is running and you run bulk data-modification SQL (ownership transfers, ID rewrites), the API can create duplicate/temporary records under the new owner mid-migration because its queries see the old state. Stop the API service first, run the SQL, then restart. This applies to any in-place data fix, not just cross-engine migrations.
+- **Drizzle camelCase columns in PG**: Drizzle ORM creates PostgreSQL columns with camelCase names that are case-sensitive (e.g., `isTemplate`, `templateId`). When constructing INSERT statements in Python, use `psycopg2.extensions.quote_ident(c, cur)` to properly quote each column name. Raw double-quoting with Python string escaping (`'"isTemplate"'`) produces broken SQL (`""isTemplate""`). Using unquoted lowercase fails because PG folds unquoted identifiers to lowercase — `isTemplate` becomes `istemplate` and won't match the Drizzle-created column.
 - **Go sql.Scan NULL into string**: SQLite NULL columns cannot be scanned into Go `string` — it panics with "converting NULL to string is unsupported". Fix: use `COALESCE(col,'')` in the query, or scan into `sql.NullString`. Applies to all nullable TEXT columns (image_url, description, location, slug, reason, etc.).
 - **Go sql.Scan INTEGER into bool**: SQLite stores booleans as INTEGER (0/1). Scanning directly into Go `bool` fails on some drivers (modernc.org/sqlite). Scan into `int` and convert with `val != 0`.
 - **SetMaxOpenConns(1) deadlock in Go+SQLite**: With a single connection, nested queries deadlock — if `rows.Next()` holds the connection and the loop body calls `db.Query()`, the inner query blocks forever waiting for the connection the outer query holds. Fix: set `SetMaxOpenConns(10)` or close rows before inner queries. WAL mode makes concurrent reads safe.

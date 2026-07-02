@@ -51,3 +51,26 @@ After fix: rebuild, restart, test the exact API endpoint with the same params th
 When an in-process API is running while data ownership is changed (e.g., bulk `UPDATE user_id`), the API can create **duplicate records** under the new owner. Example: `ensureDailyGoalForDate` creates a new empty daily goal because the existing goal still belongs to the old user at that moment. After the migration, both goals belong to the same user — and the frontend may pick the empty one.
 
 **Prevention**: Stop the API service before running ownership-transfer SQL, then restart.
+
+## Cleaning Up Duplicate Daily Goals After Migration
+
+When the migration race produces duplicate daily goals for the same date (one real with tasks, one empty "Daily focus for DATE"):
+
+```sql
+-- Find empty "Daily focus for" goals that shadow real data
+SELECT g.id, g.title, g.start_date
+FROM goals g
+WHERE g.user_id = ?
+  AND g.category = 'Daily'
+  AND g.title LIKE 'Daily focus for %'
+  AND NOT EXISTS (SELECT 1 FROM tasks t WHERE t.goal_id = g.id)
+ORDER BY g.start_date DESC;
+
+-- Delete them
+DELETE FROM goals WHERE id = '<id_from_query>';
+
+-- Prevent frontend from picking empty duplicates (belt-and-suspenders):
+-- In findTodaysDailyGoal, use filter + sort by taskCount desc instead of find (first match)
+```
+
+**Frontend belt-and-suspenders fix**: When multiple goals match a date, prefer the one with the most tasks so an empty duplicate can't shadow real data even if cleanup is missed.

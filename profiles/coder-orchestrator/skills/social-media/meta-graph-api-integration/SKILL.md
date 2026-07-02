@@ -130,5 +130,81 @@ Error `(#200) The permission(s) pages_manage_posts are not available` means:
 - The app doesn't have `pages_manage_posts` in its OAuth scopes
 - Or the user's token was obtained before the scope was added (needs reconnect)
 
+**Caveat**: `pages_manage_posts` and `pages_manage_metadata` require **Facebook Login for Business**
+(business-type app + Advanced Access). Requesting them on a regular consumer Facebook Login
+app makes Meta **reject the entire OAuth dialog** with "Invalid Scopes". For consumer apps,
+limit scopes to `pages_show_list`, `pages_read_engagement`, `business_management` and handle
+publishing through Instagram (direct) or get the app converted to Business type.
+
 For development mode apps, app admins/developers can use any permission without App Review.
 For production, `pages_manage_posts` requires App Review.
+
+## Account Provider Tags
+
+When integrating Facebook, Instagram, and Threads OAuth, the same real-world account can
+arrive through different connection flows. Tag each account with a `provider` column:
+
+| Provider    | Source                                          | Token Available? |
+|-------------|-------------------------------------------------|------------------|
+| `instagram` | Direct Instagram OAuth (Instagram Login)        | ✅ Full token    |
+| `facebook`  | Facebook Login → linked IG Business Account     | ⚠️ May be empty  |
+| `threads`   | Direct Threads OAuth                            | ✅ Full token    |
+| `mock`      | Demo/seed data                                  | N/A              |
+
+**Pitfall**: Facebook-linked IG Business Accounts (provider=`facebook`) often end up with
+no `access_token_encrypted` because the Facebook OAuth flow returns a Facebook Page token,
+not an Instagram token. The publisher/business logic must handle this gracefully.
+
+**Publisher query pattern**: When querying accounts for Instagram publishing, accept both
+`provider='instagram'` and `provider='facebook'` since both can publish via the Instagram
+Graph API, but check for non-empty tokens:
+
+```sql
+SELECT ig_user_id, access_token_encrypted, token_expires_at
+FROM instagram_accounts
+WHERE id=? AND user_id=?
+  AND (provider='instagram' OR provider='facebook')
+```
+
+**Frontend label format**: Use `@username : Platform` (colon separator) for all account
+selectors — CreatePost dropdowns, Settings account cards, etc. Facebook-linked accounts
+get `: via Facebook`, direct Instagram gets `: Instagram`, Threads gets `: Threads`.
+
+```tsx
+// CreatePost account dropdown
+accounts.filter(a => provider === "instagram" || provider === "mock" || provider === "facebook").map(a => (
+  <SelectItem value={a.id}>
+    @{a.igUsername} : {a.provider === 'facebook' ? 'via Facebook' : 'Instagram'}
+  </SelectItem>
+))
+```
+
+**SocialZen architecture note**: Facebook OAuth callback (instagram_oauth.go ~line 567)
+intentionally does NOT insert `instagram_accounts` rows for Instagram Business Accounts
+discovered via Facebook Pages. The comment reads: "Facebook-linked Instagram accounts
+are deliberately not inserted here. Users must connect Instagram explicitly with the
+Instagram button." Facebook flow only populates the `facebook_pages` table. Any
+`instagram_accounts` rows with `provider='facebook'` are leftovers from an older code
+path that has since been removed.
+
+## access_token_encrypted Column
+
+The `access_token_encrypted` column is often added via **ALTER TABLE migration** after the
+initial CREATE TABLE. The migration pattern (safe for re-runs):
+
+```sql
+ALTER TABLE instagram_accounts ADD COLUMN access_token_encrypted TEXT;
+```
+
+Wrap in error handling that ignores "duplicate column" errors:
+
+```go
+if _, err := db.Exec(`ALTER TABLE instagram_accounts ADD COLUMN access_token_encrypted TEXT`); err != nil {
+    if !strings.Contains(strings.ToLower(err.Error()), "duplicate column") {
+        return err
+    }
+}
+```
+
+Verify the column exists before deploying publisher code that queries it — missing column
+produces silent scan failures that look like "account not connected" errors.

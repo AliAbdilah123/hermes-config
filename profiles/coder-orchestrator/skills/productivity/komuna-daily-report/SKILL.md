@@ -111,6 +111,37 @@ Rules:
 5. Before writing the report, ask the user what they will do today, or clarify whether already-mentioned today tasks should be included.
 6. After the user answers, generate the final report using the exact template.
 
+## Session Search Strategy for Progress Discovery
+
+### Multi-Pass Search
+
+Session search is imprecise — use a multi-pass approach, not a single query:
+
+1. **First pass — broad Komuna query:** `session_search(query="komuna", sort="newest", limit=5)` — catches most sessions.
+2. **Second pass — topic-specific terms:** Search for work items mentioned by the user: `query="xendit OR sort OR card OR seed OR product OR voucher"` — catches sessions where "komuna" keyword didn't appear in the FTS5 snippet but the work is Komuna-related.
+3. **Third pass — browse all recent:** `session_search()` with no query — returns recent sessions chronologically. Check the `source` field to filter for the right Discord user (e.g., "Goresan Abadi" — "Capt4ce" is a different user).
+4. **If the user disputes your findings, trust them and dig harder.** Do not argue that "only one session was found." Expand to broader queries, scroll into promising sessions, and check session `started_at` timestamps against the target date.
+
+### UTC Session ID vs WIB Date Boundaries
+
+**CRITICAL:** Session IDs use UTC timestamps (e.g., `20260702_031901` = July 2 03:19 UTC). The user is in WIB (UTC+7). A session with ID `20260702` (July 2) may have actually started on July 1 afternoon WIB. Always check the `started_at` field (epoch timestamp) and the `when` display field, not just the session ID prefix, when filtering by calendar date.
+
+Example: Session `20260702_031901` shows `when: "July 02, 2026 at 03:19 AM"` but `started_at: 1782898462` = July 1 ~16:34 WIB. This was July 1 work, not July 2.
+
+### Compacted Sessions Hide Content
+
+Sessions with 100+ messages get context-compacted. The FTS5 snippet in `session_search` results only shows text near the match, which may be a compaction summary — not the actual work done. When a session looks promising but its snippet only shows compaction boilerplate:
+
+1. **Scroll into the session** with `session_search(session_id=..., around_message_id=...)` to read the actual user messages and assistant summaries.
+2. **Read the full session** with `session_search(session_id=...)` (no around_message_id) to get the first 20 + last 10 messages, which often contain the final summary.
+3. Look for assistant-produced summaries like "Here's what changed" / "Final state" tables — these are the best evidence of actual work.
+
+### De-duplicating Across Sessions
+
+Sessions in the daily report session itself (the `komuna-daily-report` skill invocation) are NOT yesterday's work — they're today's report preparation. Exclude the current daily-report session from progress discovery.
+
+Cross-reference session IDs: if the same session appears in multiple searches, it's the same work — don't double-count it as multiple items.
+
 ## Common Pitfalls
 
 1. Generating the report immediately without asking today's plan. This violates the user's explicit instruction.
@@ -119,6 +150,10 @@ Rules:
 4. Inventing challenges. If no difficulty is evident, do not fabricate one.
 5. Over-polishing into a different template. Keep the exact heading structure and numbered list format.
 6. Searching broad history without project filtering. If using `session_search`, query for Komuna-specific terms and ignore unrelated projects.
+7. **Trusting session ID dates over actual timestamps.** Sessions with tomorrow's UTC date may have started today in WIB.
+8. **Relying on FTS5 snippets from compacted sessions.** Snippets may show compaction boilerplate instead of actual work — scroll into the session to read the real content.
+9. **Single-query session search.** One `query="komuna"` search misses sessions where the work is Komuna but the snippet doesn't contain the keyword. Always do a second pass with topic-specific terms.
+10. **Arguing with user corrections.** If the user says "I did more than that," they're right. Run broader searches, scroll into sessions, and find the missing work.
 
 ## Verification Checklist
 

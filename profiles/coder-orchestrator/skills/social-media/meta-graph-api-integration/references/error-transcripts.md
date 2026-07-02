@@ -32,6 +32,17 @@ Error code 9007, subcode 2207027 — the media container hasn't finished process
 
 **Fix:** Add `pages_manage_posts` to OAuth scopes. Users must reconnect.
 
+## Instagram: "account not connected for publishing"
+
+**Symptom:** `publisher: post X target Y (instagram) failed: Instagram account not connected for publishing; reconnect Instagram`
+
+**Root causes (check in order):**
+1. **Missing `access_token_encrypted` column** — the DB table was created without it and the ALTER TABLE migration hasn't run on this DB instance. Verify with `PRAGMA table_info(instagram_accounts)`. If missing, run `ALTER TABLE instagram_accounts ADD COLUMN access_token_encrypted TEXT`.
+2. **Account has wrong provider** — the publisher queries with `provider='instagram'` but the account has `provider='facebook'` (IG Business Account linked via Facebook flow). Fix: widen the query to `(provider='instagram' OR provider='facebook')`.
+3. **Token genuinely empty** — the account was connected via Facebook OAuth which doesn't store an Instagram token. The user must reconnect Instagram directly.
+
+**Symptom (parent post):** `All platforms failed to publish` — the parent post gets this error when ALL targets fail. This means EVERY platform target (instagram, facebook, threads) returned an error. Check each target's individual `error_message` in `post_targets` table to diagnose.
+
 ## Facebook: published=false hides photos
 
 **Symptom:** Facebook photo posts succeed but don't appear in the feed.

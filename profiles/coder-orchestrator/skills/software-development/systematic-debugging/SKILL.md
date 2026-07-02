@@ -132,6 +132,16 @@ When a deployed Vite/React auth route shows the wrong login experience (fallback
 
 See `references/vite-spa-auth-ui-triage.md` for the detailed checklist and verification recipe.
 
+### 4a.1 SPA Session Cache Staleness After Auth
+
+When sign-in succeeds (API returns 200 with user data) but the page immediately shows "session
+not established" or redirects back to login: suspect a module-level session cache that still
+holds `{ data: null }` from the pre-auth page load. After sign-in, `getSession()` returns the
+stale cache instead of making a real request. Fix: use a force-refresh variant
+(`refreshSession()`) or clear the cache before calling `getSession()`.
+
+See `references/spa-session-cache-staleness-after-auth.md` for the pattern, detection, and fix.
+
 ### 4b. OAuth/App-ID Error Triage
 
 When a user reports a social login/OAuth "Invalid App ID" or "app id error" after updating env:
@@ -209,6 +219,26 @@ When a deployed SQLite-backed app suddenly reports duplicate-user errors for bra
 
 See `references/sqlite-runtime-db-recovery-and-auth-errors.md` for commands and the full recovery/fix recipe.
 
+### 4d.1 SQLite WAL Corruption After Live-DB Copy or Crash
+
+When a copied or restarted SQLite database causes the Go API to crash-loop with `database disk image is malformed (11)`:
+- Remove the destination `-wal` and `-shm` files, then verify `PRAGMA integrity_check` on the main DB before restarting the service.
+- The WAL belongs to the original process; copying it to a new process is unsafe unless the original process was stopped cleanly.
+- For safe offline copies: use `sqlite3 .backup` or `VACUUM INTO` instead of raw `cp` of all three files.
+- Verify the service starts and `/health` returns 200.
+
+See `references/sqlite-wal-recovery-after-copy.md` for the full recovery recipe.
+
+### 4d.2 Go Binary Stale Build / Source Changes Not Reflected
+
+When you modify Go source, `go build` succeeds, deploy, but the running service does NOT reflect your changes — the binary was compiled from cached `.a` files predating the edits:
+- Verify with `strings /path/to/binary | grep "unique_literal_from_your_change"`. No match → stale binary.
+- Clean the cache and rebuild: `go clean -cache && CGO_ENABLED=1 go build -o /path/to/binary .`
+- Also confirm the binary deploys to the path expected by systemd: `systemctl cat <service> | grep ExecStart`.
+- A stale-binary symptom can actually be a wrong-deployment-path symptom. Check both.
+
+See `references/go-build-cache-stale-binary.md` for the full diagnostic and prevention pattern.
+
 ### 4e. Systemd Restart After `.env` Changes
 
 When the user updates `.env` and asks to restart a deployed Linux service:
@@ -272,6 +302,8 @@ When a React/Vite page shows a runtime collection error such as `t.filter is not
 - Add a regression test whose mock uses the real API envelope shape that previously failed.
 - Verify the targeted test, build/typecheck, and if deployed, fetch the served bundle/API to confirm the deployed artifact includes the normalizer and the endpoint shape is understood.
 
+**Variant: Zod validator field mismatch → silent button failure.** When CRUD toggle buttons appear to work (optimistic UI updates) but the backend never receives the change, with no console or network errors: compare the frontend payload field names against the backend Zod schema. Zod silently strips unknown fields by default. Match field names or switch to the correct endpoint. See `references/zod-validator-field-mismatch.md` for detection and fix patterns.
+
 See `references/frontend-api-shape-drift.md` for a compact recipe and minimal TypeScript pattern.
 
 ### 5a.1 Frontend/API Unknown Enum Runtime Crash
@@ -293,7 +325,18 @@ When a user asks whether a displayed count (for example `18/18 TAKEN`, badge cou
 - If a displayed count is seeded/demo aggregate data rather than derived from individual records, say so explicitly; do not imply that each unit has a visible row unless verified.
 - Final answer should be concise: “X means scoped metric A, not global count B; verified global count is N; caveat if demo/seeded aggregate.”
 
-### 5b.1 Frontend Filter / API Query Triage
+### 5b.1 Multi-Timezone UI Display vs Logic Drift
+
+When a user reports that event/session times are wrong, or a session shown as already over is not moved into past/completed sections:
+- Trace both layers separately: the **display formatter** (`toLocaleTimeString`, `timeZone`) and the **categorization logic** (`isPast`, `getDayGroup`, filters). They may use different timezone sources.
+- Search for hardcoded timezone literals in React/Vite display components (`timeZone: 'America/New_York'`) while parent pages/API data use program/tenant timezone.
+- Pass the tenant/program timezone through props and use it consistently for date pills, clock labels, and day grouping.
+- Watch for date-only grouping: `date(start) === today` does not mean the session is still active if `endTime < now`.
+- Watch for `return 'past'` fallthrough in grouping helpers; future sessions beyond tomorrow can be mislabeled as past.
+
+See `references/decoupled-timezone-sources.md` for detection commands and the Komuna example.
+
+### 5b.2 Frontend Filter / API Query Triage
 
 When UI filter pills/tabs visually switch but the results stay on the default set (for example session filters where Ongoing/Past still show Upcoming):
 - First verify the frontend actually sends the selected filter value in the API params; add an interaction test that clicks the filter and asserts the request shape.

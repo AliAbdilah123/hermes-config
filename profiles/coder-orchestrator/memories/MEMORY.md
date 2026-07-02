@@ -8,12 +8,12 @@ Public host IP 168.110.213.104. HTTP :80, HTTPS :443 (self-signed /etc/nginx/ssl
 §
 For migrations, don't recreate from boilerplate by default; port/convert the source project in place or into a clone, preserving identity. Use boilerplate only as a pattern reference unless user says otherwise.
 §
-After updating public PRD/document HTML, provide cache-busted URL and verify live content contains new text before finalizing.
+PRD/docs HTML: deploy to /usr/share/nginx/html/prds/ (nginx /prd/ alias), set 644. Verify with curl -sI http://localhost/prd/name.
 §
-Komuna: komuna.ahsanworks.com. Go API :8095, local email/password auth. Vite from apps/web. Seed: delete sqlite.db to re-seed. NEVER simplify DB when migrating — port full relational schema as-is.
+Komuna: komuna.ahsanworks.com. Go API :8095, auth (PW: salt:sha256×120K), service komuna-api, binary api/server. DB sqlite.db (WAL, relational schema — NOT old JSON blob). NEVER rm sqlite.db — seed additively with INSERT/DELETE + PRAGMA foreign_keys=OFF. Seed scripts: /tmp/komuna-reseed-v2.py & /tmp/komuna-fill.py. Rebuild: cd api/v1 && CGO_ENABLED=1 go build -o ../server .
 §
-<#1520812080180232312>=self-flow. Local Go+SQLite (port 8096, JSON-state-in-SQLite, local email/password auth, /projects/self-flow/). Old Node.js in packages/be-serverless+be-services+db. Go API production-hardened 2026-06-30.
-§
-SocialZen: /projects/socialzen/, socialzen.ahsanworks.com. systemd socialzen.service, env /home/ubuntu/socialzen/.env, Go apps/backend-go/, ADDR=:8089. Deploy Go: stop service→cp binary→start. Health: /api/health on :8089.
+SocialZen: /home/ubuntu/socialzen/, socialzen.ahsanworks.com. Go apps/backend-go/, ADDR=:8089. Service WorkingDirectory=/opt/socialzen. Deploy Go: go build→stop→cp→start. Frontend: pnpm build→rsync /var/www/socialzen.
 §
 Tailwind: cn()/tailwind-merge doesn't merge different breakpoint prefixes. sm:max-w-sm in component defaults NOT overridden by max-w-4xl; use sm:max-w-4xl max-w-[calc(100%-2rem)].
+§
+self-flow: /projects/self-flow/, selfflow.ahsanworks.com. Go+SQLite :8096, JSON-state-in-SQLite, email/password auth. Old Node.js in packages/be-serverless+be-services+db. Go API prod-hardened 2026-06-30. Primary URL: selfflow.ahsanworks.com.
