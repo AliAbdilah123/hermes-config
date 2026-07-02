@@ -47,3 +47,14 @@ function haversineMiles(a: [number, number], b: [number, number]): number {
 - "Online" programs should pass through all distance filters (no geographic constraint).
 - Programs with unknown locations (not in the static map) should be excluded from distance filters — Infinity > any radius.
 - The sidebar/pill label should reflect the active filter dynamically, not show a hardcoded default like "5mi ▾".
+
+### i18n/locale files as hardcoded text
+
+When the user reports a specific text string (e.g. "Brooklyn, NY") still appearing in the UI after code cleanup, and searching component source files returns nothing — **check translation/locale files**. Text rendered via `t('key.path')` may be embedded in `i18n/en.json`, `i18n/id.json` (or equivalent locale JSON/YAML) and silently survive all code-level fixes.
+
+Triage pattern:
+1. Grep component code for the text → nothing found
+2. Grep all project files for the text → hits in `i18n/*.json`
+3. Translation keys like `"summary": "Brooklyn, NY"` under `discovery.location` render via `t('discovery.location.summary')`
+
+Fix: either delete the stale locale key (if component no longer uses it), update it to a generic value ("Nearby"), or remove the component's usage of the key entirely.

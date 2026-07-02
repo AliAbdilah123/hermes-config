@@ -76,3 +76,29 @@ func findPostInstagramMediaID(app *models.App, postID string) (mediaID, accountI
 4. **Reply posting needs Instagram comment ID**: To post a reply, you need the parent comment's Instagram ID (not the local DB ID). Store the returned Instagram comment ID when posting top-level comments so replies can target the right parent.
 
 5. **Goroutine best-effort pattern**: Always save the local comment FIRST, then try Instagram in a goroutine. Don't let Instagram API failures block the local user experience.
+
+6. **Delete race condition — query Instagram context BEFORE DB delete**: When deleting a comment and syncing to Instagram, you need the Instagram API token/context. The goroutine that calls the IG delete API must receive the token *before* the local DB row is deleted:
+
+```go
+// WRONG — goroutine tries to query DB after row is gone:
+go h.tryDeleteOnInstagram(localID, instagramID)
+// tryDeleteOnInstagram calls instagramCommentContext(localID) → DB query → row not found
+
+// RIGHT — query context first, pass to goroutine:
+if instagramID != "" {
+    _, token, graphVersion, client, _ = h.instagramCommentContext(localID)
+}
+// ... delete from DB ...
+if instagramID != "" && token != "" && client != nil {
+    instagramID, token, graphVersion, client := instagramID, token, graphVersion, client // capture
+    go func() {
+        deleteInstagramComment(client, graphVersion, instagramID, token)
+    }()
+}
+```
+
+7. **Instagram doesn't expose a public delete-media API**: The Instagram Graph API only supports deleting media containers created via the API **within the last 24 hours**. Once a container is published, there's no API endpoint to delete it. Facebook Page posts can be deleted via `DELETE /{page-id}_{post-id}` but only with a valid page token. This means:
+   - "Delete post" in the app can only remove from the local DB
+   - Syncing deletion to Instagram is infeasible for published posts
+   - For Facebook, it's possible but requires the original page token to still be active
+   - Cross-post deletes have partial-failure risk (IG fails, FB succeeds or vice versa)

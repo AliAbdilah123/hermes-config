@@ -153,7 +153,7 @@ When a Vite/React production page renders a fallback UI instead of a provider in
 
 See `references/vite-deployed-env-triage.md` for a compact reproduction/fix recipe.
 
-### 4b. SPA Subpath API Routing
+### 4b. SPA Subpath API and Asset Routing
 
 When a deployed SPA lives under a subpath (for example `/projects/<app>/`) and login or API actions show generic `request_failed` while the backend is healthy:
 - Compare the root-relative API URL (`/api/v1/...`) against the mounted proxy URL (`/projects/<app>/api/v1/...`). A root-relative request can bypass the app's Nginx location and return 404 or hit the wrong service.
@@ -161,7 +161,13 @@ When a deployed SPA lives under a subpath (for example `/projects/<app>/`) and l
 - Fix at the API-path helper so all API calls normalize through the base-aware route builder; do not patch individual login calls only.
 - Verify with browser/network evidence that login, `/me`, and post-login workspace/data requests all target `/projects/<app>/api/...` and return 200.
 
-See `references/spa-subpath-api-routing.md` for the detailed checklist and fix pattern.
+When the page itself is blank but HTML returns `200`:
+- Inspect the served HTML for root asset URLs (`/assets/index-*.js`, `/assets/index-*.css`) vs the mounted subpath (`/projects/<app>/assets/...`).
+- Check the domain-specific Nginx server block as well as the default/IP block; they may have different `sub_filter` or `alias` behavior.
+- Prefer rebuilding Vite with the correct `base` (`/projects/<app>/`) over relying on Nginx HTML rewriting.
+- Verify with cache-busted public HTML and direct JS/CSS `HEAD` probes for `200` and correct content types. If mobile browsers still show blank, tell the user to force-refresh/clear site cache.
+
+See `references/spa-subpath-api-routing.md` for the API checklist and `references/spa-subpath-asset-base-domain-routing.md` for the blank-page asset-base recipe.
 
 ### 4c. Browser FFmpeg / Video Export Performance Triage
 
@@ -248,6 +254,15 @@ When a Go API using SQLite shows client-side `Request timed out` on login/signup
 
 See `references/go-sqlite-backend-hang-timeout.md` for the detailed triage and fix recipe.
 
+### 4h. Go SQL Query Construction / Dynamic WHERE Bugs
+
+When a SQL query works in `sqlite3` CLI but fails via the Go API with `"SQL logic error: near '<token>': syntax error"`:
+- The query string is likely constructed with string concatenation in Go, not sent as a static template.
+- Trace every branch in the WHERE clause builder; count opening vs closing parentheses per conditional path.
+- When testing HTTP API endpoints with auth tokens, prefer Python (+ `urllib`) over `curl` — shell escaping can silently corrupt long tokens (UUID concatenations).
+
+See `references/go-sql-query-construction-debugging.md` for a compact diagnosis recipe.
+
 ### 5a. Frontend/API Shape Drift (`.filter` / `.map` is not a function`)
 
 When a React/Vite page shows a runtime collection error such as `t.filter is not a function`:
@@ -298,6 +313,7 @@ When a location/permission-based UI filter shows "no results found" even after t
 - Inspect the filter function body for hardcoded literal comparisons (`p.location === 'Brooklyn, NY'`, `return false`) in switch/case or if/else branches.
 - If the backend stores location as text only, you may need a static city→[lat,lng] map + Haversine formula for client-side distance calculation.
 - Clarify with the user whether they want filtering (exclude far items) or sorting (show all, nearest first) — the implementation strategy differs.
+- **After code fix, verify i18n/locale files are clean.** Hardcoded display text (e.g. "Brooklyn, NY") often survives in `i18n/en.json` rendered via `t('key.path')` and won't show up in component code searches. See references/client-side-filter-hardcoded-stubs.md § i18n/locale.
 
 See `references/client-side-filter-hardcoded-stubs.md` for the full triage checklist, fix pattern, and Haversine reference.
 
@@ -356,6 +372,16 @@ When a social scheduler says a post is published but it does not appear on Faceb
 
 See `references/social-publishing-oauth-triage.md` for the compact checklist and provider-specific pitfalls.
 
+### 6a.1 Social Comment Sync / Moderation Bugs
+
+When a social comment-management UI shows stale Instagram comments, local replies do not appear on Instagram, comment likes do not increase on Instagram, or delete/moderation actions are missing:
+- Separate local UI state from provider-visible state. Rows in `instagram_comments`/`comment_likes` only prove the app changed locally; Instagram-visible actions require provider comment IDs and valid manage-comments scopes.
+- Persist the Instagram comment/reply ID returned by Graph API for top-level comments and replies. Without that mapping, later reply/like/unlike/delete can only be local.
+- Sync before listing: fetch provider comments plus nested replies and `like_count`, upsert them locally, then return local rows so latest Instagram data and just-created local rows are both visible.
+- Likes and moderation should call provider endpoints when a provider comment ID is known: `POST /{comment-id}/likes`, `DELETE /{comment-id}/likes`, and `DELETE /{comment-id}`.
+- In post detail UIs, keep performance metrics in a stable side panel next to media on desktop; open comments as a right-side drawer/dialog so it does not cover performance.
+- See `references/social-comments-sync-and-moderation.md` for endpoint patterns, verification, and deployment checks.
+
 ### Phase 1 Completion Checklist
 
 - [ ] Error messages fully read and understood
@@ -395,6 +421,7 @@ When the issue is a responsive layout regression, especially one described as "n
 - Compare against the original/reference implementation, but convert fixed inline dimensions/positions into breakpoint-aware classes rather than restoring rigid values.
 - Verify both the component and its parent wrapper; a responsive child can still fail if the parent is hidden at the wrong breakpoint or uses height classes without a concrete containing height.
 - For data-heavy tables that overlap or clip on phones, inspect fixed table widths, long unwrapped cell contents, and horizontal-scroll state. Prefer a mobile card presentation below phone breakpoints while preserving desktop tables. See `references/responsive-data-table-mobile-cards.md`.
+- When overriding shadcn/ui `DialogContent` (or any component with breakpoint-prefixed defaults), match the same breakpoint prefix. `max-w-4xl` is silently ignored because `sm:max-w-sm` uses a different prefix; use `sm:max-w-4xl`. See `references/shadcn-ui-dialog-width-override.md`.
 - Use screenshot-based viewport checks after implementation. See `references/responsive-ui-regression-qa.md` for a compact recipe, including Vite base-path and Chromium `--virtual-time-budget` tips.
 
 ### SPA Auth Provider / Login UI Notes

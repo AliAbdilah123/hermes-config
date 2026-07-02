@@ -39,7 +39,10 @@ When adding Threads to SocialZen, adapt Cloudflare/Drizzle plans to the same loc
 - In the local scheduler path, dispatch Threads through the 2-step container flow (`/{userId}/threads` then `/{userId}/threads_publish`) using public media URLs; the local stack may only have `media_thumbnail` available unless a richer post-media association is added.
 - Frontend additions: `src/lib/threads.ts`, `ThreadsIcon`, a third Settings account card, Threads account selector and 500-char/link behavior in CreatePost, and target labels/colors in dashboard/calendar/post cards.
 
-## Verification checklist
+## Pitfalls
+
+- **Photo `published=false` hides posts**: When posting photos to `/photos`, setting `published=false` uploads the photo but does NOT show it in the Page feed — the post is invisible to visitors. Use `published=true` (or omit the parameter; default is `true`). This is an easy silent bug: the API returns success (200 + post ID) but nothing appears on the Page.
+- **New OAuth scopes need reconnect**: Adding `pages_manage_posts` or `pages_manage_metadata` after a user already connected their Facebook account means the existing token lacks those permissions. The user must disconnect and reconnect through the Settings UI to get a fresh token.
 
 - Backend: `go test ./...` from `apps/backend-go`.
 - Frontend: `npm run typecheck`, `npm test -- --run`, `npm run build` from `apps/frontend`.

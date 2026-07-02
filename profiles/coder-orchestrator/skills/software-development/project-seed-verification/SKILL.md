@@ -79,6 +79,8 @@ curl -fsS "$PUBLIC_BASE/api/v1/programs?limit=3" | head -c 2000
 - A seed file in an old app directory can be misleading after migrations. Confirm which app code currently serves production.
 - Report sanitized env/config findings only; never print connection strings or secrets.
 - If counts include `None`/missing arrays in JSON state, treat them as zero and keep probing rather than crashing the verification.
+- **Go+SQLite `INSERT OR IGNORE` seed staleness**: When a Go API seeds state via `INSERT OR IGNORE INTO app_state` (idempotent first-run seed), subsequent code changes to the `seed()` function's data (new struct fields, changed values) will NOT take effect if the SQLite DB file already exists. The API loads the stale serialized state from DB on restart. Cure: stop the service, delete the SQLite DB file, then restart to trigger a fresh seed. Always verify with an API call after restart — don't just check the binary.
+- **Seed app data ≠ seed auth users**: Some Go+SQLite APIs (e.g. Komuna) seed program/product/member state but zero auth user accounts. Combined with a dev-user fallback when unauthenticated, this creates the illusion of pre-existing login credentials. Users must sign up fresh, and after sign-up their workspace is empty (no programs joined). See `references/komuna-seed-verification.md` § "Auth users NOT seeded" for the full debugging pattern.
 
 ## References
 

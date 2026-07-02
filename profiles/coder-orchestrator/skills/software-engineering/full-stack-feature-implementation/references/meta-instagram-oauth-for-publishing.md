@@ -13,9 +13,13 @@ For third-party Instagram scheduling/publishing, do **not** wire only Instagram 
 - Scopes should include the Page + Instagram permissions needed by the product, commonly:
   - `pages_show_list`
   - `pages_read_engagement`
+  - `pages_manage_posts` — REQUIRED for Facebook Page publishing (feed, photos, videos)
+  - `pages_manage_metadata` — needed alongside `pages_manage_posts` for full Page management
   - `instagram_basic`
   - `instagram_content_publish`
   - `business_management` when the app needs business/Page access discovery
+- **Reconnect required**: Adding new scopes invalidates existing tokens. Users must disconnect/reconnect their Facebook account to get a token with the updated permissions. Without `pages_manage_posts`, Facebook publishing returns: `(#200) The permission(s) pages_manage_posts are not available`.
+- `pages_manage_posts` and `pages_manage_metadata` require Facebook App Review for non-admin users. In development mode, app admins/developers/testers can use them without review.
 - Exchange the callback `code` through Facebook Graph:
   - `GET https://graph.facebook.com/{graphVersion}/oauth/access_token?...`
 - Discover Instagram accounts from the user’s Pages:
@@ -58,3 +62,34 @@ corepack pnpm --filter frontend build
 ```
 
 Do not claim live deployment until the systemd binary/frontend webroot are actually replaced and the service is restarted/smoke-tested.
+
+## Threads OAuth — `user_id` as JSON number
+
+The Threads token exchange endpoint (`POST https://graph.threads.net/oauth/access_token`) returns `user_id` as a JSON **number** (e.g., `17841405793187218`), not a string:
+
+```json
+{"access_token": "THQVJ...", "user_id": 17841405793187218}
+```
+
+This is the same quirk Instagram Login OAuth has — the Meta API returns numeric `user_id` on multiple endpoints. Use `json.Number` in the Go struct to handle both:
+
+```go
+var tokenResp struct {
+    AccessToken string      `json:"access_token"`
+    UserID      json.Number `json:"user_id"`
+}
+// ...
+userID := tokenResp.UserID.String()
+```
+
+Using `string` for `user_id` causes:
+```
+json: cannot unmarshal number into Go struct field .user_id of type string
+```
+
+**Pitfall**: If Instagram token exchange already handles this with `json.Number` but Threads exchange was copy-pasted with `string`, the bug silently survives until someone actually connects a Threads account. Always check both paths when adding a new Meta platform.
+
+Also ensure the Threads Graph API base URL includes the API version:
+```go
+threadsGraphBase = "https://graph.threads.net/v1.0"  // NOT "https://graph.threads.net"
+```
