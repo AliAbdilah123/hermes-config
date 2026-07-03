@@ -14,6 +14,7 @@ Use when debugging or implementing:
 - Token/scope issues with Meta Graph API
 
 See `references/error-transcripts.md` for raw error messages and reproduction recipes.
+See `references/instagram-insights-api.md` for the Instagram Insights endpoint (reach, impressions, saves).
 
 ## Facebook OAuth Scopes
 
@@ -87,15 +88,133 @@ var tokenResp struct {
 
 Failure to handle this gives: `json: cannot unmarshal number into Go struct field .user_id of type string`
 
-## Threads Graph API Base URL
+## Threads Long-Lived Token Exchange
 
-The Threads Graph API requires a version in the base URL:
+Threads short-lived tokens (1 hour) can be exchanged for long-lived tokens (default 14 days)
+using the `th_exchange_token` grant type, identical in structure to Instagram and Facebook:
 
 ```
-threadsGraphBase = "https://graph.threads.net/v1.0"
+GET https://graph.threads.net/v1.0/access_token
+  ?grant_type=th_exchange_token
+  &access_token=<short-lived-token>
 ```
 
-The `/me` endpoint works at `{base}/me` — without `/v1.0` it fails.
+Response:
+```json
+{"access_token": "THQVJ...", "expires_in": 5184000}
+```
+
+```go
+func (a *app) exchangeLongLivedThreadsToken(ctx context.Context, shortToken string) (string, time.Time, error) {
+    q := url.Values{}
+    q.Set("grant_type", "th_exchange_token")
+    q.Set("access_token", shortToken)
+    req, _ := http.NewRequestWithContext(ctx, http.MethodGet,
+        fmt.Sprintf("%s/access_token?%s", threadsGraphBase, q.Encode()), nil)
+    res, _ := a.config.HTTPClient.Do(req)
+    defer res.Body.Close()
+    // ... unmarshal access_token + expires_in ...
+    expiresIn := out.ExpiresIn
+    if expiresIn <= 0 { expiresIn = int64((14 * 24 * time.Hour).Seconds()) }
+    return out.AccessToken, time.Now().UTC().Add(time.Duration(expiresIn) * time.Second), nil
+}
+```
+
+Always attempt the long-lived exchange after obtaining the short-lived code-exchange token.
+Fall back gracefully — the short-lived token still works for 1 hour.
+
+## Threads Account Persistence
+
+Threads OAuth accounts MUST be saved to the `threads_accounts` table, NOT `instagram_accounts`.
+Sharing the `instagram_accounts` table causes Threads connections to appear as Instagram accounts
+in dropdowns and causes token queries to fail (different schema, different Graph API base URL).
+
+```go
+// In oauthCallbackGeneric — before the instagram_accounts insert:
+if cfg.Provider == "threads" {
+    _, _ = a.db.Exec(`DELETE FROM threads_accounts WHERE user_id=? AND threads_user_id=?`, ...)
+    _, err = a.db.Exec(
+        `INSERT INTO threads_accounts (id,user_id,threads_user_id,threads_username,threads_name,profile_picture_url,access_token_encrypted,token_expires_at,status,created_at)
+         VALUES (?,?,?,?,?,?,?,?,?,?)`, ...)
+    // redirect on success
+    return
+}
+```
+
+The `threads_accounts` table schema:
+```sql
+CREATE TABLE threads_accounts (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    threads_user_id TEXT NOT NULL,
+    threads_username TEXT NOT NULL,
+    threads_name TEXT,
+    profile_picture_url TEXT,
+    access_token_encrypted TEXT NOT NULL,
+    token_expires_at TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'ACTIVE',
+    created_at TEXT NOT NULL
+);
+```
+
+## Post Targets: Cross-Platform Publishing Lifecycle
+
+Posts have a parent `posts` row + child `post_targets` rows (one per platform).
+The lifecycle:
+
+```
+SCHEDULED → enqueue (cron) → PUBLISHING → publish per-target → PUBLISHED
+                                                        or  → FAILED (per-target)
+```
+
+**Enqueue** (cron, every 1 minute):
+- Sets `posts.status='PUBLISHING'` where `status='SCHEDULED' AND publish_at<=now`
+- Sets matching `post_targets.status='PUBLISHING'`
+
+**Publish** (same cron cycle):
+- Iterates PUBLISHING posts and their PUBLISHING targets
+- Publishes each target independently
+- On success: sets target to PUBLISHED with platform_post_id
+- On failure: sets target to FAILED with error_message
+- Parent post: PUBLISHED if ALL targets succeeded, FAILED otherwise (with descriptive message)
+
+**Retry** (manual, via Edit & Retry in UI):
+- Frontend opens edit form for FAILED posts (not just SCHEDULED)
+- On save, PATCH handler resets: `posts.status='SCHEDULED'`, clears `error_message`
+- Also resets FAILED `post_targets` to SCHEDULED (PUBLISHED targets stay PUBLISHED)
+- Next cron cycle picks it up normally
+
+Key gotcha: The backend PATCH for a FAILED post must reset status to SCHEDULED.
+The frontend edit guard must allow `status === 'FAILED'` alongside `'SCHEDULED'`.
+
+```go
+// In PostByID PATCH handler:
+res, _ := h.App.DB.Exec(`UPDATE posts SET status='SCHEDULED', error_message=NULL, updated_at=? WHERE id=? AND user_id=? AND status='FAILED'`, now, id, u.ID)
+if n, _ := res.RowsAffected(); n > 0 {
+    h.App.DB.Exec(`UPDATE post_targets SET status='SCHEDULED', error_message=NULL, updated_at=? WHERE post_id=? AND status='FAILED'`, now, id)
+}
+```
+
+## Legacy post_targets Migration Pitfall
+
+Migrations that add post_targets for ALL existing posts using `INSERT OR IGNORE ... SELECT FROM posts`
+create **duplicate targets on every restart** if the target IDs don't match the IDs created by
+the normal CreatePost flow. Example of a dangerous migration:
+
+```sql
+-- DANGEROUS: runs on every startup, creates duplicate instagram targets
+INSERT OR IGNORE INTO post_targets (id,post_id,platform,account_id,status,created_at,updated_at)
+SELECT 'pt_'||id,id,'instagram',instagram_account_id,status,created_at,updated_at FROM posts
+```
+
+If CreatePost generates random IDs like `pt_abc123` and the migration generates `pt_post123`,
+`INSERT OR IGNORE` sees different IDs and inserts a **second** instagram target. This causes:
+- Single-platform posts showing duplicate platform indicators
+- Cross-platform posts getting an unwanted extra Instagram target
+- Instagram posts being published twice
+
+Fix: Remove once-off migrations after they've run, or use `id` that matches the CreatePost
+ID generation scheme exactly.
 
 ## Comment/Like Sync: DB Before API Race Condition
 

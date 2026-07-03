@@ -231,18 +231,21 @@ The `patch` tool refuses to write to `/etc/nginx/`. Use terminal with `sudo`:
 - **Missing `.env` file causes blank page on rebuild**: If a project's `.env.example` contains `VITE_BASE_PATH=/projects/<slug>/` but no corresponding `.env` file exists, the Vite build silently defaults to `base: "/"`. All asset references in `index.html` become root-relative (`/assets/...`) instead of path-prefixed (`/projects/<slug>/assets/...`). The page renders blank with no visible errors — the HTML loads but every JS/CSS request 404s. **Fix**: verify `ls packages/*/.*env packages/*/.env` after a rebuild produces a blank page — the `.env` file is the #1 suspect. Create it at `packages/<fe>/env` with `VITE_BASE_PATH=/projects/<slug>/` matching the `.env.example` value.
 - **Backend redirect URLs for dual deployment**: When the backend constructs redirect URLs (OAuth callbacks, payment returns), it must use the correct base for each deployment. A common bug: the backend's `frontendURL()` helper appends a hardcoded project prefix even when the domain SPA is served at root. See `references/vite-domain-deployment.md` Pitfalls 1–3 for the full pattern.
 - **Cloudflare proxied DNS + certbot redirect loop**: If `curl -L https://<domain>/` stays at `301 Location: https://<same-domain>/`, Cloudflare may be hitting origin HTTP while certbot's HTTP block redirects to HTTPS. Serve the app on both HTTP and HTTPS in the main domain server block and remove the redirect-only HTTP block; see `references/vite-domain-deployment.md` HTTPS section.
-- **Domain config blank page (missing reverse sub_filter)**: If the build was deployed with a non-root base (e.g. `/projects/<slug>/assets/...`), the domain config needs reverse `sub_filter` to STRIP the path prefix, otherwise assets 404 → blank page. Add to the domain's `location /` block:
+- **Domain config blank page (missing reverse sub_filter)**: If the build was deployed with a non-root base (e.g. `/projects/<slug>/assets/...`), the domain config needs reverse `sub_filter` to STRIP the path prefix, otherwise assets 404 → blank page. The sub_filter must cover BOTH HTML and JS bundles (React Router `basename` and other paths are hardcoded in `.js` files). Add to the domain's `location /` block:
   ```nginx
-  sub_filter 'src="/projects/<slug>/assets/' 'src="/assets/';
-  sub_filter 'href="/projects/<slug>/assets/' 'href="/assets/';
-  sub_filter '</head>' '<script>window.__BASENAME__="/";window.__API_BASE__="/api/v1"</script></head>';
+  sub_filter_types text/html application/javascript text/javascript;
+  sub_filter '"/projects/<slug>/' '"/';
+  sub_filter "'/projects/<slug>/" "'/";
+  sub_filter 'basename:"/projects/<slug>/"' 'basename:"/"';
   sub_filter_once off;
   ```
-  The preferred fix is rebuilding with `VITE_BASE=/` so no sub_filter is needed on the domain side — only on the path-based deployment. But when you can't rebuild (hotfix, shared build directory), the reverse sub_filter works.
+  **Why `sub_filter_types` must include JS MIME types**: when the build's JS bundles contain hardcoded `/projects/<slug>/` paths (React Router basename, API URLs), nginx won't rewrite them unless `application/javascript` and `text/javascript` are listed. HTML-only rewrite leaves the JS bundles with stale paths — the domain loads the HTML correctly but routing/API calls break.
+  **Why both quote styles**: JS bundles may use double quotes for some paths and single quotes for others. Both patterns must be covered.
+  The preferred fix is rebuilding with `VITE_BASE=/` so no sub_filter is needed on the domain side — only on the path-based deployment. But when you can't rebuild (hotfix, shared build directory), the full reverse sub_filter works. **Verify JS rewrite**: `curl -s --resolve <domain>:80:<ip> http://<domain>/assets/index-<hash>.js | grep -o 'basename:"[^"]*"' | head -1` should return `basename:"/"`, not the path-prefixed version.
 
 ## References
 
 - See `references/oracle-cloud-security-list.md` for step-by-step instructions to open a port in the OCI Security List (the network-level firewall that cannot be configured from the server).
 - See `references/single-build-subfilter.md` for the full code patches, nginx sub_filter config, and verification steps for the single-build domain + path deployment pattern (the current preferred approach).
 - See `references/vite-domain-deployment.md` for the legacy dual-build pattern (historical reference only — do NOT use for new setups).
-- See `references/cloudflare-stale-cache-nginx-routing.md` for diagnosing and fixing stale Cloudflare cache after nginx routing changes (HTML cached as images, wrong content-type).
+- See `references/reverse-subfilter-domain-no-rebuild.md` for the full domain config template when adding a domain to an existing path-based build without rebuilding (the exact config used for self-flow → selfflow.ahsanworks.com).

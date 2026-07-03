@@ -93,3 +93,23 @@ Also ensure the Threads Graph API base URL includes the API version:
 ```go
 threadsGraphBase = "https://graph.threads.net/v1.0"  // NOT "https://graph.threads.net"
 ```
+
+## Threads long-lived token exchange
+
+Threads short-lived tokens are valid for 1 hour. Exchange them for long-lived tokens using the `th_exchange_token` grant type, same pattern as Instagram (`ig_exchange_token`) and Facebook (`fb_exchange_token`):
+
+```go
+func (a *app) exchangeLongLivedThreadsToken(ctx context.Context, shortToken string) (string, time.Time, error) {
+    q := url.Values{}
+    q.Set("grant_type", "th_exchange_token")
+    q.Set("access_token", shortToken)
+    req, _ := http.NewRequestWithContext(ctx, http.MethodGet,
+        fmt.Sprintf("%s/access_token?%s", threadsGraphBase, q.Encode()), nil)
+    // ... parse {access_token, expires_in} from response
+    return out.AccessToken, time.Now().UTC().Add(time.Duration(expiresIn) * time.Second), nil
+}
+```
+
+Call this after the initial code exchange, before saving. Fall back to 14-day default expiry if the exchange fails. Store the resulting long-lived token and expiry in `threads_accounts.access_token_encrypted` and `token_expires_at`.
+
+**Pitfall**: Without long-lived exchange, the Threads token expires in 1 hour while Instagram/Facebook tokens last ~60 days. The user's Threads connection stops working almost immediately, requiring a reconnect every session.

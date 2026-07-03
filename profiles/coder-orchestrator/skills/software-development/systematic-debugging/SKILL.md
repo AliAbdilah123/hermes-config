@@ -412,6 +412,11 @@ When a social scheduler says a post is published but it does not appear on Faceb
 - Do not replace **Disconnect** with **Reconnect** for expired accounts when the user asks for disconnect; always let users disconnect stale/broken social accounts.
 - Use real provider success signals: Instagram media container + `media_publish` media id, Facebook external `page_id` publish id.
 - For Meta Business Login, support a dashboard-provided `config_id`; forcing `auth_type=rerequest`/profile selector helps but does not guarantee the Business onboarding screen without the config id.
+- **Threads OAuth token and table bugs**: (1) `oauthCallbackGeneric` may save Threads accounts to `instagram_accounts` instead of `threads_accounts` — add a provider guard. (2) Threads tokens expire in 1 hour; exchange for long-lived via `th_exchange_token` grant type, same as Instagram/Facebook.
+- **Migration backfill creates duplicate platform targets**: `INSERT OR IGNORE INTO post_targets ... SELECT 'pt_'||id FROM posts` in `migrate()` runs on every restart. If the app uses a different ID scheme (`NewID("pt")`), duplicates accumulate silently — single-platform posts become cross-platform and get double-published. Run once, then remove.
+- **Cross-platform partial success leaves parent stuck**: When IG succeeds but FB fails, set parent post to FAILED with "Some platforms failed to publish" (not stuck PUBLISHING). On retry, only reset failed targets.
+- **EditPostPage blocks FAILED posts**: Frontend guard `post.status !== "SCHEDULED"` hides the edit form for failed posts. Allow `post.status === "FAILED"` so Edit & Retry actually shows a form.
+- **PATCH handler silently ignores media updates**: When the edit form replaces media, the PATCH endpoint must handle `media[0].thumbnailUrl` and update `posts.media_thumbnail`. Otherwise the user uploads new media but the post keeps the old thumbnail.
 
 See `references/social-publishing-oauth-triage.md` for the compact checklist and provider-specific pitfalls.
 

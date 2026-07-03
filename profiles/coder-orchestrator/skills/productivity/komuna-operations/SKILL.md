@@ -231,6 +231,8 @@ The frontend is served by nginx from `/var/www/html/projects/komuna/` at the pat
 
 - `scripts/hash_password.py` — standalone script to hash a password matching Go API's algorithm. Run directly: `python3 scripts/hash_password.py somepassword`
 - `references/v2-schema.md` — complete V2 relational schema reference (tables, columns, FK relationships, seeding pattern, role assignment)
+- `references/session-booking-flow.md` — pre-filling sessions with bookings: voucher → claim → sessions.taken data flow and SQL patterns
+- `references/manager-dashboard.md` — Go API manager dashboard implementation: route handler, data flow, timezone handling, response shape, and `countAttendance` helper
 
 ### External Seed Scripts
 
@@ -302,14 +304,18 @@ The Komuna project has **two API stacks**:
 
 | Stack | Location | Status | API Prefix |
 |-------|----------|--------|------------|
-| **Go+SQLite** | `api/v1/main.go`, port 8095 | Production (served by nginx) | `/api/v1/`, `/projects/komuna/api/v1/` |
-| **Cloudflare Workers** | `apps/api/src/` (Hono+Drizzle+NeonDB) | New codebase (deployed separately) | Depends on `VITE_API_BASE_URL` |
+| **Go+SQLite** | `api/v1/main.go`, port 8095 | **Production** (served by nginx) | `/api/v1/`, `/projects/komuna/api/v1/` |
+| **Cloudflare Workers** | `apps/api/src/` (Hono+Drizzle+NeonDB) | NOT deployed here (Cloudflare-hosted) | Depends on `VITE_API_BASE_URL` |
 
 The frontend (`apps/web/`) hits whichever API `VITE_API_BASE_URL` points to. When debugging API issues:
 - Check `apps/web/.env` for the active `VITE_API_BASE_URL`
 - The Go API uses custom auth (salted SHA256), the Worker API uses Neon Auth
 - DB state lives in different places (local `sqlite.db` vs NeonDB Postgres)
 - **Before touching the Go DB, verify which stack the frontend is configured to hit**
+
+**🚨 CRITICAL PITFALL — Feature implementation MUST target the Go API first.** This server runs the Go API on port 8095, nginx proxies `/api/v1/` to it. The Cloudflare Worker at `apps/api/src/` is a separate deployment that is NOT running on this machine. When asked to implement a backend feature, always modify `api/v1/main.go` (the Go API), NOT `apps/api/src/` (the Worker). Modifying the Worker code has zero effect on production — the Go API is the one serving real traffic. The Worker API is a future migration target, not the current live backend.
+
+**Double-check:** If you catch yourself editing TypeScript files in `apps/api/src/` for a feature that should go live, stop — you need to edit `api/v1/main.go` instead. The frontend at `apps/web/` connects to the Go API via nginx; the Worker is not in the request path for this deployment.
 
 ### Attendance CRUD Buttons Not Working
 
