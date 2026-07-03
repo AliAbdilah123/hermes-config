@@ -153,8 +153,13 @@ Then restart the service: `sudo systemctl restart komuna-api.service`
 |--------|------|---------|
 | POST | `/api/v1/auth/sign-up` | Register |
 | POST | `/api/v1/auth/sign-in` | Login |
-| GET | `/api/v1/auth/session` | Check session |
+| GET | `/api/v1/auth/session` | Check session (now includes `profile_picture`) |
 | POST | `/api/v1/auth/sign-out` | Logout |
+| PUT | `/api/v1/profile/name` | Change display name |
+| PUT | `/api/v1/profile/email` | Change email (requires password) |
+| PUT | `/api/v1/profile/password` | Change password (requires current password, min 8 chars) |
+| POST | `/api/v1/profile/picture` | Upload profile picture (multipart, 5MB max) |
+| DELETE | `/api/v1/profile/picture` | Remove profile picture |
 
 ### Password Hashing (Go implementation reproduced in Python)
 
@@ -227,12 +232,54 @@ The frontend is served by nginx from `/var/www/html/projects/komuna/` at the pat
 
 **Symptom of this bug:** Currency conversion (IDR → USD) silently does nothing — `getUsdToIdrRate()` returns 0, the `if (rate)` guard skips conversion, prices display in IDR amounts with USD currency symbols (e.g., "$425,000" instead of "$26.56").
 
+### Build-Time vs Runtime Basename Pitfall
+
+**CRITICAL:** The nginx config for `komuna.ahsanworks.com` injects two runtime overrides via `sub_filter` before `</head>`:
+
+```
+sub_filter '</head>' '<script>window.__BASENAME__="/";window.__API_BASE__="/api/v1"</script></head>';
+```
+
+This means:
+
+| Value | Build-time (`import.meta.env`) | Runtime (nginx injection) |
+|-------|-------------------------------|--------------------------|
+| `BASE_URL` / `__BASENAME__` | `/projects/komuna/` | `/` |
+| API base | `/projects/komuna/api/v1` | `/api/v1` |
+
+The domain serves the SPA at the **root** (`/`), NOT under `/projects/komuna/`. The `sub_filter` also rewrites asset paths: `src="/projects/komuna/assets/..."` → `src="/assets/..."`.
+
+**ANY frontend code that constructs absolute URLs using `import.meta.env.BASE_URL` will produce wrong paths on the production domain.** Always check `window.__BASENAME__` at runtime first:
+
+```ts
+function getRuntimeBase(): string {
+  if (typeof window !== 'undefined' && (window as any).__BASENAME__) {
+    return (window as any).__BASENAME__ as string
+  }
+  return import.meta.env.BASE_URL || '/'
+}
+```
+
+**Known casualty:** `resolveSignedOutRoute()` in `apps/web/src/lib/logout.ts` used the build-time base to construct the post-logout redirect URL. It produced `/projects/komuna/auth/sign-in` on a domain where React Router has basename `/`, so the remaining path `projects/komuna/auth/sign-in` matched no route → NotFoundPage with "Page not found."
+
+**Verification after fix:**
+```bash
+# Confirm the deployed JS reads runtime __BASENAME__
+curl -s "https://komuna.ahsanworks.com/assets/$(curl -s https://komuna.ahsanworks.com/ | grep -oP 'assets/index-[^\"]+\.js')" | grep -o '__BASENAME__'
+# Must return matches (shows the runtime check is present)
+
+# Confirm the domain HTML injects __BASENAME__
+curl -s "https://komuna.ahsanworks.com/" | grep -o 'BASENAME__=\"/\"'
+# Must return BASENAME__="/" (nginx sub_filter injection is active)
+```
+
 ### Linked Files
 
 - `scripts/hash_password.py` — standalone script to hash a password matching Go API's algorithm. Run directly: `python3 scripts/hash_password.py somepassword`
 - `references/v2-schema.md` — complete V2 relational schema reference (tables, columns, FK relationships, seeding pattern, role assignment)
 - `references/session-booking-flow.md` — pre-filling sessions with bookings: voucher → claim → sessions.taken data flow and SQL patterns
 - `references/manager-dashboard.md` — Go API manager dashboard implementation: route handler, data flow, timezone handling, response shape, and `countAttendance` helper
+- `references/frontend-auth-guards.md` — React SPA auth architecture: session store, sign-out flow, protected route pattern, route audit of missing guards, and the "??"/"User" stale-render bug
 
 ### External Seed Scripts
 
@@ -429,6 +476,54 @@ Quick pattern:
 4. Update `sessions.taken` to match claim count
 5. Always stop service + backup DB first
 
+### Go `http.ServeMux` Route Conflict — Same Path, Different Methods
+
+**Symptom:** Service panics on startup with `pattern "/api/v1/profile/picture" conflicts with pattern "/api/v1/profile/picture"` even though the two registrations use different HTTP methods (e.g., one POST, one DELETE).
+
+**Root cause:** Go's `http.NewServeMux` (pre-1.22) registers handlers by **path**, not by method. Registering `HandleFunc("/api/v1/profile/picture", wrap("POST", fn1))` and `HandleFunc("/api/v1/profile/picture", wrap("DELETE", fn2))` both register the same path pattern → panic at `mux.HandleFunc`. The method check inside `wrap` happens too late — the mux panics during registration.
+
+**Fix:** Use a single `"*"` method handler and dispatch by `r.Method` internally:
+```go
+// Route — single registration
+h("/profile/picture", "*", a.profilePicture)
+
+// Handler — dispatch internally
+func (a *App) profilePicture(w http.ResponseWriter, r *http.Request) {
+    if r.Method == "DELETE" {
+        a.profilePictureDelete(w, r)
+        return
+    }
+    if r.Method != "POST" {
+        errOut(w, 405, "method_not_allowed")
+        return
+    }
+    // POST logic...
+}
+```
+
+This follows the same pattern already used by `sessionTree`, `notificationTree`, and `claimTree` — a single `"*"` handler that parses URL sub-paths and dispatches.
+
+### SQLite ALTER TABLE Idempotency
+
+**Symptom:** After a mid-migration crash (e.g., the route-conflict panic above), the ALTER TABLE already ran but the service panicked before starting. On restart, the ALTER TABLE fails with `SQL logic error: duplicate column name` and the service won't boot.
+
+**Root cause:** SQLite doesn't support `IF NOT EXISTS` for `ALTER TABLE ADD COLUMN`. The schema execution loop in `NewApp()` treats every error as fatal.
+
+**Fix:** Make the schema loop tolerate "duplicate column name" errors from ALTER TABLE:
+```go
+for _, q := range schema() {
+    if _, err = db.Exec(q); err != nil {
+        // Ignore "duplicate column name" errors from ALTER TABLE (idempotent schema)
+        if strings.Contains(q, "ALTER TABLE") && strings.Contains(err.Error(), "duplicate column") {
+            continue
+        }
+        return nil, fmt.Errorf("schema: %w (sql: %s)", err, q[:min(80, len(q))])
+    }
+}
+```
+
+This lets the service restart cleanly after a mid-migration crash without manual DB intervention.
+
 ### Go `rows.Scan` Silent Failure with SQLite NULL Columns
 
 **Symptom:** API endpoint returns some fields populated (e.g., `id`, `voucher_id`) but ALL subsequent columns are empty/null (e.g., `member_name: null`, `member_email: ""`, `member_id: ""`). The DB query run directly in sqlite3 returns correct data, but the API response is empty.
@@ -459,6 +554,18 @@ if att.Valid && att.String != "" {
 **Practical consequence:** `claimByID()` (line 1827) returns `nil` for most claims because `cancelled_at` is commonly NULL. When writing new endpoint code, avoid calling `claimByID` — construct a synthetic JSON response instead. Only use it for claims you know have non-NULL `cancelled_at`.
 
 **Debugging approach:** Add a one-line `log.Printf` after the scan to see if values are populated, then rebuild + restart + curl. If the log shows empty strings but sqlite3 shows real data, the scan is failing on a nullable column earlier in the list.
+
+### Frontend Route Auth Guards — "??" and "User" After Sign-Out
+
+**Symptom:** After signing out, pressing back in browser loads a dashboard URL. Top bar shows `'??'` avatar and `'User'` name instead of real user info. User can still access dashboard pages.
+
+**Root cause:** `WorkspaceRoute` (the component wrapping all `/programs/:id/admin`, `/programs/:id/manage`, `/programs/:id/member` routes) had no auth check. It rendered `DashboardShell` unconditionally, and `ProfileMenu` fell back to `getInitials(null) = '??'` and `displayName = 'User'` when `authClient.useSession()` returned `{data: null}` (localStorage cleared by sign-out).
+
+**Fix:** Add `authClient.useSession()` check with `<Navigate to="/auth/sign-in" replace />` when session is null. Same pattern applies to any protected route.
+
+**Affected files:** `apps/web/src/components/routing/WorkspaceRoute.tsx` (fixed). Several standalone pages (`/wallet`, `/profile`, `/my/bookings`, `/notifications`) also lack auth guards — they show error states instead of redirecting.
+
+See `references/frontend-auth-guards.md` for the full auth architecture, route audit, and verification commands.
 
 ### Verification Checklist
 
