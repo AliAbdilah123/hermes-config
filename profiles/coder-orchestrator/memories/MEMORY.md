@@ -12,6 +12,4 @@ PRD/docs HTML: deploy to /usr/share/nginx/html/prds/ (nginx /prd/ alias), set 64
 §
 When implementing a new project, start from scratch — copy or use the boilerplate project as a clean slate unless the user explicitly specifies otherwise. Do not try to retrofit or evolve an existing unrelated project into the new one.
 §
-Discord #p-komuna channel = Komuna project at /home/ubuntu/projects/komuna/. Discord #p-socialzen = SocialZen project at /home/ubuntu/socialzen/. When user asks about a bug or feature in a project-prefixed channel, default to that project — don't guess or cross-load skills from other projects.
-§
-Channel context is the primary signal for project selection. #p-komuna = Komuna project, #p-socialzen = SocialZen. Before doing any work, always verify: (1) what channel/thread is this in, (2) which project does that channel map to, (3) load the correct project skill. Do NOT default to the most recently used project.
+Discord project defaults: #p-komuna=Komuna at /home/ubuntu/projects/komuna/; #p-socialzen=SocialZen at /home/ubuntu/socialzen/; #p-share-expense and its threads=share-expense unless stated otherwise. Channel context is the primary signal; verify channel/thread and load the matching project skill before project work.

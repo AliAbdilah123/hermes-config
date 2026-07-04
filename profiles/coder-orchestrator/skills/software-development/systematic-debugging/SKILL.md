@@ -216,6 +216,8 @@ When a deployed SQLite-backed app suddenly reports duplicate-user errors for bra
 - Recover the live DB from the open file descriptor before restart, then restore the configured runtime DB path with correct ownership.
 - Treat this as two bugs: runtime data-path loss plus auth error masking. Fix auth handlers so only unique constraint failures return `USER_ALREADY_EXISTS`; generic DB/session failures should return explicit 500 errors and must not be ignored.
 - Verify with direct public-route signup, session, signout, login, and session checks using a cookie jar.
+- After recovering the live DB from `/proc/<pid>/fd/<n>`, restore it to the configured `DB_PATH` before restart and run `PRAGMA integrity_check`; otherwise the restart will bind the service to an empty replacement DB. Add ignore rules for recovery/empty DB backups (`sqlite.db.*`) so emergency backup artifacts are not accidentally committed.
+- Add a regression test for auth error classification: duplicate email must be `409`, but bootstrap/session/DB failures after the user insert must be `500` and must not be reported as “email already exists”.
 
 See `references/sqlite-runtime-db-recovery-and-auth-errors.md` for commands and the full recovery/fix recipe.
 
@@ -295,11 +297,12 @@ See `references/go-sql-query-construction-debugging.md` for a compact diagnosis 
 
 ### 5a. Frontend/API Shape Drift (`.filter` / `.map` is not a function`)
 
-When a React/Vite page shows a runtime collection error such as `t.filter is not a function`:
+When a React/Vite page shows a runtime collection error such as `t.filter is not a function` or `Cannot read properties of null (reading 'length')`:
 - Trace the value back to the `apiClient.get<T>()` boundary; the generic type may not match runtime JSON.
-- Probe the real deployed/local endpoint and inspect the top-level JSON shape. A common mismatch is frontend expecting `Item[]` while the API returns `{ data: Item[] }` or a paginated envelope.
-- Fix with a small typed response normalizer/unwrap helper at the API consumption boundary, not by hiding the symptom with optional chaining around array methods.
-- Add a regression test whose mock uses the real API envelope shape that previously failed.
+- Probe the real deployed/local endpoint and inspect the top-level JSON shape. Common mismatches: frontend expecting `Item[]` while the API returns `{ data: Item[] }`/a paginated envelope, or frontend expecting `items: []` while the backend encodes an empty/nil slice as `items: null`.
+- In Go APIs, remember that a nil slice marshals to JSON `null`; initialize empty slices (`cards := []any{}`) or normalize response DTOs so collection fields are always arrays.
+- Fix with a small typed response normalizer/unwrap helper at the API consumption boundary, or with a backend DTO contract fix, not by hiding the symptom with optional chaining around array methods.
+- Add a regression test whose mock uses the real API envelope shape that previously failed, including empty-result cases (`items: []`, not `null`).
 - Verify the targeted test, build/typecheck, and if deployed, fetch the served bundle/API to confirm the deployed artifact includes the normalizer and the endpoint shape is understood.
 
 **Variant: Zod validator field mismatch → silent button failure.** When CRUD toggle buttons appear to work (optimistic UI updates) but the backend never receives the change, with no console or network errors: compare the frontend payload field names against the backend Zod schema. Zod silently strips unknown fields by default. Match field names or switch to the correct endpoint. See `references/zod-validator-field-mismatch.md` for detection and fix patterns.

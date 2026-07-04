@@ -83,6 +83,8 @@ Let's Encrypt cannot issue certs for bare IP addresses — a domain is required.
 
 ## Domain Integration for Path-Based Projects (Single Build, Clean Root URL)
 
+When a user asks to **move access / expose an existing FE build at a domain** and does not ask for code changes, first check whether the already-deployed path build is good enough. The shortest safe fix is often nginx-only: add a domain server block rooted at `/var/www/html/projects/<slug>`, use reverse `sub_filter` to strip `/projects/<slug>/` from HTML/JS asset/API references, proxy both `/api/` and `/projects/<slug>/api/`, then verify with `curl --resolve` and public Cloudflare/DNS. Rebuild only when the JS bundle cannot be safely rewritten or runtime config is required.
+
 When a user wants a custom domain for a path-based Vite/React project, use a **single build** with `VITE_BASE=/` plus nginx `sub_filter` on the path-based deployment. The domain gets clean root URLs, the IP path continues to work — **one canonical build directory** (`/var/www/html/projects/<slug>/`).
 
 ```

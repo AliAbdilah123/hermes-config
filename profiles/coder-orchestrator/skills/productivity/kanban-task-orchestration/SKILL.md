@@ -45,11 +45,16 @@ For this user, do **not** require confirmations between individual kanban tasks 
 
 When the user says "implement with kanban", the required sequence is:
 
-1. Break the plan into workable, sequentially-ordered tasks.
-2. Create each task in the kanban board with `hermes kanban --board <board> create`.
-3. Only then begin dispatching and working tasks.
+1. Inspect the board first. If tasks already exist (for example from an earlier kickoff or dispatcher run), reuse and advance them instead of creating duplicates:
+   ```bash
+   hermes kanban --board <board> list
+   hermes kanban --board <board> show <task_id>
+   ```
+2. If no suitable tasks exist, break the plan into workable, sequentially-ordered tasks.
+3. Create each task in the kanban board with `hermes kanban --board <board> create`.
+4. Only then begin dispatching and working tasks.
 
-Do **not** start implementing before the kanban tasks exist. Do not create tasks after code is already written.
+Do **not** start implementing before the kanban tasks exist. Do not create tasks after code is already written. Do not duplicate an existing board plan just because the user says "go ahead" after reviewing a PRD; first check whether the plan/tasks were already created.
 
 ## Shared-workspace parallel-task pitfall (CRITICAL)
 
@@ -76,6 +81,7 @@ If tasks were already created as ready and the dispatcher claimed them in parall
 
 - Use `runs`, `show`, and worker comments to verify whether a blocked task succeeded or failed.
 - If a worker says tests passed, quote the command and status from the run/comment.
+- For Go projects, complete kanban implementation cards only after a real `go test ./...` and `go build` (usually `go build -o bin/<name> ./cmd/<name>`). If tests fail because other ready/running workers edited the same workspace, inspect the failing files and board state before retrying.
 - Final updates after feature/fix work should include the project public link when known.
 
 ## CLI syntax pitfall

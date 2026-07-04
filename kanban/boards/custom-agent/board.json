@@ -1,0 +1,10 @@
+{
+  "slug": "custom-agent",
+  "name": "Custom Agent",
+  "description": "",
+  "icon": "",
+  "color": "",
+  "default_workdir": null,
+  "created_at": 1783143798,
+  "archived": false
+}

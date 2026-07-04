@@ -135,12 +135,17 @@ conn = psycopg2.connect(host=host, port=port, dbname=db, user=user, password=pwd
 
 **Pitfall**: Neon pooler endpoint (`-pooler`) can have connection flakiness. If psql fails with auth errors on some commands but not others, switch to psycopg2 which reconnects reliably.
 
+## Supabase connection fallback
+
+Supabase direct DB hosts may resolve to IPv6 only in this environment and fail with `Network is unreachable`. Use the Supabase pooler: `host='aws-0-<region>.pooler.supabase.com'`, `port=6543`, `user='postgres.<project_ref>'`, `sslmode='require'`. If region is unknown, probe likely `aws-0-*.pooler.supabase.com` hosts; `ENOTFOUND tenant/user` usually means wrong region/project ref for that pooler. See `references/supabase-pg-to-project-sqlite.md`.
+
 ## Support files
 
 - `references/neon-connection.md` — Neon PostgreSQL connection quirks and setup
 - `references/pg-to-sqlite-mapping.md` — Session-specific schema mapping notes (Drizzle → Go API)
 - `references/drizzle-pg-to-go-sqlite-relational.md` — Komuna full 25-table migration: Drizzle/Postgres → Go/SQLite with type mapping, pitfalls, and seed patterns
 - `references/self-flow-schema-mapping.md` — Self-Flow Drizzle/Neon ↔ Go/SQLite schema map and migration notes
+- `references/supabase-pg-to-project-sqlite.md` — Supabase pooler fallback, auth/profile mapping, and SQLite verification notes
 - `templates/pg_to_sqlite_migrate.py` — Reusable migration script template
 
 ## Pitfalls

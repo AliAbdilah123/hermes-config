@@ -33,8 +33,28 @@ function unwrapListResponse<T>(response: ListResponse<T>): T[] {
 
 Use a more specific name when the page only consumes one resource (for example `unwrapBookingsResponse`).
 
+## Go nil slices → JSON `null` (not `[]`)
+
+When a Go API returns paginated results with an `items` field, a nil slice (`var items []any`) marshals to JSON `null` instead of `[]`. Any frontend code that accesses `.items.length` or spreads `...items` will crash with `TypeError`.
+
+**Root cause:** `var items []any` is nil (zero value). Appending in a loop that runs zero times leaves it nil. Go's `json.Marshal` encodes a nil slice as `null`.
+
+**Fix:** Initialize slices: `items := []any{}` (or `items := make([]any, 0)`). Empty non-nil slices marshal to `[]`.
+
+**Symptoms:**
+- Page goes blank on a filtered view that returns zero results (e.g., `status=ongoing` tab with no ongoing sessions)
+- Console shows `TypeError: Cannot read properties of null (reading 'length')` or `...null is not iterable`
+- Working tabs return non-empty arrays fine; only zero-result filters crash
+- "Blank page curse" follows to other tabs because React unmounts after an uncaught render error
+
+**Verification:**
+```bash
+curl -s 'API?status=ongoing&page=1' | python3 -c "import json,sys;d=json.load(sys.stdin);print('null' if d.get('items') is None else f'[{len(d[\"items\"])}]')"
+```
+
 ## Pitfalls
 
 - `apiClient.get<MyDTO[]>('/endpoint')` is only a compile-time assertion; it does not validate runtime JSON.
 - A test mock returning a raw array can hide a deployed API returning `{ data: [...] }`.
 - Fixing the symptom by changing `.filter` to optional chaining can mask bad data and produce blank UI instead of accurate activity/statistics.
+- Go nil slice → JSON `null` affects any endpoint that conditionally appends to a slice and returns it in a response envelope.

@@ -33,6 +33,17 @@ sudo systemctl restart komuna-api.service
 
 Public URL: `https://komuna.ahsanworks.com/`
 
+### Mechanical Go API Refactors
+
+When implementing an approved no-behavior-change split of `api/v1/main.go`:
+1. Keep every new file in `api/v1/` as `package main`; do not create subdirectories or new packages.
+2. Baseline first: `go test ./...` and `go build -o /tmp/komuna-refactor-check .` before moving code.
+3. Move top-level declarations by responsibility only; preserve handler/function names and route registrations.
+4. Use `goimports` after the split to assign imports per file (`go install golang.org/x/tools/cmd/goimports@latest` if missing).
+5. Build the real deployed binary with `go build -o ../server .`, restart `komuna-api.service`, then verify local and public health plus a real data endpoint (for example `/api/v1/programs`).
+6. Commit/push only the refactor files; leave unrelated untracked docs/uploads alone.
+
+
 ## CRITICAL: Database Safety Rules
 
 **NEVER delete `sqlite.db` to re-seed.** This wipes all auth_users, auth_sessions, members, vouchers, claims, purchases, and any runtime data. The user WILL lose accounts they created and will be unable to log in. Instead, always **merge data into the live database** using Python/SQLite DELETE+INSERT patterns, never `rm`.
@@ -280,6 +291,7 @@ curl -s "https://komuna.ahsanworks.com/" | grep -o 'BASENAME__=\"/\"'
 - `references/session-booking-flow.md` — pre-filling sessions with bookings: voucher → claim → sessions.taken data flow and SQL patterns
 - `references/manager-dashboard.md` — Go API manager dashboard implementation: route handler, data flow, timezone handling, response shape, and `countAttendance` helper
 - `references/frontend-auth-guards.md` — React SPA auth architecture: session store, sign-out flow, protected route pattern, route audit of missing guards, and the "??"/"User" stale-render bug
+- `references/restricted-route-auth-guards.md` — backend + frontend restricted-route auth guard pattern; avoid `currentUser()` fallback on account/dashboard APIs and add unauth 401 regression tests
 
 ### External Seed Scripts
 
@@ -419,6 +431,79 @@ Additionally, the `markAttendance` service always sets status to `'present'` (fo
 - Backend validator: `apps/api/src/validators/attendance.ts` — `markAttendanceBodySchema` vs `overrideAttendanceBodySchema`
 - Backend service: `apps/api/src/services/attendance.ts` — `markAttendance` vs `overrideAttendance`
 
+### Program Cards All Show Joined / Join Opens Not Found
+
+**Symptom:** A newly signed-up user sees every discovery program with a greyed-out “Joined” button, as if they joined all programs. Pressing/clicking the card may open a program route that shows `not_found`.
+
+**Root causes:**
+1. `api/v1/dto.go::programDTO()` hardcoded `membershipStatus: "active"` for every program instead of checking `program_members` for the current signed-in user.
+2. Program cards use the DTO `slug`. `programDTO()` can generate a slug from the program name when `programs.slug` is empty, but `programTree()` previously resolved only `id` or stored `slug`, so generated slugs 404.
+
+**Fix pattern:**
+- Pass the real per-request membership status into `programDTO()` from list and detail handlers:
+  ```go
+  a.programDTO(p, cats, mc, rating, spw, feat != 0, true, a.programMembershipStatus(r, p.ID))
+  ```
+- Implement `programMembershipStatus(r, pid)` using `X-Komuna-User` or `userFromRequest(r)`; return `nil` when unauthenticated or no membership row exists. Do **not** use `currentUser()` here because it falls back to the demo user and can leak demo membership into anonymous/new-user responses.
+- Make `programTree()` resolve ID, stored slug, and generated slug (`slugify(name)`) so any slug emitted by the list DTO can be fetched by detail routes.
+
+**Regression checks:**
+- Extend the signup workspace regression test to call `GET /api/v1/programs` with the new token and assert every `membershipStatus` is `null` before joining.
+- Add a route test that gets a slug from `GET /api/v1/programs`, then verifies `GET /api/v1/programs/<slug>` returns 200.
+- Manual local probe: sign up a temporary user, confirm list statuses are `[None]`, join a public program, then fetch detail by slug and confirm `membershipStatus: active`.
+
+### Guests Can Join Programs Instead of Being Sent to Login
+
+**Symptom:** An anonymous visitor clicks **Join**, sees “You joined the program,” and is redirected to the program sessions/page instead of the login/signup page.
+
+**Root cause:** `joinProgram()` used `currentUser(r)`. In Komuna, `currentUser()` intentionally falls back to the demo/dev user when no authenticated session exists. That is unsafe for mutating user actions: it can create `program_members` rows for the demo user and return success to guests.
+
+**Fix pattern:**
+- For mutating user-specific endpoints, authenticate explicitly with `X-Komuna-User` or `userFromRequest(r)`; do **not** call `currentUser()` unless demo fallback is intentionally allowed.
+- Return `401 auth_required` when no real session exists. The frontend already routes `ApiError(401)` through `redirectToSignInForUnauthorized(...)`, so the smallest backend fix restores the UI redirect behavior.
+- Keep `currentUser()` use limited to read/demo-compatible paths, or audit every caller before using it in new code.
+
+**Regression check:** Add a test that posts to `/api/v1/programs/<id>/join` without auth, expects `401`, and verifies no membership was inserted for `app.userID`/demo user.
+
+**Manual probes:**
+```bash
+curl -i -X POST http://127.0.0.1:8095/api/v1/programs/prog-box/join
+curl -i -X POST https://komuna.ahsanworks.com/api/v1/programs/prog-box/join
+# Both must return 401 {"error":"auth_required"}
+```
+
+### Superadmin Missing Dashboard Button
+
+**Symptom:** A known superadmin logs in but the top-nav/profile Dashboard button is missing. They may only have member roles in programs.
+
+**Root cause:** `apps/web/src/lib/useWorkspace.ts::canAccessDashboard()` grants access when `/api/v1/me/workspace` returns `isSuperAdmin: true`; the Go API sets that from `platform_admins` in `api/v1/main.go::workspace()`:
+
+```go
+a.db.QueryRow("SELECT COUNT(*) FROM platform_admins WHERE user_id=?", uid).Scan(&isSuperAdmin)
+```
+
+If `platform_admins` is empty or missing the user's exact `users.id`, `isSuperAdmin` is false and the frontend falls through to the admin/manager role check. A superadmin who is only a member will not see Dashboard.
+
+**Check:**
+```sql
+SELECT id, user_id FROM platform_admins;
+SELECT id, email, name FROM users WHERE email='USER_EMAIL';
+SELECT id, email, name FROM auth_users WHERE email='USER_EMAIL';
+```
+
+**Fix:** Insert the user's `users.id` (which should match `auth_users.id`) into `platform_admins`; no service restart is needed because the handler reads the live DB.
+
+```sql
+INSERT INTO platform_admins(id, user_id)
+VALUES ('pa-' || lower(hex(randomblob(4))), 'user-...');
+```
+
+**Verify:** Login, then call `/api/v1/me/workspace` with the session token/cookie and confirm `isSuperAdmin: true`. The dashboard button comes from `TopNav`/`ProfileMenu` using `canAccessDashboard(workspace)`.
+
+**Seed pitfall:** Full reseed scripts must also seed `platform_admins`; otherwise reseeding silently removes all superadmins.
+
+**Debugging pitfall — silent `currentUser` fallback to `user-demo`:** `currentUser()` (main.go:460) falls back to `a.userID` (env `KOMUNA_DEV_USER_ID`, default `user-demo`) when `userBySession` fails. This masks auth failures — the workspace endpoint returns HTTP 200 with `uid: user-demo` and `isSuperAdmin: false` instead of 401. If you see `uid: user-demo` in a workspace response for a real authenticated user, the session token lookup is failing (check `auth_sessions` table for the token, verify expiry format matches `time.RFC3339`).
+
 ### Dashboard Shows "No assigned products" for Managers
 
 **Symptom:** Manager logs in, navigates to a program, sees "No assigned products are available for this program."
@@ -526,6 +611,29 @@ This lets the service restart cleanly after a mid-migration crash without manual
 
 ### Go `rows.Scan` Silent Failure with SQLite NULL Columns
 
+## Go nil slice → JSON `null` pitfall
+
+When building a JSON response with a slice that may be empty:
+
+```go
+// BROKEN — nil slice marshals to null, crashes frontend .length/.map calls
+var cards []any
+for rows.Next() { cards = append(cards, ...) }
+jsonOut(w, map[string]any{"items": cards, ...})
+// → "items": null  (if zero rows matched)
+
+// FIXED — empty slice marshals to [] 
+cards := []any{}
+for rows.Next() { cards = append(cards, ...) }
+// → "items": []
+```
+
+**Symptoms:** Frontend blank page on filtered views with zero results (e.g., "ongoing" tab with no sessions). Console: `TypeError: Cannot read properties of null (reading 'length')`. React unmounts after uncaught render error.
+
+**Affected handlers:** `programSessions` (line 236) and any handler that conditionally appends to a nil-initialized slice. Always initialize with `:= []any{}` or `:= make([]any, 0)`.
+
+### Go `rows.Scan` Silent Failure with SQLite NULL Columns
+
 **Symptom:** API endpoint returns some fields populated (e.g., `id`, `voucher_id`) but ALL subsequent columns are empty/null (e.g., `member_name: null`, `member_email: ""`, `member_id: ""`). The DB query run directly in sqlite3 returns correct data, but the API response is empty.
 
 **Root cause:** Scanning a SQLite NULL value into a plain Go `string` variable causes `rows.Scan` to fail silently **for all remaining columns**. If column 5 (`alias`) is NULL, columns 6–12 (`attendance_status`, `cancelled_at`, ..., `member_name`) all stay at their zero values (empty string). Because the Go code at `main.go:1162` ignores the `rows.Scan` error return, this failure is invisible — the row is still appended to the array with empty fields.
@@ -555,6 +663,16 @@ if att.Valid && att.String != "" {
 
 **Debugging approach:** Add a one-line `log.Printf` after the scan to see if values are populated, then rebuild + restart + curl. If the log shows empty strings but sqlite3 shows real data, the scan is failing on a nullable column earlier in the list.
 
+### Restricted Route Auth Guards — Demo User Fallback Leaks
+
+**Symptom:** Opening restricted pages as a guest returns `200 OK` data, empty account pages, platform metrics, or dashboard payloads instead of redirecting to login / returning `401`.
+
+**Root cause:** The Go API's `currentUser()` helper falls back to the configured demo/default user when no real session exists. Restricted handlers must not call it directly.
+
+**Fix:** Use a strict `requireUser(w, r)` helper in restricted handlers and return `401 auth_required` when no bearer/cookie session exists. Add a table-driven unauthenticated regression test for workspace, wallet, purchases, bookings, notifications, profile preferences, platform dashboard, and program admin/member/manage routes. Wrap direct frontend routes (`/wallet`, `/my/bookings`, `/notifications`, `/settings/notifications`, `/profile`) with an auth guard so guests redirect to sign-in instead of seeing page-level errors.
+
+See `references/restricted-route-auth-guards.md` for the compact pattern and route checklist.
+
 ### Frontend Route Auth Guards — "??" and "User" After Sign-Out
 
 **Symptom:** After signing out, pressing back in browser loads a dashboard URL. Top bar shows `'??'` avatar and `'User'` name instead of real user info. User can still access dashboard pages.
@@ -564,6 +682,21 @@ if att.Valid && att.String != "" {
 **Fix:** Add `authClient.useSession()` check with `<Navigate to="/auth/sign-in" replace />` when session is null. Same pattern applies to any protected route.
 
 **Affected files:** `apps/web/src/components/routing/WorkspaceRoute.tsx` (fixed). Several standalone pages (`/wallet`, `/profile`, `/my/bookings`, `/notifications`) also lack auth guards — they show error states instead of redirecting.
+
+#### Backend Auth Fallback Leak (`currentUser()`)
+
+**Symptom:** An unauthenticated browser can open restricted pages or call restricted APIs and receive `200 OK` data instead of being redirected/signaled as unauthenticated. Examples to audit: `/me/workspace`, `/wallet`, `/purchases`, `/my/bookings`, `/notifications`, `/notifications/unread-count`, `/notifications/preferences`, `/profile/preferences`, `/platform/dashboard`, `/programs/:id/member/dashboard`, and mutating actions such as `/programs/:id/join`.
+
+**Root cause:** Handlers call `currentUser(r)`, which falls back to `a.userID/a.userEmail/a.userName` (demo/default user) when no bearer token or `komuna_session` cookie exists. That helper is unsafe for production restricted routes; it masks missing auth and can leak demo/default-user data.
+
+**Audit pattern:** Probe unauthenticated with a browser-like user agent so Cloudflare does not block the diagnostic request before it reaches the app:
+```bash
+curl -sS -H 'Accept: application/json' -H 'User-Agent: Mozilla/5.0' \
+  -i https://komuna.ahsanworks.com/api/v1/wallet
+```
+Expected for restricted routes is `401` (or `403` for role-only platform/admin routes), not `200` with empty/demo data. Also probe `http://127.0.0.1:8095/api/v1/...` to distinguish app behavior from Cloudflare.
+
+**Fix pattern:** For restricted handlers, use `userFromRequest(r)` directly and return `errOut(w, 401, "auth_required")` when it fails. Only use `currentUser(r)` for intentional dev/demo fallback paths. For public list/detail DTOs, keep using explicit membership helpers that return `nil` when unauthenticated.
 
 See `references/frontend-auth-guards.md` for the full auth architecture, route audit, and verification commands.
 

@@ -320,6 +320,17 @@ git commit -m "type: description"
 
 ## Common Mistakes
 
+### Mobile/responsive UI fix plans need concrete viewport strategy
+
+When the user asks for a design plan before fixing a responsive/mobile UI bug, make the review artifact useful as an approval surface rather than a generic task list. Inspect the relevant components first, then include:
+- the suspected desktop-first causes (fixed/min heights, oversized padding, wide grids, large typography/cards, overflow risks),
+- the exact breakpoint strategy (desktop/tablet/mobile) and what changes at each width,
+- the smallest likely implementation path (prefer CSS/media-query overrides and class hooks before component rewrites),
+- validation at named viewport widths plus no-horizontal-overflow and console-error checks,
+- an explicit implementation gate if the user asked for the plan before live fixes.
+
+Keep this class-level: do not encode a single project's file paths unless they are examples inside the plan itself.
+
 ### Feature breakdown requests need grouped implementation sections
 
 When the user asks to "break down" an existing implementation plan "by feature" or "group the implementation plan on each feature," update the review artifact into feature-group sections instead of only adding more prose. Each feature group should include:
