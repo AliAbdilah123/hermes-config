@@ -295,6 +295,15 @@ When a SQL query works in `sqlite3` CLI but fails via the Go API with `"SQL logi
 
 See `references/go-sql-query-construction-debugging.md` for a compact diagnosis recipe.
 
+### 4h.1 SQLite Text Date Filter Format Drift
+
+When a SQLite-backed app stores dates as text (`YYYY-MM-DD`) and the UI/API filter says a month is empty even though rows exist:
+- Compare the literal API filter params against stored DB values. JS/date-library `.toString()` output (`Wed, 01 Jul 2026 ... GMT`) does not lexicographically compare correctly against `YYYY-MM-DD` text.
+- Probe the same endpoint with both date-string styles before changing query logic.
+- Fix at the frontend/API boundary by emitting `YYYY-MM-DD` (or migrate storage/querying to real timestamps deliberately); do not patch individual months or seed data.
+
+See `references/sqlite-text-date-filter-format.md` for the compact triage and fix pattern.
+
 ### 5a. Frontend/API Shape Drift (`.filter` / `.map` is not a function`)
 
 When a React/Vite page shows a runtime collection error such as `t.filter is not a function` or `Cannot read properties of null (reading 'length')`:
@@ -345,11 +354,12 @@ When UI filter pills/tabs visually switch but the results stay on the default se
 - First verify the frontend actually sends the selected filter value in the API params; add an interaction test that clicks the filter and asserts the request shape.
 - Probe the active API endpoint directly for each query value and inspect distinct returned item statuses, not just HTTP 200.
 - Check the backend list handler for ignored query params, especially branches that return all rows when pagination params are present.
+- If a frontend query helper serializes advanced filters (`filters` JSON with field/conditions) but results are unfiltered, verify the backend parses that exact envelope; fix with a whitelisted server-side filter parser, not picker-specific client filtering.
 - For time-range status, compute with both start and end (`now < start` upcoming, `start <= now < end` ongoing, `now >= end` past); start-only logic can never produce ongoing.
 - If routes use slugs, resolve slug to canonical ID before comparing foreign keys in subresource handlers.
 - Preserve already-correct layouts unless the user explicitly asks for visual changes; fix data/status and dynamic headings only.
 
-See `references/frontend-filter-api-query-triage.md` for a compact reproduction/fix checklist.
+See `references/frontend-filter-api-query-triage.md` for a compact reproduction/fix checklist and `references/frontend-advanced-filter-param-ignored.md` for the advanced-filter-envelope variant.
 
 ### 5b.2 Client-Side Filter Hardcoded Stubs
 
@@ -482,6 +492,7 @@ When a deployed SPA shows the wrong login UI (hosted provider UI, basic fallback
 - Check build-time frontend env scope, not just root env files. Vite only inlines `VITE_*` variables visible to the frontend build process; nested apps may not load a repository-root `.env`.
 - If enabling a third-party auth UI, verify the required provider/context wrapper and CSS import, not only the page component.
 - If reverting to local/basic auth, remove temporary frontend env files such as `apps/web/.env.local` before rebuilding so the deployed bundle does not keep selecting the hosted provider path.
+- When asked to “remove email verification” or a similar auth flow, trace frontend action → auth/API handler → persisted state/session first. If signup already creates a session and no backend verification gate exists, the root fix is stale UI copy/prompts, not adding backend toggles or config.
 - Verify the public deployed artifact with a cache-busted URL and DOM/text markers for both intended labels present and unintended provider labels absent.
 - See `references/spa-auth-provider-env-and-fallbacks.md` for a compact checklist.
 

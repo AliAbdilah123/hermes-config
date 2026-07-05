@@ -233,6 +233,17 @@ sudo chown -R www-data:www-data /var/www/html/projects/komuna/
 
 The frontend is served by nginx from `/var/www/html/projects/komuna/` at the path prefix `/projects/komuna/`. The Vite build reads env vars from `apps/web/.env`, NOT from the root `/home/ubuntu/projects/komuna/.env`.
 
+### Mobile UI Fix Pattern: Program Detail / Responsive Pages
+
+When fixing Komuna mobile layout issues after an approved review artifact, prefer the smallest CSS-led patch:
+1. Add stable class hooks to existing inline-styled React elements instead of rewriting components.
+2. Import one small page-scoped stylesheet from the page entry (`apps/web/src/pages/ProgramDetailPage.tsx` for program detail fixes).
+3. Use media-query overrides to neutralize desktop inline styles (`grid-template-columns`, large `padding`, `min-height`, image `aspect-ratio`, large typography); `!important` is acceptable here because many current components use inline style props.
+4. For guest-only sign-in prompts, keep desktop spacing as the base and compact through classes such as `guest-banner`, `guest-banner__content`, `guest-banner__icon`, `guest-banner__text`, and `guest-banner__button`. On narrow screens: reduce padding/icon/text, allow wrapping, and make the button full-width only around ≤420px.
+5. Verify with the specific page test plus build (`npm run test -- ProgramDetailPage && npm run build`), deploy with rsync, then confirm the live CSS asset contains the new selectors and the public route returns 200.
+
+This avoids over-refactoring while making oversized hero/session/guest-banner sections fit mobile screens.
+
 ### Vite Env Var Pitfall
 
 **CRITICAL:** Vite only exposes env vars prefixed with `VITE_` to client code (`import.meta.env`). The root `.env` has variables like `USD_TO_IDR_RATE=16000` — these are for the Go API, NOT accessible to the frontend. If a frontend feature depends on a build-time value:
