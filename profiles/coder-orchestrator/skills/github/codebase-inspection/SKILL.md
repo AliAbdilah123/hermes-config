@@ -30,6 +30,7 @@ Analyze repositories for lines of code, language breakdown, file counts, and cod
 
 - `references/feature-status-inventory.md` — workflow for producing `docs/features.md`-style feature/status inventories with `todo`, `in progress`, `not tested`, `does not work`, and `done` statuses.
 - `references/parity-analysis.md` — workflow for comparing current vs previous implementations across route surface, behavior, auth/storage semantics, and verification.
+- `references/prd-implementation-gap-review.md` — workflow for comparing a PRD/spec against the actual app and reporting unimplemented points with evidence.
 
 ## Prerequisites
 

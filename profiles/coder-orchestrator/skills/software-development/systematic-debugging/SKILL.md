@@ -318,6 +318,18 @@ When a React/Vite page shows a runtime collection error such as `t.filter is not
 
 See `references/frontend-api-shape-drift.md` for a compact recipe and minimal TypeScript pattern.
 
+### 5a.0 Migrated Task/Subtask UI Parity
+
+When a migrated task app reports that subtasks no longer behave like the original UI across dashboard/list pages:
+- Check whether primary task/goal list endpoints return child tasks as flat top-level rows instead of filtering to `parent_id is null`.
+- Check whether parent task DTOs include `subtaskCount`; recursive UI often hides expand controls when this count is missing even if a subtask endpoint exists.
+- Check whether child/subtask endpoint results include their own counts, or nested subtasks cannot expand.
+- Prefer reusing one shared recursive task-list row component across dashboard, All Tasks, and goal surfaces instead of duplicating flat row markup per page.
+- If the arrow/chevron appears but expands to nothing, inspect frontend subtask caches: an earlier empty cache (`parentId: []`) can mask later-correct `subtaskCount > 0`. Treat empty cached children as stale when the parent DTO says children exist, and refetch on expand.
+- Add a regression test that creates parent + child, then asserts the main list returns only the parent with `subtaskCount == 1`.
+
+See `references/migrated-task-subtask-parity.md` for the detailed checklist and fix shape.
+
 ### 5a.1 Frontend/API Unknown Enum Runtime Crash
 
 When a deployed React/Vite page is blank even though HTML/assets return 200, and the browser console shows a render-time lookup error like `Cannot read properties of undefined (reading 'bg')`:
