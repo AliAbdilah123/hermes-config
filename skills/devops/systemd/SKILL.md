@@ -63,4 +63,5 @@ Use when the user wants to "create a systemd service", "run X as a service", or 
 - **Double activation:** if you’re replacing a manual foreground launch, ensure the old PID exits before `start`-ing the unit, or the bind will fail.
 
 - `references/user-unit-pitfalls.md` — tested failure modes and environment recipe for user-level units (e.g. `status=216/GROUP` when `Group=` is set, how to reproduce with stripped env, command-policy guidance).
+- `references/server-stall-diagnosis.md` — diagnosing server freezes from journal signatures, bash health-check script pitfalls, `ssh` vs `sshd` unit-name mismatch, cron + flock single-instance pattern, and watchdog timeout semantics.
 - `templates/9router.service` — known-good user unit for the Node `9router` CLI (port 20128, headless, auto-restart).

@@ -551,6 +551,29 @@ VALUES ('pa-' || lower(hex(randomblob(4))), 'user-...');
 
 **Regression check:** Add a Go test that posts `{"role":"admin"}` to `/api/v1/programs/prog-box/members/<userID>/roles`, asserts `program_member_roles` has the row, then fetches `/members` and checks `"role":"admin"` is returned. Also smoke a temporary live member and clean it up after verifying persisted count.
 
+### Role Promotion Creates No Notification for the Promoted User
+
+**Symptom:** Admin promotes a member to admin or manager. The role sticks in `program_member_roles` and the UI updates, but the promoted user receives no in-app notification or email about their new role.
+
+**Root cause:** `api/v1/program_handlers.go::programMemberRole()` writes to `program_member_roles` (+ `product_managers` for managers) and immediately returns `{"success":true}`. It never inserts a row into the `notifications` table and never calls any email/enqueue path. The `notifications` table, read endpoints (`GET /notifications`, etc.), and schema exist, but they are write-only from the perspective of role changes — nothing ever populates them from the role-assignment handler.
+
+**Spec expectation:** `komuna-community-session-bookings.md` §9 notification matrix specifies "Manager assigned to product → notify Admin and Manager (assignee)." This is documented in the spec but not implemented in the Go API.
+
+**What this is NOT:** This is not a Gmail/stub-email problem. It's not that email is configured with example/stubbed credentials and silently failing. The notification is never created in the app's own `notifications` table, so it cannot reach Gmail, push, SMS, or any other channel. The Go API's notification infrastructure is read-only — it can list, mark-read, and count notifications that were already inserted, but no handler creates them.
+
+**Verification (before any fix):**
+```bash
+# Confirm zero notification rows exist in total
+sqlite3 sqlite.db "SELECT COUNT(*) FROM notifications;"
+# → 0
+
+# Confirm no role-related event types exist
+sqlite3 sqlite.db "SELECT event_type, COUNT(*) FROM notifications GROUP BY event_type;"
+# → (empty)
+```
+
+**Fix direction:** In `programMemberRole()`, after writing the role row, insert a `notifications` row with `event_type = 'role_assigned'` (or `manager_assigned`), `channel = 'push'` (always-on in-app), `recipient_id` set to the promoted user's id, and a descriptive title/body. For email delivery, also enqueue to a queue/email provider. The Worker API (`apps/api/src/`) has a `createNotification` pattern that can serve as a reference, but the fix must go into the Go API at `api/v1/program_handlers.go`.
+
 ### Dashboard Shows "No assigned products" for Managers
 
 **Symptom:** Manager logs in, navigates to a program, sees "No assigned products are available for this program."
@@ -746,6 +769,15 @@ Expected for restricted routes is `401` (or `403` for role-only platform/admin r
 **Fix pattern:** For restricted handlers, use `userFromRequest(r)` directly and return `errOut(w, 401, "auth_required")` when it fails. Only use `currentUser(r)` for intentional dev/demo fallback paths. For public list/detail DTOs, keep using explicit membership helpers that return `nil` when unauthenticated.
 
 See `references/frontend-auth-guards.md` for the full auth architecture, route audit, and verification commands.
+
+### Spec Gap / "What's Not Done" Reviews
+
+When the user asks what Komuna is missing against the spec, audit the **production Go API first** (`api/v1/`), not only `apps/api/` roadmap checkboxes. Use this compact sequence:
+1. Read `komuna-community-session-bookings.md` for the authoritative product spec and `API.md` for explicit unchecked roadmap items.
+2. Treat `API.md` Phase 10 unchecked items as high-confidence gaps: Xendit refunds, Xendit payouts, push dispatch, SMS dispatch, BetterStack logging, and R2 uploads unless production Go code proves otherwise.
+3. Confirm against `api/v1/*.go` because production nginx serves the Go API. Look for stub/shallow handlers: `platform_handlers.go::voucherAction()` only marks vouchers refunded, `platformDashboard()` can return hardcoded `total_gmv` / `total_platform_fees`, `bookingRequestAction()` may return success without creating a claim, and join/booking approvals may omit notifications.
+4. Include scheduled/async spec gaps that may not have routes: voucher-expiring reminders, 24h/1h session reminders, weekly schedule-change broadcasts, payment retry/backoff, manual payment reconciliation, and PPN invoice/receipt generation.
+5. Report as a concise gap list with evidence from spec + file/function, and avoid implying Worker-only implementations are live unless they are deployed in the Go path.
 
 ### Verification Checklist
 
