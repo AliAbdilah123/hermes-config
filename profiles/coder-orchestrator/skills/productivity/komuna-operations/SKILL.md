@@ -233,6 +233,10 @@ sudo chown -R www-data:www-data /var/www/html/projects/komuna/
 
 The frontend is served by nginx from `/var/www/html/projects/komuna/` at the path prefix `/projects/komuna/`. The Vite build reads env vars from `apps/web/.env`, NOT from the root `/home/ubuntu/projects/komuna/.env`.
 
+### Discovery Program Card CTA Changes
+
+When the user asks to remove repetitive Join/Joined CTAs from discovery cards, make the smallest frontend-only change in `apps/web/src/components/discovery/ProgramCard.tsx`: remove the card-level join action/button and its now-unused imports/state, but keep the whole card clickable via `navigate(detailPath)` so joining still happens from the program detail page. Verify with `npm run test -- ProgramCard && npm run build`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, then commit/push.
+
 ### Mobile UI Fix Pattern: Program Detail / Responsive Pages
 
 When fixing Komuna mobile layout issues after an approved review artifact, prefer the smallest CSS-led patch:
@@ -240,7 +244,8 @@ When fixing Komuna mobile layout issues after an approved review artifact, prefe
 2. Import one small page-scoped stylesheet from the page entry (`apps/web/src/pages/ProgramDetailPage.tsx` for program detail fixes).
 3. Use media-query overrides to neutralize desktop inline styles (`grid-template-columns`, large `padding`, `min-height`, image `aspect-ratio`, large typography); `!important` is acceptable here because many current components use inline style props.
 4. For guest-only sign-in prompts, keep desktop spacing as the base and compact through classes such as `guest-banner`, `guest-banner__content`, `guest-banner__icon`, `guest-banner__text`, and `guest-banner__button`. On narrow screens: reduce padding/icon/text, allow wrapping, and make the button full-width only around ≤420px.
-5. Verify with the specific page test plus build (`npm run test -- ProgramDetailPage && npm run build`), deploy with rsync, then confirm the live CSS asset contains the new selectors and the public route returns 200.
+5. For the program-detail "Upcoming sessions" column, desktop `SessionCardCompact` uses a 3-column grid (`148px` image + text + action). On mobile this can make titles/times wrap vertically. Fix in `apps/web/src/pages/program-detail/mobile.css` by overriding `.hero-sessions .session-card` to a compact 2-column grid (small image + text) and move the action/spots column to a full-width bottom row via `> :last-child { grid-column: 1 / -1; flex-direction: row !important; }`. This is smaller than rewriting the component.
+6. Verify with the specific page test plus build (`npm run test -- ProgramDetailPage && npm run build`), deploy with rsync, then confirm the live CSS asset contains the new selectors and the public route returns 200.
 
 This avoids over-refactoring while making oversized hero/session/guest-banner sections fit mobile screens.
 
@@ -442,26 +447,37 @@ Additionally, the `markAttendance` service always sets status to `'present'` (fo
 - Backend validator: `apps/api/src/validators/attendance.ts` — `markAttendanceBodySchema` vs `overrideAttendanceBodySchema`
 - Backend service: `apps/api/src/services/attendance.ts` — `markAttendance` vs `overrideAttendance`
 
-### Program Cards All Show Joined / Join Opens Not Found
+### Program Cards/Detail Show Joined or Rejoin for Guests/New Users
 
-**Symptom:** A newly signed-up user sees every discovery program with a greyed-out “Joined” button, as if they joined all programs. Pressing/clicking the card may open a program route that shows `not_found`.
+**Symptom:** A guest or newly signed-up user sees discovery/program cards as “Joined”, or the program detail CTA says “Rejoin program” even though they have never joined. This may appear on discovery, search, and detail pages. It is usually an API DTO bug, not localStorage.
 
 **Root causes:**
 1. `api/v1/dto.go::programDTO()` hardcoded `membershipStatus: "active"` for every program instead of checking `program_members` for the current signed-in user.
-2. Program cards use the DTO `slug`. `programDTO()` can generate a slug from the program name when `programs.slug` is empty, but `programTree()` previously resolved only `id` or stored `slug`, so generated slugs 404.
+2. Detail DTOs may hardcode `userRoles` (for example `[]string{"admin", "member"}`) even when `membershipStatus` is `null`. The frontend `HeroSection` treats `membershipStatus === null && userRoles.length > 0` as “previous member” and shows **Rejoin program**.
+3. Program cards use the DTO `slug`. `programDTO()` can generate a slug from the program name when `programs.slug` is empty, but `programTree()` previously resolved only `id` or stored `slug`, so generated slugs 404.
+4. The React session can consider the visitor a guest while the browser still has an old `komuna_session` cookie. If normal `apiClient` requests use browser credentials, the API can return joined/member data for what the UI treats as a guest, causing **Joined**, **Rejoin program**, **Book**, or **Leave Program** to appear incorrectly.
 
 **Fix pattern:**
 - Pass the real per-request membership status into `programDTO()` from list and detail handlers:
   ```go
-  a.programDTO(p, cats, mc, rating, spw, feat != 0, true, a.programMembershipStatus(r, p.ID))
+  a.programDTO(p, cats, mc, rating, spw, feat != 0, true, a.programMembershipStatus(r, p.ID), nil)
   ```
-- Implement `programMembershipStatus(r, pid)` using `X-Komuna-User` or `userFromRequest(r)`; return `nil` when unauthenticated or no membership row exists. Do **not** use `currentUser()` here because it falls back to the demo user and can leak demo membership into anonymous/new-user responses.
+- For detail responses, also pass real roles for the current authenticated user; guests and non-members must get `userRoles: []`:
+  ```go
+  a.programDTO(p, cats, mc, rating, spw, feat != 0, false, a.programMembershipStatus(r, p.ID), a.programUserRoles(r, p.ID))
+  ```
+- Implement `programMembershipStatus(r, pid)` and `programUserRoles(r, pid)` using `X-Komuna-User` or `userFromRequest(r)`; return `nil`/`[]` when unauthenticated or no membership row exists. Do **not** use `currentUser()` here because it falls back to the demo user and can leak demo membership/roles into anonymous/new-user responses.
 - Make `programTree()` resolve ID, stored slug, and generated slug (`slugify(name)`) so any slug emitted by the list DTO can be fetched by detail routes.
+- In `apps/web/src/lib/api.ts`, normal `ApiClient` requests should set `credentials: 'omit'`. Auth endpoints can still use `credentials: 'include'` when intentionally setting/clearing cookies, but public data fetches must not silently authenticate via stale cookies.
+- Defensively gate membership UI by frontend auth state too: program cards should ignore `p.membershipStatus` unless `authClient.useSession()` has a real user, and `HeroSection`/CTA should ignore `membershipStatus`/`userRoles` when `isAuthenticated` is false. This prevents **Book/Leave/Rejoin** showing for guests even if bad/stale API data arrives.
 
 **Regression checks:**
 - Extend the signup workspace regression test to call `GET /api/v1/programs` with the new token and assert every `membershipStatus` is `null` before joining.
+- Also fetch `GET /api/v1/programs/<id-or-slug>` with that token and assert `membershipStatus == null` and `len(userRoles) == 0`; this catches the detail-page “Rejoin program” bug.
 - Add a route test that gets a slug from `GET /api/v1/programs`, then verifies `GET /api/v1/programs/<slug>` returns 200.
-- Manual local probe: sign up a temporary user, confirm list statuses are `[None]`, join a public program, then fetch detail by slug and confirm `membershipStatus: active`.
+- Add a frontend `ApiClient` test asserting request init has `credentials: 'omit'`.
+- Add a frontend program-detail regression where `authClient.useSession()` returns guest/null but the mocked program has `membershipStatus: 'active'` and roles; assert the page shows **Sign in to join** and not **Member**/**Leave Program**.
+- Manual public probe: as a guest and as a fresh temporary user, fetch a detail endpoint and confirm `membershipStatus: null` and `userRoles: []`. Then join a public program and confirm detail returns `membershipStatus: active`. For UI regressions, also verify the deployed JS asset contains `credentials:\`omit\`` and the visible guest CTA is not **Book/Leave/Rejoin**.
 
 ### Guests Can Join Programs Instead of Being Sent to Login
 
@@ -514,6 +530,26 @@ VALUES ('pa-' || lower(hex(randomblob(4))), 'user-...');
 **Seed pitfall:** Full reseed scripts must also seed `platform_admins`; otherwise reseeding silently removes all superadmins.
 
 **Debugging pitfall — silent `currentUser` fallback to `user-demo`:** `currentUser()` (main.go:460) falls back to `a.userID` (env `KOMUNA_DEV_USER_ID`, default `user-demo`) when `userBySession` fails. This masks auth failures — the workspace endpoint returns HTTP 200 with `uid: user-demo` and `isSuperAdmin: false` instead of 401. If you see `uid: user-demo` in a workspace response for a real authenticated user, the session token lookup is failing (check `auth_sessions` table for the token, verify expiry format matches `time.RFC3339`).
+
+### Admin/Manager CTA Changes Role in UI But Reverts After Refresh
+
+**Symptom:** On the admin members dashboard, clicking Add/Remove admin or assigning manager products shows an optimistic UI update, but after refreshing the member is back to basic member / previous roles.
+
+**Root cause:** The frontend calls `POST`/`DELETE /api/v1/programs/:programId/members/:userId/roles` from `apps/web/src/pages/MembersPage.tsx`. If `api/v1/program_handlers.go::programMembers` does not dispatch `action == "roles"`, the generic `len(parts) >= 4` branch can return `{"success":true}` without writing `program_member_roles`. This creates a silent success/no-op.
+
+**Fix pattern:**
+- In `programMembers`, dispatch `roles` before ban/unban success handling:
+  ```go
+  if action == "roles" {
+      a.programMemberRole(w, r, pid, uid)
+      return
+  }
+  ```
+- Implement `programMemberRole` to decode `{ role, productId? }`, validate `admin|manager`, look up the member by `(program_id,user_id)`, and write/delete `program_member_roles`.
+- For product-scoped manager roles, also keep `product_managers` in sync with `program_member_roles.product_id`; manager role without `product_id` will not show assigned products in workspace.
+- For unscoped admin rows with nullable `product_id`, do not rely on `UNIQUE(program_member_id, role, product_id)` to dedupe NULLs in SQLite. Delete any existing `product_id IS NULL` row before inserting, or use a non-NULL sentinel/schema change deliberately.
+
+**Regression check:** Add a Go test that posts `{"role":"admin"}` to `/api/v1/programs/prog-box/members/<userID>/roles`, asserts `program_member_roles` has the row, then fetches `/members` and checks `"role":"admin"` is returned. Also smoke a temporary live member and clean it up after verifying persisted count.
 
 ### Dashboard Shows "No assigned products" for Managers
 

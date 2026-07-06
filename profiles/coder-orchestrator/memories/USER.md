@@ -1,4 +1,4 @@
-User prefers ideation/review docs as styled, responsive HTML artifacts with public links; PRDs should live at project docs/<name>, be exposed at <publicip>/prd/<name>, include product design system guidance, and specify shadcn/ui.
+User prefers review docs/PRDs as styled responsive HTML with public links; PRDs live at project docs/<name>, exposed at <publicip>/prd/<name>, and specify shadcn/ui/design-system guidance.
 §
 User wants any document produced for them to review to also be provided as a styled HTML file with a public accessible link.
 §
@@ -6,7 +6,7 @@ User wants every final update after working on a feature or fix to include the p
 §
 User prefers every new task to start with a planning phase and a styled HTML review artifact before implementation.
 §
-User prefers clean code practices when designing or writing code: DRY, meaningful comments for non-obvious logic, and keeping files reasonably sized.
+User prefers clean code: SRP, small focused functions/files, DRY, clear names, comments only for non-obvious logic, boundary validation, and simplest practical implementation.
 §
 User prefers using kanban/task tracking when working on big or complicated features and bugs.
 §

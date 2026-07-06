@@ -66,6 +66,10 @@ If the user asks for a specific different date for the previous-progress section
    - Do not use unrelated channels or unrelated project conversations.
 2. If direct Discord history access is not available:
    - Use `session_search` to find related agent sessions for the relevant date.
+   - Determine today's actual date first from runtime/current system date, then derive yesterday/last-Friday/reference dates.
+   - Search sessions updated/active within the last 3 calendar days from today, not only sessions created on the target date.
+   - Inspect promising older Komuna sessions in that 3-day window because chats/messages from yesterday can occur inside an older session.
+   - Filter evidence by the date of the message/chat content whenever available; do not discard a session solely because its session start date is older.
    - Restrict findings to Komuna only.
    - Exclude other project sessions.
 3. Use only evidence from:
@@ -104,8 +108,10 @@ Rules:
    - Today by current system date unless user specifies otherwise.
    - Apply Monday/last-Friday/weekend merge rules.
 2. Gather Komuna-only previous progress:
+   - First determine today's actual date from the runtime/current system date. Do not guess from memory or session IDs.
    - Search current-channel/chat history if available.
    - If not available, use `session_search` for Komuna sessions around the relevant date.
+   - Also check recent chat messages inside Komuna sessions that are no more than 3 calendar days old from today, because an older session can contain new chats/messages from the target day. Filter by message/chat date, not only by session creation date.
 3. Parse the user's prompt for additional progress or challenges.
 4. Categorize discovered items into accomplishments and challenges.
 5. Before writing the report, ask the user what they will do today, or clarify whether already-mentioned today tasks should be included.

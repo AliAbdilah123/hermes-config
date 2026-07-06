@@ -143,11 +143,20 @@ Wait for all three to return (batch mode returns them together).
 5. **Verify** you didn't break anything: run the project's targeted tests for
    the touched files (not the full suite), and re-run any linter/type check the
    repo uses. If a fix breaks a test, revert that one fix and report it.
-6. **Summarize** what you changed: a short list of applied fixes grouped by
+6. **Verify the cleanup actually satisfies the user's stated cleanliness metric.**
+   If the user complained about "big files", "single responsibility", or
+   "separation of concerns", report the before/after largest-file sizes and inspect
+   the remaining entrypoints. Do not stop after moving backend code if the frontend
+   entrypoint still contains page components or dense one-line JSX. `wc -l` alone can
+   be misleading when JSX is minified/dense; also check byte size and function/component
+   boundaries. Keep splitting until files are genuinely focused, or explicitly say what
+   remains and why it is intentionally deferred.
+7. **Summarize** what you changed: a short list of applied fixes grouped by
    reviewer category, plus any findings you deliberately skipped and why.
 
 ## Pitfalls
 
+- **Whole-codebase clean-code refactors are not the same as recent-diff simplify.** When the user asks to refactor oversized files for separation of concerns/SRP, first measure file lengths and identify the largest files. Prefer a low-risk structural split before behavior rewrites: move existing declarations into cohesive files, run the language formatter/import fixer (for Go: split by top-level declarations, then run `goimports`/`gofmt`), and verify with existing tests/build before considering deeper abstractions. Keep public behavior unchanged unless the user explicitly asks for feature changes.
 - **Don't fan out wider than ~3.** More reviewers means more cost and more
   conflicting suggestions to reconcile, not better coverage. Three categories
   cover the space.

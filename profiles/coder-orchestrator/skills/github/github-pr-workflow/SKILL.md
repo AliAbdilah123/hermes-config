@@ -105,6 +105,10 @@ Types: `feat`, `fix`, `refactor`, `docs`, `test`, `ci`, `chore`, `perf`
 
 When the user explicitly asks to push all updated code to `master`/`main` instead of opening a PR, do the direct-push flow, but still preserve the same verification discipline:
 
+#### Reverting the last N changes on a shared branch
+
+For requests like “revert the last 2 changes,” prefer `git revert` over `reset --hard` so history stays auditable and the shared branch can be pushed safely. Inspect `git log --oneline -n <N+3>` first, then revert in newest-to-oldest order or by range when safe. Leave unrelated untracked files untouched and report them separately instead of cleaning/staging them. After the revert, run the project’s normal build/test command, `git fetch origin <branch>`, push the revert commits, verify `git ls-remote` matches `git rev-parse HEAD`, and include the public project link when this user expects one.
+
 1. Identify the intended repo from the chat/project context, then confirm with `git status --short --branch` and `git remote -v`.
 2. Inspect the change set before staging (`git diff --stat`, targeted diffs). Do not print secret-bearing `.env` values; if env files are already tracked and modified, summarize keys/redacted diffs only.
 3. Run the project’s available tests/typechecks/builds before committing. Prefer the repository's declared scripts exactly (`npm test`, `npm run build`, `go test ./...`) over adding runner-specific flags from another ecosystem. If a verification command fails only because of an unsupported extra flag (for example Jest's `--runInBand` passed through to Vitest), rerun the native script without the foreign flag and report both outcomes. Treat warnings separately from failing exit codes.
@@ -290,6 +294,17 @@ When asked to auto-fix CI, follow this loop:
 
 ## 6. Merging
 
+### Direct local branch → `main` merge when explicitly requested
+
+When the user asks to "merge the current branch to main" and there is no PR requirement, use the shortest safe git path:
+
+1. Confirm repo, branch, remote, and dirty state with `git status --short --branch`, `git remote -v`, and a small log/diff stat.
+2. If the current branch has uncommitted work that belongs to the branch, run the repo's normal verification first, then commit it on the current branch before switching.
+3. Fetch `origin main` before merging. If `fatal: couldn't find remote ref main`, confirm remote heads with `git ls-remote --heads origin`; if local `main` is intentional, proceed and create/push `origin/main` rather than stopping.
+4. `git checkout main && git merge --ff-only <current-branch>` when possible. Use a normal merge only if fast-forward is impossible and the user asked for that branch integration.
+5. `git push origin main`, then verify with `git status --short --branch`, `git rev-parse HEAD`, and `git ls-remote origin refs/heads/main`; the local and remote SHAs must match.
+6. Final response: branch merged, short SHA, verification commands passed/failed, and public link if this user's project has one.
+
 **With gh:**
 
 ```bash
@@ -350,8 +365,10 @@ When the user asks to "pull all updates in master/main and restart the service",
 3. Fetch and fast-forward only: `git fetch origin <branch> --prune && git pull --ff-only origin <branch>`. Report the final commit SHA.
 4. Rebuild the actual deployed artifact before restarting when the service runs a compiled/static artifact rather than the repo directly. Examples: Go API binary copied to `/opt/<app>/`, frontend `dist/` copied to an nginx-served directory, container image rebuilt, etc. Back up the previous runtime artifact when replacing binaries.
 5. Restart via the real service manager (`sudo systemctl restart <service>` for systemd) and verify `systemctl is-active <service>` plus recent logs.
-6. Run smoke checks against the internal service endpoint and the public routed URL if one exists. For this user's projects, include the public project link in the final update.
-7. If tests fail but the runtime build succeeds, do not hide it: deploy only if the requested restart path is otherwise healthy, then clearly report which verification failed and why.
+6. For static frontend deployments behind nginx/Cloudflare, do not stop at `git push` or a local build. Verify the live nginx document root and copy the built artifact there (for example, `rsync -a --delete packages/fe/dist/ /var/www/html/projects/<app>/`) before claiming the public site updated.
+7. Cache-bust safely: if Cloudflare is caching Vite assets and you rename the entry JS, rename/rewrite all generated JS chunk references together from a clean `dist/`. Mixing a new entry chunk with stale lazy chunks can produce a blank React app.
+8. Run smoke checks against the internal service endpoint and the public routed URL if one exists. For frontend apps, use a real browser check when possible and confirm `#root` has content and no page errors, not just `curl -I 200`.
+9. If tests fail but the runtime build succeeds, do not hide it: deploy only if the requested restart path is otherwise healthy, then clearly report which verification failed and why.
 
 ## 8. Remote Access / Push/Pull Blockers
 

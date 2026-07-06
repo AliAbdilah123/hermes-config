@@ -331,6 +331,20 @@ When the user asks for a design plan before fixing a responsive/mobile UI bug, m
 
 Keep this class-level: do not encode a single project's file paths unless they are examples inside the plan itself.
 
+### Existing drag/drop UI feature plans need flow preservation notes
+
+When the user asks for a plan to extend drag/drop behavior in an existing UI, inspect the current drag/drop implementation before writing the plan. Include:
+- the existing DnD library/context/handler names and why the plan reuses them instead of adding a package,
+- the current data-shaping path (flat lists, grouped lists, parent chains, cached child records, etc.),
+- explicit identity handling for moved items (for example, typed drag IDs when parent and child rows can share a droppable),
+- how the plan preserves the current visual structure while allowing the new movement,
+- the smallest persistence path (existing update/reorder API first; no backend/schema change unless required),
+- acceptance checks that prove parent rows do not move when child rows are dragged and that refresh persistence works.
+
+Default to cross-region movement first; defer same-region nested reordering unless the user explicitly asks for it.
+
+**Critical: enumerate invariant props and filters.** When a shared UI component controls dual behavior through a single boolean prop (e.g., `hideSubtasks={!!parent}` controls both expand-button visibility AND nested-child rendering), the plan must explicitly name that prop and state whether it changes or stays. Generic language like "keep parent/subtask structure" is not enough — every implementation attempt will accidentally change the prop and break both behaviors. Similarly, when a useMemo filter decides which entries appear in the flat list vs. only nested, the plan must show the filter code and specify which condition changes (e.g., "remove only the `status === parent.status` guard, keep the rest"). Never draft a plan that says "preserve X" without naming the exact lines that preserve X.
+
 ### Feature breakdown requests need grouped implementation sections
 
 When the user asks to "break down" an existing implementation plan "by feature" or "group the implementation plan on each feature," update the review artifact into feature-group sections instead of only adding more prose. Each feature group should include:

@@ -91,6 +91,8 @@ Open it in a browser. If it looks broken, fix it before showing the user.
 
 For this user, design-review prototypes are usually expected as styled HTML artifacts at a public `/prd/...` URL when working inside their web projects. Preserve earlier approved prototypes instead of overwriting them; create a new review artifact for each new animation/design direction unless the user explicitly asks to replace it.
 
+**Verify the exact target screen before sketching.** If a product has similarly named routes (for example public detail page vs admin detail/dashboard detail), confirm by route/component/source and, when possible, drive the user-described flow (e.g. discovery card → public detail) before proposing a redesign. Do not design from a nearby admin/internal screen just because the route name sounds similar.
+
 **Verify variants visually — use Hermes' browser tools.** Don't just write HTML and hope it renders; load each variant and look at it:
 
 ```

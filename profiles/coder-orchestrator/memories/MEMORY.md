@@ -15,3 +15,5 @@ When implementing a new project, start from scratch — copy or use the boilerpl
 Discord project defaults: #p-komuna=Komuna at /home/ubuntu/projects/komuna/; #p-socialzen=SocialZen at /home/ubuntu/socialzen/; #p-share-expense and its threads=share-expense at public link shareexpense.ahsanworks.com unless stated otherwise. Channel context is the primary signal; verify channel/thread and load the matching project skill before project work.
 §
 Discord #p-selfflow project public link: https://selfflow.ahsanworks.com (not /projects/self-flow/).
+§
+Discord #p-selfflow deploy path: https://selfflow.ahsanworks.com is served by nginx from /var/www/html/projects/self-flow behind Cloudflare cache; pushing git does not update live site. Build packages/fe, copy from a clean dist/ to that directory, and if cache-busting, rename/rewrite all JS chunks together before rsync.

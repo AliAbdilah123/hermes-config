@@ -497,6 +497,14 @@ When the issue is a responsive layout regression, especially one described as "n
 - When overriding shadcn/ui `DialogContent` (or any component with breakpoint-prefixed defaults), match the same breakpoint prefix. `max-w-4xl` is silently ignored because `sm:max-w-sm` uses a different prefix; use `sm:max-w-4xl`. See `references/shadcn-ui-dialog-width-override.md`.
 - Use screenshot-based viewport checks after implementation. See `references/responsive-ui-regression-qa.md` for a compact recipe, including Vite base-path and Chromium `--virtual-time-budget` tips.
 
+### Username Case Normalization in Auth Flows
+
+When registration or login fails only for capitalized usernames:
+- Trace every auth entry point that writes or reads `username`, not just the reported registration path: register, invitation accept, login, and any admin-created-user flow.
+- Prefer one canonical stored username form (usually `strings.ToLower(strings.TrimSpace(username))`) at write boundaries, and apply the same normalization before login lookup.
+- Add a regression test that registers `Capt4ce`, asserts the stored/returned username is normalized, then logs in using `Capt4ce` so both write and read boundaries are covered.
+- If the DB has a `UNIQUE username` constraint without `COLLATE NOCASE`, canonicalizing before insert is the smallest root fix; otherwise `Alice` and `alice` can become duplicate logical accounts.
+
 ### SPA Auth Provider / Login UI Notes
 
 When a deployed SPA shows the wrong login UI (hosted provider UI, basic fallback, missing OAuth button, or a skeleton/strip instead of a form):

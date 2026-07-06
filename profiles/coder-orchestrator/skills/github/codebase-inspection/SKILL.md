@@ -25,6 +25,7 @@ Analyze repositories for lines of code, language breakdown, file counts, and cod
 - User wants code-vs-comment ratios
 - General "how big is this repo" questions
 - User asks for a repository feature inventory, feature matrix, or feature status document based on what is implemented/tested
+- User asks "what is implemented for X" or "list implemented X" in a project (feature-slice inventory)
 
 ## Linked References
 
@@ -99,7 +100,17 @@ pygount --format=json .
 pygount --format=summary . 2>/dev/null
 ```
 
-## 6. Interpreting Results
+## 6. Feature-Slice Inventory from Implementation
+
+When the user asks what is implemented for a specific capability (for example, "list data enrichment implemented in this project"):
+
+1. Identify the project root from channel context, memory, or nearby repo names; if the project name is ambiguous, inspect likely project folders before asking.
+2. Search source and docs for the capability keywords plus adjacent domain terms. Prefer source-of-truth code paths over generated `dist/` bundles.
+3. Read the route/model/schema/function sections that actually implement the capability; do not infer features from UI copy alone.
+4. Return a concise inventory grouped by capability: data model fields, import/normalization, endpoints, background/jobs, frontend exposure, and explicit placeholders/not-yet-real integrations.
+5. Include file/function evidence when useful, but keep it scannable; users asking "list me" usually want the answer, not a full audit essay.
+
+## 7. Interpreting Results
 
 The summary table columns:
 - **Language** — detected programming language
