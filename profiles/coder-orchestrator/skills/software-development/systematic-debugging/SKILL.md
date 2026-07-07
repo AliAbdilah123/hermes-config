@@ -29,6 +29,8 @@ NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 
 If you haven't completed Phase 1, you cannot propose fixes.
 
+**Debug means read-only until authorized.** When the user asks to debug, do not edit, commit, or deploy after finding root cause. Report evidence and proposed fix first, then wait for explicit implementation wording. If you already made an unapproved change, revert/deploy previous behavior before continuing. See `references/debug-first-user-authorization.md`.
+
 ## When to Use
 
 Use for ANY technical issue:

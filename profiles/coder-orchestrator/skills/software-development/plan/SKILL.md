@@ -47,8 +47,8 @@ For this user, a plan or document produced for review should not remain markdown
 Minimum expectations:
 - Standalone styled HTML with readable typography, table of contents for long plans, responsive layout, and styled code blocks.
 - Store under the relevant project path when known, e.g. `<project path>/docs/<slug>.html`.
-- Publish via `/prd/<slug>.html` using the existing web-server PRD directory/symlink pattern.
-- Verify local and public HTTP 200 before finalizing.
+- Publish it at the project's public domain PRD path (for Komuna, `https://komuna.ahsanworks.com/prd/<name>.html`) via the web server PRD symlink directory; avoid raw IP links unless the user explicitly asks for them.
+- Verify local/public HTTP 200 before finalizing.
 - End the final response with the public link.
 
 If the task is code-related, include exact file paths, likely test targets, and verification steps.
@@ -69,8 +69,8 @@ For this user, a plan intended for review should not remain markdown-only. After
 
 1. Render a styled, readable HTML version with a table of contents and code-block styling.
 2. Store the canonical HTML under the relevant project path at `docs/<name>.html` when a project path exists.
-3. Publish it at `http://<publicip>/prd/<name>.html` via the web server PRD symlink directory.
-4. Verify local/public HTTP 200 before finalizing.
+- Publish it at the project's public domain PRD path (for Komuna, `https://komuna.ahsanworks.com/prd/<name>.html`) via the web server PRD symlink directory; avoid raw IP links unless the user explicitly asks for them.
+- Verify local/public HTTP 200 before finalizing.
 5. If the user answers open questions in the plan, update both the markdown plan and the public HTML before implementing.
 
 Use the `claude-design` skill/reference workflow for the publication mechanics.

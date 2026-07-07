@@ -1,4 +1,4 @@
-User prefers review docs/PRDs as styled responsive HTML with public links; PRDs live at project docs/<name>, exposed at <publicip>/prd/<name>, and specify shadcn/ui/design-system guidance.
+User wants review docs/PRDs as styled responsive HTML with public domain links (not raw IPs); PRDs live at project docs/<name> and specify shadcn/ui/design-system guidance.
 §
 User wants any document produced for them to review to also be provided as a styled HTML file with a public accessible link.
 §
@@ -12,6 +12,6 @@ User prefers using kanban/task tracking when working on big or complicated featu
 §
 User prefers bug-fix final reports to include the root cause of the bug.
 §
-User does not want implementation or deployment after design-choice answers alone. For design/UX work, provide and update a public review artifact first; wait for explicit implementation/deployment wording before touching the live site.
+User does not want implementation/deployment from design-choice answers or debug requests alone; provide a review/debug report first and wait for explicit implementation/deployment wording before touching live behavior.
 §
 User reviews the plan before tasks start and reviews after all tasks are done only; do not require confirmations between individual kanban tasks.

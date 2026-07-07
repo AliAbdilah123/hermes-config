@@ -233,6 +233,20 @@ sudo chown -R www-data:www-data /var/www/html/projects/komuna/
 
 The frontend is served by nginx from `/var/www/html/projects/komuna/` at the path prefix `/projects/komuna/`. The Vite build reads env vars from `apps/web/.env`, NOT from the root `/home/ubuntu/projects/komuna/.env`.
 
+### Admin Management Route Layout Consistency
+
+When fixing or adding program admin management pages (overview, members, products, packages, vouchers, analytics, audit log), use the canonical tabbed dashboard route family: `/dashboard/programs/:id/<section>` wrapped by `ProgramDetailLayout`. The older `/programs/:id/admin/<section>` routes are workspace-shell legacy routes and will not show the tab strip unless explicitly redirected. If a user reports an admin page "doesn't look like the other dashboard pages" or lacks management tabs, check `apps/web/src/App.tsx` and `apps/web/src/components/dashboard/workspaceNavigation.tsx` first:
+- Admin side-nav links for management sections should point to `/dashboard/programs/${programId}/...`.
+- Legacy `/programs/:id/admin` routes should redirect to the matching dashboard section (`audit` → `audit-log`).
+- Keep routes that are not in the tab strip (for example approvals) on their existing workspace route unless adding them to `ProgramDetailLayout` intentionally.
+- Add/adjust `workspaceNavigation.test.tsx` so it asserts canonical dashboard hrefs, then verify with `npm run test -- workspaceNavigation && npm run build`, deploy `apps/web/dist/`, and confirm the public HTML serves the new bundle.
+
+### Session Template / Activation UI Placement
+
+When implementing or adjusting session template generation/activation in Komuna, put admin-facing template and activation controls inside the existing program detail **Sessions** tab (`apps/web/src/pages/dashboard/SessionsTab.tsx`) rather than standalone pages or the admin dashboard overview. Keep separate route components embeddable (`embedded` prop) if useful, but render the primary UI as sub-tabs/buttons inside Sessions so it follows the dashboard information architecture.
+
+Theme pitfall: do not introduce dark custom cards or one-off visual language. Use existing dashboard tokens and structure: `var(--paper-1)`, `var(--ink-1)`, `var(--ink-3)`, `var(--rule)`, serif headings, mono eyebrow labels, rounded `10px` cards, and mobile stacked cards/full-width actions. Verify with `npm run build`, `go build -o ../server .`, restart `komuna-api.service`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, and confirm the public JS bundle contains `Session templates` / `Activation`.
+
 ### Discovery Program Card CTA Changes
 
 When the user asks to remove repetitive Join/Joined CTAs from discovery cards, make the smallest frontend-only change in `apps/web/src/components/discovery/ProgramCard.tsx`: remove the card-level join action/button and its now-unused imports/state, but keep the whole card clickable via `navigate(detailPath)` so joining still happens from the program detail page. Verify with `npm run test -- ProgramCard && npm run build`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, then commit/push.
@@ -305,9 +319,11 @@ curl -s "https://komuna.ahsanworks.com/" | grep -o 'BASENAME__=\"/\"'
 - `scripts/hash_password.py` — standalone script to hash a password matching Go API's algorithm. Run directly: `python3 scripts/hash_password.py somepassword`
 - `references/v2-schema.md` — complete V2 relational schema reference (tables, columns, FK relationships, seeding pattern, role assignment)
 - `references/session-booking-flow.md` — pre-filling sessions with bookings: voucher → claim → sessions.taken data flow and SQL patterns
+- `references/session-template-generation-design.md` — confirmed design rules for weekly templates, manager generation, inactive generated sessions, required template times, activation page, and mobile UX
 - `references/manager-dashboard.md` — Go API manager dashboard implementation: route handler, data flow, timezone handling, response shape, and `countAttendance` helper
 - `references/frontend-auth-guards.md` — React SPA auth architecture: session store, sign-out flow, protected route pattern, route audit of missing guards, and the "??"/"User" stale-render bug
 - `references/restricted-route-auth-guards.md` — backend + frontend restricted-route auth guard pattern; avoid `currentUser()` fallback on account/dashboard APIs and add unauth 401 regression tests
+- `references/session-template-generation-activation-design.md` — confirmed design decisions for session templates, generation permissions, generation range, one-off sessions, and separate per-date activation UX
 
 ### External Seed Scripts
 
@@ -531,6 +547,18 @@ VALUES ('pa-' || lower(hex(randomblob(4))), 'user-...');
 
 **Debugging pitfall — silent `currentUser` fallback to `user-demo`:** `currentUser()` (main.go:460) falls back to `a.userID` (env `KOMUNA_DEV_USER_ID`, default `user-demo`) when `userBySession` fails. This masks auth failures — the workspace endpoint returns HTTP 200 with `uid: user-demo` and `isSuperAdmin: false` instead of 401. If you see `uid: user-demo` in a workspace response for a real authenticated user, the session token lookup is failing (check `auth_sessions` table for the token, verify expiry format matches `time.RFC3339`).
 
+### Admin Members Page Profile Pictures + Manager Product Labels
+
+When improving `/dashboard/programs/:id/members` / admin members UI:
+- Backend member rows are returned from `api/v1/program_handlers.go::programMembers`. To show avatars, join `auth_users` on `pm.user_id` and return `profile_picture: a.profilePictureURL(uid, ext)`; the frontend `MemberDTO` should keep it optional for older responses.
+- Frontend table/card UI is in `apps/web/src/pages/MembersPage.tsx`. Prefer CSS-only responsive changes in the inline `<style>` block: add stable classes such as `member-identity`, `member-avatar`, `members-toolbar-actions`, and override them under `@media (max-width: 760px)`.
+- Mobile layout pattern: keep name/email as one block, set `.member-identity { justify-content: space-between; }`, and move the avatar block to the right with `order: 2; margin-left: auto;`.
+- Keep the global `Add Manager` button and status/role control in one mobile row by wrapping them in `.members-toolbar-actions { display:flex; gap:8px; }` and giving children `flex:1; min-width:0`.
+- Keep per-member role management controls in one `.member-role-actions` flex row: role badges, `Edit managed products` / `Add Manager`, and Add/Remove role buttons belong together. Do not leave `Add admin` in a separate block below products on mobile.
+- For product managers, render a grey mono `Products` label as its own block above the product chips (`display:block; margin-bottom:6px`), then put chips in a separate flex wrapper such as `.member-products-chips`. Do not place the label inline beside the chips on mobile; it reads like an unexplained badge.
+- Desktop recommendation: do **not** add a dedicated Products column unless admins need sorting/filtering by handled product; inline labeled chips under Roles avoid widening the table and keep mobile simpler.
+- Regression test: extend `MembersPage.test.tsx` with a manager that has `profile_picture` and a `manager` role scoped to a product; assert the avatar `img`, `Products` label, and product name render.
+
 ### Admin/Manager CTA Changes Role in UI But Reverts After Refresh
 
 **Symptom:** On the admin members dashboard, clicking Add/Remove admin or assigning manager products shows an optimistic UI update, but after refreshing the member is back to basic member / previous roles.
@@ -573,6 +601,90 @@ sqlite3 sqlite.db "SELECT event_type, COUNT(*) FROM notifications GROUP BY event
 ```
 
 **Fix direction:** In `programMemberRole()`, after writing the role row, insert a `notifications` row with `event_type = 'role_assigned'` (or `manager_assigned`), `channel = 'push'` (always-on in-app), `recipient_id` set to the promoted user's id, and a descriptive title/body. For email delivery, also enqueue to a queue/email provider. The Worker API (`apps/api/src/`) has a `createNotification` pattern that can serve as a reference, but the fix must go into the Go API at `api/v1/program_handlers.go`.
+
+### Checkout Role Eligibility: Admins Can Buy Their Own Program Packages
+
+When asked whether an admin/manager can buy a package from their own program, the current Go checkout path allows it as long as the user has a `program_members` row for the package's program. `commerce_handlers.go::checkout()` authenticates via `requireUser`, loads the package's `program_id`, then checks only:
+
+```sql
+SELECT id FROM program_members WHERE program_id=? AND user_id=?
+```
+
+There is no role-based block for admins or product managers. Therefore:
+- Program admin who is also a program member: can buy.
+- Product manager who is also a program member: can buy.
+- Regular member: can buy.
+- Platform superadmin without program membership: cannot buy; checkout returns `not_a_member`.
+
+If the business rule changes to prevent self-purchase by admins/managers, the fix belongs in the Go API checkout path before inserting `purchases`, not only in frontend button visibility.
+
+### Member Dashboard Shows Program-Wide Active Voucher Count
+
+**Symptom:** A newly signed-up member joins a program and the member dashboard shows active vouchers (for example `12`) while `/wallet` is empty.
+
+**Root cause:** `memberDashboard()` counted all active vouchers for the program:
+```sql
+SELECT COUNT(*) FROM vouchers v
+JOIN products p ON p.id=v.product_id
+WHERE p.program_id=? AND v.status='active'
+```
+That is an admin/program inventory metric, not the member's wallet count. Wallet correctly filters through the current user's `program_members` row.
+
+**Fix pattern:** Scope member dashboard voucher stats to the authenticated user and program membership:
+```go
+u, ok := a.requireUser(w, r)
+if !ok { return }
+a.db.QueryRow(`SELECT COUNT(*) FROM vouchers v
+  JOIN program_members pm ON pm.id=v.program_member_id
+  WHERE pm.program_id=? AND pm.user_id=? AND v.status='active'`, pid, u.ID).Scan(&vcount)
+```
+Do not join only through `products` for member-facing counts; that leaks other members' vouchers into the displayed total.
+
+**Verification:** For the reported user, compare DB counts before/after:
+```sql
+-- expected wallet/dashboard count
+SELECT COUNT(*) FROM vouchers WHERE program_member_id=? AND status='active';
+-- buggy old dashboard count
+SELECT COUNT(*) FROM vouchers v JOIN products p ON p.id=v.product_id WHERE p.program_id=? AND v.status='active';
+```
+Then call `/api/v1/programs/<program>/member/dashboard` and `/api/v1/wallet` with the same Bearer token; the dashboard `active_voucher_count` should match the user's wallet count, not the program total.
+
+### Admin Packages Tab Blank Page / Missing Package Entries
+
+**Symptom:** A program admin opens `/programs/:id/admin/packages` and the tab renders blank. Example: Lina Marlina as Balikpapan Coastal Yoga Studio admin.
+
+**Root cause:** The Go API package list endpoint (`program_handlers.go::programPackages`, `GET /programs/:id/packages`) returns package rows from `scanPackage(rows)`, but `scanPackage` omits the `entries` array. The frontend `PackagesPage.tsx` treats `PackageDTO.entries` as required and calls `p.entries.length` and `pkg.entries.map(...)`, so `entries: undefined` causes an uncaught render error/blank page. The DB can still have valid `package_entries`; the list DTO is just incomplete. `packageByID()` already includes `entries`, so single-package/detail-style responses may look correct while the list crashes.
+
+**Check:**
+```bash
+curl -sS http://127.0.0.1:8095/api/v1/programs/<program-id>/packages | python3 -m json.tool
+sqlite3 sqlite.db "SELECT pp.id, pp.name, COUNT(pe.id) FROM purchase_packages pp LEFT JOIN package_entries pe ON pe.package_id=pp.id WHERE pp.program_id='<program-id>' GROUP BY pp.id"
+```
+If JSON rows lack `entries` but SQL shows rows in `package_entries`, this is the bug.
+
+**Fix pattern:** Make the list endpoint return full `PackageDTO` rows with `entries: []` at minimum, preferably by reusing a helper that loads package entries for each package. Do not hide the frontend crash with optional chaining only; the API contract says `entries` is required. Add a regression test for `GET /programs/:id/packages` asserting every package has an array `entries` field, including programs/packages with zero entries.
+
+### Admin Packages Tab Blank Page
+
+**Symptom:** A program admin opens `/programs/:id/admin/packages` and the tab/page is blank. The API may still return `200 OK` for `/api/v1/programs/:id/packages`.
+
+**Root cause:** The frontend `PackagesPage` treats `PackageDTO.entries` as required and renders `pkg.entries.length` / `pkg.entries.map(...)`. The Go list handler `programPackages()` can silently omit `entries` if it appends `scanPackage(rows)` directly. That creates a runtime render crash even though the package rows exist.
+
+**Debug check:**
+```bash
+curl -sS https://komuna.ahsanworks.com/api/v1/programs/<program-id>/packages \
+  | python3 -c 'import json,sys; d=json.load(sys.stdin); print([(p["id"], p.get("entries")) for p in d["data"]])'
+```
+If `entries` is missing or `null`, the frontend contract is broken. Compare with DB entries:
+```sql
+SELECT pp.id, pp.name, COUNT(pe.id)
+FROM purchase_packages pp
+LEFT JOIN package_entries pe ON pe.package_id=pp.id
+WHERE pp.program_id='<program-id>'
+GROUP BY pp.id;
+```
+
+**Fix pattern:** Make the list endpoint return the same full package DTO shape as `packageByID()` so every package has `entries: []` or populated entries. Also scan nullable `supersedes_id` with `sql.NullString`; scanning SQLite NULL into `*string`/plain string can make `packageByID()` return `nil` and hide entries. Add a Go regression test that GETs `/api/v1/programs/prog-box/packages` and asserts each item has non-nil `entries` with matching `package_id`.
 
 ### Dashboard Shows "No assigned products" for Managers
 
