@@ -320,7 +320,19 @@ When a React/Vite page shows a runtime collection error such as `t.filter is not
 
 See `references/frontend-api-shape-drift.md` for a compact recipe and minimal TypeScript pattern.
 
+### 5a.0 Goal/Task Relation Selection Sync
+
+When an edit goal/modal shows existing tasks with checkboxes and unchecking appears to work in the UI but save does not remove the task from the goal:
+- Trace whether the frontend sends both the original linked set (`currentTaskIds`) and final checked set (`selectedTaskIds`).
+- Check the backend update handler for append-only logic (`insert or ignore` over selected IDs) with no corresponding delete for `current - selected`.
+- Fix at the relation sync boundary: delete unchecked junction rows scoped to the owner and user, clear any legacy single-FK mirror only if it points to that owner, then add selected rows.
+- Add a regression test that creates two linked tasks, updates the goal with only one selected, and asserts the goal task count/list drops to one.
+
+See `references/goal-task-selection-sync.md` for the compact payload pattern and test recipe.
+
 ### 5a.0 Migrated Task/Subtask UI Parity
+
+When an edit modal shows existing linked tasks/items with checkboxes and unchecking one does not remove it after save, check whether the frontend sends desired replacement state (`selectedTaskIds`) while the backend only performs add-only junction-table inserts. The minimal root fix is server-side replace semantics: delete `currentTaskIds - selectedTaskIds` links, then insert selected links. See `references/goal-task-selection-replace-vs-add.md`.
 
 When a migrated task app reports that subtasks no longer behave like the original UI across dashboard/list pages:
 - Check whether primary task/goal list endpoints return child tasks as flat top-level rows instead of filtering to `parent_id is null`.

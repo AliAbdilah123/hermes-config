@@ -247,6 +247,17 @@ When implementing or adjusting session template generation/activation in Komuna,
 
 Theme pitfall: do not introduce dark custom cards or one-off visual language. Use existing dashboard tokens and structure: `var(--paper-1)`, `var(--ink-1)`, `var(--ink-3)`, `var(--rule)`, serif headings, mono eyebrow labels, rounded `10px` cards, and mobile stacked cards/full-width actions. Verify with `npm run build`, `go build -o ../server .`, restart `komuna-api.service`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, and confirm the public JS bundle contains `Session templates` / `Activation`.
 
+### Program/Product/Package Seed Images: Local Assets via `image_url`
+
+When planning or implementing Komuna seed repairs that involve program/product/package imagery:
+- `image_url` is the canonical field for seeded visuals. Do **not** replace it with a new public field such as `image_asset`; the user explicitly expects `image_url` to fetch local generated assets.
+- `image_url` values should point to app-served local assets, not remote URLs. Use paths like `/program-images/<id>.svg`, `/product-images/<id>.svg`, and `/package-images/<id>.svg` under `apps/web/public/`.
+- If package images are needed, add `purchase_packages.image_url` safely. Make every `ALTER TABLE` idempotent: tolerate duplicate-column errors in the Go schema loop and/or check `PRAGMA table_info` in backfill scripts before altering.
+- Seed/backfill every program, product, and purchase package with a contextual local image asset. Keep `image_tone` / `image_label` only as deterministic fallback when an item unexpectedly has no `image_url`; normal seeded data should never hit the fallback.
+- Add a deterministic backfill/validation script when changing live data. The script should back up `sqlite.db`, add missing columns, fill empty `image_url`/slug values, and fail on counts for missing program/product/package images, missing product slugs, or non-positive package prices.
+- Deploy both the Vite `dist/` and the public image folders to nginx. Because Komuna runs at root behind nginx runtime basename rewrites, root-relative asset URLs (`/package-images/...`) are safest on `https://komuna.ahsanworks.com/`.
+- Smoke-check after deployment with local and public curls: API health, a package/product endpoint returning non-empty `imageUrl`, and `HEAD https://komuna.ahsanworks.com/package-images/<file>.svg` returning 200.
+
 ### Discovery Program Card CTA Changes
 
 When the user asks to remove repetitive Join/Joined CTAs from discovery cards, make the smallest frontend-only change in `apps/web/src/components/discovery/ProgramCard.tsx`: remove the card-level join action/button and its now-unused imports/state, but keep the whole card clickable via `navigate(detailPath)` so joining still happens from the program detail page. Verify with `npm run test -- ProgramCard && npm run build`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, then commit/push.
@@ -272,6 +283,37 @@ This avoids over-refactoring while making oversized hero/session/guest-banner se
 3. Rebuild and redeploy after adding/changing
 
 **Symptom of this bug:** Currency conversion (IDR → USD) silently does nothing — `getUsdToIdrRate()` returns 0, the `if (rate)` guard skips conversion, prices display in IDR amounts with USD currency symbols (e.g., "$425,000" instead of "$26.56").
+
+### Checkout Redirect Base URL Pitfall
+
+**Symptom:** After checkout/payment, the user is sent to the old public IP such as `http://168.110.213.104/projects/komuna/auth/sign-in` instead of `https://komuna.ahsanworks.com/...`.
+
+**Root cause:** The Go checkout path creates Xendit invoice redirect URLs from the root `.env` value `PUBLIC_BASE_URL` in `api/v1/commerce_handlers.go::createXenditInvoice()`. If `PUBLIC_BASE_URL` still points at the old IP, Xendit stores that stale URL when the invoice is created; frontend basename fixes cannot correct it after payment.
+
+**Fix pattern:** Update the live root `/home/ubuntu/projects/komuna/.env` values and restart the Go API:
+```env
+PUBLIC_BASE_URL=https://komuna.ahsanworks.com
+WEB_APP_URL=https://komuna.ahsanworks.com
+AUTH_ISSUER=https://komuna.ahsanworks.com
+```
+Then:
+```bash
+sudo systemctl restart komuna-api.service
+curl -sS http://127.0.0.1:8095/api/v1/health
+curl -sS https://komuna.ahsanworks.com/api/v1/health
+```
+Do not read or print the full `.env`; patch only known keys and verify only non-secret relevant values.
+
+### Wallet Route Canonicalization
+
+Komuna should have a single member wallet page at `/wallet`. Avoid reintroducing a second page at `/programs/:id/member/wallet` or `/members/wallet`.
+
+If duplicate wallet pages appear:
+- Keep `apps/web/src/App.tsx` canonical route `/wallet` wrapped in `RequireAuth`.
+- Make legacy/member workspace wallet routes redirect to `/wallet`, not render `<WalletPage />` again.
+- Remove member workspace navigation entries with IDs like `member-wallet` that point to program-scoped wallet URLs.
+- Update member dashboard and payment-return links to navigate to `/wallet`.
+- Verify with focused tests (`workspaceNavigation`, `PaymentReturnPage`, `MemberDashboardPage`) and `npm run build`, deploy `apps/web/dist/`, then confirm the deployed JS no longer contains `/member/wallet`.
 
 ### Build-Time vs Runtime Basename Pitfall
 
@@ -324,6 +366,7 @@ curl -s "https://komuna.ahsanworks.com/" | grep -o 'BASENAME__=\"/\"'
 - `references/frontend-auth-guards.md` — React SPA auth architecture: session store, sign-out flow, protected route pattern, route audit of missing guards, and the "??"/"User" stale-render bug
 - `references/restricted-route-auth-guards.md` — backend + frontend restricted-route auth guard pattern; avoid `currentUser()` fallback on account/dashboard APIs and add unauth 401 regression tests
 - `references/session-template-generation-activation-design.md` — confirmed design decisions for session templates, generation permissions, generation range, one-off sessions, and separate per-date activation UX
+- `references/program-product-package-seed-quality-audit.md` — audit and fix pattern for blank/internal slugs, missing package coverage, product/package image support, free packages, session-card route split, and currency/money overflow issues.
 
 ### External Seed Scripts
 

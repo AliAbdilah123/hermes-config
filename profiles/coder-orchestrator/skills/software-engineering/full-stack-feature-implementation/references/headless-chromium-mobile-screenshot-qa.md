@@ -46,4 +46,28 @@ Then use `vision_analyze` with the screenshot path to inspect layout, overflow, 
 1. `curl` the public URL → HTTP 200.
 2. `curl` the deployed JS bundle → grep for new copy/markers (e.g. `topNav.searchPrograms`).
 3. Check for absent stale markers (e.g. `neon.tech` should not appear if local auth is intended).
-4. Headless Chromium screenshot → `vision_analyze` for visual/responsive confirmation.
+4. For content/API sanity without relying on the Hermes browser, dump the hydrated DOM and grep for expected content plus absence of visible fetch-error text:
+
+```bash
+mkdir -p /home/ubuntu/<project>-qa
+chromium-browser \
+  --headless \
+  --no-sandbox \
+  --disable-gpu \
+  --window-size=1440,900 \
+  --virtual-time-budget=7000 \
+  --dump-dom \
+  'https://<host>/<path>' \
+  > /home/ubuntu/<project>-qa/page-dom.html \
+  2> /home/ubuntu/<project>-qa/chromium-dom.log
+
+python3 - <<'PY'
+from pathlib import Path
+html = Path('/home/ubuntu/<project>-qa/page-dom.html').read_text(errors='ignore')
+for marker in ['Expected page title', 'Expected loaded data']:
+    print(marker, marker in html)
+print('visible_fetch_error', any(x in html.lower() for x in ['failed to fetch', 'network error', 'api error']))
+PY
+```
+
+5. Headless Chromium screenshot → `vision_analyze` for visual/responsive confirmation.

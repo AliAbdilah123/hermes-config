@@ -331,6 +331,15 @@ When the user asks for a design plan before fixing a responsive/mobile UI bug, m
 
 Keep this class-level: do not encode a single project's file paths unless they are examples inside the plan itself.
 
+### Redesign proposals from supplied HTML/code need a visual review surface
+
+When the user provides an HTML/CSS design reference and asks to redesign a page but approve the design before implementation:
+- Treat the supplied code as composition/mood reference, not implementation source; do not paste CDN scripts, external theme config, or standalone demo scaffolding into the app plan.
+- Inspect the current page/components enough to name the existing data flows, route/component boundaries, theme variables, and behaviors that must be preserved.
+- Produce a public styled HTML review artifact that includes a static visual mockup/hero preview, not just prose. Make it obvious whether it is a static proposal or live site.
+- Include a concise “borrow vs preserve” section: what layout ideas come from the reference, what current theme/system behaviors stay unchanged.
+- Add an implementation gate and at least one explicit design choice if approval is needed; do not implement or deploy from the design-choice answer alone unless the user explicitly says to implement.
+
 ### Existing drag/drop UI feature plans need flow preservation notes
 
 When the user asks for a plan to extend drag/drop behavior in an existing UI, inspect the current drag/drop implementation before writing the plan. Include:
