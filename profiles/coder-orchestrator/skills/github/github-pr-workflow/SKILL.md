@@ -294,16 +294,17 @@ When asked to auto-fix CI, follow this loop:
 
 ## 6. Merging
 
-### Direct local branch → `main`/`master` merge when explicitly requested
+### Direct local branch → `main` merge when explicitly requested
 
-When the user asks to "merge the current branch to main/master" and there is no PR requirement, use the shortest safe git path:
+When the user asks to "merge the current branch to main" and there is no PR requirement, use the shortest safe git path:
 
-1. Confirm repo, branch, remote, and dirty state with `git status --short --branch`, `git remote -v`, and a small log/diff stat. Leave unrelated untracked files alone; report them separately instead of staging/cleaning them.
+1. Confirm repo, branch, remote, and dirty state with `git status --short --branch`, `git remote -v`, and a small log/diff stat.
 2. If the current branch has uncommitted work that belongs to the branch, run the repo's normal verification first, then commit it on the current branch before switching.
-3. Fetch `origin <base>` before merging. If `fatal: couldn't find remote ref <base>`, confirm remote heads with `git ls-remote --heads origin`; if local `<base>` is intentional, proceed and create/push `origin/<base>` rather than stopping.
-4. If the user asks for the branch to become **a single commit** on the base branch, first verify the base is an ancestor (`git merge-base --is-ancestor origin/<base> HEAD`), create a local backup branch (`git branch backup/<branch>-before-squash HEAD`), then squash by content without losing the work:
-   ```bash
-   git reset --soft origin/<base>
+3. Fetch `origin main` before merging. If `fatal: couldn't find remote ref main`, confirm remote heads with `git ls-remote --heads origin`; if local `main` is intentional, proceed and create/push `origin/main` rather than stopping.
+4. Before doing conflict-heavy work, check whether the branch content is already present under different history (common after a prior squash): `git diff --quiet main...<branch>` is not enough when histories diverge; compare the intended integration point with `git diff --name-status <known-squash-or-merge-base>..<branch>` and inspect `git branch --contains <squash-sha>` / `git log --cherry-pick --left-right main...<branch>`. If the file diff is empty and `main` already contains the squash commit, do not push a no-op or duplicate commit; report that the branch is already integrated as one commit.
+5. `git checkout main && git merge --ff-only <current-branch>` when possible. Use a normal merge only if fast-forward is impossible and the user asked for that branch integration.
+6. `git push origin main`, then verify with `git status --short --branch`, `git rev-parse HEAD`, and `git ls-remote origin refs/heads/main`; the local and remote SHAs must match.
+7. Final response: branch merged or already integrated, short SHA, verification commands passed/failed, and public link if this user's project has one.
    git commit -m "feat: concise summary"
    git checkout <base>
    git merge --ff-only <branch>

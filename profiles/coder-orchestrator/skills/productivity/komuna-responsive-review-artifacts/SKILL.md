@@ -116,6 +116,11 @@ curl -sS 'https://komuna.ahsanworks.com/prd/<slug>.html?v=mobile-check' | grep -
 - [ ] Page uses Komuna theme tokens and visual style.
 - [ ] Final response includes the public review link.
 
+## Reference Notes
+
+- `references/subscription-xendit-prd-mobile-fix.md` — concrete correction from the subscription/Xendit PRD: fix the published PRD page itself, not only the implementation-plan content; includes CSS and verification pattern.
+- `references/subscription-package-entitlement-model.md` — domain model for subscription plans in Komuna review artifacts: packages are sellable bundles, subscription entries grant renewable entitlements, product scopes can be one-or-more products, and subscription bookings create `voucher_claims.subscription_id` claims rather than pre-generated vouchers.
+
 ## Common Pitfalls
 
 1. **Adding responsive requirements to the implementation plan instead of fixing the review page.** If the user says the public PRD is hard to read on mobile, update the HTML artifact itself.

@@ -324,14 +324,25 @@ When adjusting the member-facing all-sessions page (`apps/web/src/pages/AllSessi
 
 After deploying Komuna frontend changes, do not send placeholder/test routes such as `/programs/p1/...` as the review link unless the user specifically provided that route. Use the real route the user gave, or otherwise send only the domain root (`https://komuna.ahsanworks.com/`) and state the change applies globally to that page class.
 
-### Spec/PRD HTML Review Artifact Pattern
+### ERD Maintenance Requirement
 
-When the user asks to make a Komuna spec/PRD easier to read as HTML with the website's theme:
-1. Use the source markdown in the repo (for the main product spec, `komuna-community-session-bookings.md`) and generate a standalone HTML file under `docs/`.
-2. Match Komuna's dashboard theme tokens from `apps/web/src/globals.css`: `--paper-1`, `--paper-2`, `--paper-3`, `--ink-1`, `--ink-2`, `--ink-3`, `--rule`, `--rule-2`, `--accent`, `--accent-soft`, `--accent-ink`; keep serif large headings, mono eyebrow labels, rounded cards, and responsive/mobile layout.
-3. Include a sticky/table-of-contents sidebar on desktop and a stacked layout on mobile so long specs are readable.
-4. Deploy review artifacts to `/usr/share/nginx/html/prds/` and verify with `curl -sI http://localhost/prd/<file>.html` returning 200. The public review link is `https://komuna.ahsanworks.com/prd/<file>.html`.
-5. Commit and push the `docs/*.html` artifact after verification.
+Whenever a Komuna task changes the database structure, schema migration, table list, columns, foreign keys, or relationship semantics, update the ERD review page in the same change:
+- Source artifact: `/home/ubuntu/projects/komuna/docs/komuna-erd.html`
+- Public deployment target: `/usr/share/nginx/html/prds/komuna-erd.html`
+- Public URL: `https://komuna.ahsanworks.com/prd/komuna-erd.html`
+
+Keep the ERD dark-theme-first and preserve the light/dark toggle. After editing, deploy the HTML, verify the public page returns 200 and contains the changed table/column/relationship text, then commit/push the ERD update together with the schema change.
+
+### Spec/PRD/ERD HTML Review Artifact Pattern
+
+When the user asks to make a Komuna spec/PRD/diagram easier to read as HTML with the website's theme:
+1. Use the authoritative source in the repo when available (for the main product spec, `komuna-community-session-bookings.md`). For ERD/database-map requests, inspect the live V2 SQLite schema (`sqlite.db` via `PRAGMA table_info` / `PRAGMA foreign_key_list`) and cross-check `references/v2-schema.md`; do not hand-draw relationships from memory.
+2. Generate a standalone HTML file under `docs/`.
+3. Match Komuna's dashboard theme tokens from `apps/web/src/globals.css`: `--paper-1`, `--paper-2`, `--paper-3`, `--ink-1`, `--ink-2`, `--ink-3`, `--rule`, `--rule-2`, `--accent`, `--accent-soft`, `--accent-ink`; keep serif large headings, mono eyebrow labels, rounded cards, and responsive/mobile layout.
+4. For ERD pages, prefer a readable one-page artifact over a tiny dense graph: group tables by domain (Core, Membership/Roles, Commerce, Sessions/Ops), mark PK/FK columns, include the main business flow, and add a relationship table with source column → target table meanings. Avoid external JS/CDN dependencies when simple HTML/CSS cards and tables are enough.
+5. Include a sticky/table-of-contents sidebar on desktop and a stacked layout on mobile for long specs; for diagrams, ensure cards collapse to one column on mobile.
+6. Deploy review artifacts to `/usr/share/nginx/html/prds/` and verify with `curl -sI http://localhost/prd/<file>.html` returning 200. The public review link is `https://komuna.ahsanworks.com/prd/<file>.html`.
+7. Commit and push the `docs/*.html` artifact after verification.
 
 ### Vite Env Var Pitfall
 
@@ -649,6 +660,18 @@ VALUES ('pa-' || lower(hex(randomblob(4))), 'user-...');
 
 **Debugging pitfall — silent `currentUser` fallback to `user-demo`:** `currentUser()` (main.go:460) falls back to `a.userID` (env `KOMUNA_DEV_USER_ID`, default `user-demo`) when `userBySession` fails. This masks auth failures — the workspace endpoint returns HTTP 200 with `uid: user-demo` and `isSuperAdmin: false` instead of 401. If you see `uid: user-demo` in a workspace response for a real authenticated user, the session token lookup is failing (check `auth_sessions` table for the token, verify expiry format matches `time.RFC3339`).
 
+### Profile Purchases Tab / Checkout History UI
+
+When implementing or fixing member purchase history in `/profile` (`apps/web/src/pages/ProfilePage.tsx`):
+- Wait for explicit implementation approval if the user is still asking for a plan/review artifact. A request to add requirements to the plan is not approval to deploy live behavior.
+- Use the website/dashboard theme, not a standalone PRD style: `var(--paper-*)`, `var(--ink-*)`, `var(--rule)`, serif headings, mono eyebrow labels, rounded `10px` cards.
+- Reuse the admin dashboard table/card pattern rather than inventing a new visual system: desktop purchase history should be a real table; mobile should hide the table and show stacked cards only.
+- Fetch the existing restricted `/purchases` API with `{ page: 1, limit: 100 }`, filter to paid/completed statuses, and show all item/package names plus the purchase/support reference ID.
+- Currency pitfall: purchase `total_amount` values are stored as IDR-like numeric strings. Do **not** hardcode `toLocaleString('en-US', { currency: 'USD' })`; that displays IDR-sized numbers with a `$` prefix and ignores Indonesian. Use the shared `formatPriceLabel(amount, { locale })` without passing an explicit `currency`, so English converts via `VITE_USD_TO_IDR_RATE` and Indonesian renders `IDR`/`Rp`.
+- Make the purchases component read the active locale from `useTranslation()` (`i18n.language === 'id' ? 'id' : 'en'`) so toggling ID/EN re-renders the amounts.
+- Add a focused `ProfilePage` test that clicks the Purchases sidebar item and asserts the desktop table, mobile card marker, item names, reference ID, and that pending purchases are not shown. For currency fixes, also stub `VITE_USD_TO_IDR_RATE`, switch `i18n` from `en` to `id`, and assert `$...` becomes `Rp...`.
+- Verify with `npm run test -- ProfilePage && npm run build`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, grep the public bundle for a stable marker such as `purchase-mobile-card`, then commit/push the frontend and matching plan artifact.
+
 ### Admin Members Page Profile Pictures + Manager Product Labels
 
 When improving `/dashboard/programs/:id/members` / admin members UI:
@@ -721,11 +744,13 @@ WEB_APP_URL=https://komuna.ahsanworks.com
 
 Then restart `komuna-api.service` and verify local/public health. This is backend env configuration, not a Vite basename issue when the domain HTML already injects `window.__BASENAME__="/"`.
 
-### Xendit Paid But No Voucher Issued
+### Xendit Paid But No Voucher Issued / Missing Purchase History
 
-**Symptom:** User completes Xendit checkout and lands on `/wallet?payment=success&purchaseId=...`, but the wallet shows no newly issued voucher. The DB purchase remains `pending` and `/checkout/confirm` returns `vouchers_issued: 0` even though money was transferred.
+**Symptom:** User completes Xendit checkout and lands on `/wallet?payment=success&purchaseId=...`, but the wallet shows no newly issued voucher, or the paid checkout is missing/stale in member purchase history. The DB purchase remains `pending` and `/checkout/confirm` returns `vouchers_issued: 0` even though money was transferred.
 
 **Root cause:** Komuna purchase IDs are sent to Xendit as `external_id`; they are not Xendit's invoice IDs. Calling `GET https://api.xendit.co/v2/invoices/{purchaseID}` fails validation because Xendit invoice IDs are 24-char hex strings. If `finishPurchaseCore()` relies only on that lookup, it never sees `PAID`, leaves the purchase pending, and does not insert vouchers.
+
+**Fix pattern:** Cover both return-page confirmation and provider webhook paths:
 
 **Fix pattern:** In `defaultFetchXenditInvoiceStatus()`, first try direct invoice lookup only when appropriate, then fall back to querying by external ID:
 
@@ -744,6 +769,13 @@ func fetchXenditInvoiceStatusByExternalID(purchaseID, key string) string {
     // GET with Basic auth, decode []map[string]any, return lowercased out[0]["status"]
 }
 ```
+
+Also store Xendit's real invoice `id` from invoice creation in `purchases.xendit_invoice_id` (fall back to the purchase ID only if Xendit omits it). Webhook handling should resolve purchase ID in this order: `external_id`, legacy `purchaseId`, then `SELECT id FROM purchases WHERE xendit_invoice_id = webhook.id`. This covers provider payloads that include the invoice ID but omit the external ID, so paid checkouts still update the same purchase row and appear in `/purchases` history.
+
+2. Store Xendit's real invoice `id` when creating checkout invoices. `createXenditInvoice()` should return both `invoice_url` and `id`, then `checkout()` should persist `xendit_invoice_id=<real Xendit id>` instead of writing the local `pur-...` purchase ID into that column.
+3. Make `paymentWebhook()` robust to webhook payloads that include `id` but omit `external_id`: resolve the local purchase with `SELECT id FROM purchases WHERE xendit_invoice_id=?`, then call `finishPurchase()`. This keeps the member purchase history accurate even if Xendit sends only the provider invoice ID.
+
+**Regression check:** Add a Go test that inserts a pending purchase with `xendit_invoice_id='xendit-invoice-1'`, posts `POST /api/v1/payments/xendit/webhook` with only `{ "id": "xendit-invoice-1", "status": "PAID" }`, then calls authenticated `GET /api/v1/purchases` and asserts the purchase appears with `status='paid'` and the correct `program_id`. This catches the provider-ID-only webhook path that normal `/checkout/confirm` tests miss.
 
 **Recovery for affected users:** Re-run confirmation for the paid purchase after deploying the fix:
 

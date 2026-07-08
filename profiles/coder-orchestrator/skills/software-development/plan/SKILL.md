@@ -45,7 +45,8 @@ If the task is code-related, include exact file paths, likely test targets, and 
 For this user, a plan or document produced for review should not remain markdown-only. After saving the markdown/source plan, also create a styled HTML review artifact and publish it at a public link. Follow `references/review-doc-html-publication.md` for the docs-path/symlink/public-URL workflow and verification checklist.
 
 Minimum expectations:
-- Standalone styled HTML with readable typography, table of contents for long plans, responsive layout, and styled code blocks.
+- Standalone styled HTML with readable typography, table of contents for long plans, responsive layout, styled code blocks, and a dark-theme-first visual design.
+- Include a working light/dark mode toggle in every plan/review HTML artifact. Default to dark mode, persist the user's choice with `localStorage`, and keep the artifact readable without external JS/CSS.
 - Store under the relevant project path when known, e.g. `<project path>/docs/<slug>.html`.
 - Publish it at the project's public domain PRD path (for Komuna, `https://komuna.ahsanworks.com/prd/<name>.html`) via the web server PRD symlink directory; avoid raw IP links unless the user explicitly asks for them.
 - Verify local/public HTTP 200 before finalizing.

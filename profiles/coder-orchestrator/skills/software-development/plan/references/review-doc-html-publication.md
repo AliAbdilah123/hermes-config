@@ -16,6 +16,8 @@ Use this whenever a plan or other document is produced for the user to review.
 ## Styling expectations
 
 - Use a complete standalone HTML file with embedded CSS.
+- Use a dark-theme-first design by default, with a visible light/dark mode toggle.
+- The toggle must work without external dependencies, persist with `localStorage`, and remain accessible (`button`, `aria-pressed`, readable focus state).
 - Include a clear title/hero, table of contents for long docs, readable typography, styled code blocks, and responsive layout.
 - Do not leave a large review doc as raw markdown only.
 
