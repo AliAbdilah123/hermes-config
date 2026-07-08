@@ -247,6 +247,15 @@ When implementing or adjusting session template generation/activation in Komuna,
 
 Theme pitfall: do not introduce dark custom cards or one-off visual language. Use existing dashboard tokens and structure: `var(--paper-1)`, `var(--ink-1)`, `var(--ink-3)`, `var(--rule)`, serif headings, mono eyebrow labels, rounded `10px` cards, and mobile stacked cards/full-width actions. Verify with `npm run build`, `go build -o ../server .`, restart `komuna-api.service`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, and confirm the public JS bundle contains `Session templates` / `Activation`.
 
+### Public Sessions Page Layout Corrections
+
+When adjusting the public all-sessions page (`apps/web/src/pages/AllSessionsPage.tsx`):
+- If the user asks for the sessions to match the program-detail session-card layout, use the compact horizontal card component (`SessionCardCompact`) for every tab/status instead of mixing one large hero card with smaller cards.
+- If the user asks for sessions to be “listed and scrolled horizontally,” render the cards in a single horizontal rail (`display:flex`, `overflow-x:auto`, equal `flex-basis`, optional `scroll-snap`) rather than a vertical stack or masonry/grid. Keep card widths equal so no session is visually prioritized.
+- Keep the scrollbar minimal and theme-aligned: thin, transparent track, subtle `var(--rule-2)` rounded thumb. Avoid a loud native scrollbar that distracts from the cards.
+- Verification pattern: `npm run test -- AllSessionsPage && npm run build`, deploy `apps/web/dist/`, then confirm the live bundle contains the rail/scrollbar selectors.
+- Final-report pitfall: do not send a seed/test route like `/programs/p1/sessions` as the review link unless that is the actual program the user provided. Use the project root `https://komuna.ahsanworks.com/` or the exact real URL under discussion.
+
 ### Program/Product/Package Seed Images: Local Assets via `image_url`
 
 When planning or implementing Komuna seed repairs that involve program/product/package imagery:
@@ -262,6 +271,34 @@ When planning or implementing Komuna seed repairs that involve program/product/p
 
 When the user asks to remove repetitive Join/Joined CTAs from discovery cards, make the smallest frontend-only change in `apps/web/src/components/discovery/ProgramCard.tsx`: remove the card-level join action/button and its now-unused imports/state, but keep the whole card clickable via `navigate(detailPath)` so joining still happens from the program detail page. Verify with `npm run test -- ProgramCard && npm run build`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, then commit/push.
 
+### All Sessions Page Card Layout Consistency
+
+When the user asks for the sessions page tabs (Upcoming/Ongoing/Past) to match the program-detail session card layout, target `apps/web/src/pages/AllSessionsPage.tsx` and prefer reusing `SessionCardCompact` from `apps/web/src/pages/all-sessions/SessionCardCompact.tsx`. Remove the special upcoming-only hero/featured split (`SessionCard` + `selectHeroAndNextThree`) so every tab maps `sessionsData.items` through the same compact horizontal card component; this keeps all cards equal height/structure and avoids one oversized first card. Verify with `npm run test -- AllSessionsPage && npm run build`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, then confirm the public JS no longer contains `all-sessions-featured` and does contain `all-sessions-grid` before commit/push.
+
+### All Sessions Page Card Layout Consistency
+
+When the user asks for the sessions page tabs (`/programs/:id/sessions` — Upcoming/Ongoing/Past) to match the program detail session-card layout, update `apps/web/src/pages/AllSessionsPage.tsx` to use `SessionCardCompact` consistently for every status. Do not keep the special Upcoming hero/featured card (`SessionCard` + `selectHeroAndNextThree`) if the request says no card should be bigger than the others.
+
+If the user asks for the sessions to be “listed and scrolled horizontally,” render the `SessionCardCompact` items as a horizontal rail: parent `display: flex`, `overflowX: auto`, `scrollSnapType: 'x mandatory'`, and wrap each card in an equal-width flex item such as `flex: '0 0 clamp(280px, calc(100vw - 160px), 760px)'` with `scrollSnapAlign: 'start'`. Verify with `npm run test -- AllSessionsPage && npm run build`, deploy `apps/web/dist/`, confirm the public bundle contains `scrollSnapType`, then commit and push.
+
+### Sessions Page Horizontal Rails
+
+When adjusting the public sessions page (`apps/web/src/pages/AllSessionsPage.tsx`) to match program-detail compact session cards:
+- Use `SessionCardCompact` for all status tabs (`upcoming`, `ongoing`, `past`) when the user asks for equal horizontal cards; avoid reintroducing a hero/featured card that makes one session larger than the others.
+- For a horizontally scrolling rail, wrap each compact card in an equal-width flex child (for example `flex: '0 0 clamp(280px, calc(100vw - 160px), 760px)'`) and set the rail to `display:flex`, `overflowX:auto`, and `scrollSnapType:'x mandatory'`.
+- Desktop mouse wheels normally require Shift to scroll horizontal overflow. If the user expects hover + normal wheel scrolling, add an `onWheel` handler on the rail that maps vertical `deltaY` into `currentTarget.scrollLeft` and `preventDefault()` when vertical delta dominates; add a focused test that dispatches a `WheelEvent` and asserts `scrollLeft` changes.
+- Keep the rail scrollbar subtle and theme-aligned (`scrollbar-width: thin`, transparent track, `var(--rule-2)` rounded thumb) instead of a loud default bar.
+- After deploying, verify the public bundle contains the relevant scroll/scrollbar marker. In final reports, do not invent a sample program URL such as `/programs/p1/sessions`; use the exact user-provided page when available or the root project link `https://komuna.ahsanworks.com/`.
+
+### Sessions Page Layout Consistency
+
+When adjusting member-facing sessions list layouts (`apps/web/src/pages/AllSessionsPage.tsx`), match the program detail upcoming-session implementation unless the user explicitly asks for a different interaction model:
+- Reuse `SessionCardCompact` from `apps/web/src/pages/all-sessions/SessionCardCompact.tsx`.
+- Prefer the same `hero-sessions__list` flex-column structure used by `HeroRightSessions` (`display:flex`, `flexDirection:'column'`, `gap:12`, `flex:1`, `minHeight:0`) so every card has the same compact horizontal-card shape and no card is featured/larger.
+- Do **not** add custom scrollbar CSS, wheel-event handlers, scroll hijacking, or visual overlays to solve perceived scrollbar minimalism unless the user explicitly requests that behavior. These can make mouse/trackpad scrolling feel broken.
+- If experimenting with horizontal rails, confirm the desired native scroll behavior first; browser horizontal rails usually require Shift+wheel or trackpad horizontal gestures, so don't assume vertical wheel should be remapped.
+- Verify with `npm run test -- AllSessionsPage && npm run build`, deploy `apps/web/dist/`, and check the public bundle for the intended class/handler presence or absence.
+
 ### Mobile UI Fix Pattern: Program Detail / Responsive Pages
 
 When fixing Komuna mobile layout issues after an approved review artifact, prefer the smallest CSS-led patch:
@@ -270,9 +307,31 @@ When fixing Komuna mobile layout issues after an approved review artifact, prefe
 3. Use media-query overrides to neutralize desktop inline styles (`grid-template-columns`, large `padding`, `min-height`, image `aspect-ratio`, large typography); `!important` is acceptable here because many current components use inline style props.
 4. For guest-only sign-in prompts, keep desktop spacing as the base and compact through classes such as `guest-banner`, `guest-banner__content`, `guest-banner__icon`, `guest-banner__text`, and `guest-banner__button`. On narrow screens: reduce padding/icon/text, allow wrapping, and make the button full-width only around ≤420px.
 5. For the program-detail "Upcoming sessions" column, desktop `SessionCardCompact` uses a 3-column grid (`148px` image + text + action). On mobile this can make titles/times wrap vertically. Fix in `apps/web/src/pages/program-detail/mobile.css` by overriding `.hero-sessions .session-card` to a compact 2-column grid (small image + text) and move the action/spots column to a full-width bottom row via `> :last-child { grid-column: 1 / -1; flex-direction: row !important; }`. This is smaller than rewriting the component.
-6. Verify with the specific page test plus build (`npm run test -- ProgramDetailPage && npm run build`), deploy with rsync, then confirm the live CSS asset contains the new selectors and the public route returns 200.
+6. When the user asks another page to match the program-detail upcoming-sessions rail, do not invent new scroll handlers, fade overlays, or custom scrollbar styling. First inspect the real program-detail page implementation: `ProgramDetailPage.tsx` wraps `HeroRightSessions` in `section.detail-upcoming`, and `apps/web/src/pages/program-detail/mobile.css` makes `.detail-upcoming .hero-sessions__list` a horizontal native-scroll rail (`flex-direction: row`, `overflow-x: auto`, `scroll-snap-type`/flex sizing via the existing `SessionCardCompact` rules). Reuse that exact class structure/CSS import where appropriate so the browser keeps native shift-wheel/trackpad behavior.
+7. Verify with the specific page test plus build (`npm run test -- ProgramDetailPage && npm run build`, or the matching page test), deploy with rsync, then confirm the live CSS/JS asset contains the expected selectors/classes and the public route returns 200.
 
 This avoids over-refactoring while making oversized hero/session/guest-banner sections fit mobile screens.
+
+### Sessions Page Horizontal Rail UX
+
+When adjusting the member-facing all-sessions page (`apps/web/src/pages/AllSessionsPage.tsx`):
+- If the user asks for sessions to be horizontal like program-detail session cards, reuse `SessionCardCompact` for all status tabs (`upcoming`, `ongoing`, `past`) and render one equal-width native horizontal rail (`display:flex; overflow-x:auto; scroll-snap-type:x mandatory`). Do not keep a large featured/hero card in one tab if the requested goal is equal card structure.
+- Do not hijack `wheel` events to translate vertical scrolling into horizontal scrolling unless the user explicitly requests non-native wheel behavior; it can make desktop scrolling feel broken. Keep browser-native horizontal scroll behavior.
+- If the native scrollbar feels visually heavy, prefer non-interactive affordances such as subtle left/right edge fades with `pointer-events:none`. Avoid custom `::-webkit-scrollbar` / `scrollbar-width` styling when the user reports scroll behavior issues; scrollbar CSS can make debugging input behavior harder and may vary by OS/browser.
+- Add or update the focused all-sessions test, run `npm run test -- AllSessionsPage && npm run build`, deploy `apps/web/dist/`, then verify the public bundle contains the intended layout markers and does not contain removed scroll hooks/styles.
+
+### Public Link Reporting Pitfall
+
+After deploying Komuna frontend changes, do not send placeholder/test routes such as `/programs/p1/...` as the review link unless the user specifically provided that route. Use the real route the user gave, or otherwise send only the domain root (`https://komuna.ahsanworks.com/`) and state the change applies globally to that page class.
+
+### Spec/PRD HTML Review Artifact Pattern
+
+When the user asks to make a Komuna spec/PRD easier to read as HTML with the website's theme:
+1. Use the source markdown in the repo (for the main product spec, `komuna-community-session-bookings.md`) and generate a standalone HTML file under `docs/`.
+2. Match Komuna's dashboard theme tokens from `apps/web/src/globals.css`: `--paper-1`, `--paper-2`, `--paper-3`, `--ink-1`, `--ink-2`, `--ink-3`, `--rule`, `--rule-2`, `--accent`, `--accent-soft`, `--accent-ink`; keep serif large headings, mono eyebrow labels, rounded cards, and responsive/mobile layout.
+3. Include a sticky/table-of-contents sidebar on desktop and a stacked layout on mobile so long specs are readable.
+4. Deploy review artifacts to `/usr/share/nginx/html/prds/` and verify with `curl -sI http://localhost/prd/<file>.html` returning 200. The public review link is `https://komuna.ahsanworks.com/prd/<file>.html`.
+5. Commit and push the `docs/*.html` artifact after verification.
 
 ### Vite Env Var Pitfall
 
@@ -645,6 +704,64 @@ sqlite3 sqlite.db "SELECT event_type, COUNT(*) FROM notifications GROUP BY event
 
 **Fix direction:** In `programMemberRole()`, after writing the role row, insert a `notifications` row with `event_type = 'role_assigned'` (or `manager_assigned`), `channel = 'push'` (always-on in-app), `recipient_id` set to the promoted user's id, and a descriptive title/body. For email delivery, also enqueue to a queue/email provider. The Worker API (`apps/api/src/`) has a `createNotification` pattern that can serve as a reference, but the fix must go into the Go API at `api/v1/program_handlers.go`.
 
+### Checkout Redirects Use `PUBLIC_BASE_URL`
+
+If checkout/payment success redirects users to the old IP or `/projects/komuna/...` instead of `https://komuna.ahsanworks.com`, check the root project `.env` loaded by the Go service. `api/v1/commerce_handlers.go::createXenditInvoice()` builds Xendit callback/success/failure URLs from:
+
+```go
+base := strings.TrimRight(env("PUBLIC_BASE_URL", "http://"+r.Host+"/projects/komuna"), "/")
+```
+
+Production values should be domain-root, not the old static path:
+
+```env
+PUBLIC_BASE_URL=https://komuna.ahsanworks.com
+WEB_APP_URL=https://komuna.ahsanworks.com
+```
+
+Then restart `komuna-api.service` and verify local/public health. This is backend env configuration, not a Vite basename issue when the domain HTML already injects `window.__BASENAME__="/"`.
+
+### Xendit Paid But No Voucher Issued
+
+**Symptom:** User completes Xendit checkout and lands on `/wallet?payment=success&purchaseId=...`, but the wallet shows no newly issued voucher. The DB purchase remains `pending` and `/checkout/confirm` returns `vouchers_issued: 0` even though money was transferred.
+
+**Root cause:** Komuna purchase IDs are sent to Xendit as `external_id`; they are not Xendit's invoice IDs. Calling `GET https://api.xendit.co/v2/invoices/{purchaseID}` fails validation because Xendit invoice IDs are 24-char hex strings. If `finishPurchaseCore()` relies only on that lookup, it never sees `PAID`, leaves the purchase pending, and does not insert vouchers.
+
+**Fix pattern:** In `defaultFetchXenditInvoiceStatus()`, first try direct invoice lookup only when appropriate, then fall back to querying by external ID:
+
+```go
+func defaultFetchXenditInvoiceStatus(purchaseID string) string {
+    key := firstEnv("XENDIT_SECRET_KEY", "XENDIT_SECRET")
+    if key == "" || purchaseID == "" { return "" }
+    if status := fetchXenditInvoiceStatusURL("https://api.xendit.co/v2/invoices/"+purchaseID, key); status != "" {
+        return status
+    }
+    return fetchXenditInvoiceStatusByExternalID(purchaseID, key)
+}
+
+func fetchXenditInvoiceStatusByExternalID(purchaseID, key string) string {
+    reqURL := "https://api.xendit.co/v2/invoices?external_id=" + url.QueryEscape(purchaseID)
+    // GET with Basic auth, decode []map[string]any, return lowercased out[0]["status"]
+}
+```
+
+**Recovery for affected users:** Re-run confirmation for the paid purchase after deploying the fix:
+
+```bash
+curl -sS -X POST http://127.0.0.1:8095/api/v1/checkout/confirm \
+  -H 'Content-Type: application/json' \
+  -d '{"purchaseId":"pur-..."}'
+```
+
+Then verify:
+
+```sql
+SELECT id,total_amount,status,created_at FROM purchases WHERE id='pur-...';
+SELECT id,purchase_id,product_id,status,expired_at,created_at FROM vouchers WHERE purchase_id='pur-...';
+```
+
+Expected: purchase `status='paid'` and voucher rows with `source='purchase'` / `status='active'`.
+
 ### Checkout Role Eligibility: Admins Can Buy Their Own Program Packages
 
 When asked whether an admin/manager can buy a package from their own program, the current Go checkout path allows it as long as the user has a `program_members` row for the package's program. `commerce_handlers.go::checkout()` authenticates via `requireUser`, loads the package's `program_id`, then checks only:
@@ -660,6 +777,10 @@ There is no role-based block for admins or product managers. Therefore:
 - Platform superadmin without program membership: cannot buy; checkout returns `not_a_member`.
 
 If the business rule changes to prevent self-purchase by admins/managers, the fix belongs in the Go API checkout path before inserting `purchases`, not only in frontend button visibility.
+
+### Wallet Route Canonicalization
+
+The canonical member wallet page is `/wallet`. Do not create or keep program-scoped duplicate wallet pages such as `/programs/:id/member/wallet`; the wallet is user-wide, not program-scoped. If a legacy route exists, redirect it to `/wallet` and update member dashboard/payment-return links to `/wallet`. Remove wallet from program workspace navigation if it implies a separate program wallet.
 
 ### Member Dashboard Shows Program-Wide Active Voucher Count
 
@@ -707,6 +828,34 @@ If JSON rows lack `entries` but SQL shows rows in `package_entries`, this is the
 
 **Fix pattern:** Make the list endpoint return full `PackageDTO` rows with `entries: []` at minimum, preferably by reusing a helper that loads package entries for each package. Do not hide the frontend crash with optional chaining only; the API contract says `entries` is required. Add a regression test for `GET /programs/:id/packages` asserting every package has an array `entries` field, including programs/packages with zero entries.
 
+### Package Edit/Create-Version Entry Persistence
+
+When debugging or changing the packages admin form (`apps/web/src/pages/PackagesPage.tsx`) and Go package endpoint (`api/v1/program_handlers.go::programPackages`):
+- Package edits are intentionally immutable/versioned: the frontend posts to `POST /programs/:id/packages` with `supersedesId`, then the new package should replace the old active version.
+- The backend must persist both the package header and every submitted entry in `package_entries` inside one transaction. Do not insert only `purchase_packages`; that creates a visible new package with missing entries.
+- Store `supersedes_id` and archive the superseded package server-side, not only by optimistic frontend state.
+- Preserve entry fields from the form: `productId`, `quantity`, `benefitType`, `validityType`, and `validityValue`. Missing `benefitType` currently defaults to `voucher`, so frontend subscription work must explicitly send `benefitType: 'subscription'`.
+- Regression test pattern: `POST /api/v1/programs/prog-box/packages` with `supersedesId` and one entry; assert response includes `supersedes_id`, non-empty `entries`, matching `package_id`, and old package `status='archived'`.
+
+### Package Subscription / Unlimited Quantity Planning
+
+When the user asks whether “Unlimited” means subscription, or asks for a subscription/Xendit plan:
+- Current frontend behavior uses `UNLIMITED_QTY = 999`; this is not a real subscription and should not be explained as one.
+- The durable product fix is an explicit benefit type selector (`Voucher pack` vs `Subscription access`), not inferring subscription from quantity.
+- For V1, recommend removing the ambiguous Unlimited checkbox; subscription entries should hide quantity and describe “unlimited bookings while active.”
+- Keep one-time invoice checkout and Xendit recurring subscriptions as separate billing paths. Verify Xendit’s current Recurring API before implementing; do not assume the invoice endpoint creates recurring plans.
+- Existing `subscriptions` and `voucher_claims.subscription_id` tables can support subscription claims: active subscription claims should create a claim with `subscription_id` and no voucher consumption.
+- Review-plan artifacts for this class should include open approval questions about: removing Unlimited, blocking mixed voucher/subscription packages, cancel-at-period-end policy, product-specific vs program-wide subscriptions, and immutable billing-type changes.
+
+### Admin Packages Tab Mobile Layout / Summary Cards
+
+When fixing the packages admin tab (`apps/web/src/pages/PackagesPage.tsx`) for mobile overflow or clipped form controls:
+- Prefer the smallest CSS-led patch in the same component: add stable class hooks to existing inline-styled wrappers (`packages-page`, `packages-stats`, `packages-form-card`, `packages-form-grid`, `packages-entry-card`, `packages-entry-grid`, `packages-validity-row`) and override them in the component's existing `<style>` block.
+- Desktop package statistic cards should stay in one row when there are four stats (`repeat(4, minmax(0, 1fr))`). Only override mobile to two columns per row (`repeat(2, minmax(0, 1fr))`) when requested.
+- On narrow screens, keep each package entry as two rows: product + quantity on row 1, validity rule + numeric value/unit on row 2. Do not stack every control into one column unless the user explicitly asks; it feels messy and wastes vertical space.
+- Add `box-sizing: border-box` scoped to `.packages-page` so `width: '100%'` inputs with padding do not create horizontal overflow.
+- Verify with `npm run test -- PackagesPage && env -u VITE_NEON_AUTH_URL npm run build`, deploy `apps/web/dist/`, and grep the public bundle for the package layout class markers before commit/push.
+
 ### Admin Packages Tab Blank Page
 
 **Symptom:** A program admin opens `/programs/:id/admin/packages` and the tab/page is blank. The API may still return `200 OK` for `/api/v1/programs/:id/packages`.
@@ -728,6 +877,21 @@ GROUP BY pp.id;
 ```
 
 **Fix pattern:** Make the list endpoint return the same full package DTO shape as `packageByID()` so every package has `entries: []` or populated entries. Also scan nullable `supersedes_id` with `sql.NullString`; scanning SQLite NULL into `*string`/plain string can make `packageByID()` return `nil` and hide entries. Add a Go regression test that GETs `/api/v1/programs/prog-box/packages` and asserts each item has non-nil `entries` with matching `package_id`.
+
+### Package Edit Creates New Version But Drops Entries
+
+**Symptom:** Editing an admin package creates a new package row, but the entry/product chips are empty on the new package.
+
+**Root cause:** Package edits intentionally create a new version: `PackagesPage.tsx` posts to `POST /programs/:id/packages` with `supersedesId` and `entries`. If the Go API `programPackages()` POST handler only inserts `purchase_packages` and ignores `entries`, the returned DTO has `entries: []` because no `package_entries` rows were created. If the server also ignores `supersedesId`, archival/versioning happens only optimistically in frontend state and can drift after refresh.
+
+**Fix pattern:** In the production Go API (`api/v1/program_handlers.go`), handle package creation/versioning in one DB transaction:
+1. Decode `name`, `price`, optional `supersedesId`, and submitted `entries`.
+2. Insert `purchase_packages` with `supersedes_id` set from `supersedesId`.
+3. Insert one `package_entries` row per submitted entry (`productId`, `quantity`, optional `benefitType`, `validityType`, nullable `validityValue`).
+4. If `supersedesId` is present, archive the old package server-side with `UPDATE purchase_packages SET status='archived' WHERE id=? AND program_id=?`.
+5. Commit, then return `a.packageByID(pkgID)` so the frontend receives the persisted entries.
+
+**Regression check:** Add a Go test that POSTs `/api/v1/programs/prog-box/packages` with `supersedesId` and an `entries` array, asserts the response has `supersedes_id`, one matching `entries[]` item, and that the old package is now `archived`. Run `go test ./... && go build -o ../server .`, restart `komuna-api.service`, and verify local/public health.
 
 ### Dashboard Shows "No assigned products" for Managers
 

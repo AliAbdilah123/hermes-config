@@ -340,6 +340,15 @@ When the user provides an HTML/CSS design reference and asks to redesign a page 
 - Include a concise “borrow vs preserve” section: what layout ideas come from the reference, what current theme/system behaviors stay unchanged.
 - Add an implementation gate and at least one explicit design choice if approval is needed; do not implement or deploy from the design-choice answer alone unless the user explicitly says to implement.
 
+### Profile/account tab feature proposals need existing-tab parity
+
+When the user asks for a new tab/section inside an existing profile, settings, dashboard, or account page and wants design approval first:
+- Inspect the host page/component and one nearby existing page or route that already renders similar data before writing the proposal. Name the existing tab IDs, shell/card component, theme tokens, API endpoints, and tests likely to be reused.
+- Propose the new tab in the same information architecture: sidebar order, panel shell, loading/error/empty states, and mobile behavior should explicitly mirror the current sibling tabs.
+- Include a static visual mockup inside the public HTML artifact, not only a prose plan. The mockup should use representative rows/cards and the site's visual tokens so the user can approve look and structure.
+- Keep the implementation plan frontend-only when an existing API already provides the data; call out backend/database changes only as conditional if the approved display fields are missing.
+- Add an explicit implementation gate. Approval of the design or answers to display-choice questions is not permission to implement/deploy unless the user explicitly asks for implementation.
+
 ### Existing drag/drop UI feature plans need flow preservation notes
 
 When the user asks for a plan to extend drag/drop behavior in an existing UI, inspect the current drag/drop implementation before writing the plan. Include:

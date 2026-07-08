@@ -150,6 +150,13 @@ FROM post_targets pt WHERE pt.status='PUBLISHED' ORDER BY pt.updated_at DESC LIM
 ```
 
 ### Check billing/post counts for current month
+
+When adding short-lived/test subscription plans, keep plan metadata, Xendit invoice amount lookup, `current_period_end`, subscription status identity, and frontend plan ordering in sync. See `references/subscription-one-minute-plans.md`.
+
+When a short-lived plan reaches `current_period_end` but still appears active, fix expiry in `models.SubscriptionData()` and add a global app banner that re-checks at period end. See `references/subscription-expiry-status-and-banner.md`.
+
+When a user downgrades before the current period expires and Xendit registers an invoice, keep the current active plan unchanged but persist the pending downgrade invoice and surface a global reminder with Continue/Reject actions. See `references/subscription-pending-downgrade-invoice.md`.
+
 ```bash
 sqlite3 /opt/socialzen/data/socialzen.db "
 SELECT 
@@ -196,6 +203,12 @@ cd apps/backend-go && go test ./internal/posts ./internal/comments
 ```
 
 ## Pitfalls
+
+- **Story publishing plan should not add feature flags when Meta scopes are already approved**: For SocialZen story-posting plans, do not propose `instagram_story_auto_publish` / `facebook_story_auto_publish` feature flags just because Meta endpoints need live verification. The user's workflow is to implement against approved Meta Developer scopes and test publishing in real time after implementation. Keep the launch-risk language focused on live Graph API proof, endpoint availability, user-visible errors, and fallback/manual package behavior — not an app-level feature flag gate.
+
+- **Story post scheduling implementation**: Treat `STORY` as a first-class post type, keep the existing scheduled-post lifecycle, use Instagram `media_type=STORIES` with `image_url` vs `video_url` based on actual media type, use the longer Reel/video container timeout, and make Facebook Story targets fail clearly as manual-required until endpoint proof exists. See `references/story-post-scheduling-implementation.md`.
+
+- **PRD/review HTML feedback should be patched and redeployed immediately**: When the user gives review feedback on a deployed PRD/review HTML file, update the source under `/home/ubuntu/socialzen/docs/`, copy it to `/usr/share/nginx/html/prds/socialzen/`, and verify with `curl -sI http://localhost/prd/socialzen/<file>.html | head -1`. Return the public `/prd/socialzen/...` link with a bumped cache-buster query.
 
 - **Calendar busy-day UX should reuse monthly data and preserve drag/drop**: If many posts on one date make the month grid hard to scan, add a selected-day scrollable dialog/list from the already-loaded monthly `posts` state instead of reaching for a backend change. The day popup should be wide enough for card-style rows (around `w-[min(94vw,980px)] max-w-none`) and the list body should scroll (`overflow-y-auto`, roughly `max-h-[min(76vh,760px)]`) so dates with more than 3 posts reveal the rest by scrolling. User-facing calendar post clicks should open this day list first, not jump straight to post detail; detail can remain accessible from inside the list. Use a date-number/`View all` click target, not the whole droppable cell, so `useDroppable` day cells and `useDraggable` post cards keep rescheduling behavior. See `references/calendar-day-post-list-ux.md`.
 
@@ -301,5 +314,7 @@ cd apps/backend-go && go test ./internal/posts ./internal/comments
 - **Single SQLite connection means no nested DB queries while `Rows` is open**: Because production intentionally uses `SetMaxOpenConns(1)`, any handler that iterates `rows.Next()` and calls another DB query inside the loop will self-block waiting for the only connection. This makes logged-in pages like Dashboard/Posts/Analytics hang while `/health` stays fast. Fix by reading rows into a small in-memory slice, calling `rows.Close()`, then running enrichment queries (`fetchPostMedia`, `fetchTargets`, Facebook page names, etc.). Apply the same rule to helper functions: don't `defer rows.Close()` if the function performs another query before returning; close explicitly before the next query. Regression guard: configure test DBs with `SetMaxOpenConns(1)` so nested-cursor deadlocks fail in tests instead of only production.
 
 - **Avatar not shown in Topbar/Sidebar + stale after upload**: The Topbar (`components/Topbar.tsx`) had no avatar display at all — only a title, subtitle, and Schedule button. The Sidebar user chip only showed initials, never the uploaded avatar. After fixing both to show `session?.user.avatarUrl`, the avatar still appeared stale for up to 5 minutes because `authClient.useSession()` uses a 5-minute TTL module-level cache. Fix: (1) add avatar `<img>` to Topbar (right side, next to Schedule) and Sidebar user chip, with initials gradient as fallback; (2) in SettingsPage, call `authClient.refreshSession()` after `uploadAvatar()` and `deleteAvatar()` to bust the cache immediately.
+
+- **Schedule navigation exists in multiple places**: The desktop Topbar `+ Schedule` already routes to `/app/calendar`, but the Dashboard quick-action `+ Schedule` in `pages/dashboard/DashboardPage.tsx` can drift separately. When changing Schedule/create navigation, grep for both `+ Schedule` and `/app/posts/new` across the frontend and keep intended entry points consistent. Verify the built dashboard chunk contains `/app/calendar` after deploy.
 
 - **Calendar crowded-day review UX**: If users say month calendar days with many posts are hard to inspect, keep the monthly calendar fetch and add a deliberate date/day-list dialog instead of a backend endpoint. Preserve drag/drop by making only the date number or `View all (N)` affordance clickable, not the whole droppable day cell. If the user says clicking a post in calendar should not open detail, make the small in-grid post card open the day-list dialog/card for that date; the post detail can remain reachable from the list item. Group and sort both grid-day posts and dialog posts through one shared helper (`postsByLocalDay`/`postsForLocalDay`) so the visible list is in publish-time order. The grid and dialog must use the same selected-day key; if the grid keys cells with `format(day, "yyyy-MM-dd")`, do not re-zone that selected cell date inside `postsForLocalDay`, or browser/profile timezone drift can make the popup empty while the grid shows posts. Minimal fix: `const dayKey = format(day, "yyyy-MM-dd")` in `postsForLocalDay`, while `postsByLocalDay` still groups post publish times via `format(toZonedTime(post.publishAt, userTimezone), "yyyy-MM-dd")`. Add a regression in `apps/frontend/src/lib/calendar-day.test.ts` using a browser-selected cell date such as `new Date(2026, 6, 24)` plus `America/Los_Angeles` and a UTC post that lands on that local day. See `references/calendar-day-post-list.md` and `references/calendar-selected-day-timezone-drift.md`.

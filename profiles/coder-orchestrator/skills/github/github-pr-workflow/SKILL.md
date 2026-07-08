@@ -294,16 +294,24 @@ When asked to auto-fix CI, follow this loop:
 
 ## 6. Merging
 
-### Direct local branch → `main` merge when explicitly requested
+### Direct local branch → `main`/`master` merge when explicitly requested
 
-When the user asks to "merge the current branch to main" and there is no PR requirement, use the shortest safe git path:
+When the user asks to "merge the current branch to main/master" and there is no PR requirement, use the shortest safe git path:
 
-1. Confirm repo, branch, remote, and dirty state with `git status --short --branch`, `git remote -v`, and a small log/diff stat.
+1. Confirm repo, branch, remote, and dirty state with `git status --short --branch`, `git remote -v`, and a small log/diff stat. Leave unrelated untracked files alone; report them separately instead of staging/cleaning them.
 2. If the current branch has uncommitted work that belongs to the branch, run the repo's normal verification first, then commit it on the current branch before switching.
-3. Fetch `origin main` before merging. If `fatal: couldn't find remote ref main`, confirm remote heads with `git ls-remote --heads origin`; if local `main` is intentional, proceed and create/push `origin/main` rather than stopping.
-4. `git checkout main && git merge --ff-only <current-branch>` when possible. Use a normal merge only if fast-forward is impossible and the user asked for that branch integration.
-5. `git push origin main`, then verify with `git status --short --branch`, `git rev-parse HEAD`, and `git ls-remote origin refs/heads/main`; the local and remote SHAs must match.
-6. Final response: branch merged, short SHA, verification commands passed/failed, and public link if this user's project has one.
+3. Fetch `origin <base>` before merging. If `fatal: couldn't find remote ref <base>`, confirm remote heads with `git ls-remote --heads origin`; if local `<base>` is intentional, proceed and create/push `origin/<base>` rather than stopping.
+4. If the user asks for the branch to become **a single commit** on the base branch, first verify the base is an ancestor (`git merge-base --is-ancestor origin/<base> HEAD`), create a local backup branch (`git branch backup/<branch>-before-squash HEAD`), then squash by content without losing the work:
+   ```bash
+   git reset --soft origin/<base>
+   git commit -m "feat: concise summary"
+   git checkout <base>
+   git merge --ff-only <branch>
+   ```
+   This produces one new commit on `<base>` while preserving a recoverable pre-squash ref locally. Do not include unrelated untracked files that were not part of the branch.
+5. If no squash was requested, `git checkout <base> && git merge --ff-only <current-branch>` when possible. Use a normal merge only if fast-forward is impossible and the user asked for that branch integration.
+6. `git push origin <base>`, then verify with `git status --short --branch`, `git rev-parse HEAD`, and `git ls-remote origin refs/heads/<base>`; the local and remote SHAs must match.
+7. Final response: branch merged, short SHA, verification commands passed/failed, any backup branch created for a squash, and public link if this user's project has one.
 
 **With gh:**
 
