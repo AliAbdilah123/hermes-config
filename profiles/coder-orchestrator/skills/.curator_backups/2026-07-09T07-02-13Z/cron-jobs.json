@@ -1,0 +1,49 @@
+{
+  "jobs": [
+    {
+      "id": "78a6ad66b2f9",
+      "name": "daily-discord-auto-thread-summary",
+      "prompt": "Prepare the daily Discord server auto-thread report for guild 1497600893833445578.\n\nUse the injected script output as the only source of Discord activity. The script reads the current coder-orchestrator Discord allowed_channels config every run, fetches human messages from auto-created threads/direct allowed thread IDs in the last 24 hours, and returns JSON with per-thread messages, timestamps, and counts.\n\nWrite a concise report with:\n1. Title: Daily Discord Auto-Thread Summary \u2014 <date>\n2. Total human messages and active threads.\n3. Message counts by human participant, including time range if visible from timestamps.\n4. Topic summaries grouped by thread. Include thread name, parent channel if available, message count, participants, time span, and 1-3 bullet summary of the topic.\n5. Threads needing attention / open questions, only if evident from messages.\n\nDo not include bot messages. Do not invent details. If there is no activity, say there were no human messages in the reporting window.",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": "discord_auto_thread_daily.py",
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * *",
+        "display": "0 9 * * *"
+      },
+      "schedule_display": "0 9 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 7
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-07-03T06:35:30.624329+00:00",
+      "next_run_at": "2026-07-09T09:00:00+00:00",
+      "last_run_at": "2026-07-08T09:01:45.268143+00:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": {
+        "platform": "discord",
+        "chat_id": "1510328175912161533",
+        "chat_name": "aliabdilah",
+        "thread_id": null
+      },
+      "enabled_toolsets": [
+        "terminal"
+      ],
+      "workdir": "/home/ubuntu/.hermes/profiles/coder-orchestrator/scripts"
+    }
+  ],
+  "updated_at": "2026-07-08T09:01:45.268664+00:00"
+}

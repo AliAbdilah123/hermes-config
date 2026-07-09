@@ -315,6 +315,7 @@ When a React/Vite page shows a runtime collection error such as `t.filter is not
 - Fix with a small typed response normalizer/unwrap helper at the API consumption boundary, or with a backend DTO contract fix, not by hiding the symptom with optional chaining around array methods.
 - Add a regression test whose mock uses the real API envelope shape that previously failed, including empty-result cases (`items: []`, not `null`).
 - Verify the targeted test, build/typecheck, and if deployed, fetch the served bundle/API to confirm the deployed artifact includes the normalizer and the endpoint shape is understood.
+- For create/edit form regressions, verify the full field round trip: payload key → backend decode → database write → query select/scan → DTO key → edit hydration. See `references/frontend-envelope-form-contract-regressions.md`.
 
 **Variant: Zod validator field mismatch → silent button failure.** When CRUD toggle buttons appear to work (optimistic UI updates) but the backend never receives the change, with no console or network errors: compare the frontend payload field names against the backend Zod schema. Zod silently strips unknown fields by default. Match field names or switch to the correct endpoint. See `references/zod-validator-field-mismatch.md` for detection and fix patterns.
 

@@ -16,6 +16,10 @@ metadata:
 
 Operational tasks for the Komuna project's Go+SQLite API at `/home/ubuntu/projects/komuna/`. Covers safe database state management, seeding, account recovery, service lifecycle, and deployment verification.
 
+## Reference playbooks
+
+- `references/slug-link-audit.md` — use when canonical program/product slugs exist in the API but the website still shows old internal IDs such as `prog-yoga` or `prod-yoga-sv`; covers frontend route-builder and DTO audit hotspots.
+
 ## Service Management
 
 ```bash
@@ -243,9 +247,31 @@ When fixing or adding program admin management pages (overview, members, product
 
 ### Session Template / Activation UI Placement
 
-When implementing or adjusting session template generation/activation in Komuna, put admin-facing template and activation controls inside the existing program detail **Sessions** tab (`apps/web/src/pages/dashboard/SessionsTab.tsx`) rather than standalone pages or the admin dashboard overview. Keep separate route components embeddable (`embedded` prop) if useful, but render the primary UI as sub-tabs/buttons inside Sessions so it follows the dashboard information architecture.
+When implementing or adjusting session template generation/activation in Komuna, put admin-facing template and activation controls inside the existing program detail **Sessions** tab (`apps/web/src/pages/dashboard/SessionsTab.tsx`) rather than standalone pages or the admin dashboard overview. Keep separate route components embeddable (`embedded` prop) if useful, but render the primary UI inside Sessions so it follows the dashboard information architecture.
 
-Theme pitfall: do not introduce dark custom cards or one-off visual language. Use existing dashboard tokens and structure: `var(--paper-1)`, `var(--ink-1)`, `var(--ink-3)`, `var(--rule)`, serif headings, mono eyebrow labels, rounded `10px` cards, and mobile stacked cards/full-width actions. Verify with `npm run build`, `go build -o ../server .`, restart `komuna-api.service`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, and confirm the public JS bundle contains `Session templates` / `Activation`.
+Before coding, actually read the approved review artifacts under `docs/*session*` / the public `/prd/...` links the user references. Do not implement from memory or from a nearby standalone page if the artifact says a different page; this user treats that as a serious workflow failure.
+
+Current intended admin Sessions-tab behavior:
+- The template schedule is UI-only until activation. Build the visible rows from `session_templates.weekly_slots` by finding upcoming calendar dates whose weekday matches `day_of_week`.
+- Show **only upcoming** rows; do not show ended sessions in this admin UI.
+- Always show the closest 5 upcoming template dates per session product, sorted nearest-to-latest.
+- Activating one template row should create/save the real `sessions` row for that date/time (if missing), then mark it active so members in the program can see/join it.
+- Existing saved sessions should be matched back to the same template date/time so booked counts, active state, QR, and attendance detail attach to the right row.
+- Deactivation still needs the warning CTA and cancellation/refund/notification behavior for booked members.
+
+Theme pitfall: do not introduce dark custom cards or one-off visual language. Use existing dashboard tokens and structure: `var(--paper-1)`, `var(--ink-1)`, `var(--ink-3)`, `var(--rule)`, serif headings, mono eyebrow labels, rounded `10px` cards, and mobile stacked cards/full-width actions. Verify with `npm run build`, `go build -o ../server .`, restart `komuna-api.service`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, and confirm the public JS bundle contains stable markers for the intended Sessions-tab behavior.tion architecture.
+
+Before coding, actually read the approved review artifacts under `docs/*session*` / the public `/prd/...` links the user references. Do not implement from memory or from a nearby standalone page if the artifact says a different page; this user treats that as a serious workflow failure.
+
+Current intended admin Sessions-tab behavior:
+- The template schedule is UI-only until activation. Build the visible rows from `session_templates.weekly_slots` by finding upcoming calendar dates whose weekday matches `day_of_week`.
+- Show **only upcoming** rows; do not show ended sessions in this admin UI.
+- Always show the closest 5 upcoming template dates per session product, sorted nearest-to-latest.
+- Activating one template row should create/save the real `sessions` row for that date/time (if missing), then mark it active so members in the program can see/join it.
+- Existing saved sessions should be matched back to the same template date/time so booked counts, active state, QR, and attendance detail attach to the right row.
+- Deactivation still needs the warning CTA and cancellation/refund/notification behavior for booked members.
+
+Theme pitfall: do not introduce dark custom cards or one-off visual language. Use existing dashboard tokens and structure: `var(--paper-1)`, `var(--ink-1)`, `var(--ink-3)`, `var(--rule)`, serif headings, mono eyebrow labels, rounded `10px` cards, and mobile stacked cards/full-width actions. Verify with `npm run build`, `go build -o ../server .`, restart `komuna-api.service`, deploy `apps/web/dist/` to `/var/www/html/projects/komuna/`, and confirm the public JS bundle contains stable markers for the intended Sessions-tab behavior.
 
 ### Public Sessions Page Layout Corrections
 
@@ -867,8 +893,13 @@ When the user reports the Products tab **Manage** CTA opens the public/showcase 
 - Current broken pattern to look for: a row action rendered as a React Router `Link` with `data-testid="manage-link"` pointing to `/programs/${programId}/products/${product.id}`. That route is the public product detail/showcase page, not an admin edit form.
 - A functional fix is not label-only. Replace the CTA with an **Edit** button that stays on the admin Products tab, sets an explicit edit mode (`editingProductId` or equivalent), prefills the existing form state, uses the `editHeading`, and submits via an update endpoint.
 - Check the production Go API (`api/v1/program_handlers.go::programProducts`) before promising persistence. If it only supports GET list/detail, POST create, archive/unarchive, sessions, and template routes, add a product update route such as `PUT /api/v1/programs/:programId/products/:productId` with validation and a response from `a.productByID(realProductID, true)`.
-- Regression tests should cover both layers: frontend test clicks the row Edit CTA, asserts no navigation to `/programs/:id/products/:productId`, sees a prefilled edit form, saves via `apiClient.put`, and updates the row; Go test sends PUT and verifies SQLite persistence after refresh.
+- Keep product edit schema-safe by default: for weekly schedules, reuse/upsert the existing `session_templates(product_id, weekly_slots)` row instead of adding product-table columns unless the plan explicitly requires a new column/table. Use `INSERT ... ON CONFLICT(product_id) DO UPDATE` after validating slots, and avoid any `DROP TABLE`, `DELETE FROM`, `TRUNCATE`, or DB-file replacement.
+- Before deployment, run a destructive-SQL diff scan and a live DB shape/count check. The live DB is `/home/ubuntu/projects/komuna/sqlite.db`; `api/v1/sqlite.db` can be an empty/local artifact and may not contain production tables. Example checks: `git diff -- . ':(exclude).hermes/plans/*' ':(exclude)docs/*' | grep -Ei 'drop table|delete from|truncate|alter table|create table|sqlite.db|rm -rf' || true` and `sqlite3 /home/ubuntu/projects/komuna/sqlite.db "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('products','session_templates'); SELECT count(*) FROM products;"`.
+- Regression tests should cover both layers: frontend test clicks the row Edit CTA, asserts no navigation to `/programs/:id/products/:productId`, sees a prefilled edit form, saves via `apiClient.put`, and updates the row; Go test sends PUT and verifies SQLite persistence after refresh. If only a frontend regression is added, still run `go test ./...`, `go build -o ../server .`, `npm run test -- ProductsPage`, and `env -u VITE_NEON_AUTH_URL npm run build`.
 - If the user explicitly asks for a design/plan first when no working edit form exists, stop after publishing the plan/review artifact and wait for approval; do not implement/deploy from the investigation alone.
+- For product time schedules, make the spec explicit that weekly schedule entries belong in the product create form and edit form, are persisted in the database (not just frontend state), and are validated on both frontend and backend. If the agreed UI uses schedule entries/rows, allow one row to select multiple weekdays when they share the same start/end time, then flatten that row to one `weekly_slots` item per weekday in the API payload. A weekday selected in any row must be disabled/blocked in every other row for the same product unless the user later approves multiple time slots per day. In edit mode, group persisted weekly slots with the same start/end time back into one multi-day row so the UI matches the plan. Validate weekly slots fully before updating the product row so duplicate/invalid schedules cannot leave a partial product edit behind. Prefer the existing `session_templates(product_id, weekly_slots)` upsert over new schema unless the plan explicitly approves a new table/column.
+- Product create/edit manager assignment rule: every product must have at least one active program member manager selected in the form. Persist assignments in both `product_managers` and product-scoped `program_member_roles(role='manager', product_id=...)`; `/programs/:id/products` and product detail DTOs should return `manager_ids` so edit forms can preselect current managers. Backend create/update should reject empty `managerIds` with `manager_required` and validate each selected user has an active `program_members` row for that program before inserting the product or committing product edits. Use one transaction for product row + manager rows + weekly template upsert so validation failures do not leave partial products/templates. For existing live products without managers, back up `sqlite.db` and backfill only when a program has an active admin/member available; report any remaining products whose programs have no assignable member instead of inventing placeholder users.
+- When the user approves spec answers or asks for implementation after a design-review loop, update only the implementation/spec files needed for that task. Do **not** redraw or republish design artifacts unless the user explicitly asks for design changes; this user treats unrequested design-page changes as regressions.
 
 ### Package Edit/Create-Version Entry Persistence
 
@@ -879,15 +910,27 @@ When debugging or changing the packages admin form (`apps/web/src/pages/Packages
 - Preserve entry fields from the form: `productId`, `quantity`, `benefitType`, `validityType`, and `validityValue`. Missing `benefitType` currently defaults to `voucher`, so frontend subscription work must explicitly send `benefitType: 'subscription'`.
 - Regression test pattern: `POST /api/v1/programs/prog-box/packages` with `supersedesId` and one entry; assert response includes `supersedes_id`, non-empty `entries`, matching `package_id`, and old package `status='archived'`.
 
-### Package Subscription / Unlimited Quantity Planning
+### Package Subscription / Entitlement Implementation
 
-When the user asks whether “Unlimited” means subscription, or asks for a subscription/Xendit plan:
-- Current frontend behavior uses `UNLIMITED_QTY = 999`; this is not a real subscription and should not be explained as one.
-- The durable product fix is an explicit benefit type selector (`Voucher pack` vs `Subscription access`), not inferring subscription from quantity.
-- For V1, recommend removing the ambiguous Unlimited checkbox; subscription entries should hide quantity and describe “unlimited bookings while active.”
-- Keep one-time invoice checkout and Xendit recurring subscriptions as separate billing paths. Verify Xendit’s current Recurring API before implementing; do not assume the invoice endpoint creates recurring plans.
-- Existing `subscriptions` and `voucher_claims.subscription_id` tables can support subscription claims: active subscription claims should create a claim with `subscription_id` and no voucher consumption.
-- Review-plan artifacts for this class should include open approval questions about: removing Unlimited, blocking mixed voucher/subscription packages, cancel-at-period-end policy, product-specific vs program-wide subscriptions, and immutable billing-type changes.
+When implementing subscription package entries in Komuna:
+- Keep `Package` and `Voucher` separate: packages are sellable containers, vouchers are one redeemable benefit type. A subscription entry should create a `subscriptions` row, not a special voucher row.
+- Admin package UI should send explicit `benefitType: 'voucher' | 'subscription'`. Do not infer subscription from the old `UNLIMITED_QTY = 999` checkbox; hide/disable quantity for subscription entries and persist quantity as `1`.
+- Paid checkout issuance belongs in `api/v1/commerce_handlers.go::finishPurchaseCore()`: for each paid `package_entries` row, create vouchers for `benefit_type='voucher'` and create one product-specific `subscriptions` entitlement for `benefit_type='subscription'`. Include `subscriptions_issued` in `/checkout/confirm` by counting `subscriptions.purchase_id`.
+- Booking fallback belongs in `api/v1/booking_handlers.go::createClaim()`: try FIFO active vouchers first; if none match, find an active `subscriptions` row for the same `product_id` and current user, then insert `voucher_claims(subscription_id, session_id, claimant_id, created_at)` without consuming a voucher.
+- SQLite live schema pitfall: current `voucher_claims.attendance_status` CHECK allows only `present`/`absent` (or NULL). For new subscription claims, omit `attendance_status` in the INSERT and return synthetic JSON with `attendance_status: 'pending'` to the frontend. Do not insert literal `'pending'` unless the live schema has been migrated.
+- Wallet subscriptions should be returned from `/wallet` alongside voucher pockets. Keep cancellation on canonical `/wallet`, with a user-scoped endpoint like `POST /wallet/subscriptions/:id/cancel` that updates only subscriptions owned by the authenticated user's `program_members` rows.
+- Regression test pattern: create a paid purchase containing a subscription package entry, assert `finishPurchaseCore()` creates one `subscriptions` row and zero vouchers, then POST `/claims` for a matching session and assert `voucher_claims.subscription_id` is populated; also test wallet cancellation changes status to `cancelled`.
+- Review-plan artifacts for this class should include open approval questions about: cancel-at-period-end policy vs immediate cancellation, renewal/payment retry behavior, product-specific vs program-wide subscriptions, and immutable billing-type changes.
+
+### Admin Packages Visibility / Archive Toggle
+
+When changing admin package list visibility in `apps/web/src/pages/PackagesPage.tsx`:
+- Archived packages should be hidden by default when the user asks for the package list to focus on current sellable packages.
+- Use a simple boolean toggle such as **Show archived packages** instead of a three-state status filter unless the user explicitly asks for filtering by status.
+- Keep active packages at the top by sorting visible rows with active rows before archived rows; preserve the rest of the existing order where possible.
+- After archiving an active package, it should disappear from the default list immediately; when the toggle is on, archived rows remain visible with their archived badge/unarchive action.
+- Update `apps/web/src/__tests__/PackagesPage.test.tsx` expectations: default row count excludes archived rows, toggling shows archived rows, archive action removes the row from default view, and edit/versioning tests should toggle archived visibility before asserting the superseded package row.
+- Verify with `npm run test -- PackagesPage && npm run build`, deploy `apps/web/dist/`, then confirm the public bundle contains the toggle label before commit/push.
 
 ### Admin Packages Tab Mobile Layout / Summary Cards
 

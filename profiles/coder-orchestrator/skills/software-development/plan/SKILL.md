@@ -48,7 +48,7 @@ Minimum expectations:
 - Standalone styled HTML with readable typography, table of contents for long plans, responsive layout, styled code blocks, and a dark-theme-first visual design.
 - Include a working light/dark mode toggle in every plan/review HTML artifact. Default to dark mode, persist the user's choice with `localStorage`, and keep the artifact readable without external JS/CSS.
 - When a task needs both an implementation plan and UI/design visualization, publish them as **separate pages**: one plan page for implementation tasks and one design page for static visual mockups. Cross-link the two pages. Do not combine long task plans and visual mockups into one overloaded page.
-- Match the reviewed project's actual visual system in design artifacts. Inspect the current page/components/CSS first, then reuse the app's layout pattern, tokens, typography, spacing, and navigation reality. Do not invent a sidebar/topbar/shell that the current page does not have.
+- Match the reviewed project's actual visual system in design artifacts. Inspect the current page/components/CSS first, then reuse the app's layout pattern, tokens, typography, spacing, and navigation reality. Do not invent a sidebar/topbar/shell that the current page does not have. See `references/ui-redesign-review-artifacts.md` for the detailed checklist and pitfalls.
 - Store under the relevant project path when known, e.g. `<project path>/docs/<slug>.html`.
 - Publish it at the project's public domain PRD path (for Komuna, `https://komuna.ahsanworks.com/prd/<name>.html`) via the web server PRD symlink directory; avoid raw IP links unless the user explicitly asks for them.
 - Verify local/public HTTP 200 before finalizing.
@@ -87,6 +87,7 @@ Use the `claude-design` skill/reference workflow for the publication mechanics.
 - When the user asks to "ask clarifying questions as you go" but also requests a reviewable plan/design before implementation, include a visible **Open Questions for Approval** section in both the markdown plan and HTML review artifact. Ask only the questions that block design approval; do not interrupt with low-stakes questions before producing the review artifact.
 - If the user asks not to implement until approval, add an explicit **Implementation Gate** section to the plan/artifact and final response. Do not treat plan approval, route-label answers, or design-choice answers as deployment permission unless the user explicitly says to implement.
 - If the user corrects the proposed design or answers design options, update the plan/review artifact and wait for explicit implementation/deployment instruction; do not treat design-choice answers as permission to deploy.
+- If the user says a previous design was better or approves a visual style, preserve that design as the baseline. When later requirements are textual/spec-level, update the plan first and add only minimal callouts/labels/disabled states to the design page; do not rewrite the design page from scratch.
 - For mobile/UI design work, when the user says the design is not visible or unchanged, update and republish the styled review artifact first; do not silently patch or deploy the app. Provide the public review URL and explicitly state whether it is a static design preview or the live site.
 - After saving the plan, reply briefly with what you planned and the saved path.
 

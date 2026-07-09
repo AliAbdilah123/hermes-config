@@ -12,7 +12,7 @@ PRD/docs HTML: deploy to /usr/share/nginx/html/prds/ (nginx /prd/ alias), set 64
 §
 When implementing a new project, start from scratch — copy or use the boilerplate project as a clean slate unless the user explicitly specifies otherwise. Do not try to retrofit or evolve an existing unrelated project into the new one.
 §
-Discord project defaults: #p-komuna=Komuna at /home/ubuntu/projects/komuna/; #p-socialzen=SocialZen at /home/ubuntu/socialzen/; #p-share-expense and its threads=share-expense at public link shareexpense.ahsanworks.com unless stated otherwise. Channel context is the primary signal; verify channel/thread and load the matching project skill before project work.
+Discord project defaults: #p-komuna=Komuna at /home/ubuntu/projects/komuna/; #p-socialzen=/home/ubuntu/socialzen/; #p-share-expense=shareexpense.ahsanworks.com. Use channel/thread as primary signal; verify and load matching project skill before project work. Komuna subscription model: Package sells; Voucher redeems; SubscriptionEntitlement is renewable one-product access; VoucherClaim records usage; multi-product bundles grant multiple entitlements; cancel/manage in Wallet.
 §
 Discord #p-selfflow project public link: https://selfflow.ahsanworks.com (not /projects/self-flow/).
 §
