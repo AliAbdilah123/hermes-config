@@ -860,6 +860,16 @@ If JSON rows lack `entries` but SQL shows rows in `package_entries`, this is the
 
 **Fix pattern:** Make the list endpoint return full `PackageDTO` rows with `entries: []` at minimum, preferably by reusing a helper that loads package entries for each package. Do not hide the frontend crash with optional chaining only; the API contract says `entries` is required. Add a regression test for `GET /programs/:id/packages` asserting every package has an array `entries` field, including programs/packages with zero entries.
 
+### Admin Products Tab Edit CTA / Missing Edit Form
+
+When the user reports the Products tab **Manage** CTA opens the public/showcase product page, or asks whether product editing already exists:
+- First inspect `apps/web/src/pages/ProductsPage.tsx` before implementing. The page may already contain a full **create** form and unused i18n edit strings (`admin.products.editHeading`), but that is not evidence of a working edit flow.
+- Current broken pattern to look for: a row action rendered as a React Router `Link` with `data-testid="manage-link"` pointing to `/programs/${programId}/products/${product.id}`. That route is the public product detail/showcase page, not an admin edit form.
+- A functional fix is not label-only. Replace the CTA with an **Edit** button that stays on the admin Products tab, sets an explicit edit mode (`editingProductId` or equivalent), prefills the existing form state, uses the `editHeading`, and submits via an update endpoint.
+- Check the production Go API (`api/v1/program_handlers.go::programProducts`) before promising persistence. If it only supports GET list/detail, POST create, archive/unarchive, sessions, and template routes, add a product update route such as `PUT /api/v1/programs/:programId/products/:productId` with validation and a response from `a.productByID(realProductID, true)`.
+- Regression tests should cover both layers: frontend test clicks the row Edit CTA, asserts no navigation to `/programs/:id/products/:productId`, sees a prefilled edit form, saves via `apiClient.put`, and updates the row; Go test sends PUT and verifies SQLite persistence after refresh.
+- If the user explicitly asks for a design/plan first when no working edit form exists, stop after publishing the plan/review artifact and wait for approval; do not implement/deploy from the investigation alone.
+
 ### Package Edit/Create-Version Entry Persistence
 
 When debugging or changing the packages admin form (`apps/web/src/pages/PackagesPage.tsx`) and Go package endpoint (`api/v1/program_handlers.go::programPackages`):

@@ -47,6 +47,8 @@ For this user, a plan or document produced for review should not remain markdown
 Minimum expectations:
 - Standalone styled HTML with readable typography, table of contents for long plans, responsive layout, styled code blocks, and a dark-theme-first visual design.
 - Include a working light/dark mode toggle in every plan/review HTML artifact. Default to dark mode, persist the user's choice with `localStorage`, and keep the artifact readable without external JS/CSS.
+- When a task needs both an implementation plan and UI/design visualization, publish them as **separate pages**: one plan page for implementation tasks and one design page for static visual mockups. Cross-link the two pages. Do not combine long task plans and visual mockups into one overloaded page.
+- Match the reviewed project's actual visual system in design artifacts. Inspect the current page/components/CSS first, then reuse the app's layout pattern, tokens, typography, spacing, and navigation reality. Do not invent a sidebar/topbar/shell that the current page does not have.
 - Store under the relevant project path when known, e.g. `<project path>/docs/<slug>.html`.
 - Publish it at the project's public domain PRD path (for Komuna, `https://komuna.ahsanworks.com/prd/<name>.html`) via the web server PRD symlink directory; avoid raw IP links unless the user explicitly asks for them.
 - Verify local/public HTTP 200 before finalizing.
@@ -69,10 +71,11 @@ If not, create a sensible timestamped filename yourself under `.hermes/plans/`.
 For this user, a plan intended for review should not remain markdown-only. After saving the markdown plan:
 
 1. Render a styled, readable HTML version with a table of contents and code-block styling.
-2. Store the canonical HTML under the relevant project path at `docs/<name>.html` when a project path exists.
+2. If the work includes UI/design approval, render the plan and the design/mockup as separate HTML pages, e.g. `docs/<slug>-plan.html` and `docs/<slug>-design.html`, with cross-links.
+3. Store the canonical HTML under the relevant project path at `docs/<name>.html` when a project path exists.
 - Publish it at the project's public domain PRD path (for Komuna, `https://komuna.ahsanworks.com/prd/<name>.html`) via the web server PRD symlink directory; avoid raw IP links unless the user explicitly asks for them.
 - Verify local/public HTTP 200 before finalizing.
-5. If the user answers open questions in the plan, update both the markdown plan and the public HTML before implementing.
+5. If the user answers open questions in the plan, update the markdown plan and all relevant public HTML pages before implementing.
 
 Use the `claude-design` skill/reference workflow for the publication mechanics.
 
@@ -341,6 +344,16 @@ When the user provides an HTML/CSS design reference and asks to redesign a page 
 - Include a concise “borrow vs preserve” section: what layout ideas come from the reference, what current theme/system behaviors stay unchanged.
 - Add an implementation gate and at least one explicit design choice if approval is needed; do not implement or deploy from the design-choice answer alone unless the user explicitly says to implement.
 
+### UI redesign plans need separate plan and design pages
+
+When the user asks for a UI redesign plan, produce two separate public review pages by default:
+- **Plan page**: implementation scope, file paths, task sequence, tests, risks, open questions, implementation gate.
+- **Design page**: static visual mockup/prototype, interaction states, responsive states, and visual rationale.
+
+Before authoring the design page, inspect the current app UI enough to avoid false structure. If the current page has no sidebar, the mockup must not show a sidebar. Reuse the project's actual theme tokens, typography, border radii, spacing, page width, and navigation pattern. The design page should look like the product being redesigned, not like a generic docs template.
+
+Cross-link the pages prominently. Keep the plan page readable as a plan; keep the design page focused on visualization.
+
 ### Profile/account tab feature proposals need existing-tab parity
 
 When the user asks for a new tab/section inside an existing profile, settings, dashboard, or account page and wants design approval first:
@@ -349,6 +362,16 @@ When the user asks for a new tab/section inside an existing profile, settings, d
 - Include a static visual mockup inside the public HTML artifact, not only a prose plan. The mockup should use representative rows/cards and the site's visual tokens so the user can approve look and structure.
 - Keep the implementation plan frontend-only when an existing API already provides the data; call out backend/database changes only as conditional if the approved display fields are missing.
 - Add an explicit implementation gate. Approval of the design or answers to display-choice questions is not permission to implement/deploy unless the user explicitly asks for implementation.
+
+### Admin dashboard operations-tab plans need cross-role reuse and state-machine detail
+
+When the user asks for a plan to redesign/add an admin dashboard operations tab that overlaps with manager/operator workflows (sessions, attendance, approvals, QR/check-in, bookings):
+- Inspect the admin shell/nav/route and the closest existing role-specific implementation before writing the plan. Name the exact reusable components, adapter/mapping functions, API client methods, and route/controller endpoints already present.
+- Prefer reusing role-specific components behind small props/adapters (for example disabling actions, relabeling status text, changing grouping) over rebuilding tables/cards. Call out the reuse target explicitly in the plan and mockup.
+- Model time-sensitive behavior as a small state machine in the plan: inactive, upcoming, active/in-window, ended/finalized, locked/revoked. State which CTAs and mutations are enabled in each state and which timestamp/timezone source controls logic versus display.
+- For program-level admin views that aggregate product-level manager data, plan the frontend-first path using existing endpoints, then add a conditional compact admin aggregation endpoint only if N+1 calls or role-scope auth makes reuse impractical.
+- The public HTML review artifact should include a static visual mockup with the operational states represented (default inactive rows, an active expanded row, QR/window state, and a locked/completed example), not just the target prose.
+- Include open questions for destructive or policy choices (for example deactivate support, label wording, adding a QR dependency), but keep implementation gated until explicit approval.
 
 ### Existing drag/drop UI feature plans need flow preservation notes
 
