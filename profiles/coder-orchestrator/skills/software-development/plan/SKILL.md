@@ -325,6 +325,15 @@ git commit -m "type: description"
 
 ## Common Mistakes
 
+### Bug-fix plans must start with the user's problem ledger
+
+When the user asks for a plan before fixing bugs, especially with "write down the problems" or "don't implement before approval":
+- Add a visible **Problems captured from the request** section near the top of both the markdown plan and public HTML artifact.
+- Preserve the user's concrete complaint wording where useful, but translate it into actionable product risks (for example: misleading purchase surface, oversized layout, CTA route mismatch).
+- Do read-only inspection only: code search, file reads, screenshots, existing tests. Do not edit app behavior, commit, deploy, or run mutating commands.
+- Include **Current evidence from code inspection** separately from the problem ledger so symptoms, evidence, and proposed fixes do not blur together.
+- End with an explicit **Implementation Gate** stating that approval of the plan/review artifact is not implementation permission unless the user explicitly says to implement.
+
 ### Mobile/responsive UI fix plans need concrete viewport strategy
 
 When the user asks for a design plan before fixing a responsive/mobile UI bug, make the review artifact useful as an approval surface rather than a generic task list. Inspect the relevant components first, then include:

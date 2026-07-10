@@ -289,14 +289,14 @@
     "archived_at": null,
     "created_at": "2026-06-18T15:29:18.028685+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-07-09T14:23:38.944101+00:00",
-    "last_used_at": "2026-07-09T14:16:32.433417+00:00",
-    "last_viewed_at": "2026-07-09T14:16:32.424313+00:00",
-    "patch_count": 326,
+    "last_patched_at": "2026-07-10T07:59:47.814528+00:00",
+    "last_used_at": "2026-07-10T07:53:06.468079+00:00",
+    "last_viewed_at": "2026-07-10T07:53:06.462567+00:00",
+    "patch_count": 332,
     "pinned": false,
     "state": "active",
-    "use_count": 261,
-    "view_count": 259
+    "use_count": 266,
+    "view_count": 264
   },
   "gif-search": {
     "archived_at": null,
@@ -511,13 +511,13 @@
     "created_at": "2026-06-30T14:31:15.866559+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-04T06:04:32.282897+00:00",
-    "last_used_at": "2026-07-09T03:33:51.800096+00:00",
-    "last_viewed_at": "2026-07-09T03:33:51.793596+00:00",
+    "last_used_at": "2026-07-10T05:47:44.613933+00:00",
+    "last_viewed_at": "2026-07-10T05:47:44.610177+00:00",
     "patch_count": 4,
     "pinned": false,
     "state": "active",
-    "use_count": 14,
-    "view_count": 14
+    "use_count": 15,
+    "view_count": 15
   },
   "kanban-worker": {
     "archived_at": null,
@@ -549,27 +549,27 @@
     "archived_at": null,
     "created_at": "2026-07-01T15:54:16.069086+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-07-09T14:42:36.232814+00:00",
-    "last_used_at": "2026-07-09T14:17:40.127655+00:00",
-    "last_viewed_at": "2026-07-09T14:17:40.123134+00:00",
-    "patch_count": 107,
+    "last_patched_at": "2026-07-10T08:21:56.817556+00:00",
+    "last_used_at": "2026-07-10T08:17:03.715040+00:00",
+    "last_viewed_at": "2026-07-10T08:17:03.710185+00:00",
+    "patch_count": 119,
     "pinned": false,
     "state": "active",
-    "use_count": 126,
-    "view_count": 126
+    "use_count": 137,
+    "view_count": 137
   },
   "komuna-responsive-review-artifacts": {
     "archived_at": null,
     "created_at": "2026-07-08T02:02:01.580009+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-08T05:33:12.743385+00:00",
-    "last_used_at": "2026-07-09T07:18:12.973625+00:00",
-    "last_viewed_at": "2026-07-09T07:18:12.964484+00:00",
+    "last_used_at": "2026-07-10T03:54:50.151464+00:00",
+    "last_viewed_at": "2026-07-10T03:54:50.145891+00:00",
     "patch_count": 4,
     "pinned": false,
     "state": "active",
-    "use_count": 4,
-    "view_count": 4
+    "use_count": 5,
+    "view_count": 5
   },
   "llama-cpp": {
     "archived_at": null,
@@ -809,14 +809,14 @@
     "archived_at": null,
     "created_at": "2026-06-26T16:43:38.243882+00:00",
     "created_by": null,
-    "last_patched_at": "2026-07-09T03:25:37.238150+00:00",
-    "last_used_at": "2026-07-09T14:36:41.914030+00:00",
-    "last_viewed_at": "2026-07-09T14:36:41.909826+00:00",
-    "patch_count": 32,
+    "last_patched_at": "2026-07-10T03:58:55.069386+00:00",
+    "last_used_at": "2026-07-10T06:52:03.680686+00:00",
+    "last_viewed_at": "2026-07-10T06:52:03.676752+00:00",
+    "patch_count": 33,
     "pinned": false,
     "state": "active",
-    "use_count": 97,
-    "view_count": 96
+    "use_count": 102,
+    "view_count": 101
   },
   "polymarket": {
     "archived_at": null,
@@ -836,13 +836,13 @@
     "created_at": "2026-06-30T06:45:10.588526+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-09T14:17:36.278599+00:00",
-    "last_viewed_at": "2026-07-09T14:17:36.271521+00:00",
+    "last_used_at": "2026-07-10T08:17:03.703131+00:00",
+    "last_viewed_at": "2026-07-10T08:17:03.696547+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 80,
-    "view_count": 80
+    "use_count": 88,
+    "view_count": 88
   },
   "popular-web-designs": {
     "archived_at": null,
@@ -1005,13 +1005,13 @@
     "created_at": "2026-07-02T15:58:52.225903+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-09T12:49:08.518568+00:00",
-    "last_used_at": "2026-07-10T01:58:29.505775+00:00",
-    "last_viewed_at": "2026-07-10T01:58:29.501814+00:00",
+    "last_used_at": "2026-07-10T08:59:31.247716+00:00",
+    "last_viewed_at": "2026-07-10T08:59:31.243614+00:00",
     "patch_count": 109,
     "pinned": false,
     "state": "active",
-    "use_count": 108,
-    "view_count": 108
+    "use_count": 112,
+    "view_count": 112
   },
   "software-engineering/full-stack-feature-implementation": {
     "archived_at": null,
@@ -1070,13 +1070,13 @@
     "created_at": "2026-06-22T07:20:34.959663+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-09T07:04:38.207337+00:00",
-    "last_used_at": "2026-07-09T14:17:36.263592+00:00",
-    "last_viewed_at": "2026-07-09T14:17:36.256616+00:00",
+    "last_used_at": "2026-07-10T08:59:34.301183+00:00",
+    "last_viewed_at": "2026-07-10T08:59:34.297391+00:00",
     "patch_count": 105,
     "pinned": false,
     "state": "active",
-    "use_count": 144,
-    "view_count": 144
+    "use_count": 152,
+    "view_count": 152
   },
   "teams-meeting-pipeline": {
     "archived_at": null,
