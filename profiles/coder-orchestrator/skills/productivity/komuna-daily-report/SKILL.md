@@ -148,6 +148,16 @@ Sessions in the daily report session itself (the `komuna-daily-report` skill inv
 
 Cross-reference session IDs: if the same session appears in multiple searches, it's the same work — don't double-count it as multiple items.
 
+### Commit Cross-Check for Komuna Daily Reports
+
+When the user asks for a thorough daily report, disputes that the findings are too small (e.g. "only that?"), or asks to include commits, cross-check the Komuna repo in addition to session history:
+
+1. Run `git log --all --since='<reference-date> 00:00:00 +0000' --until='<reference-date> 23:59:59 +0000' --date=iso --pretty=format:'%h%x09%ad%x09%s' --no-merges` from `/home/ubuntu/projects/komuna`.
+2. Use commit subjects as leads for additional session searches, especially when the work occurred inside older/compacted sessions.
+3. Correlate commits with user/assistant final summaries from July 9-style sessions; do not list commits alone as accomplishments unless they match Komuna chat evidence or clear commit messages.
+4. Include challenge evidence from root-cause/final summaries, not fabricated difficulty.
+5. Still ask for today's plan before generating the final report.
+
 ## Common Pitfalls
 
 1. Generating the report immediately without asking today's plan. This violates the user's explicit instruction.

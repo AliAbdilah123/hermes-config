@@ -18,6 +18,7 @@ Operational tasks for the Komuna project's Go+SQLite API at `/home/ubuntu/projec
 
 ## Reference playbooks
 
+- `references/slug-link-audit.md` — canonical program/product slug route audit: API DTOs, workspace normalization, frontend route builders, tests, and live deployment checks.
 - `references/slug-link-audit.md` — use when canonical program/product slugs exist in the API but the website still shows old internal IDs such as `prog-yoga` or `prod-yoga-sv`; covers frontend route-builder and DTO audit hotspots.
 
 ## Service Management
