@@ -402,6 +402,19 @@
     "use_count": 0,
     "view_count": 0
   },
+  "go-code-splitting": {
+    "archived_at": null,
+    "created_at": "2026-07-11T05:59:50.643363+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-07-11T06:00:01.578667+00:00",
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 1,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
   "google-workspace": {
     "archived_at": null,
     "created_at": "2026-06-25T06:17:13.076929+00:00",

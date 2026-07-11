@@ -13,3 +13,5 @@ User systemd services must NOT include `User=` nor `Group=`; user manager alread
 Project `system` renamed/moved to `/home/ubuntu/projects/server-monitor/`, backend built, frontend built, nginx config added, systemd user unit created, verified at `http://168.110.213.104/projects/server-monitor/`.
 §
 This host runs nginx with config at /etc/nginx/projects/default.conf (single server block). User-level systemd services live at /home/ubuntu/.config/systemd/user/.
+§
+Refactored delegate backend: split 2653-line main.go into backend/internal/app/ with 12 files. Embed FS stays in main.go; pass to internal/app via SetMigrations(). Go internal packages must stay in same module, not under cmd/<bin>/internal. Verified with build + curl health.
