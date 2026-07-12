@@ -75,7 +75,7 @@ For this user, a plan intended for review should not remain markdown-only. After
 3. Store the canonical HTML under the relevant project path at `docs/<name>.html` when a project path exists.
 - Publish it at the project's public domain PRD path (for Komuna, `https://komuna.ahsanworks.com/prd/<name>.html`) via the web server PRD symlink directory; avoid raw IP links unless the user explicitly asks for them.
 - Verify local/public HTTP 200 before finalizing.
-5. If the user answers open questions in the plan, update the markdown plan and all relevant public HTML pages before implementing.
+5. If the user answers open questions in the plan, update the markdown plan and all relevant public HTML pages before implementing. Move answered items into a visible **Confirmed decisions** section, remove or shrink the resolved **Open Questions** section, and verify the public artifact contains the exact new decision phrases before replying.
 
 Use the `claude-design` skill/reference workflow for the publication mechanics.
 
@@ -85,6 +85,7 @@ Use the `claude-design` skill/reference workflow for the publication mechanics.
 - If no explicit instruction accompanies `/plan`, infer the task from the current conversation context.
 - If it is genuinely underspecified, ask a brief clarifying question instead of guessing.
 - When the user asks to "ask clarifying questions as you go" but also requests a reviewable plan/design before implementation, include a visible **Open Questions for Approval** section in both the markdown plan and HTML review artifact. Ask only the questions that block design approval; do not interrupt with low-stakes questions before producing the review artifact.
+- When the user describes a new diagram/canvas planning app, produce a PRD-style plan first: define graph semantics, node/edge mutations, linked-object behavior, MVP cuts, data model, API shape, and acceptance criteria before implementation. See `references/greenfield-diagram-app-prd.md`.
 - If the user asks not to implement until approval, add an explicit **Implementation Gate** section to the plan/artifact and final response. Do not treat plan approval, route-label answers, or design-choice answers as deployment permission unless the user explicitly says to implement.
 - If the user corrects the proposed design or answers design options, update the plan/review artifact and wait for explicit implementation/deployment instruction; do not treat design-choice answers as permission to deploy.
 - If the user says a previous design was better or approves a visual style, preserve that design as the baseline. When later requirements are textual/spec-level, update the plan first and add only minimal callouts/labels/disabled states to the design page; do not rewrite the design page from scratch.
