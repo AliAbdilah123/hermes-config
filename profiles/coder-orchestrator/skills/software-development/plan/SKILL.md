@@ -357,13 +357,15 @@ When the user provides an HTML/CSS design reference and asks to redesign a page 
 
 ### UI redesign plans need separate plan and design pages
 
-When the user asks for a UI redesign plan, produce two separate public review pages by default:
+- When the user asks for a UI redesign plan, produce two separate public review pages by default:
 - **Plan page**: implementation scope, file paths, task sequence, tests, risks, open questions, implementation gate.
 - **Design page**: static visual mockup/prototype, interaction states, responsive states, and visual rationale.
 
 Before authoring the design page, inspect the current app UI enough to avoid false structure. If the current page has no sidebar, the mockup must not show a sidebar. Reuse the project's actual theme tokens, typography, border radii, spacing, page width, and navigation pattern. The design page should look like the product being redesigned, not like a generic docs template.
 
 Cross-link the pages prominently. Keep the plan page readable as a plan; keep the design page focused on visualization.
+
+**Hard requirement:** Do not satisfy this by putting a mockup section inside the plan page only. If the work includes both implementation planning and visual design approval, publish and verify two distinct URLs before replying: `<slug>-plan.html` and `<slug>-design.html`. The plan page may link to the design page, but the design mockup must live on the separate design URL.
 
 ### Profile/account tab feature proposals need existing-tab parity
 

@@ -120,6 +120,8 @@ curl -sS 'https://komuna.ahsanworks.com/prd/<slug>.html?v=mobile-check' | grep -
 
 - `references/subscription-xendit-prd-mobile-fix.md` — concrete correction from the subscription/Xendit PRD: fix the published PRD page itself, not only the implementation-plan content; includes CSS and verification pattern.
 - `references/subscription-package-entitlement-model.md` — domain model for subscription plans in Komuna review artifacts: packages are sellable bundles, subscription entries grant renewable entitlements, product scopes can be one-or-more products, and subscription bookings create `voucher_claims.subscription_id` claims rather than pre-generated vouchers.
+- `references/wallet-voucher-pocket-animation-preview.md` — approved wallet voucher pocket preview/implementation pattern: preserve approved animation timing, animate the actual pocket stack out/back, allow overflow, avoid fake return voucher layers.
+- `references/wallet-voucher-pocket-animation-preview.md` — preview-artifact pattern for wallet voucher pocket animation fixes: reuse live wallet component structure, demonstrate literal pull-out/empty-pocket/return sequencing, and avoid changing already-approved animation feel.
 
 ## Common Pitfalls
 
@@ -128,3 +130,4 @@ curl -sS 'https://komuna.ahsanworks.com/prd/<slug>.html?v=mobile-check' | grep -
 3. **Tables as tiny text.** Convert tables to block rows or scroll containers on phones.
 4. **Forgetting cache busting.** Cloudflare may serve stale HTML. Verify with `?v=<label>` after updates.
 5. **Changing product-plan content while fixing readability.** Keep content changes separate from artifact presentation fixes unless the user asked for both.
+6. **Animation previews that fake the product component.** When the user asks for a Komuna animation preview, reuse the relevant product component geometry/class names and demonstrate the exact object relationship they care about. For wallet voucher pocket previews, the visible vouchers inside the pocket must be the animated objects: open should pull the existing stack out and leave the pocket empty; close should use the same stack path in reverse, not separate throwaway voucher elements that pop into the pocket afterward. Keep existing timing/easing if the user says the animation itself is good; change only source object, overflow, visibility, and sequencing.

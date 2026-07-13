@@ -326,6 +326,12 @@ Bug found? Write failing test reproducing it. Follow TDD cycle. The test proves 
 
 Never fix bugs without a test.
 
+### Regression Tests for Generated Links and DTO-backed Routes
+
+For URL/link bugs in full-stack apps, write the failing test at the UI boundary first: render the page with realistic DTOs containing both internal IDs and canonical slugs, collect actual `a[href]` values, and assert canonical URLs are present while old/internal URLs are absent. Then patch the smallest caller/prop chain that generates the visible URL.
+
+When the URL includes a newly canonicalized resource (for example package slug instead of package ID), add/adjust API/DTO coverage too: expose the slug, keep lookup/checkout payloads compatible with IDs, and verify the UI can open a slug URL while submitting the stable internal ID to backend APIs.
+
 ## Testing Anti-Patterns
 
 - **Testing mock behavior instead of real behavior** — mocks should verify interactions, not replace the system under test

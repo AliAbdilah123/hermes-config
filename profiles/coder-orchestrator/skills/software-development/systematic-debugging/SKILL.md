@@ -192,6 +192,17 @@ When a browser video editor/export flow feels slow:
 
 See `references/browser-ffmpeg-export-performance.md` for command patterns, benchmark setup, and a fix decision tree.
 
+### 4i. Canonical Slug Link Drift in SPAs
+
+When a page works with an old/internal route identifier but visible anchors still show stale slugs or IDs:
+- Verify the backend data has both stable IDs and canonical slugs for the reported entity.
+- Treat API lookup compatibility as separate from public URL generation: backend routes may accept old IDs, but frontend anchors should prefer `slug ?? id`.
+- Audit child props and redirect components, not just direct `<Link>` literals; stale values often enter as `programId={program.id}` or `programId={id}` and are used deeper in session/product/package cards.
+- Check all subpages inside the program: detail, upcoming sessions rail, all-sessions, product cards, checkout breadcrumbs, wallet/member dashboard links, booking modals, and legacy redirects.
+- Add a regression fixture where `id !== slug` and assert user-facing `href`s do not contain the internal ID.
+
+See `references/canonical-slug-link-audit.md` for the compact audit/fix recipe.
+
 ### 5. Trace Data Flow
 
 **WHEN error is deep in the call stack:**
@@ -312,6 +323,8 @@ When a React/Vite page shows a runtime collection error such as `t.filter is not
 - Trace the value back to the `apiClient.get<T>()` boundary; the generic type may not match runtime JSON.
 - Probe the real deployed/local endpoint and inspect the top-level JSON shape. Common mismatches: frontend expecting `Item[]` while the API returns `{ data: Item[] }`/a paginated envelope, or frontend expecting `items: []` while the backend encodes an empty/nil slice as `items: null`.
 - In Go APIs, remember that a nil slice marshals to JSON `null`; initialize empty slices (`cards := []any{}`) or normalize response DTOs so collection fields are always arrays.
+- After auth/login, treat an immediate black screen as likely collection contract drift too: a fresh account may have a workspace but zero child records, so `/projects`, `/items`, etc. can return `null` and crash on `.map()`/`.filter()` even though populated accounts work.
+- Fix with a small typed response normalizer/unwrap helper at the API consumption boundary, plus a backend DTO contract fix so empty lists encode as `[]`; do not hide the symptom with optional chaining around array methods.
 - Fix with a small typed response normalizer/unwrap helper at the API consumption boundary, or with a backend DTO contract fix, not by hiding the symptom with optional chaining around array methods.
 - Add a regression test whose mock uses the real API envelope shape that previously failed, including empty-result cases (`items: []`, not `null`).
 - Verify the targeted test, build/typecheck, and if deployed, fetch the served bundle/API to confirm the deployed artifact includes the normalizer and the endpoint shape is understood.

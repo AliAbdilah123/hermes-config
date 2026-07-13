@@ -18,7 +18,8 @@ Operational tasks for the Komuna project's Go+SQLite API at `/home/ubuntu/projec
 
 ## Reference playbooks
 
-- `references/slug-link-audit.md` — canonical program/product slug route audit: API DTOs, workspace normalization, frontend route builders, tests, and live deployment checks.
+- `references/slug-link-audit.md` — slug route audit.
+- `references/wallet-package-name-display.md` — wallet package/display names: live Go API joins, frontend DTO fallback, tests, deploy pitfalls.
 - `references/admin-products-metric-and-cancellation-policy.md` — Admin Products tab pitfall: ambiguous Sessions column sourcing and cancellation policy persistence/display.
 - `references/program-member-count-derived-from-membership.md` — Search/program cards pitfall: live Go+SQLite API can serve seeded `programs.member_count`; derive from active `program_members` rows instead.
 
