@@ -390,6 +390,15 @@ See `references/decoupled-timezone-sources.md` for detection commands and the Ko
 
 ### 5b.2 Frontend Filter / API Query Triage
 
+When an admin/member-management modal assigns scoped roles via a checklist and the user reports confusing saves, blocked revokes, or irrelevant resources in the checklist:
+- Separate generic active records from resources eligible for that role; do not show simple/redeemable products in a session/product-manager picker unless the role actually applies to them.
+- Trace backend guard errors such as `last_product_manager` through the frontend action wrapper; swallowing the error makes a correct access-denied guard look like a broken save button.
+- Watch for UI code that silently re-adds locked IDs before save; it preserves invariants but hides the admin's intent. Prefer disabled checked rows plus clear helper/error copy.
+- If the save is multiple POST/DELETE calls, consider partial success: one request can persist before a later guard fails. On failure, refetch authoritative state or use a transactional replace endpoint.
+- Verify Cancel makes no API calls; reload changes after Cancel usually came from an earlier partial save or optimistic state drift.
+
+See `references/scoped-role-assignment-modal-triage.md` for a compact checklist and regression cases.
+
 When UI filter pills/tabs visually switch but the results stay on the default set (for example session filters where Ongoing/Past still show Upcoming):
 - First verify the frontend actually sends the selected filter value in the API params; add an interaction test that clicks the filter and asserts the request shape.
 - Probe the active API endpoint directly for each query value and inspect distinct returned item statuses, not just HTTP 200.
@@ -413,6 +422,17 @@ When a location/permission-based UI filter shows "no results found" even after t
 
 See `references/client-side-filter-hardcoded-stubs.md` for the full triage checklist, fix pattern, and Haversine reference.
 
+### 5b.3 Product-Scoped Manager Role UI Drift
+
+When an admin/member-management UI edits manager access and users report confusing save failures, irrelevant products in the manager picker, or role state changing after reload:
+- Filter manager-pickable products to the actual manageable kind (usually active session products only); active simple products like merchandise should not appear as things a manager can lead.
+- Treat backend guards such as `last_product_manager` as domain constraints that need visible UI explanation, not generic save failures.
+- Do not silently union locked product IDs back into the submitted selection; keep locked checkboxes checked/disabled, explain why, and return with a clear modal error if protected removal is attempted.
+- Verify durable role state via both role rows and product-manager junction rows; optimistic frontend row state can mislead until reload.
+- Add UI regression tests for simple-product exclusion, last-manager no-DELETE behavior, and modal-level API error rendering.
+
+See `references/product-scoped-manager-role-ui.md` for the compact recipe and Komuna-shaped test/fix pattern.
+
 ### 5c. SQLite JSON-State Role Seeding / Demo Admin Access
 
 When a SQLite-backed app stores auth records in normal tables but product/domain state in a JSON blob (for example `app_state.payload`) and users appear to gain admin/manager dashboards unexpectedly:
@@ -431,6 +451,15 @@ When the user asks whether a deployed payment integration is active (Xendit, Str
 - Trigger the local/public checkout endpoint with a harmless/demo package if available and inspect whether it returns a real provider invoice/hosted-checkout URL or a stub/local URL such as `checkout-stub.local`.
 - Check the running implementation, not only the newer/reference implementation in the repo; deployed services may use a fallback Go/SQLite or mock API while TypeScript provider code exists elsewhere.
 - Final answer should distinguish: “credentials are valid/test/live” from “website checkout uses real provider” and include the public URL plus concise root cause if inactive.
+
+### 5d.1 Subscription Purchase Idempotency Audit
+
+When the user asks whether users can buy a package that includes a subscription they already have:
+- Separate **same-purchase idempotency** from **active-subscription purchase blocking**. Webhook/confirmation code may correctly avoid issuing duplicate benefits for one `purchase_id` while checkout still allows a second purchase for the same member/product subscription.
+- Trace both boundaries: checkout creation (`INSERT INTO purchases` / invoice creation) and paid fulfillment (`INSERT INTO subscriptions`). A guard only in fulfillment may still let users pay for a subscription that should have been blocked.
+- Inspect package-entry semantics (`benefit_type='subscription'`, product-scoped vs program-wide `product_id IS NULL`) and compare them against active subscription rows scoped to the same `program_member_id`, `program_id`, and product/program-wide target with `status='active'` and `expires_at > now`.
+- Check for DB uniqueness/partial indexes too; application checks without a durable constraint can race under duplicate requests/webhooks.
+- Final answer should explicitly state which layer is idempotent: “same purchase/webhook only” vs “user cannot initiate a duplicate subscription purchase,” with the evidence path.
 
 ### 5e. Hermes Kanban Blocked Task Triage
 
@@ -503,6 +532,15 @@ When a user reports that a metric or quota is wrong (e.g. "Avg Engagement Rate i
 - Any handler that constructs a response map with literal numbers/strings instead of querying or computing from real data.
 
 This is common in migrated/parity apps where placeholder values were left during initial stubbing and never replaced with real queries. The fix is to call the real data function (e.g. `models.SubscriptionData(db, userID)` or a computed summary) and use its output in the response map. Add a unit test that verifies zero/empty input produces zero output.
+
+### Locale-aware Money Formatting / Live i18n Rerender Notes
+
+When a user reports that money shows the wrong currency/symbol, or currency does not update live after a language toggle:
+- Trace both the conversion/formatting layer and the render subscription layer. A shared formatter can be correct while the page stays stale because the component never subscribes to i18n state.
+- Search for page-local `toLocaleString` / `Intl.NumberFormat` with hardcoded `USD`, `IDR`, `$`, or `Rp`; replace duplicates with the canonical money formatter.
+- If a React component renders locale-derived currency, call `useTranslation()` (or the app's equivalent i18n hook) in that component and pass `i18n.language` into the formatter. Reading `localStorage` inside the formatter is not a rerender trigger.
+- Add a UI regression test that changes `i18n.changeLanguage(...)` after the page is rendered and asserts the existing money text changes without reload.
+- See `references/locale-money-formatting-and-i18n-rerender.md` for the compact recipe and fix shape.
 
 ### Frontend Theme / Mobile Dark-Mode Notes
 

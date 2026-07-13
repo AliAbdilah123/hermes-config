@@ -386,6 +386,16 @@ When the user asks for a plan to redesign/add an admin dashboard operations tab 
 - The public HTML review artifact should include a static visual mockup with the operational states represented (default inactive rows, an active expanded row, QR/window state, and a locked/completed example), not just the target prose.
 - Include open questions for destructive or policy choices (for example deactivate support, label wording, adding a QR dependency), but keep implementation gated until explicit approval.
 
+### Admin dashboard read-only history/support tab plans need existing API and support-triage checks
+
+When the user asks for a missing admin dashboard tab that exposes historical/support data (purchases, payments, reports, issue queues, member activity):
+- Inspect the real admin tab shell and route table first, then inspect the closest existing user/member/role-specific page that already displays the same data. Name the current tab insertion point and route path in the plan.
+- Search for existing backend/API endpoints before proposing schema or controller work. If a program-scoped endpoint already exists, make the MVP frontend-first and call out backend changes only as conditional DTO enrichment.
+- Design the first version as read-only support triage unless the user explicitly asks for mutations: search/filter, status pills, copy IDs, contextual links, empty/loading/error states, and enough identifiers to handle issue reports.
+- Place the new tab according to domain flow, not alphabetically. For purchase-like flows, put purchase history between packages/products and generated artifacts such as vouchers.
+- In the design artifact, mirror the current admin shell exactly (same top tabs, no invented sidebar) and show representative rows for success, pending/problem, and failed/refunded states.
+- Include open questions for sensitive mutation policy (refunds, resolution labels, escalation workflows) and keep them out of MVP until explicitly approved.
+
 ### Existing drag/drop UI feature plans need flow preservation notes
 
 When the user asks for a plan to extend drag/drop behavior in an existing UI, inspect the current drag/drop implementation before writing the plan. Include:

@@ -20,8 +20,12 @@ Operational tasks for the Komuna project's Go+SQLite API at `/home/ubuntu/projec
 
 - `references/slug-link-audit.md` — slug route audit.
 - `references/wallet-package-name-display.md` — wallet package/display names: live Go API joins, frontend DTO fallback, tests, deploy pitfalls.
-- `references/admin-products-metric-and-cancellation-policy.md` — Admin Products tab pitfall: ambiguous Sessions column sourcing and cancellation policy persistence/display.
-- `references/program-member-count-derived-from-membership.md` — Search/program cards pitfall: live Go+SQLite API can serve seeded `programs.member_count`; derive from active `program_members` rows instead.
+- `references/admin-products-metric-and-cancellation-policy.md` — Admin Products tab pitfall: ambiguous products/sessions metric and session cancellation policy visibility.
+- `references/product-slug-create-backfill.md` — Product slug creation/backfill pitfall: nullable product slugs can hide activated sessions from program-wide upcoming-session lists.
+
+
+
+
 
 - `references/slug-link-audit.md` — use when canonical program/product slugs exist in the API but the website still shows old UUID routes; covers frontend DTO/route-builder/cache/deploy checks.
 - `references/product-custom-fields.md` — spec/schema mapping for product custom field definitions and voucher-claim custom field answers.
