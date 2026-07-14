@@ -51,6 +51,8 @@ Check Meta docs again at implementation time, but this is the planning baseline:
 - New Post crop box must always remain locked to the selected ratio.
 - Moving the box never changes ratio; resizing recalculates the opposite dimension and clamps inside image bounds.
 - Auto-crop should choose the largest centered crop that fits the selected ratio, optionally starting from obvious visible-content detection while preserving ratio.
+- Show compatibility copy near the media uploader only when it does not duplicate modal controls. Do **not** show crop ratio choices as a persistent panel on the New Post form before upload; ratio choices belong inside the crop/edit modal.
+- In the modal, ratio buttons should immediately re-fit the crop box for the chosen ratio. Use a centered/clamped fit helper rather than resizing from a stale box corner.
 - Show compatibility copy near the media uploader:
   - green: already valid / will be cropped correctly;
   - yellow: crop needed or carousel ratio caveat;

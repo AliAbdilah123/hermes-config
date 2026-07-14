@@ -30,6 +30,20 @@ Avoid another CSS-only fix. Initialize the crop box to obvious visible content w
 - only auto-crop if it trims a large band and still keeps a meaningful content area;
 - otherwise keep the old full-image default.
 
+When platform-specific aspect ratios are active, do not just set `h = w / ratio` on the detected box. Fit the ratio box centered inside the detected visible bounds (or full displayed image bounds) and clamp it there. Ratio button changes should also re-fit a clean centered crop for the selected ratio, otherwise the crop can stay anchored to a stale/bad position and appear as “auto cap/crop is not working.” A minimal helper shape is:
+
+```ts
+function fitCropBoxToRatio(bounds: Box, ratio: number): Box {
+  const byWidthH = bounds.w / ratio
+  if (byWidthH <= bounds.h) {
+    const h = Math.round(byWidthH)
+    return { x: bounds.x, y: Math.round(bounds.y + (bounds.h - h) / 2), w: bounds.w, h }
+  }
+  const w = Math.round(bounds.h * ratio)
+  return { x: Math.round(bounds.x + (bounds.w - w) / 2), y: bounds.y, w, h: bounds.h }
+}
+```
+
 Do not change drag/resize/pan math unless reproduction proves it is wrong.
 
 ## Verification

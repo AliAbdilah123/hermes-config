@@ -384,9 +384,10 @@ When a user reports that event/session times are wrong, or a session shown as al
 - Search for hardcoded timezone literals in React/Vite display components (`timeZone: 'America/New_York'`) while parent pages/API data use program/tenant timezone.
 - Pass the tenant/program timezone through props and use it consistently for date pills, clock labels, and day grouping.
 - Watch for date-only grouping: `date(start) === today` does not mean the session is still active if `endTime < now`.
+- Watch for recurring/template preview generation that starts at today's midnight/date and filters persisted rows by `!isEnded`, but forgets to filter generated preview rows by `endTime > now`; keep expanding until the fixed-size upcoming list is refilled, and put ended active sessions in a read-only history view.
 - Watch for `return 'past'` fallthrough in grouping helpers; future sessions beyond tomorrow can be mislabeled as past.
 
-See `references/decoupled-timezone-sources.md` for detection commands and the Komuna example.
+See `references/decoupled-timezone-sources.md` for detection commands and the Komuna example. See `references/session-template-rollover-and-past-history.md` for the recurring-template next-N rollover/history recipe.
 
 ### 5b.2 Frontend Filter / API Query Triage
 
