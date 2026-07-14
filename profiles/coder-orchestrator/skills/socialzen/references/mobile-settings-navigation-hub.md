@@ -12,7 +12,7 @@ When the mobile Settings page still shows tab content below the settings list, t
 - In `apps/frontend/src/pages/settings/SettingsPage.tsx`:
   - Use `useParams()` for `section` and validate it against the shared `SETTINGS_SECTIONS` list.
   - Mobile `/app/settings` renders **only** the list/hub. Do not render `renderContent()` on this route.
-  - Mobile `/app/settings/:section` renders **only** the selected existing settings component plus a back header/button to `/app/settings`.
+  - Mobile `/app/settings/:section` renders the selected existing settings component with a Settings header. If the user explicitly asks for origin-based back behavior, the header back button must return to the page that opened Settings (Dashboard/Analytics/Posts/Calendar), not to `/app/settings`; preserve that origin in router state such as `settingsBackTo` while switching Settings sections.
   - Desktop still renders the existing sidebar and `renderContent()` so tablet/desktop behavior remains unchanged.
   - Redirect legacy deep links like `/app/settings?tab=accounts` to `/app/settings/accounts` with `navigate(..., { replace: true })`.
 - Update internal links such as reconnect banners from `/app/settings?tab=accounts` to `/app/settings/accounts`.
