@@ -125,6 +125,7 @@ curl -sS 'https://komuna.ahsanworks.com/prd/<slug>.html?v=mobile-check' | grep -
 - `references/wallet-voucher-pocket-animation-preview.md` — preview-artifact pattern for wallet voucher pocket animation fixes: reuse live wallet component structure, demonstrate literal pull-out/empty-pocket/return sequencing, and avoid changing already-approved animation feel.
 - `references/shared-footer-layout-implementation.md` — approved shared-footer implementation pattern: small user edits during implementation approval are in-scope; dashboard footer belongs in `DashboardShell` outside `.dashboard-content`; omit the “Explore” footer group when following this approved design.
 - `references/footer-layout-design-preview.md` — footer design preview pattern: when footer work spans public Discovery-style pages and dashboard, publish a static approval page showing both public/editorial and compact dashboard footer variants before implementation.
+- `references/hallmark-app-design-proposal.md` — broad Komuna app-design suggestion pattern: do a small read-only UI inspection, publish a responsive static proposal/mockup, preserve the real navigation model, and keep implementation gated.
 
 ## Common Pitfalls
 

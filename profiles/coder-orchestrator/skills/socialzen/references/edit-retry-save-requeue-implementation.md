@@ -11,6 +11,7 @@ Use this when failed SocialZen posts do not retry after pressing **Save & Retry*
   - reset matching failed parent post: `posts.status='SCHEDULED', error_message=NULL`
   - reset only failed targets: `post_targets.status='SCHEDULED', error_message=NULL`
   - preserve already `PUBLISHED` targets for partial-success posts.
+  - before resetting/retrying Facebook targets, detect stale internal `facebook_pages.id` references: reconnect can create a new active row for the same external `page_id`, while old `post_targets.account_id` still points to a disconnected row. Resolve/update the target to the active row with the same external `page_id`, or let the user remove/change that target in Edit & Retry.
 - Backend PATCH should use key presence, not non-empty string checks, for editable fields:
   - `caption` key present with `""` means intentionally clear caption.
   - `media` key present with `[]` means intentional empty media input and must be handled/validated deliberately instead of silently keeping old rows.

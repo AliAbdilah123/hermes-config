@@ -52,7 +52,8 @@ Current `PhotoCropModal` keeps crop state internally only (`preset`, crop `box`,
 ## UX acceptance points
 
 - Failed post Edit & Retry should visually match New Post.
-- Image thumbnail click and/or an `Edit Image` button opens the same crop editor.
+- Image thumbnail click and/or an `Edit Image` button opens the same crop editor. A minimal implementation can fetch the existing media `url`/`thumbnailUrl` as a Blob, wrap it in a `File`, set `mediaMode='replace'`, then upload the cropped result through the existing replacement path.
+- Failed-post Edit & Retry should expose the same Post Now / Schedule choice as New Post; for `Post Now`, PATCH `publishAt` to `Date.now()+35s` so retry goes through the normal scheduler/enqueue path.
 - Thumbnail `×` removes media; if all media is removed, show the same upload fallback.
 - Caption, platform(s), selected account(s), Post Now/Schedule, schedule date/time, and editable settings remain editable.
 - Cancel/reopen does not lose current form or crop state.
