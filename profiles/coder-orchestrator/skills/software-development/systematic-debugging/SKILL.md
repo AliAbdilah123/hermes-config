@@ -375,6 +375,8 @@ When a user asks whether a displayed count (for example `18/18 TAKEN`, badge cou
 - Distinguish **scoped operational metrics** (session seats taken, pending approvals for one program, per-product capacity) from **global records** (registered users, program members, claims/bookings across the site).
 - Inspect the runtime state or API response that feeds the screen and separately count the relevant global table/list. If the app uses a mock/blob state store, parse the blob and report both the stored display metric and the actual backing records visible in that store.
 - If a displayed count is seeded/demo aggregate data rather than derived from individual records, say so explicitly; do not imply that each unit has a visible row unless verified.
+- For Komuna/admin session product headers, do not trust `sessionsPerWeek` by name. In the Go compatibility API product DTO, it may be populated from `COUNT(*) FROM sessions WHERE product_id=?` (total saved/generated session rows), not the weekly template. For “weekly slots/time slots” copy, source the value from `session_templates.weekly_slots.length` / `/session-templates`, or rename the UI to “saved session dates” if intentionally showing the session-row count.
+- Final answer should be concise: “X means scoped metric A, not global count B; verified global count is N; caveat if demo/seeded aggregate.”
 - Final answer should be concise: “X means scoped metric A, not global count B; verified global count is N; caveat if demo/seeded aggregate.”
 
 ### 5b.1 Multi-Timezone UI Display vs Logic Drift
@@ -530,9 +532,10 @@ When a user reports that a metric or quota is wrong (e.g. "Avg Engagement Rate i
 
 - Dashboard handlers that return `tier: "FREE"` or `publishedLimit: 10` regardless of the actual subscription row.
 - Analytics handlers that return fixed `avgEngagementRate: 4.7, totalReach: 4200` regardless of post count.
+- Program analytics handlers that return fixed percentages/revenue/package-attribution placeholders instead of aggregating paid purchases, vouchers, and attendance rows.
 - Any handler that constructs a response map with literal numbers/strings instead of querying or computing from real data.
 
-This is common in migrated/parity apps where placeholder values were left during initial stubbing and never replaced with real queries. The fix is to call the real data function (e.g. `models.SubscriptionData(db, userID)` or a computed summary) and use its output in the response map. Add a unit test that verifies zero/empty input produces zero output.
+This is common in migrated/parity apps where placeholder values were left during initial stubbing and never replaced with real queries. The fix is to call the real data function (e.g. `models.SubscriptionData(db, userID)` or a computed summary) and use its output in the response map. Preserve the existing API contract (for example ratios in `[0,1]` if the frontend multiplies by 100). Add a unit test that verifies zero/empty input produces zero output and a seeded non-empty case produces computed, non-placeholder output. See `references/hardcoded-analytics-placeholders.md` for a Komuna-shaped aggregate/query/test/deploy recipe.
 
 ### Locale-aware Money Formatting / Live i18n Rerender Notes
 

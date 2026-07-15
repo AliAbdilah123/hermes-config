@@ -4,7 +4,9 @@ Use this when planning or implementing Komuna Admin Dashboard **Products** tab c
 
 ## Product table metric pitfall
 
-The Products tab is a product setup/management surface. A column labeled only **Sessions** is ambiguous because it can be read as live generated sessions, while existing frontend code has used `product.sessionsPerWeek`.
+The Products tab is a product setup/management surface. A column labeled only **Sessions** is ambiguous because it can be read as live generated sessions, while existing frontend code has used `product.sessionsPerWeek`. In the current Go API path, `productDTO` sets `sessionsPerWeek` from `a.productSessionCount(p.ID)`, and `productSessionCount` runs `SELECT COUNT(*) FROM sessions WHERE product_id=?`; this is a generated/live session row count, not the weekly template.
+
+When the user asks what the number is getting pulled from, answer directly with the source first, then recommend the product-management metric change. Do not implement/deploy from that question alone unless the user explicitly asks to change it.
 
 Preferred resolution for this surface:
 
