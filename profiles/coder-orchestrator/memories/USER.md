@@ -1,4 +1,4 @@
-User wants review docs/PRDs/plans as styled responsive HTML on public domain links, dark-theme with light/dark toggle; Komuna PRDs live at docs/<name>; future Komuna DB structure changes should update the ERD page.
+Review docs: responsive public HTML with theme toggle. Komuna docs stay under Komuna and its ERD tracks DB changes. Unassigned docs go in ~/docs, never under unrelated projects.
 §
 User wants any document produced for them to review to also be provided as a styled HTML file with a public accessible link.
 §

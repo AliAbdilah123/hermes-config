@@ -26,12 +26,29 @@ Use when an admin/manager scheduling UI shows a fixed number of upcoming recurri
 6. Verify activation payloads separately.
    - If the frontend posts `{ managerId }` during activation, confirm the API actually validates/uses that body. A selected-manager issue can be masked by the past-slot activation failure.
 
+## Timezone contract check
+
+Before fixing the comparison, determine what the timestamp string means:
+
+- **True UTC instant:** convert/store the local slot as UTC and compare with `Date` instants normally.
+- **Pseudo-UTC wall-clock container:** a value such as `2026-07-16T10:00:00Z` actually means 10:00 in the program timezone. Do not compare it directly with a real UTC `Date`; compare fixed-width local wall-clock keys instead, or migrate the API/data contract comprehensively.
+
+For pseudo-UTC contracts, timezone awareness must cover the whole occurrence range—not just `isEnded`:
+
+1. Convert `now`, `from`, and `to` into fixed-width program-local keys (`YYYY-MM-DDTHH:mm:ss`) using `Intl.DateTimeFormat(...).formatToParts()`.
+2. Start weekly date iteration from the program-local calendar date.
+3. Compare generated/saved pseudo-UTC strings to local range keys lexically.
+4. Use the same local key for end-time state checks.
+
+Fixing only `end_time <= now` can pass positive-offset tests while still dropping valid same-day sessions in negative-offset zones. Example: at `2026-07-16T01:00Z`, Los Angeles is still July 15 at 18:00, so a July 15 20:00 slot must remain upcoming.
+
 ## Minimal regression shape
 
-- Freeze time just after the session ends, e.g. `now = 2026-07-13T18:01:00Z` for a `17:00–18:00` slot.
-- Generate the next-N list from weekly slots.
+- Freeze time just after the session ends, e.g. `now = 2026-07-16T06:00:00Z` for a `09:00–10:00` slot in `Asia/Makassar` (14:00 local).
+- Generate the next-N list from weekly slots using the program timezone.
 - Assert the ended same-day slot is absent.
 - Assert the next later template occurrence is present to keep N rows.
+- Add a negative-offset boundary: at `2026-07-16T01:00Z` in `America/Los_Angeles`, assert a July 15 20:00 slot is retained.
 - Assert ended inactive sessions do not render an enabled activation action.
 - Assert the history tab fetches/renders past active sessions newest-first and exposes no destructive actions.
 

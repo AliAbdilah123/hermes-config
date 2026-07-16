@@ -5,6 +5,10 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 # SocialZen Project
 
+## Feature workflows
+
+- See `references/user-friendly-multiplatform-publishing-errors.md` when provider errors must be normalized into safe codes/messages/actions across Posts, Calendar, Post Detail, and Edit & Retry; it covers raw-log-only diagnostics, per-target status, partial success, and backend-enforced recoverable retry.
+
 ## Architecture
 
 - **Backend**: Go (single binary, `apps/backend-go/`)
@@ -324,7 +328,7 @@ cd apps/backend-go && go test ./internal/posts ./internal/comments
 
 - **Modern direct-manipulation video crop editor**: When implementing an approved modern `VideoCropModal.tsx` redesign, keep all interactive framing CSS/native-video only and run FFmpeg only for Apply/Download. Use one normalized crop state for both the clean clipped Result Preview and even-pixel FFmpeg geometry; support fit, pan, pinch/wheel/slider zoom, trim-bounded playback, and surfaced processing errors. Before deploy, compare against the approved visual artifact: Preview must actually clip to the output frame, and secondary actions such as Download must not disappear during simplification. See `references/modern-video-crop-experience.md`.
 
-- **WhatsApp-style video trim modal UI**: When redesigning `VideoCropModal.tsx`, keep the FFmpeg trim/crop pipeline intact and change the editor shell around it: timeline above preview, duration/filesize metadata beside the timeline, live selected range + trim duration, no manual ratio selector, no blue progress bar, larger centered preview, and Download reusing the same processing function as Apply. Pass crop ratio from post context instead of letting users pick it manually (current safe default: `STORY` → `9:16`, other video posts → `free`). See `references/whatsapp-style-video-trim-modal.md`.
+- **WhatsApp-style video trim modal UI**: When redesigning `VideoCropModal.tsx`, keep the FFmpeg trim/crop pipeline intact and change the editor shell around it: timeline above preview, duration/filesize metadata beside the timeline, live selected range + trim duration, no manual ratio selector, no blue progress bar, larger centered preview, and Download reusing the same processing function as Apply. Pass crop ratio from post context instead of letting users pick it manually (current safe default: `STORY` → `9:16`, other video posts → `free`). For the approved single-surface version, remove Edit/Result modes and the right sidebar, make the clipped result stage directly playable/draggable/zoomable, seek immediately when trim start changes, and clamp Play into the trim range. See `references/whatsapp-style-video-trim-modal.md` and `references/whatsapp-single-video-crop-implementation.md`.
 
 - **Video/carousel upload looks stuck with only `Uploading…`**: Browser `fetch()` does not expose upload progress. For `/api/posts/media`, use an XHR multipart helper with `xhr.upload.onprogress` and surface `Uploading item/total · N%` plus a progress bar in Create/Edit post flows. Keep this distinct from VideoCropModal's local `Processing… N%`. See `references/media-upload-progress.md` for the implementation pattern.
 

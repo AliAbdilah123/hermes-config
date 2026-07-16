@@ -58,13 +58,19 @@ If the task is code-related, include exact file paths, likely test targets, and 
 
 ## Save location
 
-Save the plan with `write_file` under:
+Before choosing a document path or public domain, verify that the document actually belongs to the presumed project. A project mentioned in server configuration, memory, nearby files, or an available publication route is not evidence of affiliation.
+
+- When a related project is established, save the canonical plan in that project's `.hermes/plans/` or `docs/` directory as appropriate.
+- When no related project exists yet, save review documents under the user's home-level `~/docs/` collection. Do not place or brand them under an unrelated project's directory, domain, theme, or route merely because that route is convenient.
+- If project affiliation is ambiguous, use the neutral home-level location and neutral publication route by default; move it into a project only after affiliation is established.
+
+For workspace-bound implementation plans, save with `write_file` under:
 - `.hermes/plans/YYYY-MM-DD_HHMMSS-<slug>.md`
 
 Treat that as relative to the active working directory / backend workspace. Hermes file tools are backend-aware, so using this relative path keeps the plan with the workspace on local, docker, ssh, modal, and daytona backends.
 
 If the runtime provides a specific target path, use that exact path.
-If not, create a sensible timestamped filename yourself under `.hermes/plans/`.
+If not, create a sensible timestamped filename under the applicable location above.
 
 ## User-specific public review artifact
 
