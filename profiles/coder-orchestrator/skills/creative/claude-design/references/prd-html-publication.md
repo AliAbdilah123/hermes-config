@@ -6,6 +6,7 @@ Use this when producing styled HTML artifacts for the user, including PRDs, impl
 
 - Produce a designed/styled HTML artifact, not only a plain-text or markdown document, when the user needs to review the document.
 - For PRDs/product concepts, keep the richer PRD-style layout; for plans/audits/specs, use a readable review-document layout with table of contents, code blocks, and clear decision/status cards.
+- For public-repository evaluation reports (what it is, usage, effectiveness, costs, and use cases), follow `references/repository-research-report.md` for evidence labeling, cost discipline, capability matrices, and pilot recommendations.
 - Store the canonical file under the relevant project path:
   - `<project path>/docs/<name>.html`
 - Make it publicly accessible at:

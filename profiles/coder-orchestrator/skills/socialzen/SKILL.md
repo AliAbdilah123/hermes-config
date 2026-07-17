@@ -7,7 +7,9 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 ## Feature workflows
 
+- See `references/analytics-issues-7-11-implementation.md` when implementing the analytics follow-up covering nullable/unavailable metrics, soft-disconnecting referenced accounts, honest success/partial/failure refresh outcomes, Top Posts ranking, and clickable What Worked references. It includes focused tests, deployment bundle checks, and scoped-commit guidance for a dirty working tree.
 - See `references/user-friendly-multiplatform-publishing-errors.md` when provider errors must be normalized into safe codes/messages/actions across Posts, Calendar, Post Detail, and Edit & Retry; it covers raw-log-only diagnostics, per-target status, partial success, and backend-enforced recoverable retry.
+- See `references/media-edit-google-auth-fixes.md` when visible video trim handles, Create Post crop-queue duplication, per-item replacement-media removal, or concurrent Google GIS sign-in attempts regress. It includes the minimal interaction invariants, focused tests, backend no-op check, and deploy verification.
 
 ## Architecture
 

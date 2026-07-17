@@ -138,9 +138,13 @@ terminal(command="codex exec 'Review PR #87. git diff origin/main...origin/pr/87
 terminal(command="gh pr comment 86 --body '<review>'", workdir="~/project")
 ```
 
+## Tmux-backed autonomous runners
+
+Do not launch interactive Codex and immediately inject the initial task with `tmux send-keys`; Codex startup, notices, or MCP boot can consume/redraw before its input is ready. For autonomous jobs, pass the task at process launch as `codex [configured flags...] exec "<prompt>"`, keeping tmux only for durable process/output capture. If a runner supports multiple CLIs, apply this by CLI type rather than removing interactive input globally. See `references/tmux-prompt-readiness.md` for the symptom, minimal command-construction pattern, and regression test.
+
 ## Rules
 
-1. **Always use `pty=true`** — Codex is an interactive terminal app and hangs without a PTY
+1. **Always use `pty=true` for interactive Codex sessions** — one-shot `codex exec` can receive its prompt directly as argv; when run through Hermes terminal, PTY remains the safe default
 2. **Git repo required** — Codex won't run outside a git directory. Use `mktemp -d && git init` for scratch
 3. **Use `exec` for one-shots** — `codex exec "prompt"` runs and exits cleanly
 4. **`--full-auto` for building** — auto-approves changes within the sandbox

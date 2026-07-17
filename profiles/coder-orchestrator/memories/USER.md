@@ -2,7 +2,7 @@ Review documents must be responsive styled HTML with a theme toggle and public l
 §
 User wants every final update after working on a feature or fix to include the project's public link. Always commit and push to git after every feature implementation or bug fix.
 §
-User prefers every new task to start with a planning phase and a styled HTML review artifact before implementation.
+User prefers small, straightforward errors to be fixed directly without a planning artifact; for larger or complex errors, create a plan and styled HTML review artifact first.
 §
 User prefers clean code: SRP, small focused functions/files, DRY, clear names, comments only for non-obvious logic, boundary validation, and simplest practical implementation.
 §

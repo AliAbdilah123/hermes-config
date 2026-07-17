@@ -334,6 +334,8 @@ When a React/Vite page shows a runtime collection error such as `t.filter is not
 
 See `references/frontend-api-shape-drift.md` for a compact recipe and minimal TypeScript pattern.
 
+**Variant: detail envelope hides state-gated controls.** If list cards show correct metadata but a detail modal renders blank interpolation landmarks (for example `· · attempt`) and hides status-gated actions, compare the flat list DTO with the detail endpoint envelope. Normalize `{ job, events }` into one view model at every refresh path: initial fetch, SSE reload, and post-action reload. See `references/detail-endpoint-envelope-state-gating.md`.
+
 ### 5a.0 Goal/Task Relation Selection Sync
 
 When an edit goal/modal shows existing tasks with checkboxes and unchecking appears to work in the UI but save does not remove the task from the goal:
@@ -514,6 +516,16 @@ When a social comment-management UI shows stale Instagram comments, local replie
 - Likes and moderation should call provider endpoints when a provider comment ID is known: `POST /{comment-id}/likes`, `DELETE /{comment-id}/likes`, and `DELETE /{comment-id}`.
 - In post detail UIs, keep performance metrics in a stable side panel next to media on desktop; open comments as a right-side drawer/dialog so it does not cover performance.
 - See `references/social-comments-sync-and-moderation.md` for endpoint patterns, verification, and deployment checks.
+
+### 6a.2 Tmux-backed Job Runner Session Drift
+
+When a job board shows a job as active but replies fail with `active session not found`:
+- Verify both the latest database run and the recorded tmux session; a `running` row is not proof the process exists.
+- Inspect systemd restart history and kill semantics. If detached agent sessions are intentionally independent, a service restart must not kill the whole cgroup; use a deliberate `KillMode=process` drop-in and verify it with a real restart.
+- Reconcile every run marked `running`, including runs whose parent job is already `blocked`. Using only `jobs.state='in_progress'` leaves stale blocked/running pairs untouched.
+- Check the exact stored `tmux_session`; do not reconstruct the name from job ID when the database already stores it.
+- If absent, update both run and job state consistently and requeue/retry to create a new session—the dead session cannot be resumed.
+- See `references/tmux-job-runner-session-lifecycle.md` for the test and deployment verification recipe.
 
 ### Phase 1 Completion Checklist
 
