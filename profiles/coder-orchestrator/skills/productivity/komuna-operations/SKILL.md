@@ -14,11 +14,12 @@ metadata:
 
 ## Overview
 
-Operational tasks for the Komuna project's Go+SQLite API at `/home/ubuntu/projects/komuna/`. Covers safe database state management, seeding, account recovery, service lifecycle, and deployment verification.
+Safe operations for Komuna's Go/SQLite API.
 
 ## Reference playbooks
 
 - `references/slug-link-audit.md` — slug route audit.
+- `references/product-route-slug-resolution-and-manager-scope.md` — safe ID/slug resolution, tenant scope, manager authorization, and regression matrix.
 - `references/wallet-package-name-display.md` — wallet package/display names: live Go API joins, frontend DTO fallback, tests, deploy pitfalls.
 - `references/admin-products-metric-and-cancellation-policy.md` — Admin Products tab pitfall: ambiguous products/sessions metric and session cancellation policy visibility.
 - `references/product-slug-create-backfill.md` — Product slug creation/backfill pitfall: nullable product slugs can hide activated sessions from program-wide upcoming-session lists.

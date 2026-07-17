@@ -119,6 +119,9 @@ curl -sS 'https://komuna.ahsanworks.com/prd/<slug>.html?v=mobile-check' | grep -
 ## Reference Notes
 
 - `references/admin-sessions-design-artifact-correction.md` — correction pattern for Komuna dashboard design/plan artifacts: split text plan and visual design pages; dashboard design pages should show the full dashboard context, reuse actual component/class vocabulary, and place mobile below desktop on the same design page when requested.
+- `references/admin-dashboard-hierarchy-deduplication.md` — use when repeated program/workspace identity and card-within-card framing make an admin feature page redundant; map global/program/feature levels, flatten decorative shells, and preserve interactive semantics.
+- `references/admin-tab-visual-normalization-preserve-flows.md` — implementation handoff for aligning many admin tabs to one approved visual baseline: classify elements before removal, preserve every operational component/state, update only stale top-level-header assertions, and verify the safe Komuna build/deploy path.
+- `references/manager-session-assignment-row-layout.md` — compact fix pattern for scoped manager session rows: fall back to occurrence DTO identity when the member lookup is intentionally absent, preserve role scoping, keep lock state inside the existing status cell, and regression-test the direct CSS Grid child count.
 - `references/subscription-xendit-prd-mobile-fix.md` — concrete correction from the subscription/Xendit PRD: fix the published PRD page itself, not only the implementation-plan content; includes CSS and verification pattern.
 - `references/subscription-package-entitlement-model.md` — domain model for subscription plans in Komuna review artifacts: packages are sellable bundles, subscription entries grant renewable entitlements, product scopes can be one-or-more products, and subscription bookings create `voucher_claims.subscription_id` claims rather than pre-generated vouchers.
 - `references/wallet-voucher-pocket-animation-preview.md` — approved wallet voucher pocket preview/implementation pattern: preserve approved animation timing, animate the actual pocket stack out/back, allow overflow, avoid fake return voucher layers.
@@ -126,6 +129,16 @@ curl -sS 'https://komuna.ahsanworks.com/prd/<slug>.html?v=mobile-check' | grep -
 - `references/shared-footer-layout-implementation.md` — approved shared-footer implementation pattern: small user edits during implementation approval are in-scope; dashboard footer belongs in `DashboardShell` outside `.dashboard-content`; omit the “Explore” footer group when following this approved design.
 - `references/footer-layout-design-preview.md` — footer design preview pattern: when footer work spans public Discovery-style pages and dashboard, publish a static approval page showing both public/editorial and compact dashboard footer variants before implementation.
 - `references/hallmark-app-design-proposal.md` — broad Komuna app-design suggestion pattern: do a small read-only UI inspection, publish a responsive static proposal/mockup, preserve the real navigation model, and keep implementation gated.
+
+## Implementation Handoff: Privileged Leave Guards
+
+When an approved Komuna plan prevents Admins or product Managers from leaving a program:
+- Treat UI hiding as explanation only; the API is the security boundary.
+- Enforce leave with an atomic conditional membership update, not a privilege check followed by an unconditional update.
+- Recognize both manager representations (`program_member_roles` and `product_managers`) in authorization and normalize both into the program-detail DTO so the UI agrees with the backend.
+- Replace Leave with concise role-aware copy such as “You’re a manager. Revoke your role to leave,” while retaining ordinary member actions.
+- Regression-test ordinary members, Admins, role-row Managers, assignment-only Managers, dual representation deduplication, and combined Admin+Manager UI copy.
+- Detailed implementation recipe: the `komuna-operations` support file `references/privileged-member-program-leave-guard.md`.
 
 ## Common Pitfalls
 

@@ -16,8 +16,9 @@ Use this when the New Post crop editor lets users switch among several uploaded 
 1. Save the active image's normalized crop state.
 2. Materialize every ordered image from its own saved state.
 3. Preserve output order exactly.
-4. Validate every generated output against allowed aspect-ratio presets with a small canvas-rounding tolerance (for example one pixel).
-5. If any output is invalid, return/upload zero files, keep the modal open, select the first invalid image, and show actionable copy.
+4. Validate every generated output against allowed aspect-ratio presets using a **proportional ratio tolerance**, not a fixed pixel tolerance. Preview-space integer rounding is amplified when normalized crop geometry is scaled back to the source image, so a valid crop can differ by several output pixels. A practical check is `abs(width / height - ratio) <= ratio * 0.01` (1% relative tolerance).
+5. Keep a regression fixture that reproduces scaling amplification (for example `1272×660` for `1.91:1` and `1224×1536` for `4:5`) and a clearly invalid fixture outside tolerance.
+6. If any output is invalid, return/upload zero files, keep the modal open, select the first invalid image, and show actionable copy.
 6. Only after all outputs validate should the parent upload the complete batch.
 
 Keep single-image callers backward compatible with a typed `onApply(File)` path; use a separate optional typed batch callback such as `onApplyBatch(File[])`. Never weaken the prop to `any` to support both shapes.

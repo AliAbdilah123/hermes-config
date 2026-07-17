@@ -423,8 +423,8 @@ discord:
   reactions: true
   channel_prompts:
     '1522548954896662568': "Default Project: siapjasa-simple. Treat conversation context here as work on the siapjasa-simple project."
+    '1527162342570328135:1527231685446602853': "Default Project: paragentix. Treat conversation context here as work on the paragentix project."
 
-  dm_role_auth_guild: ''
   server_actions: ''
   allow_any_attachment: false
   max_attachment_bytes: 33554432
