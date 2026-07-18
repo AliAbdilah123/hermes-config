@@ -473,7 +473,8 @@ curl -s "https://komuna.ahsanworks.com/" | grep -o 'BASENAME__=\"/\"'
 - `references/frontend-auth-guards.md` — React SPA auth architecture: session store, sign-out flow, protected route pattern, route audit of missing guards, and the "??"/"User" stale-render bug
 - `references/restricted-route-auth-guards.md` — backend + frontend restricted-route auth guard pattern; avoid `currentUser()` fallback on account/dashboard APIs and add unauth 401 regression tests
 - `references/session-template-generation-activation-design.md` — confirmed design decisions for session templates, generation permissions, generation range, one-off sessions, and separate per-date activation UX
-- `references/program-product-package-seed-quality-audit.md` — audit and fix pattern for blank/internal slugs, missing package coverage, product/package image support, free packages, session-card route split, and currency/money overflow issues.
+- `references/program-product-package-seed-quality-audit.md` — seed quality checks.
+- `references/entity-image-upload-and-form-persistence.md` — secure entity-image upload, tri-state writes, forms, consumers, and deploy.
 
 ### External Seed Scripts
 

@@ -15,7 +15,8 @@ Filter client-side to:
 
 - Show at most three matching packages initially; provide `Show all` / `Show less` when more exist.
 - Use radio controls: exactly one package can be selected.
-- Keep Continue disabled until selection.
+- Start with no package selected; do not initialize selection from the first matching package.
+- Keep Continue disabled until an explicit user selection, and give the disabled state muted colors plus a `not-allowed` cursor so it is visually unambiguous.
 - Continue to `/programs/:program/packages/:package/checkout`, preferring package slug with ID fallback.
 - If no package matches, show an honest product-specific empty state; never offer unrelated packages.
 
@@ -41,7 +42,8 @@ Give Book controls a dedicated hover/focus class so their lift/scale/shadow diff
 - first three visible, expansion and collapse work;
 - package image, exact package name, product name, and voucher quantity render;
 - only one radio remains selected;
-- Continue state and canonical slug/ID fallback checkout URL;
+- initial state has no checked radio and Continue is disabled;
+- selecting a package checks only that radio, enables Continue, and preserves the canonical slug/ID fallback checkout URL;
 - no-match state;
 - membership copy and DOM order;
 - card click navigates while Book click invokes booking without card navigation.

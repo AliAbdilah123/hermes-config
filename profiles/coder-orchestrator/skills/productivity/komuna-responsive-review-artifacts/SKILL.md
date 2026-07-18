@@ -138,6 +138,8 @@ curl -sS 'https://komuna.ahsanworks.com/prd/<slug>.html?v=mobile-check' | grep -
 - `references/static-prototype-css-integrity-and-stacked-merchandising.md` — landing/discovery prototype correction: replace rejected filter pills with database-backed stacked category sections, preserve the centered shell, and prevent `read_file` line prefixes or truncation markers from corrupting inline CSS during artifact rewrites.
 - `references/discovery-hero-program-carousel-prototype.md` — minimal accessible autoplay carousel for the Discovery hero: use real program records, images, and detail routes; pause on hover, honor reduced motion, and verify every target publicly.
 - `references/discovery-database-merchandising-implementation-plan.md` — agent-ready handoff from approved Discovery prototype to real database-backed, mutually exclusive Popular/New/Open sections; randomize Open once per reload, preserve real topbar routes, reuse app primitives, and regression-test unrelated pages.
+- `references/discovery-mobile-desktop-card-scroll-rail.md` — mobile Discovery pattern that preserves the desktop card anatomy at a smaller size in native horizontal snap rails, with a semantic View all tile as the final rail item and no scroll-end JavaScript.
+- `references/public-program-detail-catalog-implementation.md`
 - `references/public-program-detail-catalog-implementation.md` — live React handoff after approval: reuse existing DTO data without duplicate/bogus fetches, remove dead session/voucher requests with removed workflows, preserve slug-first routes, eliminate inline-style card overrides, handle root-relative assets and failed media, and gate deployment on screenshot QA.
 
 ## Implementation Handoff: Privileged Leave Guards
