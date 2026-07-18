@@ -41,7 +41,11 @@ For Products + Packages below the hero:
 - top-align media and content rather than independently centering them;
 - place actions according to the requested axis: use `margin-top:auto` only for bottom actions; when actions belong on the right, give the body an explicit `minmax(0,1fr) max-content` information/action grid and vertically center the action column;
 - stack multiple actions inside that right-side column, keeping information top-left aligned and preventing action labels from wrapping;
-- keep the unmatched cell empty when counts differ rather than inventing content.
+- do not combine right-side actions with forced `height:100%` or arbitrary `min-height`: let media/content determine compact card height, otherwise a large empty band appears beneath both information and actions;
+- on narrow mobile screens, keep a compact media/info row (about 88px square media), move actions below the info within the info column, hide nonessential secondary actions if necessary, and reduce hero/gallery/catalog spacing before shrinking readable text or touch targets;
+- keep the unmatched cell empty when counts differ rather than inventing content;
+- separate Product from Package commerce semantics: Product cards may omit cost when requested, while Package cards retain the purchasable package price;
+- wire prototype actions to the real route contract rather than `#`: product detail `/programs/{program}/products/{product}`, filtered sessions `/programs/{program}/sessions?productId={product}`, and checkout `/programs/{program}/packages/{package}/checkout`.
 
 Independent vertical lists can drift when one package row is taller than its product peer. When strict cross-column row alignment matters, use one shared outer two-column grid so each product/package pair occupies the same grid row and stretches to the taller card. Do not fix this with arbitrary per-card heights.
 

@@ -6,7 +6,7 @@ User prefers small, straightforward errors to be fixed directly without a planni
 §
 User prefers clean code: SRP, small focused functions/files, DRY, clear names, comments only for non-obvious logic, boundary validation, and simplest practical implementation.
 §
-User expects literal reuse when asking to copy/reuse a feature: use its real controller, view, layout, and full workflow—not an approximation; verify nested/detail surfaces.
+User expects reuse-first work: search code and Git history, then extend existing components, controllers, views, layouts, utilities, styles, schemas, and workflows before creating files; preserve full workflows.
 §
 User prefers bug-fix final reports to include the root cause of the bug.
 §
