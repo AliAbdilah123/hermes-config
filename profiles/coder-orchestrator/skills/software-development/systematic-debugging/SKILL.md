@@ -578,6 +578,7 @@ When the issue is a responsive layout regression, especially one described as "n
 - For data-heavy tables that overlap or clip on phones, inspect fixed table widths, long unwrapped cell contents, and horizontal-scroll state. Prefer a mobile card presentation below phone breakpoints while preserving desktop tables. See `references/responsive-data-table-mobile-cards.md`.
 - When overriding shadcn/ui `DialogContent` (or any component with breakpoint-prefixed defaults), match the same breakpoint prefix. `max-w-4xl` is silently ignored because `sm:max-w-sm` uses a different prefix; use `sm:max-w-4xl`. See `references/shadcn-ui-dialog-width-override.md`.
 - Use screenshot-based viewport checks after implementation. See `references/responsive-ui-regression-qa.md` for a compact recipe, including Vite base-path and Chromium `--virtual-time-budget` tips.
+- For Radix/shadcn overlays, remove legacy absolute positioning from portalled dropdown classes, constrain height with Radix's available-height variable plus `dvh`, and give mobile dialogs internal `overflow-y:auto`; `max-height` alone still clips. If a control disappeared during a refactor, verify JSX and restore its complete form/API workflow rather than treating it as CSS. See `references/radix-mobile-overlay-viewport-regressions.md`.
 
 ### Username Case Normalization in Auth Flows
 
