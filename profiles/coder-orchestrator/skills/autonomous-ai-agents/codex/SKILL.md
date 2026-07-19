@@ -142,6 +142,18 @@ terminal(command="gh pr comment 86 --body '<review>'", workdir="~/project")
 
 Do not launch interactive Codex and immediately inject the initial task with `tmux send-keys`; Codex startup, notices, or MCP boot can consume/redraw before its input is ready. For autonomous jobs, pass the task at process launch as `codex [configured flags...] exec "<prompt>"`, keeping tmux only for durable process/output capture. If a runner supports multiple CLIs, apply this by CLI type rather than removing interactive input globally. See `references/tmux-prompt-readiness.md` for the symptom, minimal command-construction pattern, and regression test.
 
+## Model-name verification
+
+When a requested model fails with an authentication/support error, do not immediately conclude that the model itself is unavailable or ask the user for new credentials. First distinguish a runner/provider prefix from the model identifier Codex expects:
+
+1. Start the interactive CLI with `codex --no-alt-screen` in a PTY.
+2. Clear any startup trust/hooks prompt before entering slash commands.
+3. Inspect the model shown in the status line or open the interactive model picker; use that exact identifier with `codex exec -m ...`.
+4. Retry once with the exact displayed identifier and requested reasoning effort.
+5. Only recommend credential/provider changes if the exact displayed identifier is rejected too.
+
+A prefix supplied in prose or orchestration notation (for example `cx/`) may identify the runner/catalog rather than belong in Codex's `-m` value. Avoid claiming a complete `/models` inventory unless the CLI actually rendered a list; a status-line model confirms only the active model.
+
 ## Rules
 
 1. **Always use `pty=true` for interactive Codex sessions** — one-shot `codex exec` can receive its prompt directly as argv; when run through Hermes terminal, PTY remains the safe default

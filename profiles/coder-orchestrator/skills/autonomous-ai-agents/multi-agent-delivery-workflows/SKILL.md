@@ -148,6 +148,19 @@ For users who prefer plan/PRD review artifacts, produce a styled HTML review doc
 
 For this user's environment, documents intended for review should generally be stored under the relevant project path at `docs/<name>` and published under `/prd/<name>` when possible, then verified via the public URL.
 
+## Provider model discovery and routing aliases
+
+When the user asks which models are available through a configured OpenAI-compatible router:
+
+1. Read the active profile's model `base_url` and credential without printing the full secret.
+2. Query `GET <base_url>/models` with the configured bearer token.
+3. Report the returned model IDs exactly; do not normalize display names into invented IDs.
+4. For aliases such as `coder-strong` or `coder-medium`, inspect each model object's metadata. If the endpoint only identifies them as router-owned aliases (for example `owned_by: combo`), state that the API does not expose the backing model or routing policy. Do not infer a fixed backing model.
+5. To identify alias internals, inspect the router's own dashboard/configuration where the combo was defined. The standard `/models` endpoint may be insufficient.
+6. Before promising delegation to a requested model, verify that its exact ID appears in the current endpoint. Then pass the explicit model/provider override to the delegated task; reasoning labels in a model ID and runtime reasoning settings are separate controls.
+
+Keep credentials redacted in all output. A successful catalog query proves availability in the router catalog, not that every model will successfully complete a request; use a minimal real invocation when execution is part of the request.
+
 ## Pitfalls
 
 - Do not confuse `delegate_task` with durable profile workers. `delegate_task` is useful for quick synchronous subtasks; Hermes Kanban is the right primitive for durable multi-profile implementation pipelines.

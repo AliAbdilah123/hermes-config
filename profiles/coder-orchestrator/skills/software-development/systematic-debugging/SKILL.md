@@ -264,6 +264,16 @@ When the user updates `.env` and asks to restart a deployed Linux service:
 
 See `references/systemd-service-restart-env-port-triage.md` for commands and pitfalls.
 
+### 4e.1 Systemd Workspace Root / Project Containment
+
+When a systemd-hosted project manager rejects a valid sibling directory as outside its workspace:
+- Trace how the application chooses its workspace root. A fallback to `os.Getwd()` inherits the unit's `WorkingDirectory=`, which may make the app repository—not the common projects parent—the allowed root.
+- Inspect both `systemctl cat` and `/proc/<pid>/environ`; a drop-in is not verified until the running process has the intended override.
+- Prefer configuring the application's existing workspace-root environment variable to the narrowest common parent over weakening canonical-path containment checks.
+- Restart, verify the effective process environment, then exercise the exact project path or its targeted API regression test.
+
+See `references/systemd-workspace-root-containment.md` for the compact diagnosis and fix recipe.
+
 ### 4f. Deployed SPA API 502 / Stopped Upstream Service
 
 When a deployed SPA shows an API-load error and the public subpath API returns Nginx `502 Bad Gateway`:
@@ -476,6 +486,17 @@ When the user asks why tasks are blocked in a Hermes kanban board:
 - Read the specific task log only after event/run metadata identifies which task needs explanation; logs may be empty if the task was reclaimed immediately.
 - Final answer should list the blocked tasks by ID/title and state the root cause category for each: review-required, dependency chain, failed run, or stale/manual reclaim.
 
+### 5f. OpenAI-Compatible API Base URL Duplication
+
+When an OpenAI-compatible provider returns a plain `404 Not Found`:
+- Inspect the exact assembled request URL before questioning credentials or model support.
+- Read the actual persisted provider base URL; if it already ends in `/v1/`, unconditional appending of `/v1/chat/completions` produces `/v1/v1/chat/completions`.
+- Probe the doubled and canonical paths with the persisted config while masking the key. A 404 versus 200 isolates URL construction.
+- Normalize once at the shared request boundary: trim trailing slashes and only a terminal `/v1`, then append `/v1/chat/completions`. Do not globally replace path text or rewrite stored user configuration.
+- Add a DB-backed regression test with an HTTP test server that accepts only the canonical path.
+
+See `references/openai-compatible-base-url-normalization.md` for the compact reproduction and test recipe.
+
 ### 6. External OAuth Provider Errors
 
 **WHEN a social login/connect flow fails with provider errors (Meta/Facebook/Instagram, Google, etc.):**
@@ -518,6 +539,15 @@ When a social comment-management UI shows stale Instagram comments, local replie
 - See `references/social-comments-sync-and-moderation.md` for endpoint patterns, verification, and deployment checks.
 
 ### 6a.2 Tmux-backed Job Runner Session Drift
+
+When Retry, Archive, Cancel, or similar job controls are visible but appear inert:
+- Compare frontend action visibility with backend state guards; separately-correct tests can encode a broken cross-layer contract.
+- Check whether rejected API errors are surfaced, because an uncaught `409` commonly looks like a dead button.
+- Decide one product contract: restrict the control in the UI, or permit the action server-side in all intended states.
+- For process-backed active jobs, terminate the old worker/session before retrying or archiving so it cannot keep mutating stale state.
+- Verify the state transition, dependent-record cleanup, and owner isolation at the API boundary.
+
+See `references/job-action-ui-backend-state-contract.md` for the compact diagnosis and regression recipe.
 
 When a job board shows a job as active but replies fail with `active session not found`:
 - Verify both the latest database run and the recorded tmux session; a `running` row is not proof the process exists.
