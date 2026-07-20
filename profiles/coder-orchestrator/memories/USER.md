@@ -1,4 +1,4 @@
-Review documents must be responsive styled HTML with a theme toggle and public link. Komuna docs stay under Komuna and its ERD tracks DB changes; unassigned docs go in ~/docs.
+Reviews: responsive themed HTML with theme toggle and public link. Komuna docs stay under Komuna; unassigned docs go in ~/docs.
 §
 User wants every final update after working on a feature or fix to include the project's public link. Always commit and push to git after every feature implementation or bug fix.
 §
@@ -6,7 +6,7 @@ User prefers small, straightforward errors to be fixed directly without a planni
 §
 User prefers clean code: SRP, small focused functions/files, DRY, clear names, comments only for non-obvious logic, boundary validation, and simplest practical implementation.
 §
-Coding tasks: use Codex CLI to implement. Reuse first: inspect code/history and extend existing components/workflows before creating files; preserve full workflows.
+Coding tasks: use Codex CLI, preferring `gpt-5.6-sol` with `xhigh` reasoning and priority speed when available. Inspect/reuse existing code and workflows before creating files.
 §
 User prefers bug-fix final reports to include the root cause of the bug.
 §

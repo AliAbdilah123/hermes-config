@@ -18,8 +18,9 @@ Analytics should have one provider-aware, nullable metric contract shared by ove
 - Highest Engagement references that same post.
 - Best Content Type should use the highest average canonical engagement rate among qualifying posts and link to its strongest example.
 - Best Posting Day & Time should use the highest average canonical engagement bucket, display the user's configured timezone, include sample size, and link to the strongest post in that bucket.
-- Render the related thumbnail on every What Worked card and make the whole card an accessible control opening the existing post-detail modal.
-- If no qualifying post exists, show `Not enough data` and disable navigation.
+- Render the related thumbnail on every What Worked card and make the whole card an accessible control opening the existing post-detail modal. Honor the DTO media type: use `<video preload="metadata" playsInline>` for video/Reel media rather than feeding an MP4 URL to `<img>`.
+- If no qualifying post exists, keep the full insight-card layout visible: show `Not enough data` on each card and disable navigation. Do not hide the section, because that makes an empty state look like a rendering failure.
+- Return the user's configured timezone in the analytics response and pass it into posting-time insights. Do not derive this product setting from the browser timezone.
 - Remove `Create a post like this` when it only copies caption/type; post-detail navigation is more useful and avoids encouraging shallow imitation.
 
 ## Thumbnail propagation
@@ -40,7 +41,8 @@ The existing product model is post-derived activity: group published post-target
 
 - Daily buckets are appropriate through 90 days; weekly thereafter.
 - Sum exact target facts once, then aggregate buckets.
-- Keep unavailable nullable rather than initializing every absent metric to zero.
+- Keep backend-built buckets as the only trend source. Do not silently rebuild trends from post DTOs in the frontend; an absent bucket response should remain an empty trend so contract drift is visible.
+- Keep unavailable nullable rather than initializing every absent metric to zero. Apply this through overview totals/averages, trend buckets, Top Posts, post detail, sorting, and PDF export; preserve confirmed zero as `0`.
 - For ISO-week Monday, do not use the second return value of Go's `ISOWeek()` as weekday—it is the week number. Use `Weekday()` with a Monday offset and test the resulting bucket date across month/year boundaries.
 - Add separate account-level snapshots only when follower/profile growth or observation-date trends are explicitly required.
 
