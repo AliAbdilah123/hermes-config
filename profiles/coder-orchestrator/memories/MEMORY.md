@@ -17,3 +17,7 @@ Komuna public site link is https://komuna.ahsanworks.com/ (root). Do not report 
 Discord #p-selfflow project public link: https://selfflow.ahsanworks.com (not /projects/self-flow/).
 §
 Discord #p-selfflow deploy path: https://selfflow.ahsanworks.com is served by nginx from /var/www/html/projects/self-flow behind Cloudflare cache; pushing git does not update live site. Build packages/fe, copy from a clean dist/ to that directory, and if cache-busting, rename/rewrite all JS chunks together before rsync.
+§
+Paragentix defaults to /home/ubuntu/projects/paragentix, including jobs. Use direct terminal there; delegates must explicitly request terminal; retry indirect failures directly. After restarts, revisit “session missing” jobs and sync status. Omit any supplied “Done definition” from task prompts.
+§
+Paragentix public link is https://app-dev.paragentix.com.

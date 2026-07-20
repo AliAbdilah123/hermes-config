@@ -2,7 +2,7 @@ Keep an nginx-level troubleshooting checklist up to date under a reusable `nginx
 §
 Hermes multi-profile Discord channel routing: whitelist config is in $HERMES_HOME/profiles/<name>/config.yaml not the main config; both runtime config at /home/ubuntu/.hermes/profiles/ and source config at /home/ubuntu/hermes-config/profiles/ should be kept in sync. Use `discord.channel_prompts` to set default per-channel/topic context; keys are channel IDs or `channel:thread` pairs. Restart profile gateway with systemctl --user restart hermes-gateway-<profile>.service — if SIGTERM hangs showing stop-sigterm, kill -9 old PID then start.
 §
-Hermes dashboard may fail silently if web/dist is missing; run npm install && npm run build in hermes-agent/web before starting.
+Hermes dashboard may appear to error when `/api/*` returns 401 from bare curl; that is expected because auth uses an ephemeral session token injected into `index.html`. Verify dashboard health with root `/` (expect 200 HTML) or pass `Authorization: Bearer <token>` where token is from the injected `window.__HERMES_SESSION_TOKEN__`.
 §
 9router is managed by a user-level systemd service at /home/ubuntu/.config/systemd/user/9router.service; runs ubuntu-owned node /home/ubuntu/.local/bin/9router, binds port 20128. Do NOT use Group= in user systemd units (status=216/GROUP failure).
 §
@@ -13,5 +13,3 @@ User systemd services must NOT include `User=` nor `Group=`; user manager alread
 Project `system` renamed/moved to `/home/ubuntu/projects/server-monitor/`, backend built, frontend built, nginx config added, systemd user unit created, verified at `http://168.110.213.104/projects/server-monitor/`.
 §
 This host runs nginx with config at /etc/nginx/projects/default.conf (single server block). User-level systemd services live at /home/ubuntu/.config/systemd/user/.
-§
-Refactored delegate backend: split 2653-line main.go into backend/internal/app/ with 12 files. Embed FS stays in main.go; pass to internal/app via SetMigrations(). Go internal packages must stay in same module, not under cmd/<bin>/internal. Verified with build + curl health.

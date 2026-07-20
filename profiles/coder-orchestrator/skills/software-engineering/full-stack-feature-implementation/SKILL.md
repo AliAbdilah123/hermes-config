@@ -7,6 +7,95 @@ description: Implementing real features in an existing full-stack project, espec
 
 Use this skill when the user asks to update an existing project with a real implementation rather than stubs, mocks, or a plan. The goal is a working artifact backed by tool output.
 
+## Focused UI and embedded-build verification
+
+For async feedback, preserve existing flows, emit success after completion, and surface useful errors; see [references/toast-feedback-in-existing-react-apps.md](references/toast-feedback-in-existing-react-apps.md).
+
+For backend-embedded SPAs, verify source → build → embedded binary → runtime → served asset; stale production UI is often a stale artifact. See [references/embedded-spa-deployment-verification.md](references/embedded-spa-deployment-verification.md). After the final build, also verify generated diffs, git cleanliness/upstream synchronization, and separate deployment authorization per [references/generated-embedded-assets-git-hygiene.md](references/generated-embedded-assets-git-hygiene.md).
+
+For uploads that accept arbitrary file types across creation and reply/comment flows, apply layered count/size enforcement, bounded multipart parsing, safe binary-to-context handling, and sibling-flow boundary tests. See [references/file-upload-boundary-validation.md](references/file-upload-boundary-validation.md).
+
+## Browser modal history
+
+For modal or inspector behavior involving the browser Back button, treat the modal as a history layer rather than a route change:
+
+1. Write a focused UI regression test first. Preserve a realistic path/query, open the modal, trigger `popstate`, and assert both that the modal closes and that the underlying location is unchanged.
+2. On open, push a same-URL history entry and register a `popstate` listener that closes the modal. Remove the listener on cleanup.
+3. Route ordinary modal-close actions through `history.back()` so the synthetic entry is consumed instead of leaving a duplicate history step.
+4. Verify the focused test separately before the full suite. If the full UI suite exposes unrelated DOM cleanup leakage, report it accurately rather than weakening the focused regression.
+
+See `references/browser-modal-history.md` for the minimal React pattern and verification checklist.
+
+## Verify the executable actually deployed
+
+Before rebuilding or replacing a service executable, inspect the service manager's actual `ExecStart` path and build or copy to that exact location. A successful build elsewhere plus a successful restart can silently leave the old embedded frontend running.
+
+After restart, use a bounded readiness retry instead of assuming the first request will succeed. Verify both process health and a release-specific marker: for an embedded SPA, fetch the live HTML and confirm its generated asset filename/hash matches the build output. A generic HTTP 200 is insufficient proof that the new release is serving.
+
+Treat service verification and public-route verification as separate gates. A healthy backend at `127.0.0.1:<port>/` does not establish which hostname or nginx path is public. Inspect the active reverse-proxy configuration, then request the exact public URL and verify both its status and the same release-specific marker. Never infer that the app is served at a domain root merely because the direct service root works, and never present an unverified fallback URL as the project's public link. If the expected public route returns 404 and no configured public route can be proven, report deployment health separately and state that the public URL remains unverified.
+
+For account-to-workspace integration migrations, including API authorization, execution-path tracing, restart reconciliation, UI relocation, and isolation tests, see `references/workspace-scoped-provider-settings.md`.
+
+See `references/systemd-embedded-spa-verification.md` for the concise verification sequence.
+
+For cross-cutting pending states on API-triggering controls, use `references/async-action-loading-feedback.md` to audit async controls, implement accessible duplicate-safe feedback, test promise lifecycles, and verify embedded deployment.
+
+## Preserve semantic UI categories across the full stack
+
+When changing how mixed timelines, activity feeds, or histories render, do not classify entries only at the presentation layer from generic payloads. Trace the event from producer to API to UI and preserve a stable semantic kind for each visual category (for example, conversational replies versus operational output/status history).
+
+1. Give newly produced events an explicit semantic kind at the shared producer.
+2. Keep historical records compatible at the read boundary with a narrow mapping based on trustworthy persisted context; avoid a destructive migration when query-time mapping is sufficient.
+3. Apply styling from that semantic kind: participant messages retain chat affordances, while machine/status history can remain subdued text.
+4. Exercise both halves in one focused regression check: conversational entries still use bubbles, and non-conversation entries do not.
+5. Check every API path that returns or streams the event type so detail views, polling, and live streams agree.
+
+Pitfall: converting every event to a generic `output` kind can make later visual cleanup erase meaningful conversation styling. Styling every output as a reply instead turns logs into fake chat. Preserve the distinction at creation and normalize legacy data only at read boundaries.
+
+## Preflight: determine whether the feature already exists
+
+Before changing code or delegating implementation, inspect the current branch, recent history, relevant source, tests, and generated/deployed assets. A request may describe work that has already landed since the user's last context update.
+
+If the requested behavior already exists:
+
+1. Do not create a redundant diff, duplicate test, empty commit, or cosmetic rewrite merely to appear active.
+2. Run the feature's targeted tests and the appropriate regression suite.
+3. Build the production artifact when the project embeds or copies frontend assets. If the backend binary embeds that directory (for example via Go `embed`), rebuild the backend after the frontend copy; the previously built binary still contains the old asset snapshot.
+4. Confirm the implementing commit is an ancestor of the tracked remote branch.
+5. Verify the live experience rather than relying only on source inspection. After restart, fetch the app HTML and confirm it references the new hashed assets, then fetch one referenced asset and check for a distinctive marker from the change. A successful restart alone is not deployment proof for an embedded SPA.
+6. Report that it was already implemented, identify the existing commit, summarize verification, and include the public link when required.
+
+This is completion by verification, not a skipped implementation. Keep the final report precise and never claim a new change was made when the working tree remained clean.
+
+For cases where current source contains a frontend change but the opened app does not show it, especially when frontend assets may be compiled into a backend binary, follow `references/embedded-frontend-binary-deployment.md`.
+
+## Dirty-tree and agent-side-effect audit
+
+For broad review-driven work in an already-modified repository, capture the pre-run HEAD, branch, status, diff stat, and modified-file list before delegating. Existing changes may be the implementation in progress; preserve and assess them instead of resetting or rebuilding them.
+
+After the coding agent exits, inspect both the working tree and every commit since the captured HEAD. Do not assume a small final `git diff` means little changed: an agent may commit despite a no-commit instruction. Independently verify that prohibited artifacts (such as CI workflows explicitly excluded by the user) were not created, rerun all stack checks directly, and only then deploy/push.
+
+## Auditable lifecycle actions
+
+When a feature asks for status-change, retry, archive, or similar lifecycle history in an existing timeline:
+
+- Reuse the existing event/run model instead of creating a parallel audit-log abstraction.
+- Record explicit domain events at the same transaction boundary as the state mutation. Status events should carry both old and new values; retries and archives should have their own event kinds rather than being inferred later.
+- Treat “archive history remains visible” as incompatible with hard deletion. Prefer a soft-archive flag, exclude archived records from active board/list queries, retain runs/events, and keep the authorized detail endpoint readable for timeline inspection.
+- Block further mutations on archived records and preserve existing user/workspace ownership checks for archived-detail access.
+- Add tests first for event contents, history retention, active-list exclusion, archived mutation rejection, and cross-user denial. Rebuild and commit generated frontend assets when the repository tracks embedded build output.
+
+## Completion discipline for broad review-driven implementations
+
+When implementing a long audit/PRD checklist across backend, frontend, workers, migrations, and deployment:
+
+- Convert every source finding into an explicit scope ledger and mark exclusions (for example, “all items except CI”) before delegating. Re-read the full source artifact; do not let the latest or easiest finding narrow the implementation.
+- A coding agent’s summary is not verification. After it exits—or if it is interrupted—inspect `git status`, compile/test each runtime directly, and search for half-written call sites or newly referenced undefined helpers. An interrupted reviewer may leave additional edits despite reporting only an error.
+- Run a production build of compiled services in addition to tests. Test binaries and cached builds can miss a symbol used only by the real entrypoint; use the actual deployment build command before installation.
+- Treat deployment configuration as part of the feature when new required secrets or protocol fields are introduced. Generate independent secrets, update both ends of signed integrations, remove insecure service-level overrides, reload services, restart, and verify health plus the public route.
+- Before committing, rerun the complete relevant verification chain after the final edit, then `git diff --check`. Commit and push only that verified state.
+- After deployment, if the workspace shows unexpected uncommitted changes, report them precisely and do not silently include or discard them.
+
 ## Workflow
 
 1. **Locate the project and inspect context**

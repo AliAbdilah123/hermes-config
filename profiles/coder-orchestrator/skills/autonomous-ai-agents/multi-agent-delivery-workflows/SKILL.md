@@ -161,6 +161,18 @@ When the user asks which models are available through a configured OpenAI-compat
 
 Keep credentials redacted in all output. A successful catalog query proves availability in the router catalog, not that every model will successfully complete a request; use a minimal real invocation when execution is part of the request.
 
+## API-driven coding jobs and terminal routing
+
+When a project scheduler submits implementation jobs through Hermes's API server, verify the effective API-platform toolset and make the generated prompt explicitly direct shell work to the direct `terminal` tool with the selected project/worktree as `workdir`. Delegated shell tasks should request `terminal` explicitly. An indirect execution-layer or restricted-child failure is not evidence that terminal capability is absent; retry one harmless direct command before declaring a blocker. Preserve this contract with an exact prompt regression test.
+
+See `references/api-driven-job-terminal-routing.md` for the diagnostic trace pattern, scheduler prompt contract, and delivery checklist.
+
+## Embedded frontend release gate
+
+When the backend embeds generated frontend assets, the orchestrator must build the frontend before compiling/restarting the backend, inspect the expected hashed-asset rename and `index.html` update, then verify the public page serves the new release marker. A successful source test or frontend build alone does not prove deployment because the running backend binary may still contain the old bundle.
+
+See `references/embedded-frontend-release-verification.md` for the concise build, commit, restart, and public verification sequence.
+
 ## Pitfalls
 
 - Do not confuse `delegate_task` with durable profile workers. `delegate_task` is useful for quick synchronous subtasks; Hermes Kanban is the right primitive for durable multi-profile implementation pipelines.

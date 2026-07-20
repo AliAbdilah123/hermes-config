@@ -10,6 +10,8 @@ Coding tasks: use Codex CLI to implement. Reuse first: inspect code/history and 
 §
 User prefers bug-fix final reports to include the root cause of the bug.
 §
-User does not want live implementation/deployment from design-choice or debug requests alone. For substantial UI redesigns, work in a separate branch/worktree and provide an isolated public preview; merge/deploy live only after explicit approval.
+Design/debug requests do not authorize live changes. Use isolated previews for substantial redesigns; deploy only after explicit approval.
 §
 Discord #p-paragentix channel conversations concern the Paragentix project by default unless explicitly stated otherwise.
+§
+Job UX: editable todos first; parallel columns, sequential jobs; history is grey text, not bubbles. Done/blocked replies requeue at todo end.

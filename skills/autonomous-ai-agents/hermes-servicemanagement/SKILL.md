@@ -33,27 +33,35 @@ Old dashboard processes from prior sessions often survive. Always stop them firs
 hermes dashboard --stop
 ```
 
+Pitfall: if `hermes` CLI wrapper is unavailable, replace with the explicit venv Python:
+```bash
+/home/ubuntu/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --stop
+```
+
 ### 2. Ensure the web UI is built
 
-The dashboard serves static assets from `web/dist`. On a fresh checkout, a reinstall, or after certain migrations, this directory may be missing. The CLI does **not** auto-build it on `--no-open` non-interactive runs.
+The dashboard serves static assets via `web_dist` (the server resolves this at `hermes_cli/web_dist` relative to the Python package root). On a fresh checkout, reinstall, or after certain migrations, this directory may be missing. The CLI does **not** auto-build it on `--no-open` non-interactive runs.
 
 If missing:
 
 ```bash
-cd /path/to/hermes-agent/web
+cd /home/ubuntu/.hermes/hermes-agent/web
 npm install   # only if node_modules/dist are absent
 npm run build
 ```
 
 > **Pitfall:** `npm run build` can fail with a clean-install `Cannot find module '../lib/tsc.js'` if `node_modules` is incomplete. Run `npm install` first.
+> **Pitfall:** the Vite build outDir is `../hermes_cli/web_dist/` relative to `hermes-agent/web/`, i.e. `/home/ubuntu/.hermes/hermes-agent/hermes_cli/web_dist/`. Do not run `npm run build` from anywhere else.
 
 ### 3. Start the service in the background
 
-For agent/headless contexts, pass both `--no-open` (skip browser popup) and `--insecure --host 0.0.0.0` if remote access is expected. Omit `--insecure --host 0.0.0.0` for localhost-only.
+The explicit, portable command:
 
 ```bash
-hermes dashboard --host 0.0.0.0 --insecure --no-open
+cd /home/ubuntu/.hermes && /home/ubuntu/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --port 9119 --no-open
 ```
+
+For remote access, do **not** rely on `--insecure --host 0.0.0.0` (deprecated/no-op as of June 2026 hardening). Instead, put nginx in front with a reverse proxy or tunnel.
 
 ### 4. Verify with an HTTP probe (not process status alone)
 
@@ -61,9 +69,12 @@ hermes dashboard --host 0.0.0.0 --insecure --no-open
 
 ```bash
 sleep 2
-curl -s -o /dev/null -w "%{http_code}" http://localhost:9119
+curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:9119
 # Expect 200
+ss -tlnp | grep 9119
 ```
+
+**Pitfall:** `/api/version` returns `Unauthorized` from a bare curl because API auth uses the ephemeral session token injected into the SPA HTML (`window.__HERMES_SESSION_TOKEN__`). That 401 is **expected** and not a failure. Verify health with the root `/` path only, or confirm the token is present in the HTML.
 
 ### 5. Report the running PIDs and URL
 
@@ -83,19 +94,23 @@ Return the live PIDs and the direct URL so the user can reach it.
 |---|---|
 | Stop dashboard | `hermes dashboard --stop` |
 | Dashboard status | `hermes dashboard --status` |
-| Start dashboard (bg, no-browser) | `hermes dashboard --host 0.0.0.0 --insecure --no-open` |
+| Start dashboard (bg, no-browser) | `cd /home/ubuntu/.hermes && /home/ubuntu/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --port 9119 --no-open` |
 | Install gateway service | `hermes gateway install` |
 | Gateway status | `hermes gateway status` |
 | Restart profile gateway | `systemctl --user restart hermes-gateway-<profile>.service` |
-| Verify HTTP | `curl -s -o /dev/null -w "%{http_code}" http://localhost:<port>` |
+| Verify HTTP | `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:<port>` |
 
 ## Troubleshooting signals
 
 - **`Cannot find module '../lib/tsc.js'` during build** → `cd web && npm install` before `npm run build`
-- **Port not listening after start** → check `web/dist` exists; rebuild; stop stale processes first
+- **Port not listening after start** → check `web_dist` exists at `hermes-agent/hermes_cli/web_dist/`; rebuild; stop stale processes first
 - **`hermes gateway restart` inside gateway hangs** → use `systemctl --user restart` from another session, or `kill -9` then start
 - **Gateway dies on SSH logout** → `sudo loginctl enable-linger $USER`
+- **`hermes dashboard --status` shows PIDs but HTTP is closed** → stale PID is lying; stop all and restart fresh
+- **Trying `python -m hermes_cli.main web`** → invalid subcommand; use `dashboard`
+- **`/api/version` returns 401** → expected; token auth is injected into `index.html`, not sent on bare API calls. Use root `/` probe instead.
 
 ## References
 
 - `references/dashboard.md` — deeper frontend build troubleshooting, npm quirks, and confirmed build commands
+- `references/auth.md` — session token injection behavior and why bare `/api/*` curls 401
