@@ -34,6 +34,20 @@ For a mobile quick-filter rail plus bottom sheet:
 - Restore trigger focus, trap focus, lock/restore body scroll, respect safe-area insets, and disable transition motion for reduced-motion users.
 - Implement only filters supported by current contracts. Omit prototype-only fields rather than presenting fake functional controls.
 
+## Production parity and responsive acceptance
+
+- Bind production cards, counts, prices, routes, sessions, and carousel slides exclusively to real application data. Never add filler records merely to complete a prototype grid row.
+- Preserve approved design outside the user's named deltas. Scope post-approval iterations to the requested component and viewport instead of rebalancing areas that already passed.
+- Turn vague responsive deltas into measurable targets before delegation (for example, “50% shorter” becomes a bounded mobile card-height target), then verify actual pixels at the named viewport.
+- A horizontally scrollable tablist may expose part of the next tab as an overflow affordance, but the active tab must scroll fully into view on initial mount/deep-link changes as well as after clicks. Distinguish intentional tab-strip overflow from page-level overflow.
+- Larger typography plus fixed-height cards requires budgeting body space first: rebalance media/body rows, clamp secondary descriptions, and keep prices/actions visible. Never let a fixed CTA overlap copy.
+- On mobile carousels, give captions, counters, dots, and placeholder labels separate geometry; desktop overlays commonly collide at narrow widths despite no page overflow.
+- When absolutely positioned carousel stage, slide, and link share a grouped selector, apply footer reservation (`bottom`) only to the outer stage. Repeating it on nested absolute layers compounds the inset and creates a false empty block. See `references/mobile-carousel-absolute-inset-compounding.md`.
+- For reported spacing/alignment defects, compare both outer bounds and nested padding. A hero and tab panel can share the same width while the tab scroller's extra padding makes their visual indentation differ. Normalize one mobile outer gutter before changing component sizes.
+- Compact mobile session rows need stable anatomy: bound row height, clamp long titles, preserve booking state/action size, and prevent content length from changing the silhouette.
+
+See `references/program-detail-production-parity.md` for a concrete data-backed responsive handoff checklist.
+
 ## Verification discipline
 
 - Run targeted lint on changed files as the feature gate.
@@ -54,3 +68,4 @@ For a mobile quick-filter rail plus bottom sheet:
 - Allowing an agent to deploy/commit without independently checking HEAD equals upstream and the public route serves the new build.
 
 See `references/data-backed-mobile-search-verification.md` for a concrete verification recipe.
+See `references/program-detail-tabbed-catalog-handoff.md` for tabbed catalog semantics, carousel/mobile-row geometry, deterministic active-tab alignment, and production-bundle QA.

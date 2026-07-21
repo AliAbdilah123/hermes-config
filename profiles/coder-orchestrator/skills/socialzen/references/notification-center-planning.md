@@ -51,7 +51,9 @@ Register the detail route before broad Settings section routes so it cannot be s
 - Publishing retries and analytics refreshes can repeat. Producers must be idempotent through stable dedupe keys, not best-effort frontend suppression.
 - Cross-platform analytics identity lives at `post_target_id`; parent post metric aggregation can create false milestones.
 - Missing/deleted related records must not erase history. Show the stored snapshot and disable unavailable actions gracefully.
-- Preserve unrelated dirty working-tree changes; stage notification files/hunks explicitly.
+- Preserve unrelated dirty working-tree changes; stage notification files/hunks explicitly. Capture the baseline diff before implementation. If a producer hook must touch a file that was already dirty, stage only the notification hunks (`git add -p` or an index-only patch) and compare the staged diff against the baseline before committing; never stage the whole shared file merely because the new hook is valid.
+- A successful focused suite plus build does not make unrelated full-suite failures disappear. Run the full suites, identify which failures reproduce from the pre-change baseline when practical, and report focused results, build results, and unrelated failures separately.
+- Production health and asset content-type checks prove deployment, not notification authorization or mutations. Before claiming end-to-end completion, smoke list/count/detail/mutation endpoints with an authenticated test session (or state explicitly that authenticated production smoke was not performed).
 
 ## TDD verification shape
 
@@ -59,4 +61,6 @@ Register the detail route before broad Settings section routes so it cannot be s
 2. Handler tests: authentication, ownership, validation, pagination metadata, unread count, 404s.
 3. Producer tests: committed-boundary insertion, retry idempotency, exact snapshots, milestone crossing only once.
 4. Frontend tests: badge cap, dropdown keyboard/Escape/outside click, polling reconciliation, timezone grouping, filters, Load More, detail actions/deep links.
-5. Run full Go tests/build, Vitest, typecheck, and Vite build; deploy and verify the public JS content type before reporting completion.
+5. Run focused suites first, then full Go and frontend suites, backend build, typecheck, and Vite build. Classify any full-suite failures against the baseline instead of silently treating a successful build as a full pass.
+6. Deploy and verify service health, SPA/JS content type, a distinctive notification bundle marker, and authenticated list/count/detail/mutation behavior.
+7. Review the staged diff—not only the working-tree diff—against the captured baseline before commit/push, especially for files that were dirty before implementation.
