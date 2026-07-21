@@ -79,6 +79,7 @@ If tasks were already created as ready and the dispatcher claimed them in parall
 
 ## Verification and reporting
 
+- When a task session appears mixed with another session, trace the exact job → run → agent-session relationship and inspect the original remote message list before concluding contamination. Classify it as cross-task contamination, same-task execution drift, multi-attempt timeline confusion, or insufficient evidence. See `references/task-run-conversation-attribution.md`.
 - Use `runs`, `show`, and worker comments to verify whether a blocked task succeeded or failed.
 - If a worker says tests passed, quote the command and status from the run/comment.
 - For Go projects, complete kanban implementation cards only after a real `go test ./...` and `go build` (usually `go build -o bin/<name> ./cmd/<name>`). If tests fail because other ready/running workers edited the same workspace, inspect the failing files and board state before retrying.

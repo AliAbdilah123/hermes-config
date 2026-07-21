@@ -7,8 +7,9 @@ description: Nginx serving, aliases, and nginx-level 404 troubleshooting for sta
 
 Use for exposing paths, fixing 404s under `/projects/`, `/prds/`, or other nginx prefixes, and auditing `alias` vs `root` path mismatches.
 
-## References
+## Project-specific references
 
+- **Komuna prototype deployments**: for `/projects/komuna/` prefix, `sub_filter` rewrites, and full-copy deploy semantics, see `komuna-prototype-deployment`.
 - `references/config.md` — session-specific nginx + PHP-FPM layout on this host, alias pitfalls, `shell_exec` permission requirements, and current project-to-port proxy map.
 
 ## Procedure

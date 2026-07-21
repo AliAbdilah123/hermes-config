@@ -52,3 +52,5 @@ An HTTP 200 or a new JavaScript hash is not enough for a visual defect. Verify t
 See `references/go-embedded-link-visibility.md` for a concise command recipe and the link-rendering variant.
 
 See `references/go-embedded-spa-stale-runtime.md` for the stale-binary evidence pattern, correct frontend→Go build→restart sequence, and hash-based local/public verification.
+
+See `references/safe-pull-rebuild-restart.md` for dirty-worktree handling, semantic stash comparison, rebuilding the executable named by systemd, readiness polling, and local/public verification.

@@ -62,6 +62,10 @@ See `references/program-detail-production-parity.md` for a concrete data-backed 
 
 - Calling a loading-state screenshot evidence that cards are missing.
 - Reporting first-viewport success without a settled screenshot.
+- Declaring a responsive defect fixed from CSS declarations or nominally equal widths alone. Reproduce the user’s exact viewport/theme/data state and compare rendered outer edges, gaps, borders, controls, and overflow in pixels before deploying.
+- Treating a technically non-overlapping carousel as visually acceptable. Mobile carousel acceptance includes composition: intentional crop, caption size/placement, arrow clearance from text, complete counter/dots, and no unexplained media-colored void. A labeled missing-image placeholder validates fallback geometry but does not prove real-image cropping; inspect a real-image slide separately when available.
+- Misreading “same container” as “visually attached.” Shared centered width and vertical separation are independent requirements: use one shell primitive for horizontal geometry, then give the hero a complete bottom radius/border and an explicit gap before the tab bar.
+- Repeatedly shipping incremental responsive guesses after the user reports the same visual defect. After one rejected fix, stop patching symptoms: restate the visual contract from the screenshot, use the exact requested delegation configuration when asked, independently inspect its diff, and withhold deployment until screenshot QA passes the named defects.
 - Letting pills and the fixed Filter button share one overflow container.
 - Copying unsupported prototype facets into production as disabled or misleading controls.
 - Claiming “all tests pass” when unrelated repository tests or lint fail; report exact commands and boundaries.
