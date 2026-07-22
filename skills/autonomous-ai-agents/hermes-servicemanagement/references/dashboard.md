@@ -32,8 +32,8 @@ Then restart the dashboard.
 - Explicit start: `cd /home/ubuntu/.hermes && /home/ubuntu/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --port 9119 --no-open`
 - Build outDir: `vite.config.ts` sets `outDir: "../hermes_cli/web_dist"`, so assets land at `/home/ubuntu/.hermes/hermes-agent/hermes_cli/web_dist/`
 - Invalid subcommand: `python -m hermes_cli.main web` — use `dashboard`
-- `--insecure` is deprecated/no-op as of June 2026 hardening; do not rely on it to expose remote access
-- For external access, prefer nginx reverse proxy rather than direct `0.0.0.0` binding
+- Remote exposure no longer uses `--insecure --host 0.0.0.0`; non-loopback binds now require `dashboard.basic_auth` in `config.yaml`
+- External access should be via reverse proxy/tunnel or nginx, not direct public bind
 
 ## Why this happens
 

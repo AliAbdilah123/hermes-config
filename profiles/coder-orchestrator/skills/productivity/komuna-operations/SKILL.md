@@ -18,6 +18,7 @@ Safe operations for Komuna's Go/SQLite API.
 
 ## Reference playbooks
 
+- `references/subscription-checkout-idempotency.md` — entitlement-scoped duplicate subscription checkout guard and regression matrix.
 - `references/slug-link-audit.md` — slug route audit.
 - `references/product-route-slug-resolution-and-manager-scope.md` — safe ID/slug resolution, tenant scope, manager authorization, and regression matrix.
 - `references/wallet-package-name-display.md` — wallet package/display names: live Go API joins, frontend DTO fallback, tests, deploy pitfalls.

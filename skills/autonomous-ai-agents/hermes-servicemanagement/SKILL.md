@@ -61,7 +61,26 @@ The explicit, portable command:
 cd /home/ubuntu/.hermes && /home/ubuntu/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --port 9119 --no-open
 ```
 
-For remote access, do **not** rely on `--insecure --host 0.0.0.0` (deprecated/no-op as of June 2026 hardening). Instead, put nginx in front with a reverse proxy or tunnel.
+For remote access, do **not** rely on `--insecure --host 0.0.0.0`. Newer Hermes versions enforce auth on non-loopback binds; `--insecure` no longer bypasses it. Instead, either configure `dashboard.basic_auth` in `config.yaml` or keep the dashboard on `127.0.0.1` and reach it through a reverse proxy/tunnel.
+
+#### Enabling remote binds with basic auth
+
+If you need the dashboard accessible from the network/Tailscale, set `dashboard.basic_auth` in `config.yaml`:
+
+```yaml
+dashboard:
+  basic_auth:
+    username: youruser
+    password_hash: '<hash>'
+```
+
+Generate the hash from the Hermes venv:
+
+```bash
+/home/ubuntu/.hermes/hermes-agent/venv/bin/python -c "from plugins.dashboard_auth.basic import hash_password; print(hash_password('your-password'))"
+```
+
+Then restart the systemd service if one exists, or restart the dashboard process. Without this, the dashboard process will refuse to start on `0.0.0.0` and the service will loop-restart forever.
 
 ### 4. Verify with an HTTP probe (not process status alone)
 
@@ -104,6 +123,7 @@ Return the live PIDs and the direct URL so the user can reach it.
 
 - **`Cannot find module '../lib/tsc.js'` during build** → `cd web && npm install` before `npm run build`
 - **Port not listening after start** → check `web_dist` exists at `hermes-agent/hermes_cli/web_dist/`; rebuild; stop stale processes first
+- **Dashboard service restarts continuously with `Refusing to bind dashboard to 0.0.0.0`** → non-loopback binds now always require `dashboard.basic_auth` in `config.yaml`. Add a username + `password_hash`, then restart. `--insecure` no longer bypasses this.
 - **`hermes gateway restart` inside gateway hangs** → use `systemctl --user restart` from another session, or `kill -9` then start
 - **Gateway dies on SSH logout** → `sudo loginctl enable-linger $USER`
 - **`hermes dashboard --status` shows PIDs but HTTP is closed** → stale PID is lying; stop all and restart fresh

@@ -1,0 +1,14 @@
+[Unit]
+Description=Code Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8999 /home/ubuntu
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

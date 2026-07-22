@@ -1,0 +1,111 @@
+{
+  "unlocks": {
+    "autonomous_avalanche": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "claude_confidant": {
+      "evidence": null,
+      "first_tier": "Silver",
+      "unlocked_at": 1784630968
+    },
+    "config_surgeon": {
+      "evidence": null,
+      "first_tier": "Gold",
+      "unlocked_at": 1784630968
+    },
+    "gemini_cartographer": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "let_him_cook": {
+      "evidence": {
+        "session_id": "20260712_084720_1beb10",
+        "title": "Project Oversized Code Files Breakdown #5",
+        "value": 215
+      },
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "marathon_operator": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "model_sommelier": {
+      "evidence": null,
+      "first_tier": "Gold",
+      "unlocked_at": 1784630968
+    },
+    "night_shift_operator": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "permission_denied_any_percent": {
+      "evidence": null,
+      "first_tier": "Silver",
+      "unlocked_at": 1784630968
+    },
+    "plugin_goblin": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "port_3000_taken": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "red_text_connoisseur": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "screenshot_hunter": {
+      "evidence": null,
+      "first_tier": "Silver",
+      "unlocked_at": 1784630968
+    },
+    "supposed_to_be_quick": {
+      "evidence": {
+        "session_id": "20260712_084720_1beb10",
+        "title": "Project Oversized Code Files Breakdown #5",
+        "value": 436
+      },
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "terminal_goblin": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "test_suite_tamer": {
+      "evidence": null,
+      "first_tier": "Silver",
+      "unlocked_at": 1784630968
+    },
+    "toolset_cartographer": {
+      "evidence": null,
+      "first_tier": "Gold",
+      "unlocked_at": 1784630968
+    },
+    "vibe_architect": {
+      "evidence": {
+        "session_id": "20260628_163311_850a9226",
+        "title": "Fixing hermes-config directory with soft links",
+        "value": 345
+      },
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    },
+    "weekend_warrior": {
+      "evidence": null,
+      "first_tier": "Copper",
+      "unlocked_at": 1784630968
+    }
+  }
+}

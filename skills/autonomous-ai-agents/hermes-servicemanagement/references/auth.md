@@ -1,34 +1,54 @@
 # Dashboard auth behavior
 
-The Hermes dashboard uses an ephemeral session token rather than long-lived API keys for frontend auth.
+Newer Hermes releases require an explicit auth provider for non-loopback dashboard binds.
 
-## How it works
+## Non-loopback bind gate
 
-1. On startup, `web_server.py` generates an ephemeral `_SESSION_TOKEN` (`secrets.token_urlsafe(32)`)
-2. When the SPA requests `/`, the server injects this token into `index.html` as `window.__HERMES_SESSION_TOKEN__="..."`
-3. Frontend JS reads the token from `window` and sends it on `/api/*` calls
-4. If auth is gated (`auth_required=True`), the SPA reads identity from `/api/auth/me` over cookie auth instead; the legacy token path is not used
+`0.0.0.0` / public binds fail unless configured:
+
+- `dashboard.basic_auth.username` + `dashboard.basic_auth.password_hash` in `config.yaml`
+- OAuth via `dashboard.oauth.client_id` / portal registration
+- A `DashboardAuthProvider` plugin
+
+There is **no unauthenticated public-bind option**. `--insecure` no longer bypasses this; the process exits with:
+
+```
+Refusing to bind dashboard to 0.0.0.0 — the auth gate engages on non-loopback binds, but no auth providers are registered.
+```
+
+If `Restart=always` is set, systemd will loop-restart forever with that message.
+
+## Enable non-loopback access safely
+
+1. Generate a password hash:
+```bash
+/home/ubuntu/.hermes/hermes-agent/venv/bin/python -c "from plugins.dashboard_auth.basic import hash_password; print(hash_password('your-password'))"
+```
+
+2. Set in `config.yaml`:
+```yaml
+dashboard:
+  basic_auth:
+    username: youruser
+    password_hash: '<hash>'
+    password: ''
+    secret: ''
+    session_ttl_seconds: 0
+```
+
+3. Restart the dashboard process; verify:
+```bash
+ss -tlnp | grep 9119
+curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:9119
+```
 
 ## Why bare curl on `/api/*` returns 401
 
-A plain `curl http://127.0.0.1:9119/api/version` does not carry the session token, so it gets `{"detail":"Unauthorized"}`. This is correct behavior — it proves token auth is active.
+A plain `curl http://127.0.0.1:9119/api/version` does not carry the session token, so it gets `{"detail":"Unauthorized"}` unless basic auth headers or cookie session are used. This is correct behavior — it proves auth is active.
 
 ## Correct health check
 
 Use the root path:
 ```bash
 curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:9119
-# Expect 200, and HTML contains window.__HERMES_SESSION_TOKEN__
 ```
-
-Or pass the token explicitly:
-```bash
-TOKEN=$(curl -s http://127.0.0.1:9119/ | sed -n 's/.*window.__HERMES_SESSION_TOKEN__="\([...1/p')
-curl -s -H "Authorization: Bearer $TOKEN" http://127.0.0.1:9119/api/version
-```
-
-## Legacy/code references
-
-- Token injection: `web_server.py` around line 17302
-- Verification: `_verify_session_token()` around line 356
-- WS auth: `/api/ws` legacy `?token=` path around line 15974

@@ -6,7 +6,7 @@ User prefers small, straightforward errors to be fixed directly without a planni
 §
 User prefers clean code: SRP, small focused functions/files, DRY, clear names, comments only for non-obvious logic, boundary validation, and simplest practical implementation.
 §
-Coding tasks: use Codex CLI, preferring `gpt-5.6-sol` with `xhigh` reasoning and priority speed when available. Inspect/reuse existing code and workflows before creating files.
+Coding: use Codex CLI, preferring `gpt-5.6-sol`, `medium` reasoning, and priority speed unless specified otherwise. Reuse existing code/workflows before creating files.
 §
 User prefers bug-fix final reports to include the root cause of the bug.
 §
