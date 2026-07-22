@@ -9,7 +9,7 @@ Use this skill when the user asks to update an existing project with a real impl
 
 ## Focused UI and embedded-build verification
 
-References: [async toasts](references/toast-feedback-in-existing-react-apps.md) · [timed resource capture](references/timed-resource-capture.md).
+References: [async toasts](references/toast-feedback-in-existing-react-apps.md) · [timed resource capture](references/timed-resource-capture.md) · [booking auto-reactivation with retained wallet entitlements](references/booking-auto-reactivation-with-wallet-entitlements.md).
 
 For backend-embedded SPAs, verify source → build → embedded binary → runtime → served asset; stale production UI is often a stale artifact. See [references/embedded-spa-deployment-verification.md](references/embedded-spa-deployment-verification.md). After the final build, also verify generated diffs, git cleanliness/upstream synchronization, and separate deployment authorization per [references/generated-embedded-assets-git-hygiene.md](references/generated-embedded-assets-git-hygiene.md).
 

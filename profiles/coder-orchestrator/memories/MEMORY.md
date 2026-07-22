@@ -1,6 +1,6 @@
 #p-delegate=delegate; #p-boilerplate=boilerplate
 §
-WorkingDirectory /opt/socialzen. Frontend dist deploys to /var/www/html/projects/socialzen/ (nginx alias), NOT /var/www/socialzen/. Cloudflare fronts socialzen.ahsanworks.com with 4-hour cache.
+SocialZen defaults to /home/ubuntu/socialzen, including jobs. Use direct terminal there; delegates explicitly request terminal and indirect failures retry directly. Frontend deploys to /var/www/html/projects/socialzen/; Cloudflare caches 4 hours.
 §
 For this user's projects, `.env` and `sqlite.db` are placed in each project's directory/root unless specified otherwise.
 §

@@ -12,16 +12,15 @@ metadata:
 
 # Komuna Operations
 
-## Overview
-
-Safe operations for Komuna's Go/SQLite API.
+Safe operational playbooks for Komuna's Go/SQLite API.
 
 ## Reference playbooks
 
-- `references/subscription-checkout-idempotency.md` — entitlement-scoped duplicate subscription checkout guard and regression matrix.
-- `references/slug-link-audit.md` — slug route audit.
-- `references/product-route-slug-resolution-and-manager-scope.md` — safe ID/slug resolution, tenant scope, manager authorization, and regression matrix.
-- `references/wallet-package-name-display.md` — wallet package/display names: live Go API joins, frontend DTO fallback, tests, deploy pitfalls.
+- `references/booking-cancellation-compensation-vouchers.md` — atomic policy-based refunds, idempotency, modal, Wallet toast, and tests.
+- `references/subscription-checkout-idempotency.md` — duplicate checkout guards.
+- `references/slug-link-audit.md` — slug audits.
+- `references/product-route-slug-resolution-and-manager-scope.md` — scoped ID/slug resolution.
+- `references/wallet-package-name-display.md` — wallet display names: tests, deploy pitfalls.
 - `references/admin-products-metric-and-cancellation-policy.md` — Admin Products tab pitfall: ambiguous products/sessions metric and session cancellation policy visibility.
 - `references/product-slug-create-backfill.md` — Product slug creation/backfill pitfall: nullable product slugs can hide activated sessions from program-wide upcoming-session lists.
 
