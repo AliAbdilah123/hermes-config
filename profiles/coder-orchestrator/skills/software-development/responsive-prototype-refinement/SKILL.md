@@ -55,6 +55,8 @@ For targeted prototype refinements:
 5. Report this as ad-hoc verification, not full-suite green.
 6. Verify the public prototype route returns HTTP 200.
 
+For interactive image prototypes, visible controls and source-string checks are not enough. Exercise the complete state cycle: open preview without launching the picker, edit from the current saved preview, pan/zoom, save and reopen, delete into a usable empty state, replace via supported input methods, cancel back to the last saved state, and close only from preview. Use a same-origin sample image when Canvas export is involved; remote hotlinks can taint Canvas. Temporary `localStorage` persistence should store a bounded crop (for example 512×512), never the original upload. When a user reports “no change,” verify the exact cache-busted public URL and visible behavior before explaining the implementation.
+
 ## Pitfalls
 
 - Styling away a nested box while leaving unnecessary DOM hierarchy.
