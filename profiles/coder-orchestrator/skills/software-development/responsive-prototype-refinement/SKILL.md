@@ -44,16 +44,23 @@ Compact card typography often looks undersized after content is promoted to a fu
 
 Desktop and mobile may intentionally use different interaction models during prototype review.
 
+## Proportional hero-height refinements
+
+When the user asks to reduce an image-led hero by a percentage, first identify what actually determines its rendered height. If the image uses `width: 100%` plus `aspect-ratio`, change the ratio rather than adding fixed heights or JavaScript. For example, changing a portrait ratio from `4 / 5` to `8 / 5` halves the rendered height at the same width. Scope the override to the requested page and preserve any existing mobile ratio unless mobile was explicitly included.
+
+Do not confuse source-level proportional math with visual approval. Verify the ratio and breakpoint preservation mechanically, then provide the exact public route for user approval when approval is the done definition.
+
 ## Verification
 
 For targeted prototype refinements:
 
-1. Build before deployment.
+1. Once the visual change is ready for review (and always before committing), build the artifact.
 2. Use an OS-safe temporary script created with a `/tmp/hermes-verify-` prefix.
-3. Assert the structural correction, scoped style change, and preservation of excluded breakpoint markup.
-4. Remove the temporary script.
-5. Report this as ad-hoc verification, not full-suite green.
-6. Verify the public prototype route returns HTTP 200.
+3. Assert the structural correction, scoped style change, proportional rule when applicable, and preservation of excluded breakpoint markup.
+4. Remove the temporary script with a cleanup trap.
+5. Report this as ad-hoc targeted verification, not full-suite green.
+6. Verify the exact public prototype route returns HTTP 200; a homepage probe is not evidence for a nested detail route.
+7. If user approval is the done definition, report the implementation as awaiting approval even after mechanical checks pass.
 
 For interactive image prototypes, visible controls and source-string checks are not enough. Exercise the complete state cycle: open preview without launching the picker, edit from the current saved preview, pan/zoom, save and reopen, delete into a usable empty state, replace via supported input methods, cancel back to the last saved state, and close only from preview. Use a same-origin sample image when Canvas export is involved; remote hotlinks can taint Canvas. Temporary `localStorage` persistence should store a bounded crop (for example 512×512), never the original upload. When a user reports “no change,” verify the exact cache-busted public URL and visible behavior before explaining the implementation.
 

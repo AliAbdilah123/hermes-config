@@ -194,6 +194,19 @@
     "use_count": 0,
     "view_count": 0
   },
+  "computer-use": {
+    "archived_at": null,
+    "created_at": "2026-07-23T08:19:50.498288+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
   "design-md": {
     "archived_at": null,
     "created_at": "2026-06-25T06:15:50.849269+00:00",
@@ -379,6 +392,19 @@
   "hermes-agent-skill-authoring": {
     "archived_at": null,
     "created_at": "2026-06-25T06:15:50.924549+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
+  "hermes-desktop-plugins": {
+    "archived_at": null,
+    "created_at": "2026-07-23T08:19:50.505518+00:00",
     "created_by": null,
     "last_patched_at": null,
     "last_used_at": null,
@@ -639,6 +665,19 @@
   "p5js": {
     "archived_at": null,
     "created_at": "2026-06-25T06:15:51.045196+00:00",
+    "created_by": null,
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
+  "petdex": {
+    "archived_at": null,
+    "created_at": "2026-07-23T08:19:50.511448+00:00",
     "created_by": null,
     "last_patched_at": null,
     "last_used_at": null,

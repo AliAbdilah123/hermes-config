@@ -1,6 +1,6 @@
 ---
 name: komuna-operations
-description: "Safe operational tasks for the Komuna Go+SQLite API: database state management, seeding, user recovery, service lifecycle, and deployment. Use when modifying Komuna's live database, seeding data, recovering lost accounts, or managing the Go API service."
+description: "Safe Komuna Go+SQLite data recovery and deployment operations."
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -17,6 +17,7 @@ Safe operational playbooks for Komuna's Go/SQLite API.
 ## Reference playbooks
 
 - `references/booking-cancellation-compensation-vouchers.md` — atomic policy-based refunds, idempotency, modal, Wallet toast, and tests.
+- `references/deferred-subscription-renewal-cancellation.md` — confirmation-first cancellation, active-until-expiry semantics, guarded entitlement recovery, tests, and split API/SPA deployment verification.
 - `references/subscription-checkout-idempotency.md` — duplicate checkout guards.
 - `references/slug-link-audit.md` — slug audits.
 - `references/product-route-slug-resolution-and-manager-scope.md` — scoped ID/slug resolution.
