@@ -9,9 +9,7 @@ Use this skill when the user asks to update an existing project with a real impl
 
 ## Focused UI and embedded-build verification
 
-References: [async toasts](references/toast-feedback-in-existing-react-apps.md) · [timed resource capture](references/timed-resource-capture.md) · [booking auto-reactivation with retained wallet entitlements](references/booking-auto-reactivation-with-wallet-entitlements.md) · [targeted UI CSS changes and verification](references/targeted-ui-css-change-verification.md).
-
-For backend-embedded SPAs, verify source → build → embedded binary → runtime → served asset; stale production UI is often a stale artifact. See [references/embedded-spa-deployment-verification.md](references/embedded-spa-deployment-verification.md). After the final build, also verify generated diffs, git cleanliness/upstream synchronization, and separate deployment authorization per [references/generated-embedded-assets-git-hygiene.md](references/generated-embedded-assets-git-hygiene.md).
+References: [role-scoped dashboard tabs](references/role-scoped-aggregate-dashboard-tabs.md), [embedded SPA verification](references/embedded-spa-deployment-verification.md), [generated-asset hygiene](references/generated-embedded-assets-git-hygiene.md), and [read-only attendance analytics](references/read-only-attendance-analytics.md). Verify source through served asset, git/upstream state, and deployment authorization.
 
 For uploads that accept arbitrary file types across creation and reply/comment flows, apply layered count/size enforcement, bounded multipart parsing, safe binary-to-context handling, and sibling-flow boundary tests. See [references/file-upload-boundary-validation.md](references/file-upload-boundary-validation.md).
 

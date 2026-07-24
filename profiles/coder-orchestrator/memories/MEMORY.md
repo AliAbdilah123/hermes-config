@@ -1,6 +1,6 @@
 #p-delegate=delegate; #p-boilerplate=boilerplate
 §
-SocialZen defaults to /home/ubuntu/socialzen, including jobs. Use direct terminal there; delegates explicitly request terminal and indirect failures retry directly. Frontend deploys to /var/www/html/projects/socialzen/; Cloudflare caches 4 hours.
+Project roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna. Jobs/shell use direct project root; delegates request terminal; retry indirect failures directly.
 §
 For this user's projects, `.env` and `sqlite.db` are placed in each project's directory/root unless specified otherwise.
 §

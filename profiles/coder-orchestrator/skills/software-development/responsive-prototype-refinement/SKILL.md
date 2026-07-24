@@ -55,17 +55,23 @@ Do not confuse source-level proportional math with visual approval. Verify the r
 For targeted prototype refinements:
 
 1. Once the visual change is ready for review (and always before committing), build the artifact.
-2. Use an OS-safe temporary script created with a `/tmp/hermes-verify-` prefix.
-3. Assert the structural correction, scoped style change, proportional rule when applicable, and preservation of excluded breakpoint markup.
-4. Remove the temporary script with a cleanup trap.
-5. Report this as ad-hoc targeted verification, not full-suite green.
+2. Even when the normal build passes, also create and run an OS-safe focused temporary script with `mktemp /tmp/hermes-verify-<topic>-XXXXXX`; use a cleanup trap so it cannot remain in the workspace.
+3. Assert the exact changed behavior: new scoped selectors/values or structure are present, superseded values are absent, and excluded breakpoints remain unchanged when relevant.
+4. Run the focused script before claiming completion; do not assume a passing compiler or production bundle proves a visual spacing rule.
+5. Report the focused result explicitly as “ad-hoc targeted verification passed,” not full-suite green. Report the build separately if it also passed.
 6. Verify the exact public prototype route returns HTTP 200; a homepage probe is not evidence for a nested detail route.
 7. If user approval is the done definition, report the implementation as awaiting approval even after mechanical checks pass.
 
 For interactive image prototypes, visible controls and source-string checks are not enough. Exercise the complete state cycle: open preview without launching the picker, edit from the current saved preview, pan/zoom, save and reopen, delete into a usable empty state, replace via supported input methods, cancel back to the last saved state, and close only from preview. Use a same-origin sample image when Canvas export is involved; remote hotlinks can taint Canvas. Temporary `localStorage` persistence should store a bounded crop (for example 512×512), never the original upload. When a user reports “no change,” verify the exact cache-busted public URL and visible behavior before explaining the implementation.
 
+## Single-column commerce refinements
+
+When a checkout or purchase page changes from two columns to one, size the centered parent once and let both cards use `width: 100%`. This guarantees matching edges without duplicated width values. Place package details first and payment/order details below; reassess sticky positioning because a formerly side-mounted payment card usually no longer needs it. When approval is the done definition, demonstrate this in an isolated non-transactional preview before changing production behavior. See `references/centered-single-column-checkout.md`.
+
 ## Pitfalls
 
+- Independently sizing vertically stacked cards instead of giving them one shared centered parent.
+- Leaving side-column sticky behavior on a payment card after moving it below package details.
 - Styling away a nested box while leaving unnecessary DOM hierarchy.
 - Enlarging fonts globally and accidentally changing mobile.
 - Treating a desktop deprecation as permission to redesign mobile.

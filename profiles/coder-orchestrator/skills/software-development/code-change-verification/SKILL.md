@@ -18,6 +18,10 @@ Use after modifying code and before reporting completion, committing, or deployi
 
 For visual CSS changes, verification has two layers: mechanically assert the intended rule or computed relationship (for example, doubling an image aspect-ratio width halves its height at equal width), then obtain user visual approval when approval is part of the done definition. A successful build proves compilation, not visual correctness or approval.
 
+For spacing complaints, inspect the entire spacing stack before editing: parent padding, child top and bottom padding, sibling margins/gaps, header/card margins, and breakpoint overrides. Treat visible whitespace as a sum (for example, section top padding + category bottom padding + adjacent-category margin), because removing the named “top padding” can leave nearly the same perceived gap when trailing padding and sibling margins still dominate. The focused check should assert every contributing rule and removal of obsolete special-case overrides, not merely that one declaration changed. If the user reports “no difference” or “still too much,” re-check the cumulative computed spacing and whether the changed bundle reached the exact public route before another tweak; reduce the stack coherently rather than repeatedly shaving one declaration. Keep visual approval pending even after source, build, and live-asset checks pass.
+
+When the request is visual consistency with an existing component, verify the shared implementation contract—not merely that some CSS changed. A focused check should assert the replacement uses the same design tokens or reusable class as the reference component, assert the superseded styling is absent, and assert any obsolete decorative mark is removed or hidden. Run this through a directly executed `hermes-verify-*` temporary script when canonical checks do not register workspace verification. Keep approval pending until the user reviews the rendered result.
+
 ## Ad-hoc fallback
 
 When the environment does not detect a canonical verification command, run a focused ad-hoc check even if you already found and ran a build command manually. Build evidence and a targeted behavioral assertion are complementary; one does not replace the other.
@@ -29,9 +33,11 @@ verify_script=$(mktemp /tmp/hermes-verify-XXXXXX.sh)
 ```
 
 2. Put the focused behavior check in that script. Prefer invoking an existing regression test over duplicating test logic.
-3. Execute it against the actual changed code.
+3. Execute it against the actual changed code. Invoke the temporary shell script directly from the terminal command (for example, `"$verify_script"`), rather than hiding its checks inside a nested Python/subprocess wrapper, so verification tracking can observe the script execution and evidence.
 4. Remove the script afterward; use a cleanup trap when the script has multiple failure points.
 5. Label the result “ad-hoc targeted verification.” State the behavior checked and distinguish passed tests from skipped tests.
+
+If the workspace still reports “unverified” after equivalent manual checks, rerun them through one directly executed `hermes-verify-*` script; prior output may be human-readable evidence without being registered as fresh workspace verification.
 
 The fallback supplements canonical checks; it does not redefine an arbitrary command as full-suite verification.
 
@@ -45,12 +51,22 @@ Bad: “All tests passed” when only one selected test ran.
 
 When the requested fix is already present in recent commits before you begin:
 
-1. Inspect the exact commits and confirm both local `HEAD` and the tracked remote contain them; do not create a duplicate change or unnecessary commit.
-2. Run the focused regression test and build from the current final workspace.
-3. For “stay on this page” navigation bugs, assert the resulting pathname explicitly. A negative assertion such as “the sessions page is absent” is weaker and can pass after navigation to another wrong page.
-4. If the handler canonicalizes an ID route to a slug route, verify that this same-detail-page replacement is intentional and test the canonical pathname, history behavior (`replace` versus `push`), and preserved page content.
+1. Inspect blame/log/diff for the exact route and behavior, then confirm both local `HEAD` and the tracked remote contain the implementing commit; do not create a duplicate change or unnecessary commit. Similar checkout, preview, and admin routes are not interchangeable evidence.
+2. Treat a follow-up such as “Approved” as acceptance of the already-present implementation when the conversation identifies that implementation; switch from editing to verification rather than manufacturing a no-op diff.
+3. Run the focused regression test, changed-file lint, typecheck, and build as independent gates so one known failure does not suppress evidence from the others. For a dirty shared repository, verify committed behavior from a detached clean worktree; invoke existing tool binaries directly if package-manager execution would mutate or purge a shared/symlinked dependency directory.
+4. Report each boundary separately: focused behavior, changed-file lint, clean-commit build, and deployment/live-route status. Never summarize a clean-build failure as feature failure when the focused regression passes, and never summarize focused regression success as a green production build.
+5. For “stay on this page” navigation bugs, assert the resulting pathname explicitly. A negative assertion such as “the sessions page is absent” is weaker and can pass after navigation to another wrong page.
+6. If the handler canonicalizes an ID route to a slug route, verify that this same-detail-page replacement is intentional and test the canonical pathname, history behavior (`replace` versus `push`), and preserved page content.
 5. For an already-deployed SPA, compare the public HTML’s asset hash with the live deployment and inspect or exercise the served asset/behavior. HTTP 200 alone does not prove the fix is deployed.
 6. Report “already committed/pushed” rather than implying you made a new commit during the current run.
+
+## Route-specific visual verification
+
+When users say a visual change is still absent after repeated reloads, verify that the implementation targets the exact route they are viewing. Similar surfaces may have separate parent layouts (for example, member checkout versus admin package preview) while sharing child cards. Inspect the route component and route-local wrappers/CSS; a correct change on the wrong route is a failed delivery.
+
+For “I can’t see the change” reports, trace source → commit/upstream → production build → web-server document root → public HTML asset URL → exact served rule before making another edit. A pushed commit is not deployment evidence, and HTTP 200 is not content evidence. Cache-bust the exact asset URL and inspect the relevant selector or marker in its served body. Compare semantic markers with whitespace-tolerant parsing or a short extracted excerpt; minifiers may preserve or remove spaces, so brittle whole-string matching can falsely report that a deployed rule is absent. If the live asset already contains the change, do not redeploy or hand-edit it blindly—reproduce the exact route/state that activates the fallback and leave visual approval pending.
+
+For one-column requests, assert the parent has one column and a centered desktop max width, every sibling card has equal width, and superseded multi-column placement/transforms are absent. A homepage asset hash proves deployment freshness, not correctness of the requested route. Prefer rendering or screenshotting the exact public route. If that is unavailable, execute a focused `hermes-verify-*` temporary script against the route-local source plus deployed asset, label it ad-hoc targeted verification, and leave visual approval pending when it is part of the done definition.
 
 ## Pitfalls
 
