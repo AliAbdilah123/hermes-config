@@ -31,6 +31,21 @@ Meta comment edges are cursor-paginated. A sync that fetches only the first page
 
 Graph logs should include the provider, redacted endpoint, whether a cursor page exists, item count, response status/body snippet, and errors. Never log raw access tokens; redact `access_token` query params and token strings in bodies.
 
+## Reconnected-account identity drift
+
+A published target can retain an old internal `instagram_accounts.id` after disconnect/reconnect while the replacement ACTIVE row has the same external `ig_user_id`. If sync resolves only `post_targets.account_id`, it can stop with `instagram account not connected` before making any Meta request even though that Instagram account is currently connected.
+
+Resolution rules:
+
+- Prefer the exact active internal account row referenced by the target.
+- Otherwise, read the old row’s external `ig_user_id` and use a replacement only when exactly one ACTIVE direct-Instagram row for the same user has that `ig_user_id`.
+- Never fall back to merely “any active Instagram account”; that risks using another account’s token.
+- Reject ambiguous duplicate active matches rather than guessing.
+- Add regression cases for one safe same-external-ID reconnect and two ambiguous active replacements.
+- Keep identity repair separate from pagination and permissions: zero outbound requests indicates account resolution failed before Meta; `data:[]` proves Meta was called and returned no comments.
+
+The shared account resolver may also restore exact-media analytics calls. It does not justify adding OAuth permissions.
+
 ## Verification
 
 Run from `apps/backend-go`:
