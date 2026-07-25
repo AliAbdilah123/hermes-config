@@ -160,13 +160,13 @@
     "created_at": "2026-07-23T03:23:44.812877+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-24T04:48:00.009898+00:00",
-    "last_used_at": "2026-07-24T08:41:19.924962+00:00",
-    "last_viewed_at": "2026-07-24T08:41:19.920561+00:00",
+    "last_used_at": "2026-07-24T14:18:29.879816+00:00",
+    "last_viewed_at": "2026-07-24T14:18:29.868891+00:00",
     "patch_count": 10,
     "pinned": false,
     "state": "active",
-    "use_count": 39,
-    "view_count": 39
+    "use_count": 43,
+    "view_count": 43
   },
   "codebase-inspection": {
     "archived_at": null,
@@ -186,13 +186,13 @@
     "created_at": "2026-06-25T05:56:09.313005+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T07:42:08.344022+00:00",
-    "last_used_at": "2026-07-24T08:41:19.915330+00:00",
-    "last_viewed_at": "2026-07-24T08:41:19.887841+00:00",
+    "last_used_at": "2026-07-24T09:17:42.237351+00:00",
+    "last_viewed_at": "2026-07-24T09:17:42.230273+00:00",
     "patch_count": 3,
     "pinned": false,
     "state": "active",
-    "use_count": 152,
-    "view_count": 152
+    "use_count": 153,
+    "view_count": 153
   },
   "coding-agent-delegation-readiness": {
     "archived_at": null,
@@ -341,14 +341,14 @@
     "archived_at": null,
     "created_at": "2026-06-18T15:29:18.028685+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-07-24T08:57:27.452373+00:00",
-    "last_used_at": "2026-07-24T08:57:11.462426+00:00",
-    "last_viewed_at": "2026-07-24T08:57:11.456761+00:00",
-    "patch_count": 522,
+    "last_patched_at": "2026-07-24T12:32:13.942891+00:00",
+    "last_used_at": "2026-07-24T12:31:40.854582+00:00",
+    "last_viewed_at": "2026-07-24T12:31:40.848278+00:00",
+    "patch_count": 524,
     "pinned": false,
     "state": "active",
-    "use_count": 557,
-    "view_count": 555
+    "use_count": 559,
+    "view_count": 557
   },
   "gif-search": {
     "archived_at": null,
@@ -641,13 +641,13 @@
     "created_at": "2026-07-08T02:02:01.580009+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T10:55:22.475928+00:00",
-    "last_used_at": "2026-07-24T08:41:19.909993+00:00",
-    "last_viewed_at": "2026-07-24T08:41:19.899836+00:00",
+    "last_used_at": "2026-07-24T09:17:42.219183+00:00",
+    "last_viewed_at": "2026-07-24T09:17:42.211929+00:00",
     "patch_count": 58,
     "pinned": false,
     "state": "active",
-    "use_count": 138,
-    "view_count": 138
+    "use_count": 139,
+    "view_count": 139
   },
   "llama-cpp": {
     "archived_at": null,
@@ -1147,14 +1147,14 @@
     "archived_at": null,
     "created_at": "2026-07-02T15:58:52.225903+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-07-24T04:42:56.433551+00:00",
-    "last_used_at": "2026-07-24T04:42:45.944751+00:00",
-    "last_viewed_at": "2026-07-24T04:42:45.935953+00:00",
-    "patch_count": 318,
+    "last_patched_at": "2026-07-24T14:23:58.152446+00:00",
+    "last_used_at": "2026-07-24T14:18:29.864149+00:00",
+    "last_viewed_at": "2026-07-24T14:18:29.858436+00:00",
+    "patch_count": 319,
     "pinned": false,
     "state": "active",
-    "use_count": 456,
-    "view_count": 456
+    "use_count": 464,
+    "view_count": 464
   },
   "software-development:responsive-prototype-production-handoff": {
     "archived_at": null,
@@ -1239,13 +1239,13 @@
     "created_at": "2026-06-22T07:20:34.959663+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T06:47:09.732114+00:00",
-    "last_used_at": "2026-07-24T04:45:36.557707+00:00",
-    "last_viewed_at": "2026-07-24T04:45:36.552620+00:00",
+    "last_used_at": "2026-07-24T14:18:29.884768+00:00",
+    "last_viewed_at": "2026-07-24T14:18:29.874801+00:00",
     "patch_count": 137,
     "pinned": false,
     "state": "active",
-    "use_count": 285,
-    "view_count": 285
+    "use_count": 288,
+    "view_count": 288
   },
   "teams-meeting-pipeline": {
     "archived_at": null,
@@ -1265,13 +1265,13 @@
     "created_at": "2026-06-22T06:47:16.423413+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-13T00:19:27.934608+00:00",
-    "last_used_at": "2026-07-24T04:33:29.801923+00:00",
-    "last_viewed_at": "2026-07-24T04:33:29.784734+00:00",
+    "last_used_at": "2026-07-24T14:18:29.853947+00:00",
+    "last_viewed_at": "2026-07-24T14:18:29.844216+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 233,
-    "view_count": 222
+    "use_count": 236,
+    "view_count": 225
   },
   "touchdesigner-mcp": {
     "archived_at": null,

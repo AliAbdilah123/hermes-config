@@ -9,7 +9,9 @@ Use this skill when the user asks to update an existing project with a real impl
 
 ## Focused UI and embedded-build verification
 
-References: [role-scoped dashboard tabs](references/role-scoped-aggregate-dashboard-tabs.md), [embedded SPA verification](references/embedded-spa-deployment-verification.md), [generated-asset hygiene](references/generated-embedded-assets-git-hygiene.md), and [read-only attendance analytics](references/read-only-attendance-analytics.md). Verify source through served asset, git/upstream state, and deployment authorization.
+References: [role-scoped dashboard tabs](references/role-scoped-aggregate-dashboard-tabs.md), [embedded SPA verification](references/embedded-spa-deployment-verification.md), [generated-asset hygiene](references/generated-embedded-assets-git-hygiene.md), [read-only attendance analytics](references/read-only-attendance-analytics.md), and [dirty shared-worktree feature delivery](references/dirty-worktree-feature-delivery.md). Verify source through served asset, git/upstream state, and deployment authorization.
+
+When the repository is already dirty, isolate the feature by exact paths: inventory first, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 
 For uploads that accept arbitrary file types across creation and reply/comment flows, apply layered count/size enforcement, bounded multipart parsing, safe binary-to-context handling, and sibling-flow boundary tests. See [references/file-upload-boundary-validation.md](references/file-upload-boundary-validation.md).
 
