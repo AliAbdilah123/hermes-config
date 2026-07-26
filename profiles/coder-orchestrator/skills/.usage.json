@@ -472,13 +472,13 @@
     "created_at": "2026-06-22T05:30:56.144122+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-07-20T00:25:41.964318+00:00",
-    "last_viewed_at": "2026-07-20T00:25:41.960330+00:00",
+    "last_used_at": "2026-07-25T13:34:20.914455+00:00",
+    "last_viewed_at": "2026-07-25T13:34:20.901906+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 32,
-    "view_count": 32
+    "use_count": 33,
+    "view_count": 33
   },
   "hermes-agent-skill-authoring": {
     "archived_at": null,
@@ -732,13 +732,13 @@
     "created_at": "2026-06-29T01:06:19.209523+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-06-29T01:06:30.313205+00:00",
-    "last_used_at": "2026-07-19T07:11:03.746380+00:00",
-    "last_viewed_at": "2026-07-19T07:11:03.742290+00:00",
+    "last_used_at": "2026-07-25T13:14:46.621051+00:00",
+    "last_viewed_at": "2026-07-25T13:14:46.611343+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 2,
-    "view_count": 2
+    "use_count": 3,
+    "view_count": 3
   },
   "meta-graph-api-integration": {
     "archived_at": null,
@@ -784,13 +784,13 @@
     "created_at": "2026-06-30T08:53:01.817776+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-19T14:03:15.831370+00:00",
-    "last_used_at": "2026-07-23T14:17:43.275381+00:00",
-    "last_viewed_at": "2026-07-23T14:17:43.270457+00:00",
+    "last_used_at": "2026-07-25T13:14:46.625969+00:00",
+    "last_viewed_at": "2026-07-25T13:14:46.616862+00:00",
     "patch_count": 35,
     "pinned": false,
     "state": "active",
-    "use_count": 47,
-    "view_count": 47
+    "use_count": 48,
+    "view_count": 48
   },
   "node-inspect-debugger": {
     "archived_at": null,
@@ -1239,13 +1239,13 @@
     "created_at": "2026-06-22T07:20:34.959663+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T06:47:09.732114+00:00",
-    "last_used_at": "2026-07-25T05:38:11.862010+00:00",
-    "last_viewed_at": "2026-07-25T05:38:11.848369+00:00",
+    "last_used_at": "2026-07-25T13:34:20.925393+00:00",
+    "last_viewed_at": "2026-07-25T13:34:20.920740+00:00",
     "patch_count": 137,
     "pinned": false,
     "state": "active",
-    "use_count": 289,
-    "view_count": 289
+    "use_count": 290,
+    "view_count": 290
   },
   "teams-meeting-pipeline": {
     "archived_at": null,
