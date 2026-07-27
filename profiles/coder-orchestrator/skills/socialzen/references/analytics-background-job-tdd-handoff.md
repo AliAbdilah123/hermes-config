@@ -14,6 +14,13 @@ Use when converting SocialZen analytics refresh from a synchronous request into 
 - Wire terminal Notification Center receipts and reconciliation before calling the feature complete. Dedupe by job ID + terminal status and never persist raw provider errors.
 - Frontend polling must implement remount recovery, scope/unmount stale-response guards, visibility/focus behavior, bounded poll-error handling with `Check status`, and exactly one background overview reload for every terminal state.
 
+## Completion pitfalls discovered during handoff
+
+- Preserve availability metadata through every DTO projection. Adding `unavailableReason` in `analyticsMaps` is insufficient if `analyticsPosts` rebuilds the public post map and omits it; assert at the final API DTO boundary.
+- Background-job changes can expose old synchronous copy assertions outside the new component test. Search analytics tests for superseded labels such as `Analytics refresh completed with some issues` / `Partial Success` and update tests that cover the changed contract to the exact terminal labels.
+- Analytics drill-down must tolerate sparse DTO fields produced while data is unavailable or stale: use optional target access and guard missing/invalid `publishedAt` before date formatting. Keep a focused sparse-post render test.
+- After the final edit, rerun a fresh canonical frontend build even when an earlier typecheck/build passed; verification produced before the last patch is stale evidence.
+
 ## Verification and reporting
 
 Run focused commands directly (the repository-wide pnpm test script may discover all tests despite file arguments), then canonical full gates:
