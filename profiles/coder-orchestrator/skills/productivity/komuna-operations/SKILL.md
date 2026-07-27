@@ -16,13 +16,14 @@ Safe operational playbooks for Komuna's Go/SQLite API.
 
 ## Reference playbooks
 
-- `references/booking-cancellation-compensation-vouchers.md` — atomic policy-based refunds, idempotency, modal, Wallet toast, and tests.
-- `references/deferred-subscription-renewal-cancellation.md` — confirmation-first cancellation, active-until-expiry semantics, guarded entitlement recovery, tests, and split API/SPA deployment verification.
-- `references/subscription-checkout-idempotency.md` — duplicate checkout guards.
+- `references/booking-cancellation-compensation-vouchers.md` — atomic cancellation compensation.
+- `references/deferred-subscription-renewal-cancellation.md` — deferred renewal cancellation.
+- `references/subscription-checkout-idempotency.md` — checkout idempotency.
 - `references/slug-link-audit.md` — slug audits.
-- `references/product-route-slug-resolution-and-manager-scope.md` — scoped ID/slug resolution.
-- `references/wallet-package-name-display.md` — wallet display names: tests, deploy pitfalls.
-- `references/admin-products-metric-and-cancellation-policy.md` — Admin Products tab pitfall: ambiguous products/sessions metric and session cancellation policy visibility.
+- `references/product-route-slug-resolution-and-manager-scope.md` — scoped route resolution.
+- `references/wallet-package-name-display.md` — wallet package names.
+- `references/admin-products-metric-and-cancellation-policy.md` — product metrics and cancellation policy.
+- `references/spa-preview-routing-and-isolated-api.md` — deep-route SPA verification and snapshot-backed preview APIs.
 - `references/product-slug-create-backfill.md` — Product slug creation/backfill pitfall: nullable product slugs can hide activated sessions from program-wide upcoming-session lists.
 
 

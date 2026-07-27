@@ -68,6 +68,18 @@ For “I can’t see the change” reports, trace source → commit/upstream →
 
 For one-column requests, assert the parent has one column and a centered desktop max width, every sibling card has equal width, and superseded multi-column placement/transforms are absent. A homepage asset hash proves deployment freshness, not correctness of the requested route. Prefer rendering or screenshotting the exact public route. If that is unavailable, execute a focused `hermes-verify-*` temporary script against the route-local source plus deployed asset, label it ad-hoc targeted verification, and leave visual approval pending when it is part of the done definition.
 
+## JavaScript worktree dependency isolation
+
+In React/Vite worktrees, do not symlink a repository-level or sibling app `node_modules` into the worktree for test verification. Mixed package resolution can load React from one tree and the renderer or `react-i18next` from another, producing widespread `Invalid hook call` / `Cannot read properties of null (reading 'useMemo')` failures that are verification-environment artifacts rather than product regressions.
+
+For trustworthy worktree verification:
+
+1. Remove any existing `node_modules` symlink.
+2. Install dependencies locally in the worktree app directory using the repository lockfile and package manager.
+3. Run focused tests through the directly executed `hermes-verify-*` script only after dependency isolation is clean.
+4. If a symlinked-dependency run failed with hook errors, repair isolation and rerun. Treat only the fresh isolated result as evidence.
+5. Keep build blockers separate from targeted behavior. Unrelated missing source files or pre-existing type errors mean the full build is not green even when focused regressions pass.
+
 ## Pitfalls
 
 - Do not cite test/build output produced before the final edit.

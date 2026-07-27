@@ -39,7 +39,7 @@ PY
 
 This avoids prompt-loss failures such as “No prompt provided.”
 
-## Capability inventory
+## Capability and quota inventory
 
 When asked what agents/models are available, distinguish four states:
 
@@ -48,7 +48,11 @@ When asked what agents/models are available, distinguish four states:
 - model identifier accepted,
 - quota/request currently usable.
 
-Report only models actually confirmed by the CLI or a successful probe. Do not infer a full catalog from one active model or config file.
+For a direct quota question, inspect the quota authority the user names first (for example a local routing dashboard), rather than opening the downstream coding CLI and treating session context as account quota. Discover the local service and its quota endpoint/UI; if authentication is required, reuse an existing authenticated session when available or ask only for the credential needed to continue. A process launch, active model label, and “100% context left” are not evidence of remaining rolling or weekly allowance.
+
+Report only models and quota values actually confirmed by the authoritative CLI, API, or dashboard. Do not infer a full catalog or allowance from one active model or config file.
+
+Provider-specific 9Router quota probing notes are in `references/9router-quota-checks.md`.
 
 ## Execution handoff
 

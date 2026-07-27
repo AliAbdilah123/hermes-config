@@ -12,6 +12,12 @@ metadata:
 
 Use when a user approves a static or interactive responsive prototype and explicitly requests implementation in the real application.
 
+## Preview-first approval gate
+
+When a website change requires user review before production, use a dedicated feature branch and isolated worktree, publish a separate public preview, and keep the production branch, primary checkout, and live deployment unchanged. Apply revisions only to the preview. Preview availability is **not** approval: merge, push, and deploy only after the user explicitly authorizes production. After approval, squash-merge, push, deploy, verify production, and only then remove the preview. If the user explicitly says **“not approved”** or rejects the preview, remove the public preview immediately without changing production.
+
+See `references/preview-first-worktree-approval-gate.md` for the complete lifecycle, approval semantics, isolation checks, and cleanup checklist. For full-stack SPA previews, dirty-checkout build provenance, deep-link verification, snapshot-backed preview APIs, clean promotion, and concrete user-facing gate explanations, also see `references/clean-build-spa-preview-and-production-promotion.md`.
+
 ## Core workflow
 
 1. Read the approved prototype, implementation plan, real page/component tree, shared styles, data helpers, translations, and nearby tests.

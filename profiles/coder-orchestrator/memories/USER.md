@@ -1,6 +1,6 @@
 Review artifacts: responsive themed HTML with toggle/public link; Komuna docs stay under Komuna, others in ~/docs.
 §
-User wants every final update after working on a feature or fix to include the project's public link. Always commit and push to git after every feature implementation or bug fix.
+Feature/fix work continues through verification without pausing at status updates; production finals include public link, commit, and push.
 §
 User prefers small, straightforward errors to be fixed directly without a planning artifact; for larger or complex errors, create a plan and styled HTML review artifact first.
 §
@@ -10,8 +10,8 @@ Coding: use Codex CLI, preferring `gpt-5.6-sol`, `medium` reasoning, and priorit
 §
 User prefers bug-fix final reports to include the root cause of the bug.
 §
-Design/debug requests do not authorize live changes. Use isolated previews for substantial redesigns; deploy only after explicit approval.
+Komuna creation uses isolated worktree/public preview; production only after explicit approval; “not approved” removes preview. Other design/debug requests also do not authorize live changes.
 §
-Komuna daily reports must not repeat accomplishments already recorded in prior reports; on Mondays, merge only newly reportable Friday–Sunday work under last Friday.
+Komuna reports: verify WIB date every time; use only that reporting period, never stale progress. Mondays cover Friday plus unreported weekend work.
 §
 Job UX: editable todos first; parallel columns, sequential jobs; history is grey text, not bubbles. Done/blocked replies requeue at todo end.

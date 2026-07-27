@@ -14,10 +14,13 @@ Use when the comments drawer must show every current Instagram and Facebook user
 ## Async API and frontend contract
 
 - Keep provider network sync asynchronous from GET so the cached local response returns immediately.
+- A background GET sync cannot report its eventual provider outcome to that response. Add an explicit authenticated refresh action that runs provider sync synchronously, returns per-provider `ok`, `empty`, `error`, or `unavailable` status, and only then reloads local comments.
+- Distinguish a successful Graph response with `data:[]` (`empty`, informational) from HTTP/token/parse failures (`error`). Show provider-specific status in the drawer instead of leaving diagnostics only in server logs; do not expose tokens or raw provider bodies.
 - While the drawer is open, fetch immediately, once shortly after sync starts, then lightly poll (about 10 seconds).
-- Every refresh must load all local API pages before replacing UI state. Refreshing only offset 0 makes previously loaded older comments disappear and violates “all comments visible.” Prefer the API maximum page size and loop using `paging.hasMore`/`nextOffset`.
+- Every refresh, including manual refresh, must load all local API pages before replacing UI state. Refreshing only offset 0 makes previously loaded older comments disappear and violates “all comments visible.” Prefer the API maximum page size and loop using `paging.hasMore`/`nextOffset`.
 - Keep polling scoped to the mounted drawer. Clear timeout and interval on unmount.
 - Auto-expand threads when replies exist so synchronized replies are clearly visible.
+- For long threads, use a visibly larger responsive dialog, a scrollable list region, and an accessible refresh button with a busy state.
 
 ## Regression coverage
 
