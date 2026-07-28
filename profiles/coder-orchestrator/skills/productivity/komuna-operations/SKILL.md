@@ -1,29 +1,22 @@
 ---
 name: komuna-operations
-description: "Safe Komuna Go+SQLite data recovery and deployment operations."
-version: 1.0.0
-author: Hermes Agent
-license: MIT
-metadata:
-  hermes:
-    tags: [komuna, database, seeding, operations, go-api]
-    related_skills: [komuna-daily-report]
+description: Safe Komuna Go/SQLite operations and payment hardening.
 ---
 
 # Komuna Operations
-
-Safe operational playbooks for Komuna's Go/SQLite API.
 
 ## Reference playbooks
 
 - `references/booking-cancellation-compensation-vouchers.md` — atomic cancellation compensation.
 - `references/deferred-subscription-renewal-cancellation.md` — deferred renewal cancellation.
-- `references/subscription-checkout-idempotency.md` — checkout idempotency.
-- `references/slug-link-audit.md` — slug audits.
-- `references/product-route-slug-resolution-and-manager-scope.md` — scoped route resolution.
-- `references/wallet-package-name-display.md` — wallet package names.
-- `references/admin-products-metric-and-cancellation-policy.md` — product metrics and cancellation policy.
-- `references/spa-preview-routing-and-isolated-api.md` — deep-route SPA verification and snapshot-backed preview APIs.
+- `references/subscription-checkout-idempotency.md` — subscription purchase blocking.
+- `references/payment-webhook-fulfillment-hardening.md` — secure payment fulfillment.
+- `references/xendit-payment-hardening-and-preview-gates.md` — Xendit hardening and preview gates.
+- `references/post-purchase-wallet-voucher-arrival.md` — verified wallet animations and honest fixtures.
+- `references/payment-production-promotion-and-preview-cleanup.md` — production promotion, browser proof, cache-busting, and preview teardown.
+- `references/slug-link-audit.md` and `references/product-route-slug-resolution-and-manager-scope.md` — route/slug safety.
+- `references/wallet-package-name-display.md` and `references/admin-products-metric-and-cancellation-policy.md` — commerce UI rules.
+- `references/spa-preview-routing-and-isolated-api.md` — isolated SPA/API previews.
 - `references/product-slug-create-backfill.md` — Product slug creation/backfill pitfall: nullable product slugs can hide activated sessions from program-wide upcoming-session lists.
 
 

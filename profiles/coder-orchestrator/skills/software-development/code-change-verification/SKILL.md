@@ -94,6 +94,8 @@ Browser and end-to-end test runners may rewrite tracked reports or create screen
 
 For code-split SPAs, the entry HTML often names only the entry bundle, not the changed route's lazy chunk. Resolve the route chunk from the built manifest/import graph or deployed assets, then probe that exact chunk for a stable semantic marker. An entry-bundle hash or HTTP 200 alone does not prove the changed route was deployed.
 
+For isolated SPA previews, also read `references/spa-preview-prefix-and-browser-evidence.md`. It covers emitted-prefix discovery, public asset/MIME probes, the boundary between transport checks and browser-render evidence, screenshot validation, and staging untracked files.
+
 ## Pitfalls
 
 - Do not cite test/build output produced before the final edit.

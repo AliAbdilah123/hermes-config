@@ -1,17 +1,19 @@
-Review artifacts: responsive themed HTML with toggle/public link; Komuna docs stay under Komuna, others in ~/docs.
+Review artifacts: responsive themed HTML; Komuna docs stay in repo, others in ~/docs.
 §
-Feature/fix work continues through verification without pausing at status updates; production finals include public link, commit, and push.
+Fixes continue through verification; production finals include public link, commit, push.
 §
-User prefers small, straightforward errors to be fixed directly without a planning artifact; for larger or complex errors, create a plan and styled HTML review artifact first.
+Small errors: fix directly. Complex errors: plan plus styled HTML review artifact first.
 §
-User prefers clean code: SRP, small focused functions/files, DRY, clear names, comments only for non-obvious logic, boundary validation, and simplest practical implementation.
+Clean code: SRP, focused files/functions, DRY, clear names, boundary validation, minimal comments and implementation.
 §
 Coding: use Codex CLI, preferring `gpt-5.6-sol` with medium reasoning and speed unless specified. Reuse existing code/workflows.
 §
-User prefers bug-fix final reports to include the root cause of the bug.
+User prefers concise explanations; Komuna UI says “Simple product,” not “Merchandise.”
 §
-Komuna uses isolated public previews; production only after explicit approval; rejection removes preview. Preview changes must be visibly meaningful and verified by rendering the exact public URL. Other design/debug requests do not authorize live changes.
+Komuna previews are isolated/exact-route; production requires explicit approval; rejected previews are removed. Actionable payment previews use genuine Xendit test invoices, never fake checkout URLs.
 §
 Komuna reports: verify WIB date every time; use only that reporting period, never stale progress. Mondays cover Friday plus unreported weekend work.
 §
 Job UX: editable todos first; parallel columns, sequential jobs; history is grey text, not bubbles. Done/blocked replies requeue at todo end.
+§
+WYSIWYG: use an established editor, not handmade contentEditable; polished UI, visibly working formatting/list markers, H1–H5, and a single-row horizontally scrollable toolbar.

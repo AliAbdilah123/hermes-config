@@ -32,20 +32,23 @@ A preview is not working merely because its URL returns HTTP 200. A production S
 
 4. **Set the client router basename**
    - Inject or configure `/previews/<slug>/`, not `/`.
-   - Confirm both preview root and a deep route contain the preview basename.
+   - Derive the deep route from the current router or navigation source; never guess it from a role, page title, or URL convention.
+   - Confirm both preview root and that real application route contain the preview basename.
 
 5. **Verify transport deterministically**
    - Preview root: HTML 200.
    - Actual hashed JS: JavaScript MIME, not HTML.
    - Actual hashed CSS: CSS MIME.
-   - Deep route: preview HTML 200.
+   - Real application deep route: preview HTML 200.
    - API path: expected API response/auth behavior, not SPA HTML.
+   - Treat HTTP 200 on an unknown SPA route only as fallback-routing proof, never application-route proof.
 
 6. **Verify rendering in a real browser**
-   - Open the exact public URL at desktop and mobile widths.
-   - Assert expected application text is present.
+   - Open the same source-derived public route at desktop and mobile widths.
+   - Assert route-specific application text is present.
    - Assert `Page not found` and equivalent error-page text are absent.
    - Check uncaught exceptions and relevant console errors.
+   - If the primary browser harness cannot launch, use an already-installed browser executable in native headless mode (`--dump-dom`, `--screenshot`, and captured stderr) rather than downgrading to HTTP-only verification.
 
 7. **Verify the requested feature, not merely the homepage**
    - For authenticated work, establish a suitable test session or fixture.
