@@ -113,6 +113,24 @@ Require workers to isolate work:
 - Commit only the task scope.
 - Include tests or verification output in the Kanban completion comment.
 
+## Delegated TDD evidence and final verification
+
+For implementation delegated to a coding CLI or worker, put the evidence contract in the task prompt, not merely “use TDD”:
+
+1. Write each focused test before its production change.
+2. Run it and preserve the exact command plus expected behavior-level failure reason (RED).
+3. Implement the minimum change, rerun the same test, and preserve GREEN.
+4. Return the RED/GREEN ledger, changed files, final checks, and commit SHA.
+
+The orchestrator still owns delivery evidence after the worker exits:
+
+- Inspect the actual commit and working tree instead of trusting the worker summary.
+- Rerun formatting, focused tests, changed-file lint, and build from the final state.
+- Retain genuine RED output for strict-TDD claims; final GREEN output cannot retrospectively prove test-first order.
+- If RED evidence is missing or only reflects a typo/setup failure, say strict TDD evidence is incomplete. Never synthesize a plausible missing failure.
+- Report scopes literally: focused tests are not the full suite, and changed-file lint is not repository-wide lint.
+- When the repository documents pre-existing broad-check failures, run independent focused gates so a known broad failure does not suppress useful evidence.
+
 ## Review gate
 
 Review tasks should check:

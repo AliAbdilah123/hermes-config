@@ -10,8 +10,9 @@ Use after modifying code and before reporting completion, committing, or deployi
 ## Sequence
 
 1. Prefer the repository’s documented canonical test, lint, and build commands.
-2. Run the smallest existing regression test that directly exercises the changed behavior first.
-3. Run broader canonical checks when available and proportionate to the change.
+2. Before running language-specific checks, locate the actual module/package root rather than assuming the Git repository root is executable. For Go, run tests from the directory containing the relevant `go.mod` (or use an explicit module-aware workspace command); monorepos commonly keep modules under paths such as `api/v1/`. Apply the same principle to nested JavaScript/Python workspaces, and classify a wrong-working-directory failure as verification setup—not a product-test failure.
+3. Run the smallest existing regression test that directly exercises the changed behavior first.
+4. Run broader canonical checks when available and proportionate to the change.
 4. If code changes after a check, rerun the affected verification. Earlier output is stale evidence.
 5. Capture fresh passing evidence before committing or reporting completion; do not rely on a build alone when the changed behavior needs a focused assertion.
 6. Report exactly what ran and what passed. Do not convert a targeted pass into a claim that the whole suite is green.
@@ -58,7 +59,8 @@ When the requested fix is already present in recent commits before you begin:
 5. For “stay on this page” navigation bugs, assert the resulting pathname explicitly. A negative assertion such as “the sessions page is absent” is weaker and can pass after navigation to another wrong page.
 6. If the handler canonicalizes an ID route to a slug route, verify that this same-detail-page replacement is intentional and test the canonical pathname, history behavior (`replace` versus `push`), and preserved page content.
 5. For an already-deployed SPA, compare the public HTML’s asset hash with the live deployment and inspect or exercise the served asset/behavior. HTTP 200 alone does not prove the fix is deployed.
-6. Report “already committed/pushed” rather than implying you made a new commit during the current run.
+6. When removing a nested SPA preview, do not use HTTP 404 as the cleanup assertion: a production `try_files` fallback may still return the production SPA with HTTP 200. Verify that the exact preview directory is absent, its explicit web-server location is absent, and any preview-only API service is inactive.
+7. Report “already committed/pushed” rather than implying you made a new commit during the current run.
 
 ## Route-specific visual verification
 
@@ -79,6 +81,18 @@ For trustworthy worktree verification:
 3. Run focused tests through the directly executed `hermes-verify-*` script only after dependency isolation is clean.
 4. If a symlinked-dependency run failed with hook errors, repair isolation and rerun. Treat only the fresh isolated result as evidence.
 5. Keep build blockers separate from targeted behavior. Unrelated missing source files or pre-existing type errors mean the full build is not green even when focused regressions pass.
+
+## Test-run artifact hygiene
+
+Browser and end-to-end test runners may rewrite tracked reports or create screenshots, traces, result directories, and HTML reports even when the product test passes. Before staging or reporting completion:
+
+1. Compare `git status` before and after verification.
+2. Restore only runner-generated changes that were clean at the start; never erase pre-existing dirty files.
+3. Prefer runner flags or configuration that suppress persistent reports for focused verification when available.
+4. Stage explicit product and regression-test paths rather than `git add .`.
+5. Recheck `git status` after commit or deployment so generated evidence is not accidentally presented as unrelated user work.
+
+For code-split SPAs, the entry HTML often names only the entry bundle, not the changed route's lazy chunk. Resolve the route chunk from the built manifest/import graph or deployed assets, then probe that exact chunk for a stable semantic marker. An entry-bundle hash or HTTP 200 alone does not prove the changed route was deployed.
 
 ## Pitfalls
 

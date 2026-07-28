@@ -1,22 +1,28 @@
-# Role-scoped aggregate dashboard tabs
+# Role-scoped dashboard tabs and aggregate views
 
-Use this pattern when simplifying a role-specific dashboard into a small set of functional tabs while one tab needs an aggregate over records owned by the signed-in actor.
+Use this pattern when adding or simplifying role-specific dashboard navigation, especially when existing pages and creation behavior must be exposed as sibling tabs rather than duplicated.
 
 ## Minimal implementation sequence
 
-1. Trace every navigation surface: canonical routes, legacy redirects, sidebar/workspace navigation, the visible tab strip, and route tests.
-2. Redirect the role workspace index to the first retained functional tab instead of preserving an empty overview.
-3. Reuse the existing feature view in its new tab; do not duplicate a table that already owns loading, filtering, and role behavior.
-4. Enforce actor scoping on the server. Resolve the authorized actor's domain membership ID, then aggregate only records assigned to it.
-5. Define attendance semantics explicitly in SQL: include present records; exclude cancelled claims and cancelled sessions; group by member; sort count descending with deterministic name/email/ID tie-breakers.
-6. Return a narrow aggregate DTO rather than stretching an unrelated dashboard-summary response.
+1. Trace every navigation surface: canonical routes, nested layouts, legacy redirects, sidebar/workspace navigation, visible tab strips, and route tests.
+2. Put one shared nested layout beneath the role guard so every sibling page receives the same tab strip and authorization boundary.
+3. Preserve existing overview/settings routes; add sibling routes for new tabs. Use exact matching on the overview link so child routes do not mark Overview active.
+4. Reuse the existing feature component and creation behavior. A route-mode prop such as `available | create` is preferable to copying forms, validation, upload handling, or POST logic into new pages.
+5. Keep list and create concerns visually separate: the list route renders all authorized records but no creation form; the create route renders the shared form but not the list. Navigate to the list only after successful creation.
+6. For aggregate views, enforce actor scoping on the server. Resolve the authorized actor's domain membership ID, aggregate only assigned records, define inclusion/exclusion semantics explicitly, and return a narrow DTO.
+
+## Focused tests
+
+- Render the nested layout through real router routes; assert every preserved/new tab href, active-tab class, and child `<Outlet>` content.
+- Test route modes directly: list mode shows every returned record and omits the form; create mode exposes shared fields and verifies the canonical POST path/payload.
+- If image creation is staged (create entity, upload, patch), retain a focused test proving the entity ID is passed to upload and the resulting URL is patched.
 
 ## Verification ladder
 
-- Add a backend test proving actor ownership, cancellation exclusions, grouping, and descending frequency.
-- Add a frontend test proving rows render in API order and navigation exposes exactly the retained tabs.
-- Run focused backend and frontend tests first, then the production build.
-- Run the broader suite when practical. If it fails outside the touched scope, rerun focused tests and report the unrelated failure precisely; do not repair unrelated dirty work without authorization.
+- Run focused route/behavior tests first, then changed-file lint and the production build.
+- If workspace verification does not recognize canonical commands, create an OS-safe temporary executable with `mktemp /tmp/hermes-verify-XXXXXX`, invoke it directly, and remove it afterward. Label this **ad-hoc targeted verification**, not suite-green evidence.
+- Do not suppress a new lint finding. If a touched legacy file has a known pre-existing rule violation, run repository lint unchanged and report its failure separately; a changed-file lint may disable only that specific pre-existing rule while still checking all other rules.
+- Run the broader suite when practical. If it fails outside the touched scope, report the unrelated failure precisely; do not repair unrelated debt without authorization.
 
 ## Dirty-worktree discipline
 

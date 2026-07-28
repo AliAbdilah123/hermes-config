@@ -6,11 +6,11 @@ User prefers small, straightforward errors to be fixed directly without a planni
 §
 User prefers clean code: SRP, small focused functions/files, DRY, clear names, comments only for non-obvious logic, boundary validation, and simplest practical implementation.
 §
-Coding: use Codex CLI, preferring `gpt-5.6-sol`, `medium` reasoning, and priority speed unless specified otherwise. Reuse existing code/workflows before creating files.
+Coding: use Codex CLI, preferring `gpt-5.6-sol` with medium reasoning and speed unless specified. Reuse existing code/workflows.
 §
 User prefers bug-fix final reports to include the root cause of the bug.
 §
-Komuna creation uses isolated worktree/public preview; production only after explicit approval; “not approved” removes preview. Other design/debug requests also do not authorize live changes.
+Komuna uses isolated public previews; production only after explicit approval; rejection removes preview. Preview changes must be visibly meaningful and verified by rendering the exact public URL. Other design/debug requests do not authorize live changes.
 §
 Komuna reports: verify WIB date every time; use only that reporting period, never stale progress. Mondays cover Friday plus unreported weekend work.
 §

@@ -8,6 +8,7 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 ## Feature workflows
 
 - See `references/analytics-backend-performance-correctness-audit.md` for read-only analytics/detail audits covering route tracing, SQL plans and indexes, database-level repeated lookups, O(n²) DTO processing, SQLite single-connection contention, refresh-job polling/payloads, correctness contracts, logs/tests, and local timing methodology.
+- See `references/analytics-performance-stability-implementation.md` after that audit is approved to implement request sequencing, stable detail selection, runtime DTO guards, linear peer comparisons, query indexes, event-driven refresh wakeups, focused regressions, and source-to-production verification.
 
 - See `references/meta-app-review-readiness.md` when planning or implementing Meta App Review preparation. It covers permission-to-feature evidence, least-privilege scope decisions, direct Instagram versus Facebook Page Login copy, reviewer fixtures/runbooks, canonical HTTPS legal URLs, deletion configuration boundaries, and plan-first verification.
 - See `references/meta-oauth-least-privilege-implementation.md` after an audit is approved and OAuth scopes, exact legal disclosures, focused authorization-URL tests, clean-token boundaries, deployment, and reconnect requirements must be aligned without adding unproven permissions.
