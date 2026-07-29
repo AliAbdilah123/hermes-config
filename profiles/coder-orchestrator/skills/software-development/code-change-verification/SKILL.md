@@ -16,6 +16,8 @@ Use after modifying code and before reporting completion, committing, or deployi
 4. If code changes after a check, rerun the affected verification. Earlier output is stale evidence.
 5. Capture fresh passing evidence before committing or reporting completion; do not rely on a build alone when the changed behavior needs a focused assertion.
 6. Report exactly what ran and what passed. Do not convert a targeted pass into a claim that the whole suite is green.
+7. Treat an autonomous coding agent's zero exit as a handoff, not evidence that its claimed checks passed. Inspect the final diff and rerun verification independently from the final workspace state.
+8. When a broad lint/test suite fails, classify failures before editing: compare with a clean baseline or source history, fix feature-caused regressions, and report unrelated baseline failures separately. Run changed-file lint and focused feature tests independently so unrelated global failures do not suppress useful evidence; never churn unrelated files just to force a global green result.
 
 For visual CSS changes, verification has two layers: mechanically assert the intended rule or computed relationship (for example, doubling an image aspect-ratio width halves its height at equal width), then obtain user visual approval when approval is part of the done definition. A successful build proves compilation, not visual correctness or approval.
 
@@ -103,6 +105,17 @@ Browser and end-to-end test runners may rewrite tracked reports or create screen
 For code-split SPAs, the entry HTML often names only the entry bundle, not the changed route's lazy chunk. Resolve the route chunk from the built manifest/import graph or deployed assets, then probe that exact chunk for a stable semantic marker. An entry-bundle hash or HTTP 200 alone does not prove the changed route was deployed.
 
 For isolated SPA previews, also read `references/spa-preview-prefix-and-browser-evidence.md`. It covers emitted-prefix discovery, public asset/MIME probes, the boundary between transport checks and browser-render evidence, screenshot validation, and staging untracked files.
+
+## Headless Chromium artifact classification
+
+When the primary browser runner is unavailable, Chromium headless may create a valid screenshot or DOM dump and still return non-zero because of host GPU, D-Bus, or accessibility-bus warnings. Do not let `set -e` discard that evidence before classifying the run:
+
+1. Capture exit status and stderr separately while preserving the requested artifact.
+2. Confirm the screenshot/DOM file exists and is non-empty.
+3. Inspect stderr for page/runtime failures (`Uncaught`, console errors, `net::ERR`) separately from host-integration warnings.
+4. Visually inspect the screenshot or parse the DOM, then report the host warning and render result as distinct boundaries.
+
+A non-zero browser exit is not a passing render by itself, but neither does it invalidate a demonstrably complete artifact.
 
 ## Pitfalls
 

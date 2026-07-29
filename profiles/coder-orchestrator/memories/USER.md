@@ -1,16 +1,14 @@
-Review artifacts: responsive themed HTML; Komuna docs stay in repo, others in ~/docs.
-§
-Fixes require exact public end-to-end workflow verification, not builds/tests/HTTP/render; production finals include link, commit, push.
+Fixes need exact public E2E verification—not tests/build/HTTP alone. Production finals include link, commit, push. Restore and reverify broken/missing previews proactively; never claim readiness prematurely.
 §
 Small errors: fix directly. Complex errors: plan plus styled HTML review artifact first.
 §
-Clean code: SRP, focused files/functions, DRY, clear names, boundary validation, minimal comments and implementation.
+Clean code: SRP, focused code, DRY, clear names, boundary validation, minimal comments.
 §
 Coding: use Codex CLI, preferring `gpt-5.6-sol` with medium reasoning and speed unless specified. Reuse existing code/workflows.
 §
-User prefers concise explanations; Komuna UI says “Simple product,” not “Merchandise.”
+User prefers concise replies. Komuna: “Simple product,” not “Merchandise”; omit § spec markers. Discovery cards retain pricing/visibility, not descriptions. Exact visual targets need public verification.
 §
-Komuna previews are isolated/exact-route; production requires explicit approval; rejected previews are removed. Actionable payment previews use genuine Xendit test invoices, never fake checkout URLs.
+Komuna previews: isolated exact routes; production requires explicit approval; remove rejected previews. Payment previews use genuine Xendit test invoices.
 §
 Komuna reports: verify WIB date every time; use only that reporting period, never stale progress. Mondays cover Friday plus unreported weekend work.
 §

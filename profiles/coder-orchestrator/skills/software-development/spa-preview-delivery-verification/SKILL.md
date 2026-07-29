@@ -35,12 +35,16 @@ A preview is not working merely because its URL returns HTTP 200. A production S
    - Derive the deep route from the current router or navigation source; never guess it from a role, page title, or URL convention.
    - Confirm both preview root and that real application route contain the preview basename.
 
-5. **Verify transport deterministically**
-   - Preview root: HTML 200.
+5. **Verify transport deterministically after publishing**
+   - Treat build + copy + verification as one transaction; pre-copy checks do not prove the public artifact.
+   - Re-probe root, deep route, emitted assets, and API immediately before telling the user the preview is ready; files or ad-hoc processes can disappear after an earlier successful check.
+   - If the user reports a blank page, `500`, or missing preview, restore/rebuild and reverify it proactively after identifying the cause—do not stop at an explanation.
+   - Preview root: HTML 200. Fetch the public HTML and extract the asset URLs it actually emits.
    - Actual hashed JS: JavaScript MIME, not HTML.
    - Actual hashed CSS: CSS MIME.
    - Real application deep route: preview HTML 200.
-   - API path: expected API response/auth behavior, not SPA HTML.
+   - API health path and one feature API path: expected API response/auth behavior, not SPA HTML or `502`.
+   - Ensure the isolated API is supervised or otherwise demonstrably remains listening throughout the review period; an expired ad-hoc process makes the preview incomplete.
    - Treat HTTP 200 on an unknown SPA route only as fallback-routing proof, never application-route proof.
 
 6. **Verify rendering in a real browser**
@@ -84,7 +88,7 @@ Normalize data at the API/client boundary where practical; still test every down
 - A working homepage does not prove an authenticated dashboard tab works.
 - Finding theme tokens in a shared shell does not prove the visible theme begins above the tabs.
 - Fixing one nullable field does not prove adjacent nullable collections are safe.
-- Do not publish a review link before browser-rendering the exact URL; repeated broken links destroy trust.
+- Do not publish a review link—or claim it is published, ready, or done—before post-publish asset/API probes and browser rendering of the exact URL pass; build success and successful file copy are not completion evidence, and repeated broken links destroy trust.
 
 ## Supporting detail
 

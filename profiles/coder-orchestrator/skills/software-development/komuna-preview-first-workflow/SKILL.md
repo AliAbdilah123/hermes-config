@@ -36,7 +36,7 @@ Before explicit approval, do not merge into `main`/`master`, push the production
 8. **Handle rejection immediately.** If the user says `not approved` or clearly rejects the preview, remove its public route/assets immediately, verify it is no longer served as a separate preview, and leave production unchanged. Retain or remove the feature branch/worktree only according to the user's intent; do not merge it.
 9. **Rebase before integration.** Immediately before approved integration, run `git fetch --prune origin main` again. If `origin/main` advanced, require a clean feature worktree, rebase onto it, and rerun verification. Stop and report any conflicts instead of resolving them automatically.
 10. **Integrate only after explicit approval.** Re-verify the feature, squash-merge into the production branch, push, build from the clean merged commit, deploy the production artifact, and verify the public site and API. Confirm local and remote production SHAs agree.
-11. **Cleanup last.** Remove the preview route/assets only after production verification succeeds. Then remove/prune the feature worktree and branch when safe.
+11. **Cleanup last and prove it.** Remove the preview route/assets only after production verification succeeds. Then inspect the feature and temporary integration/deploy worktrees with `git status --porcelain`; never discard uncommitted files. For each clean worktree, verify its HEAD is contained in the freshly fetched remote default branch with `git merge-base --is-ancestor <sha> origin/<default>` before running `git worktree remove <path>`. Delete the corresponding local branch only after the containment check, run `git worktree prune`, and finish by checking `git worktree list --porcelain`. Cleanup is not complete—and must not be reported complete—while an approved feature's obsolete preview, integration, or deploy worktree remains registered. Generated-only dirt such as `node_modules` may be force-removed only after explicitly confirming it is the sole change; preserve all source/config/database changes for review.
 
 ## Preview safety
 
@@ -94,4 +94,7 @@ Not approval: `looks interesting`, `preview works`, `thanks`, silence, a request
 - [ ] Rejected preview removed immediately
 - [ ] Explicit approval captured before merge/push/deploy
 - [ ] Squash merge, remote SHA, clean production build, and live production verified
-- [ ] Preview removed only after successful production verification
+- [ ] Preview route/assets removed only after successful production verification
+- [ ] Clean obsolete preview/integration/deploy worktrees proven contained in remote default branch, removed, and local branches deleted
+- [ ] Dirty worktrees preserved for review; generated-only forced cleanup explicitly verified
+- [ ] `git worktree prune` run and final `git worktree list --porcelain` confirms no approved-feature leftovers

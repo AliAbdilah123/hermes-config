@@ -50,6 +50,18 @@ When the user asks to reduce an image-led hero by a percentage, first identify w
 
 Do not confuse source-level proportional math with visual approval. Verify the ratio and breakpoint preservation mechanically, then provide the exact public route for user approval when approval is the done definition.
 
+## Data-backed compact cards
+
+When replacing compact card metadata (price, status, badges) with API-provided descriptions:
+
+- inspect whether the description contract permits rich-text HTML before rendering it as ordinary React text;
+- reuse the codebase's existing rich-text-to-plain-text helper at the card boundary rather than displaying raw tags or introducing a second sanitizer;
+- clamp the normalized plain text, not the raw HTML string, so markup does not consume the visible line budget;
+- preserve the remaining hierarchy (for example category and location) unless explicitly removed;
+- test with a rich-text fixture, then visually inspect exact public desktop and mobile cards because plain-text fixtures will not expose raw-markup rendering.
+
+See `references/compact-cards-with-rich-text-descriptions.md` for the focused implementation and verification pattern.
+
 ## Verification
 
 For targeted prototype refinements:
@@ -68,8 +80,19 @@ For interactive image prototypes, visible controls and source-string checks are 
 
 When a checkout or purchase page changes from two columns to one, size the centered parent once and let both cards use `width: 100%`. This guarantees matching edges without duplicated width values. Place package details first and payment/order details below; reassess sticky positioning because a formerly side-mounted payment card usually no longer needs it. When approval is the done definition, demonstrate this in an isolated non-transactional preview before changing production behavior. See `references/centered-single-column-checkout.md`.
 
+## Rejected-delta rollback
+
+When the user asks to revert a reviewed component, undo only the latest rejected delta on that component; preserve all previously accepted preview changes. Restore the component and its focused tests together, rerun the focused test and preview-path build, then republish and visually verify the exact surface.
+
+If an old assertion fails because the established locale/formatter emits an equivalent value (for example `IDR 28` rather than `$28`), update the stale assertion instead of changing the restored UI merely to satisfy literal test text.
+
+Scope visual QA to the exact DOM surface. Removing an `Open` badge from each card does not imply removing a page-level “Open to Join” section. Name the relevant element/class in screenshot-review prompts so similarly worded headings do not become false failures.
+
 ## Pitfalls
 
+- Reverting the whole preview when only the latest component delta was rejected.
+- Changing restored UI to satisfy a stale locale-specific literal assertion.
+- Letting screenshot QA confuse a page-level heading with the exact card-level element under review.
 - Independently sizing vertically stacked cards instead of giving them one shared centered parent.
 - Leaving side-column sticky behavior on a payment card after moving it below package details.
 - Styling away a nested box while leaving unnecessary DOM hierarchy.
