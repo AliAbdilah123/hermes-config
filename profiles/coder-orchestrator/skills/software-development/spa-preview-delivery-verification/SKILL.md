@@ -52,6 +52,8 @@ A preview is not working merely because its URL returns HTTP 200. A production S
 
 7. **Verify the requested feature, not merely the homepage**
    - For authenticated work, establish a suitable test session or fixture.
+   - If the preview uses an isolated database cloned from a live SQLite application, create it with SQLite's `.backup`/backup API rather than copying an arbitrary nearby `.db` file. Confirm the copy contains the real authentication tables and a plausible account count before starting the preview API.
+   - Exercise authentication through the **public preview API path**, not localhost: sign up or use a dedicated review account, capture `Set-Cookie`, call the session endpoint with that cookie, sign out, sign back in, and confirm the protected preview route renders. A login form rendering is not authentication verification.
    - Navigate to the exact changed tab/page.
    - Reproduce the original payload shape, including nullable collections and empty states.
    - Exercise the interaction and assert the original error is absent.
@@ -76,6 +78,7 @@ Normalize data at the API/client boundary where practical; still test every down
 ## Pitfalls
 
 - `curl -I` proves transport status, not application identity.
+- Building with `base: "/"` for a subpath preview and relying on router/API injection still leaves HTML pointing at `/assets/...`; those requests can load production assets or fail blank. Build with the exact preview prefix and assert the emitted `src`/`href` values before publishing.
 - Root-relative assets can silently hit production routes.
 - Correct asset MIME types do not prove the router basename is correct.
 - A working homepage does not prove an authenticated dashboard tab works.

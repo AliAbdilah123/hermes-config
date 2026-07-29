@@ -61,4 +61,4 @@ If the provider may have created an invoice but the response was lost, malformed
 
 Report targeted checks separately from baseline suite/lint failures. Compare the same broad command on a clean baseline before calling failures regressions. For nontechnical stakeholders, lead with a short verdict and a concise `Problem | Solution` table; keep state-machine and SQL detail optional.
 
-See `references/xendit-go-sqlite.md` for a concrete Xendit/Go/SQLite checklist and `references/pending-expiry-and-resume.md` for provider-truth expiry, reconciliation scheduling, owner-only invoice links, and purchase-surface tests.
+See `references/xendit-go-sqlite.md` for a concrete Xendit/Go/SQLite checklist, `references/pending-expiry-and-resume.md` for provider-truth expiry, reconciliation scheduling, owner-only invoice links, and purchase-surface tests, and `references/preview-safe-local-checkout.md` for explicitly gated providerless preview checkout, strict TDD, public-chain gates, and verification-script hygiene.

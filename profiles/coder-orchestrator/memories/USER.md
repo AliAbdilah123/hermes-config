@@ -1,6 +1,6 @@
 Review artifacts: responsive themed HTML; Komuna docs stay in repo, others in ~/docs.
 §
-Fixes continue through verification; production finals include public link, commit, push.
+Fixes require exact public end-to-end workflow verification, not builds/tests/HTTP/render; production finals include link, commit, push.
 §
 Small errors: fix directly. Complex errors: plan plus styled HTML review artifact first.
 §

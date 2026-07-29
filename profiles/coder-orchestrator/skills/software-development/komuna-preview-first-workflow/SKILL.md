@@ -47,6 +47,33 @@ Before explicit approval, do not merge into `main`/`master`, push the production
 - Do not expose `.env`, databases, repository roots, source maps containing secrets, uploads not intended for review, or directory indexes.
 - A frontend preview that talks to the live API must be labeled accordingly and exercised without destructive writes.
 
+## Functional-preview parity gate
+
+A Komuna preview is not reviewable merely because its HTML, assets, homepage, or changed component renders. Before sharing any preview URL, identify every prerequisite flow needed to reach and exercise the requested feature (for example authentication → program membership → package selection → checkout → provider confirmation → notification bell) and verify that complete chain on the exact public preview URL.
+
+### Required environment parity
+
+1. **Determine the real default branch.** Inspect `origin/HEAD`; if the repository uses `master`, fetch and branch from `origin/master`. Do not hardcode `main` and stop after that predictable failure.
+2. **Use a clean worktree.** If the shared checkout is dirty, preserve it and create an isolated worktree from the freshly fetched remote default branch. Dirty shared state is not a reason to abandon implementation.
+3. **Build for the exact preview path.** Set Vite `base` to `/previews/<slug>/`; generated `index.html` must reference `/previews/<slug>/assets/...`. Root-relative `/assets/...` is a failed preview even when those URLs return production assets with HTTP 200.
+4. **Use an isolated but faithful database.** For SQLite, create the preview DB with SQLite `.backup`/`VACUUM INTO` from the actual runtime database identified from systemd or `/proc/<pid>/environ`; never guess among nearby `sqlite.db` files and never use raw copying with live WAL files. Run `PRAGMA integrity_check` and verify required table/record counts (including `auth_users`) before starting the preview API. The copy is isolated after creation: all preview writes must stay in it.
+5. **Preserve required runtime configuration.** Inspect the production service's effective environment and copy only the non-production-safe configuration necessary for feature parity into the isolated preview process. For provider-backed features, explicitly decide whether the preview uses a provider sandbox/test account or an intentional stub. Never claim checkout/payment verification when provider credentials, callback token, invoice mode, redirect URL, webhook route, or reconciliation configuration is absent.
+6. **Keep callback and return URLs preview-aware.** Checkout success/failure return URLs and provider webhook/callback routing must land on the preview API/UI or a documented sandbox bridge—not silently target production or an unavailable route. Do not mutate production data to make the preview work.
+
+### Mandatory public flow checks before sharing
+
+- **Authentication:** Exercise public sign-up or a known preview-safe login, capture the session cookie/token, call the authenticated session endpoint, sign out, sign back in, and confirm the browser reaches the intended authenticated route. A rendered sign-in form is not auth verification.
+- **API routing:** From the browser/network or an equivalent cookie-jar flow, confirm requests use `/previews/<slug>/api/v1/...` and return JSON—not SPA HTML, production API responses, or 502/404 fallbacks.
+- **Feature prerequisites:** Establish the exact roles, memberships, programs, products, packages, and records required by the feature in the preview DB. Verify the UI can reach the feature without manual URL guessing.
+- **Payments/checkout:** When the requested feature involves payment, complete quote → checkout/invoice creation → provider sandbox confirmation or documented test finalization → paid purchase → entitlement issuance → return-page state. Then verify duplicate confirmation is idempotent and the requested downstream effect (such as a notification) appears. Merely opening Checkout or testing the finalizer directly is insufficient.
+- **Notifications:** Verify the bell fetches from the preview API under an authenticated browser session, shows the generated event, updates unread state, and navigates to a real preview route whose page renders. An `href` assertion alone is insufficient.
+- **Browser proof:** Render the exact public feature route in a real browser at desktop and mobile widths, inspect DOM and console/runtime errors, and exercise the primary interaction. If the normal browser tool fails, use installed Chromium headless with `--dump-dom`/screenshot and captured stderr; do not downgrade to HTTP-only evidence.
+- **Production isolation:** Record production asset identity before and after, confirm it is unchanged, and verify preview writes affect only the preview DB/API.
+
+### Truthful reporting
+
+Report each gate separately: transport, rendered route, auth, prerequisite data, checkout/provider confirmation, downstream notification, and production isolation. If any required gate is unavailable, call the preview incomplete and do not send it as ready for review. Never use “functional preview,” “end-to-end verified,” or “ready for approval” based only on tests, builds, HTTP 200, direct handler tests, or a rendered login page.
+
 ## Approval interpretation
 
 Explicit approval examples: `approved`, `I approve this preview`, `merge and deploy this`, or an equally direct instruction referring to the reviewed preview.

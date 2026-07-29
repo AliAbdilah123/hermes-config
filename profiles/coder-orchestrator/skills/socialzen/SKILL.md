@@ -7,6 +7,8 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 ## Feature workflows
 
+- See `references/multi-destination-project-publishing.md` when extending publishing into reusable multi-destination Projects. It defines the existing-post/post-target boundary, atomic persistence and enqueue order, preflight validation, failed-only retry/idempotency, cancellation/history invariants, composer/review UX, dirty-worktree safety, and real-provider deployment gate.
+
 - See `references/analytics-backend-performance-correctness-audit.md` for read-only analytics/detail audits covering route tracing, SQL plans and indexes, database-level repeated lookups, O(n²) DTO processing, SQLite single-connection contention, refresh-job polling/payloads, correctness contracts, logs/tests, and local timing methodology.
 - See `references/analytics-performance-stability-implementation.md` after that audit is approved to implement request sequencing, stable detail selection, runtime DTO guards, linear peer comparisons, query indexes, event-driven refresh wakeups, focused regressions, and source-to-production verification.
 

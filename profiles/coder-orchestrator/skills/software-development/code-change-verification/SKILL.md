@@ -62,6 +62,14 @@ When the requested fix is already present in recent commits before you begin:
 6. When removing a nested SPA preview, do not use HTTP 404 as the cleanup assertion: a production `try_files` fallback may still return the production SPA with HTTP 200. Verify that the exact preview directory is absent, its explicit web-server location is absent, and any preview-only API service is inactive.
 7. Report “already committed/pushed” rather than implying you made a new commit during the current run.
 
+## Data-backed preview verification
+
+When a preview depends on API fields, schema changes, writes, or uploaded media that production does not yet support, a frontend bundle pointed at production is incomplete even when it builds. Use an isolated preview API/database and inject a preview-specific API base. Verify the authenticated response and rendered UI—not only the asset bundle. Keep feature entry points visible when collections are empty and show explicit empty states rather than silently hiding requested controls. See `references/data-backed-preview-contract.md` for the Nginx, API, media, and edge-cache checklist.
+
+For SQLite previews, identify the database actually used by the running service from systemd or `/proc/<pid>/environ`; do not select a nearby DB by filename. Create the preview copy with SQLite `.backup` or `VACUUM INTO`, run `PRAGMA integrity_check`, and verify prerequisite tables/records such as authentication identities before launch. A preview login form is not evidence that existing users can authenticate: verify sign-up/login, cookie or token persistence, authenticated session lookup, sign-out, and sign-in again through the exact public preview API prefix.
+
+For payment-related previews, browser rendering and direct finalizer tests are insufficient. Verify the full public chain: authenticated member → eligible package → quote → checkout/provider invoice → sandbox/test confirmation or webhook → paid state → entitlement issuance → return-page result → requested downstream behavior. Confirm redirect/callback URLs and provider credentials/mode belong to the preview path, repeat confirmation to prove idempotency, and verify production data is unchanged. If any link in that chain cannot be exercised, label the preview incomplete and do not present it as functional or ready for approval.
+
 ## Route-specific visual verification
 
 When users say a visual change is still absent after repeated reloads, verify that the implementation targets the exact route they are viewing. Similar surfaces may have separate parent layouts (for example, member checkout versus admin package preview) while sharing child cards. Inspect the route component and route-local wrappers/CSS; a correct change on the wrong route is a failed delivery.
