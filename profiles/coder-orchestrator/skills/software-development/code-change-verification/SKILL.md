@@ -104,7 +104,9 @@ Browser and end-to-end test runners may rewrite tracked reports or create screen
 
 For code-split SPAs, the entry HTML often names only the entry bundle, not the changed route's lazy chunk. Resolve the route chunk from the built manifest/import graph or deployed assets, then probe that exact chunk for a stable semantic marker. An entry-bundle hash or HTTP 200 alone does not prove the changed route was deployed.
 
-For isolated SPA previews, also read `references/spa-preview-prefix-and-browser-evidence.md`. It covers emitted-prefix discovery, public asset/MIME probes, the boundary between transport checks and browser-render evidence, screenshot validation, and staging untracked files.
+For isolated SPA previews, also read `references/spa-preview-prefix-and-browser-evidence.md`. It covers emitted-prefix discovery, public asset/MIME probes, the boundary between transport checks and browser-render evidence, screenshot validation, and staging untracked files. When the preview includes uploaded media, attendee avatars, or checkout, also read `references/subpath-preview-media-and-checkout.md` for preview-aware `/uploads/` routing, end-to-end profile-picture contract checks, explicit test-payment finalization, and the Vite build-base trap.
+
+For admin create/edit forms, verify dirty-state behavior across the actual navigation surfaces, not only the form component: pristine forms must leave without prompting; changed forms must prompt on breadcrumb, cancel, dashboard tab/link navigation, and browser unload; successful saves must clear the guard. Nested image or package controls may mutate state outside ordinary text-input events, so test their dirty-state propagation explicitly. If a navigation item must be hidden, inspect and assert every navigation provider (for example both a horizontal tab list and a workspace/sidebar builder) while preserving the route unless deletion was requested. Native numeric input attributes are UX only: mirror integer, money, and quantity limits in frontend submit validation and the current API boundary, with tests at the maximum and one value above it.
 
 ## Headless Chromium artifact classification
 
@@ -116,6 +118,12 @@ When the primary browser runner is unavailable, Chromium headless may create a v
 4. Visually inspect the screenshot or parse the DOM, then report the host warning and render result as distinct boundaries.
 
 A non-zero browser exit is not a passing render by itself, but neither does it invalidate a demonstrably complete artifact.
+
+## Side-effect-free auth and routing verification
+
+When debugging signup/login routing, do not create or delete user accounts merely to infer whether the frontend reached the backend. Trace submit handler → API URL construction → browser network status/body → reverse-proxy access log → proxy mapping → global middleware → route handler first. Reproduce the browser's `Origin`, `Host`, credentials mode, and public path: a curl without `Origin` can return 201 while the browser is rejected by CORS before the handler.
+
+Prefer non-mutating or already-existing-state probes. For example, an existing identity returning `409 user_exists` proves a same-origin request crossed proxy and CORS and reached registration without creating data. Pair it with an unrelated-origin probe that must remain `403 origin_not_allowed`. Report the exact failing boundary and response; never infer “the request did not reach the API” from generic frontend copy or sparse application logs.
 
 ## Pitfalls
 

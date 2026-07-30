@@ -187,6 +187,11 @@ sudo rm -rf /var/www/html/<slug>   # if an old domain-specific build dir exists
 
 To serve a new project under `/projects/<slug>/`:
 
+0. Diagnose the frontend and backend independently. Existing API/health proxy blocks and a healthy backend do **not** mean the SPA is deployed. Check all three:
+   - `/var/www/html/projects/<slug>/index.html` exists
+   - nginx has an exact slash redirect plus a frontend `location /projects/<slug>/` block
+   - the API/health proxy reaches its localhost service
+
 1. Build the frontend, copy to `/var/www/html/projects/<slug>/`
 2. Add a `location` block to `/etc/nginx/projects/default.conf`:
    ```nginx
@@ -209,7 +214,19 @@ To serve a new project under `/projects/<slug>/`:
    }
    ```
 4. `sudo nginx -t && sudo systemctl reload nginx`
-5. Verify: `curl -o /dev/null -w "%{http_code}" http://localhost/projects/<slug>/`
+5. Verify the public path—not just localhost—and verify the referenced assets have the right MIME type:
+   ```bash
+   curl -fsS http://<public-ip>/projects/<slug>/
+   curl -fsSI http://<public-ip>/projects/<slug>/assets/<main-bundle>.js
+   ```
+   Expect app HTML and `Content-Type: application/javascript`; a `200 text/html` asset response is an SPA fallback, not success.
+
+### Dual domain + bare-IP diagnostics
+
+- Test DNS first (`getent ahostsv4 <domain>` or `dig +short <domain>`). If empty, the domain cannot work publicly even when origin nginx is correct.
+- Test the not-yet-live domain against the origin with `curl --resolve <domain>:80:<public-ip> http://<domain>/`. This proves only origin routing; report DNS as unresolved until normal public resolution succeeds.
+- When several port-80 virtual hosts exist, make the catch-all/path server explicit with `listen 80 default_server;` and `listen [::]:80 default_server;`. Otherwise a bare-IP request may land in whichever domain server nginx loads first, and `sub_filter` can silently rewrite the wrong response.
+- After changing virtual-host order/defaults, re-run the bare-IP HTML and asset checks. Do not infer correctness from an origin `Host:` test alone.
 
 ## Editing System nginx Configs
 
@@ -235,17 +252,24 @@ The `patch` tool refuses to write to `/etc/nginx/`. Use terminal with `sudo`:
 - **Backend redirect URLs for dual deployment**: When the backend constructs redirect URLs (OAuth callbacks, payment returns), it must use the correct base for each deployment. A common bug: the backend's `frontendURL()` helper appends a hardcoded project prefix even when the domain SPA is served at root. See `references/vite-domain-deployment.md` Pitfalls 1–3 for the full pattern.
 - **Cloudflare proxied DNS + certbot redirect loop**: If `curl -L https://<domain>/` stays at `301 Location: https://<same-domain>/`, Cloudflare may be hitting origin HTTP while certbot's HTTP block redirects to HTTPS. Serve the app on both HTTP and HTTPS in the main domain server block and remove the redirect-only HTTP block; see `references/vite-domain-deployment.md` HTTPS section.
 - **Nested Cloudflare hostname may lack edge TLS coverage**: A hostname such as `dev.app.example.com` can resolve through proxied Cloudflare DNS and reach the origin over HTTP while public HTTPS fails before returning any HTTP response (`sslv3 alert handshake failure`, no peer certificate). A successful origin certificate issuance does not fix Cloudflare edge TLS. Diagnose the two layers separately: verify origin HTTPS with `curl --resolve <host>:443:127.0.0.1 https://<host>/`, inspect the origin certificate with `openssl s_client -connect 127.0.0.1:443 -servername <host>`, then test public HTTPS normally. If origin HTTPS works but the Cloudflare address presents no certificate, enable or issue Cloudflare edge certificate coverage for that exact nested hostname (Universal SSL commonly covers only the apex and one-label subdomains; deeper names may require Advanced Certificate Manager or a custom certificate). Do not call the migration done until the public URL itself succeeds. See `references/cloudflare-nested-hostname-tls.md`.
-- **Domain config blank page (missing reverse sub_filter)**: If the build was deployed with a non-root base (e.g. `/projects/<slug>/assets/...`), the domain config needs reverse `sub_filter` to STRIP the path prefix, otherwise assets 404 → blank page. The sub_filter must cover BOTH HTML and JS bundles (React Router `basename` and other paths are hardcoded in `.js` files). Add to the domain's `location /` block:
+- **Domain config blank page (incomplete reverse `sub_filter`)**: If a build uses a non-root base, strip the legacy prefix from both HTML and JavaScript. Healthy HTML/assets alone do not prove the app works: the compiled bundle may still call a disabled path-prefixed API. Minified Vite strings can use double quotes, single quotes, or template-literal backticks, so cover all three:
   ```nginx
   sub_filter_types text/html application/javascript text/javascript;
   sub_filter '"/projects/<slug>/' '"/';
   sub_filter "'/projects/<slug>/" "'/";
+  sub_filter '`/projects/<slug>/' '`/';
   sub_filter 'basename:"/projects/<slug>/"' 'basename:"/"';
   sub_filter_once off;
   ```
-  **Why `sub_filter_types` must include JS MIME types**: when the build's JS bundles contain hardcoded `/projects/<slug>/` paths (React Router basename, API URLs), nginx won't rewrite them unless `application/javascript` and `text/javascript` are listed. HTML-only rewrite leaves the JS bundles with stale paths — the domain loads the HTML correctly but routing/API calls break.
-  **Why both quote styles**: JS bundles may use double quotes for some paths and single quotes for others. Both patterns must be covered.
-  The preferred fix is rebuilding with `VITE_BASE=/` so no sub_filter is needed on the domain side — only on the path-based deployment. But when you can't rebuild (hotfix, shared build directory), the full reverse sub_filter works. **Verify JS rewrite**: `curl -s --resolve <domain>:80:<ip> http://<domain>/assets/index-<hash>.js | grep -o 'basename:"[^"]*"' | head -1` should return `basename:"/"`, not the path-prefixed version.
+  Inspect the served bundle and require zero legacy-prefix occurrences. Verify the root API returns an expected application response (for example `401`, not SPA HTML), and JS is `application/javascript`. Prefer rebuilding with `VITE_BASE=/` when practical.
+- **Domain-only cutover order**: Make the domain root, JS, and root API work first. Then deny every legacy path—including old API/health locations—with one exact and one prefix rule:
+  ```nginx
+  location = /projects/<slug> { return 404; }
+  location ^~ /projects/<slug>/ { return 404; }
+  ```
+  Keep the canonical build directory when it remains the domain document root. Verify the public domain, public API, legacy root `404`, and legacy API `404`.
+- **HTTPS is a separate vhost check**: A working port-80 domain block does not make HTTPS serve that app. Inspect origin SNI with `curl -v --resolve <domain>:443:127.0.0.1 https://<domain>/`; confirm the certificate CN/SAN and selected 443 server belong to the requested hostname. Configure/issue its certificate when absent, then verify the public URL—not only an origin `Host:` test.
+- **Cloudflare DNS diagnosis**: If the host resolver is stale or empty, query Cloudflare or Google DNS-over-HTTPS JSON to distinguish propagation from origin failure. Proxied A answers are Cloudflare edge IPs, not the origin; test those with `curl --resolve` while preserving hostname/SNI. Add a cache-busting query when checking transformed JS through Cloudflare.
 
 ## References
 
