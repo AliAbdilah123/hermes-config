@@ -31,9 +31,10 @@ A transient process is acceptable only during local diagnosis, never as the fina
 2. Create the preview database using SQLite `.backup` or `VACUUM INTO`; run `PRAGMA integrity_check` and check required auth/program records.
 3. Build the frontend for the exact preview basename and API prefix.
 4. Install/start the dedicated preview API service and verify its socket plus local health endpoint.
-5. Configure an explicit web-server route for both preview assets and preview API proxy; test configuration before reload.
-6. Verify the public health endpoint, unauthenticated data endpoint, login/session round trip, authenticated workspace/data route, deep-link SPA fallback, and JS/CSS MIME types. Use a real preview-safe account or sign-up flow and cookie jar/browser session; a rendered login form is not authentication evidence.
-7. Recheck service activity immediately before sending the URL. Recheck it after any gateway restart or long review delay. If the runtime was started through a chat-owned background process, replace it with the durable service before sharing—even if the process is currently healthy.
+5. Configure an explicit web-server route for both preview assets and preview API proxy; place the specific `/previews/<slug>/api/...` proxy before the broader SPA alias/fallback so API requests cannot return `index.html`. Test configuration before reload, then prove the exact preview API URL returns JSON with the expected content type.
+6. Verify the public health endpoint, unauthenticated data endpoint, login/session round trip, authenticated workspace/data route, deep-link SPA fallback, and JS/CSS MIME types. Use a real preview-safe account or sign-up flow; a rendered login form is not authentication evidence. Inspect the frontend auth client before automation: if it restores identity from local storage as well as cookies, seed the token and serialized user under the exact keys and shape used by the application, or use the real sign-in flow. A valid server cookie or plausible guessed storage keys may still redirect to sign-in without issuing a session request. For notification work, generate a representative event in the isolated database, verify its rendered body and relative time, assert raw machine timestamp fragments such as RFC3339 `T...Z` are absent when human-readable copy is required, click the item, and assert the exact resulting pathname.
+7. Keep executing the verification chain continuously until complete or concretely blocked. Do not repeatedly report “still working,” “next I will,” or imply background activity when no process is running. If interrupted, state exactly what is complete, what is not, and whether anything is currently executing; then resume immediately when asked.
+8. Recheck service activity immediately before sending the URL. Recheck it after any gateway restart or long review delay. If the runtime was started through a chat-owned background process, replace it with the durable service before sharing—even if the process is currently healthy.
 8. Record production asset identity before and after to prove isolation.
 
 ## Served-artifact truth
@@ -65,6 +66,18 @@ Report these separately:
 - production isolation.
 
 HTTP 200 on the SPA, a rendered sign-in page, or a one-time API health check is not a functional preview.
+
+### Completion language and review links
+
+Use precise state labels:
+
+- **Implemented:** code exists and local focused checks pass.
+- **Publicly verified:** the exact public preview flow was exercised in a browser against the isolated API/database.
+- **Deployed:** the approved change is integrated and verified on production.
+
+For user-visible or transaction-flow fixes, do not stop at “implemented and pushed” when the user needs to evaluate behavior. Continue through publishing and public browser E2E verification, then include the exact public preview URL in the first completion-style response. If blocked, say “implemented, not yet publicly verified,” identify the missing gate, and do not call the work simply “fixed.” The user should not need to ask where the public link is.
+
+When browser auth is seeded rather than entered through the form, inspect the application’s actual local-storage keys and stored user shape first. A valid API token under guessed key names can silently redirect to sign-in and produce a misleading feature failure. Prefer a real sign-in round trip; if seeding is necessary, verify `/auth/session` and the authenticated page request after seeding.
 
 ## Pitfalls
 

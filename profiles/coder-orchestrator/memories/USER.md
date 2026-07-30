@@ -1,8 +1,8 @@
-Fixes need exact public E2E verification—not tests/build/HTTP alone. Production finals include link, commit, push. Restore and reverify broken/missing previews proactively; never claim readiness prematurely.
+Fixes require exact public E2E—not tests/build/HTTP alone. Finals: link, commit, push. Restore/reverify previews; never claim readiness early. Distinguish running processes from pending work and continue after delegates finish.
 §
 Small errors: fix directly. Complex errors: plan + styled HTML review first.
 §
-Code: SRP, DRY, clear names, boundary validation, minimal comments.
+Code: SRP, DRY, clear names, boundary validation, few comments.
 §
 Coding: use Codex CLI, preferring `gpt-5.6-sol` with medium reasoning and speed unless specified. Reuse existing code/workflows.
 §

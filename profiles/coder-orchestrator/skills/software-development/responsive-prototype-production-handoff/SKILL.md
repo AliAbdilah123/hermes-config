@@ -28,6 +28,8 @@ See `references/preview-first-worktree-approval-gate.md` for the complete lifecy
 6. Scope responsive overrides under the page root. Never globally rewrite a shared card/grid to satisfy one mobile page.
 7. Build and deploy using the project’s actual production path, then verify the public route with cache busting.
 8. Commit and push only task-related files; leave unrelated untracked plans, uploads, databases, and artifacts untouched.
+9. Replace a running compiled executable atomically: copy the new binary to a sibling temporary filename, set its mode, then `mv` it over the live path before restarting. Directly copying over an executing binary can fail with `Text file busy`.
+10. Verify frontend deployment and API replacement separately. After restart, discover the actual listen address from service logs or sockets rather than assuming the development port. After the final static `rsync`, inspect the deployed `index.html` hash and probe that exact bundle for a semantic marker before browser QA.
 
 ## Filter-sheet pattern
 

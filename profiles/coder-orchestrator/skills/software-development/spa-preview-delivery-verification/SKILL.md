@@ -28,6 +28,7 @@ A preview is not working merely because its URL returns HTTP 200. A production S
    - Add an explicit highest-priority location for `/previews/<slug>/`.
    - Serve files from the preview directory.
    - Make `try_files` fall back to the preview's own `index.html`, never production `index.html`.
+   - When the frontend derives API URLs from the bundler base, add a more-specific `/previews/<slug>/api/...` proxy before the SPA alias. Without it, the SPA fallback can return `index.html` with HTTP 200 for API/session requests and silently redirect authenticated checks to sign-in.
    - Validate configuration before reload.
 
 4. **Set the client router basename**
@@ -63,10 +64,11 @@ A preview is not working merely because its URL returns HTTP 200. A production S
    - Exercise the interaction and assert the original error is absent.
    - For layout/theme changes, inspect the rendered hierarchy at multiple widths; source-code ownership alone is not proof.
 
-8. **Report evidence precisely**
+8. **Report evidence precisely and preserve continuity**
    - State which exact routes, interactions, payload cases, and viewport sizes were exercised.
    - Distinguish routing smoke tests from feature verification.
    - Do not describe the preview as approved or production-ready until the affected feature route passes.
+   - Never imply that verification is still running after the browser/process has stopped. If work is paused, say it is paused and resume it immediately when asked; use a tracked background process with completion notification for genuinely ongoing checks.
 
 ## Required regression fixtures
 

@@ -5,6 +5,21 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 # SocialZen Project
 
+## Plan approval and implementation handoff
+
+For shared Regular Post / Project composer changes, follow `references/post-project-flow-verification.md` for title-boundary, dirty-worktree, deployment, and lazy-route verification details.
+
+For metadata-first Project creation that persists a Draft before destinations/content and then reuses the existing composer, follow `references/metadata-first-project-flow.md`, including its SQLite migration baseline and stable-restart checks.
+
+When a user approves a SocialZen proposal and asks for implementation:
+
+1. State accurately whether the feature already exists, is only planned, or is partially implemented. Do not blur “updated the plan” and “implemented the feature.”
+2. Inspect the exact route, recent commits, and focused tests before editing. If an earlier implementation exists but misses approved acceptance criteria, describe it as partial and patch the gaps rather than duplicating the flow.
+3. Treat approval as authorization to implement, test, deploy, commit, and push unless the user narrows the scope.
+4. Preserve unrelated dirty-worktree changes: stage only the feature files and verify `HEAD == origin/<branch>` after pushing.
+5. Verify the exact public route and lazy-loaded feature chunk, not merely the homepage or entry bundle. For authenticated onboarding, distinguish deployed-asset proof from a real signed-in browser flow; never claim full public E2E when no usable test session was exercised.
+6. In the final report, separate focused tests, typecheck/build, deployment/asset checks, and authenticated E2E. Explicitly name any unexercised boundary.
+
 ## Feature workflows
 
 - See `references/multi-destination-project-publishing.md` when extending publishing into reusable multi-destination Projects. It defines the existing-post/post-target boundary, atomic persistence and enqueue order, preflight validation, failed-only retry/idempotency, cancellation/history invariants, composer/review UX, dirty-worktree safety, and real-provider deployment gate.

@@ -271,6 +271,12 @@ The `patch` tool refuses to write to `/etc/nginx/`. Use terminal with `sudo`:
 - **HTTPS is a separate vhost check**: A working port-80 domain block does not make HTTPS serve that app. Inspect origin SNI with `curl -v --resolve <domain>:443:127.0.0.1 https://<domain>/`; confirm the certificate CN/SAN and selected 443 server belong to the requested hostname. Configure/issue its certificate when absent, then verify the public URL—not only an origin `Host:` test.
 - **Cloudflare DNS diagnosis**: If the host resolver is stale or empty, query Cloudflare or Google DNS-over-HTTPS JSON to distinguish propagation from origin failure. Proxied A answers are Cloudflare edge IPs, not the origin; test those with `curl --resolve` while preserving hostname/SNI. Add a cache-busting query when checking transformed JS through Cloudflare.
 
+## Shared Static-Root Blast Radius
+
+When unrelated SPA domains begin returning nginx `500` sequentially and logs show an internal redirect cycle to a missing `index.html`, do not restore only the reported app. Inventory every nginx `root`/`alias` under the shared static tree and inspect recent privileged deployment history for `rsync --delete` aimed at `/var/www/html/` or `/var/www/html/projects/`. One overly broad deploy can delete sibling projects while their API services remain healthy.
+
+Restore all missing leaf deployments, narrow any domain vhost rooted at the shared ancestor to its project leaf, and publicly verify HTML plus a referenced JS/CSS asset for every configured app. See `references/shared-static-root-deployment-blast-radius.md` for the diagnosis, recovery, prevention, and fleet-wide verification recipe.
+
 ## References
 
 - See `references/oracle-cloud-security-list.md` for step-by-step instructions to open a port in the OCI Security List (the network-level firewall that cannot be configured from the server).
