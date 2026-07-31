@@ -71,6 +71,7 @@ When product planning combines a written MVP blueprint with a static multi-page 
 - Build output can regenerate ignored files. Confirm the staged diff contains only the intended report before committing.
 - Nginx warnings are not failures when `nginx -t` explicitly reports successful syntax and configuration tests; report only actionable blockers.
 
-## Supporting Reference
+## Supporting References
 
-See `references/evidence-backed-improvement-audit.md` for the compact audit rubric and report content pattern.
+- See `references/evidence-backed-improvement-audit.md` for the compact audit rubric and report content pattern.
+- See `references/holistic-prd-revision.md` when stakeholder decisions must be integrated across an existing PRD rather than appended; it includes consistency checks, critique prompts, architecture defaults, and deterministic verification.
