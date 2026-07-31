@@ -79,6 +79,24 @@ For user-visible or transaction-flow fixes, do not stop at “implemented and pu
 
 When browser auth is seeded rather than entered through the form, inspect the application’s actual local-storage keys and stored user shape first. A valid API token under guessed key names can silently redirect to sign-in and produce a misleading feature failure. Prefer a real sign-in round trip; if seeding is necessary, verify `/auth/session` and the authenticated page request after seeding.
 
+## Worktree-backed application instances
+
+When a worktree is intended to be a separately running application rather than only a review build:
+
+- Keep worktree creation defaults independent from runtime behavior. If worktrees are opt-in, live-app support must not silently enable them by default.
+- A filesystem path is not an application URL. Define a durable process, unique loopback port, stable public route, health check, logs, restart behavior, and lifecycle state.
+- Prefer stable path routing on an existing HTTPS host for MVP, e.g. `/worktrees/<stable-id>-<slug>/`, unless wildcard DNS/TLS is already available. Include the stable ID to prevent slug collisions.
+- Require project-level launch configuration instead of guessing arbitrary repository commands: optional build argv, required start argv, health path, safe environment entries, and base-path support. Use structured argv, not shell strings, at the trust boundary.
+- Model `not configured`, `stopped`, `starting`, `live`, `unhealthy`, and `failed` explicitly. Never report an unhealthy or merely running process as live.
+- Use durable isolated services (normally templated systemd units), unique loopback ports, bounded logs, resource limits, and narrowly scoped privilege for service/web-server operations.
+- Permit members to view status/open apps; restrict start/restart/stop/log mutations according to the host application's role policy.
+- State the runner ceiling. One HTTP process per worktree is a valid MVP; Docker Compose/multi-service apps, root-only hosting, wildcard subdomains, and destructive cleanup are separate capabilities.
+- Verify two instances concurrently and prove no port, route, process, asset, API, or mutable-data crossover. Also verify restart reconciliation, intentionally stopped state, and production isolation.
+
+## Proposal correction pitfall
+
+When a user corrects a preview proposal's default or lifecycle rule, update the canonical source and public review artifact everywhere: goal, architecture, task steps, API semantics, acceptance criteria, E2E, headings, badges, and open questions. Treat the correction as confirmed, preserve the implementation gate, and verify the public artifact contains the corrected phrase while the rejected assumption is absent; HTTP 200 alone is insufficient.
+
 ## Pitfalls
 
 - Sharing a preview backed by a terminal/background process that exits with the agent session.

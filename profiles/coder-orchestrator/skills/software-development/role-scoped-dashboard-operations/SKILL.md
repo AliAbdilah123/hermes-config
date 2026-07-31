@@ -50,6 +50,34 @@ Use one awaited controller action. If an occurrence/resource must first be gener
 
 A scoped page may intentionally omit a broad member/user directory. When authoritative occurrence DTOs already contain assignee identity, use lookup data when available and fall back to occurrence fields for display. Do not broaden data access solely to render a name. Ownership decisions must still use authenticated IDs and server-side predicates.
 
+Treat profile images as an end-to-end DTO path, not a component-only change:
+
+1. Join the authoritative profile image field in the scoped API query.
+2. Convert stored extensions/paths through the existing server URL helper.
+3. Add the field to the TypeScript DTO and occurrence/member view model.
+4. Render it in every shared surface: compact row, calendar/detail panel, attendee panel, and hydrated selections where applicable.
+5. Pass returned paths through the preview-aware asset URL helper and retain initials plus failed-image fallback.
+6. Publicly verify a profile path known to exist returns `200` with an image MIME type.
+
+Do not infer filenames or fetch a broad user directory just to obtain avatars.
+
+## Dual-role actors
+
+A user can hold both Admin and scoped-manager roles. Avoid unconditional “Admin first” branching when the narrower UI intentionally sends manager semantics, such as activation without an explicit assignee. Otherwise the API may demand an Admin-only picker value and break manager self-assignment.
+
+For operations with omitted assignee identity:
+
+- first determine whether the actor is an active manager for the target resource;
+- derive self-assignment when that narrower relationship exists, even if the actor is also Admin;
+- preserve explicit Admin assignment/reassignment behavior when an assignee ID is supplied;
+- add a dedicated dual-role regression—single-role tests will not expose this bug.
+
+## Read paths need authorization too
+
+Detail endpoints such as `/sessions/:id/claims` are authorization boundaries, not harmless display helpers. Apply the same tenant, product, and owner checks used by attendance mutations before returning names, emails, profile pictures, booking details, or claims. Test both the owning manager’s detailed response and a foreign manager’s `403`.
+
+For Admin-parity attendee context, enrich this already-secured claims response with the selected **Simple product** and labeled custom-field answers; do not fetch a broad member/bookings directory or create a parallel manager details API. Keep the values read-only unless editing is explicitly requested, omit empty details, and preserve responsive wrapping in the shared attendance row. See `references/scoped-attendee-booking-details.md` for the data path and regression matrix.
+
 ## Legacy database diagnosis
 
 If a deployed or copied runtime database returns a generic DB error while fresh-schema tests pass:

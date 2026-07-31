@@ -42,6 +42,18 @@ Add or preserve separate cases showing active-running and policy-blocking states
 
 If execution launches asynchronously, use a fake downstream service held open by a channel. Inspect claimed/running state while it is blocked, then release it in cleanup so shutdown cannot hang or leak goroutines.
 
+## User-facing queue versus execution status
+
+When the product must differentiate waiting from active provider work, first check whether existing lifecycle states already encode that boundary. Prefer a presentation-only mapping when they do:
+
+- queued/waiting state (for example `todo`) → explicit static label such as “Job queued”;
+- claimed/running state (for example `in_progress`) → explicit active label such as “Provider is processing…”;
+- review, blocked, and completed states → no live-execution indicator unless the product specifies one.
+
+Do not add a database state, API field, or scheduler transition merely to expose wording already derivable from the canonical lifecycle state. Reserve motion for genuine active work; a queued indicator should be visually static so waiting cannot be mistaken for execution. Keep labels available as text and use `role=status` or live-region behavior only where announcements are useful.
+
+Focused UI regressions should assert both text and semantics: queued renders its static marker without active animation, running renders the processing marker, and neighboring non-live states render neither. If the provider has a private upstream queue that the API does not expose, state that boundary rather than pretending the local queued state represents it.
+
 ## Verification
 
 - Copy the exact test name from source or list tests before filtering.

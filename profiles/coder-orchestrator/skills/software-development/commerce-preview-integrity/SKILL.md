@@ -72,8 +72,13 @@ Keep package-entry validation independent unless the product/package specificati
 
 See `references/booking-intent-media-cancellation.md` for the commerce regression matrix and `references/product-type-validation.md` for the product-form boundary matrix.
 
+## Site-wide display currency
+
+When a display-currency selector affects commercial and dashboard money, verify the currency state subscription, shared rate resolution, active-route formatter coverage, and canonical transaction isolation. A working toggle or changed storage value is not acceptance evidence. See `references/site-wide-display-currency.md` for the audit, TDD matrix, and exact public proof.
+
 ## Pitfalls
 
+- Do not infer currency correctness from the selector's pressed state or `localStorage`; prove visible IDR → USD → IDR changes on commercial and authenticated dashboard surfaces.
 - Do not infer readiness from the upload form preview.
 - Do not treat `NULL` legacy policy as “no compensation” without proving that semantic.
 - Do not use current mutable package settings for historical purchases.

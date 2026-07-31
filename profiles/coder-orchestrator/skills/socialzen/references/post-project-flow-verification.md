@@ -12,8 +12,9 @@ Use when changing SocialZen's shared post/project composer.
 ## Focused checks
 
 1. Add a frontend regression covering choice-card data and title validation by creation kind.
-2. Add an API regression proving blank explicit Projects are rejected while titleless Regular Posts remain accepted.
-3. Run from the actual package roots:
+2. For shared composer chrome removals (subtitles, step indicators, helper copy), add a narrow source-level regression that asserts the exact unwanted labels are absent from `CreatePostPage.tsx`. This covers both Regular Post and Project while they share the same render branch; do not duplicate route-specific component tests unless their branches diverge. Preserve functional form headings such as “Select destinations” when the request targets only the workflow subtitle/stepper.
+3. Add an API regression proving blank explicit Projects are rejected while titleless Regular Posts remain accepted.
+4. Run from the actual package roots:
    - `apps/frontend`: `pnpm run build` plus focused Vitest/typecheck as appropriate.
    - `apps/backend-go`: focused `go test ./... -run ... -count=1`.
 4. Deploy the frontend from `apps/frontend/dist/` to `/var/www/html/projects/socialzen/` and rebuild/install the Go binary to `/opt/socialzen/socialzen-server`; restart `socialzen.service`.

@@ -22,7 +22,16 @@ Use for multi-revision work performed in an isolated preview worktree, especiall
    - After all groups, run tests/build from the committed state and confirm `git status --short --branch` contains only intentionally excluded runtime artifacts.
 6. Exclude runtime and generated artifacts: databases, uploaded fixtures, built binaries, credentials, environment files, and build output unless the repository intentionally tracks it.
 7. A preview-branch commit or push is preservation, not approval to merge, deploy production, or modify production data.
-8. Before handoff, report branch, HEAD, clean/dirty state, untracked artifacts, validation evidence, preview URL, and production isolation.
+8. After explicit production approval, promote from a clean integration worktree based on current `origin/master`; never merge, build, or deploy from a dirty/stale production checkout.
+   - Fetch first and compare the preview branch to current production.
+   - Select only the approved feature commit range. Do not carry older unrelated preview work merely because it shares the branch.
+   - Prefer a clean cherry-pick/squash integration. When production evolved independently, reconcile conflicts against current production behavior rather than blindly choosing the preview side.
+   - Run focused backend tests, frontend tests, lint, build, and `git diff --check` on the exact integrated tree. Commit and push that exact state before deployment.
+   - Deploy the committed API/frontend artifacts atomically where practical, preserving runtime uploads/data, then verify service health and the public asset hash.
+   - Run a public authenticated E2E against production that proves the approved behavior and authorization scope. Avoid mutating production merely for verification when an existing safe record demonstrates the behavior.
+9. Before handoff, report branch, HEAD, clean/dirty state, untracked artifacts, validation evidence, preview or production URL, and deployment isolation.
+
+See `references/production-promotion.md` for a concise promotion and conflict-reconciliation checklist.
 
 ## Pitfalls
 

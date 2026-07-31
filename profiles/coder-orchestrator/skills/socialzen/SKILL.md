@@ -11,6 +11,8 @@ For shared Regular Post / Project composer changes, follow `references/post-proj
 
 For metadata-first Project creation that persists a Draft before destinations/content and then reuses the existing composer, follow `references/metadata-first-project-flow.md`, including its SQLite migration baseline and stable-restart checks.
 
+When metadata-only Projects fail during Edit rendering, trace the complete library → Edit route → detail API → SQL scan/DTO → boundary normalization → composer hydration/render flow before proposing fallbacks. Identify the exact null property. Keep the aggregate truthful: canonicalize nullable scalar content once to the strict frontend state contract, return absent child collections as `[]`, and never synthesize fake media/items containing null fields. Verify metadata-only, populated, published/non-editable, missing, and foreign-owner Projects without runtime exceptions; preserve owner-scoped 404 behavior. See `references/metadata-project-edit-null-contract.md`.
+
 When a user approves a SocialZen proposal and asks for implementation:
 
 1. State accurately whether the feature already exists, is only planned, or is partially implemented. Do not blur “updated the plan” and “implemented the feature.”

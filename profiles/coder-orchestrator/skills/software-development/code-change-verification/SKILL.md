@@ -30,6 +30,10 @@ When the request is visual consistency with an existing component, verify the sh
 
 When the environment does not detect a canonical verification command, run a focused ad-hoc check even if you already found and ran a build command manually. Build evidence and a targeted behavioral assertion are complementary; one does not replace the other.
 
+If verification tracking is required or likely to classify ordinary commands as unverified, make the directly executed `/tmp/hermes-verify-*` script part of the pre-commit gate. Run it before committing, pushing, deploying, or claiming completion—not as a repair after the completion report. A manually executed suite can be human-readable evidence while the workspace verifier still has no registered evidence; when command detection is uncertain, default to the tracked script before commit. The script should invoke the focused behavior test and any proportionate compile/build check from the real package root. In monorepos or nested frontends, `cd` inside the script to the directory containing the relevant `package.json`, `go.mod`, or equivalent; verification from the repository root can miss the canonical project context.
+
+When selecting a focused test by name, inspect the runner summary and require at least one executed test. A zero-exit run where every test is skipped is not RED or GREEN evidence; broaden or correct the filter and rerun until the intended test actually executes. Do not let a later build or HTTP probe turn that zero-test script into “passed targeted verification.” Make the script fail explicitly when the runner reports only skipped tests (or parse the summary and assert executed > 0), then rerun with an exact current test name.
+
 1. Create a secure temporary script using the OS tempfile mechanism and a `hermes-verify-` prefix, for example:
 
 ```bash
@@ -77,6 +81,10 @@ When the task is explicitly reviewable through a public preview, do not report �
 
 ## Route-specific visual verification
 
+For authenticated settings/preferences previews, transport checks and a screenshot of the sign-in redirect are not feature evidence. Exercise authentication on the exact public preview, navigate to the intended settings tab through normal UI, change each preference, and verify persistence plus independence after reload. If authentication cannot be completed, report “public authenticated E2E pending” and do not call the preview ready for review.
+
+When language and display currency are separated, verify both cross-combinations (English + canonical currency and Indonesian + converted display currency), confirm changing language leaves currency unchanged, and confirm display-only currency never alters quote, checkout, invoice, provider, or stored transaction currency. Also verify controls were removed from every superseded header/dashboard surface rather than duplicated.
+
 When users say a visual change is still absent after repeated reloads, verify that the implementation targets the exact route they are viewing. Similar surfaces may have separate parent layouts (for example, member checkout versus admin package preview) while sharing child cards. Inspect the route component and route-local wrappers/CSS; a correct change on the wrong route is a failed delivery.
 
 For “I can’t see the change” reports, trace source → commit/upstream → production build → web-server document root → public HTML asset URL → exact served rule before making another edit. A pushed commit is not deployment evidence, and HTTP 200 is not content evidence. Cache-bust the exact asset URL and inspect the relevant selector or marker in its served body. Compare semantic markers with whitespace-tolerant parsing or a short extracted excerpt; minifiers may preserve or remove spaces, so brittle whole-string matching can falsely report that a deployed rule is absent. If the live asset already contains the change, do not redeploy or hand-edit it blindly—reproduce the exact route/state that activates the fallback and leave visual approval pending.
@@ -95,6 +103,30 @@ For trustworthy worktree verification:
 4. If a symlinked-dependency run failed with hook errors, repair isolation and rerun. Treat only the fresh isolated result as evidence.
 5. Keep build blockers separate from targeted behavior. Unrelated missing source files or pre-existing type errors mean the full build is not green even when focused regressions pass.
 
+## Queue/status UI differentiation verification
+
+When changing UI copy or indicators that distinguish queued work from active provider processing, source tests and deployed-bundle string matches are supporting evidence only. They do not prove the exact public behavior.
+
+1. Exercise an authenticated job detail through the public route in a genuinely queued state and assert the visible queued label plus its static/non-processing visual semantics.
+2. Then exercise the same class of job after the scheduler claims it and assert the active provider-processing label plus its live indicator.
+3. Check neighboring review, blocked, and done states do not retain either live queue/processing indicator.
+4. Tie each rendered state to the API/persisted lifecycle value so a mocked component render cannot mask a state-mapping defect.
+5. If authenticated browser execution is unavailable, report “implemented and deployed; public authenticated E2E pending.” Do not promote public asset markers, HTTP 200, service-active status, unit tests, or build success into “completed” or “public E2E verified.”
+6. Only include a final public link as completed evidence after the exact queued → processing flow was visibly exercised there.
+
+## Queue-mediated retry and resume verification
+
+When changing a retry/reply action from immediate execution to queued execution, verify both halves of the lifecycle rather than only the final result:
+
+1. Immediately after the endpoint returns, assert the item is `todo`, positioned at the end of its sequential lane/queue, and carries the pending input needed for later resumption.
+2. Assert no external agent/provider request occurred, no run was marked `running`, and attempt/run counts did not change during enqueueing.
+3. Assert the timeline records a pending acknowledgement such as “Reply sent — pending,” separately from the later execution state.
+4. Keep the lane blocked or paused for immediate assertions, then unblock it and invoke the real scheduler.
+5. Assert the scheduler alone performs `todo → in_progress`, sends the pending input, and reuses the latest valid session/run identity rather than creating an unrelated conversation.
+6. Use a request counter or channel around the test provider to distinguish “not called yet” from “eventually called.” Avoid sleep-only assertions; wait with a bounded timeout and inspect persisted final state.
+
+This applies to job boards, sequential automation lanes, durable agent queues, and any UI where “sent” means accepted for later processing rather than already running.
+
 ## Test-run artifact hygiene
 
 Browser and end-to-end test runners may rewrite tracked reports or create screenshots, traces, result directories, and HTML reports even when the product test passes. Before staging or reporting completion:
@@ -105,9 +137,27 @@ Browser and end-to-end test runners may rewrite tracked reports or create screen
 4. Stage explicit product and regression-test paths rather than `git add .`.
 5. Recheck `git status` after commit or deployment so generated evidence is not accidentally presented as unrelated user work.
 
+## Concurrent shared-checkout commits
+
+A shared checkout may advance or become dirty while verification and deployment are in progress. Treat this as normal concurrency, not permission to absorb or erase another worker's changes. Record the baseline SHA before launching any autonomous coding CLI, even when its prompt says not to commit or push. After it exits, compare `HEAD`, the tracked remote, and that baseline before inspecting only `git diff`: an autonomous commit can make the working tree look clean while hiding both intended changes and scope creep in history. If this happened, review the full baseline-to-HEAD range, preserve the implementing commit, and apply a narrow corrective commit rather than resetting shared history.
+
+When task-owned edits are interleaved with unrelated concurrent changes in the same files, stop trying to stage the dirty checkout. Reproduce only the approved delta in a clean branch worktree, verify there, and deploy that clean artifact. Follow `references/task-only-clean-worktree-delivery.md` for the exact sequence and evidence boundaries.
+
+1. Capture the task commit SHA immediately after committing and use that immutable SHA in subsequent verification and reporting; do not assume `HEAD` will still identify the task later.
+2. Stage only explicit task paths. Immediately before commit, inspect the staged diff and confirm no concurrent files are included.
+3. Never restore, reset, amend, or clean files merely because they appeared after the task's initial status snapshot. Restore only artifacts proven to have been generated by your own command and clean before that command.
+4. After pushing, verify the task commit is contained in the tracked remote branch (for example, `git branch -r --contains <task-sha>`). Equality between local `HEAD` and the remote tip is unnecessary when a later valid commit has landed.
+5. If `HEAD` advances after your commit, report the task's own SHA and say it is pushed/contained upstream. Do not misreport the newer `HEAD` as your commit, and do not claim the checkout is clean when unrelated concurrent work remains.
+6. Tie deployment evidence to the served artifact or behavior, not merely to the current checkout tip; a later commit may legitimately include the task change plus unrelated work.
+7. Re-read task paths immediately before post-commit verification. If they differ from the task commit because another worker edited or reverted them, do not verify the mutable checkout as though it represented the pushed task, and do not silently restore or commit over concurrent work. Verify the immutable task SHA in a temporary clean worktree; report shared-checkout divergence separately. Integrate only when ownership and the intended combined scope are known.
+8. When the workspace verifier requires a directly observed `hermes-verify-*` run but concurrent edits break the shared checkout, create both the script and a detached worktree with `mktemp`, attach the worktree at the exact task SHA, and run the focused regression plus proportionate build from that worktree inside the script. Execute the script directly and clean both artifacts with a trap. Label the result “ad-hoc targeted verification against immutable commit `<sha>`”; it does not prove the concurrently edited checkout is green.
+9. If the first ad-hoc run fails because tests reference fields/functions present only in another worker’s unfinished half-edit, inspect status/diff to classify shared-checkout divergence. Do not patch, revert, or stage that work merely to make verification pass; rerun against the immutable task SHA.
+
 For code-split SPAs, the entry HTML often names only the entry bundle, not the changed route's lazy chunk. Resolve the route chunk from the built manifest/import graph or deployed assets, then probe that exact chunk for a stable semantic marker. An entry-bundle hash or HTTP 200 alone does not prove the changed route was deployed.
 
-For isolated SPA previews, also read `references/spa-preview-prefix-and-browser-evidence.md`. It covers emitted-prefix discovery, public asset/MIME probes, the boundary between transport checks and browser-render evidence, screenshot validation, and staging untracked files. When the preview includes uploaded media, attendee avatars, or checkout, also read `references/subpath-preview-media-and-checkout.md` for preview-aware `/uploads/` routing, end-to-end profile-picture contract checks, explicit test-payment finalization, and the Vite build-base trap.
+When a user reports production behavior after work originated in a preview branch, establish the reported deployment target before editing or redeploying. A preview repair is not a production fix, and a fix SHA absent from the production branch may still have been squashed or reimplemented upstream. Compare ancestry, deployed artifact, runtime API target, and exact authenticated behavior. For intent-sensitive booking/checkout redirects, follow `references/deployment-target-and-booking-flow-proof.md`; source strings and focused tests remain supporting evidence until the real production browser flow reaches the expected destination and focus target.
+
+For isolated SPA previews, also read `references/spa-preview-prefix-and-browser-evidence.md`. It covers emitted-prefix discovery, public asset/MIME probes, the boundary between transport checks and browser-render evidence, screenshot validation, and staging untracked files. When the preview includes uploaded media, attendee avatars, or checkout, also read `references/subpath-preview-media-and-checkout.md` for preview-aware `/uploads/` routing, end-to-end profile-picture contract checks, explicit test-payment finalization, and the Vite build-base trap. If a previously verified preview appears to regress, read `references/preview-mount-persistence-and-checkpointing.md` before changing application code: prove the public URL still serves the isolated basename, API base, asset prefix, Nginx mount, and filesystem artifact. That reference also defines checkpoint-commit handling for long-lived preview worktrees.
 
 For admin create/edit forms, verify dirty-state behavior across the actual navigation surfaces, not only the form component: pristine forms must leave without prompting; changed forms must prompt on breadcrumb, cancel, dashboard tab/link navigation, and browser unload; successful saves must clear the guard. Nested image or package controls may mutate state outside ordinary text-input events, so test their dirty-state propagation explicitly. If a navigation item must be hidden, inspect and assert every navigation provider (for example both a horizontal tab list and a workspace/sidebar builder) while preserving the route unless deletion was requested. Native numeric input attributes are UX only: mirror integer, money, and quantity limits in frontend submit validation and the current API boundary, with tests at the maximum and one value above it.
 
@@ -135,5 +185,6 @@ Prefer non-mutating or already-existing-state probes. For example, an existing i
 - Do not leave temporary verification artifacts in the repository.
 - Do not claim deployment verification from a local test alone; probe the served artifact separately when deployment is part of the task.
 - Do not equate a public HTML asset-name match with behavioral verification unless the deployed bundle is tied to the verified commit or the actual flow was exercised.
+- For interactive form changes, a public HTTP 200, matching bundle hash, unit tests, and build still do not prove the requested flow. Exercise the exact public state transition (default selection, conditional fields, submission, persisted result) before calling it completed. If browser E2E is blocked, report “implemented and deployed; public E2E pending” rather than “completed,” and keep trying an available browser path before finalizing.
 - Do not chain static deployment and service replacement in a way that obscures partial success. Verify the destination `index.html` after the final copy, verify the service’s discovered runtime port after restart, and report each boundary independently.
 - When promoting an approved preview from a dirty production checkout, use a clean integration worktree and build the squash commit there. Runtime-only files in the preview worktree (databases, uploads, generated binaries) make cleanup non-destructive: remove the public route/assets/process, but preserve the dirty worktree rather than force-removing it.

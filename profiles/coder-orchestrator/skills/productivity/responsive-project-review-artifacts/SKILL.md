@@ -50,6 +50,18 @@ Use when the user asks for a styled HTML report explaining what can be improved 
 - Tokens drive colors and typography; avoid a generic SaaS dashboard aesthetic.
 - The report is useful without requiring the reader to inspect source code.
 
+## Blueprint + Multi-page Prototype Requests
+
+When product planning combines a written MVP blueprint with a static multi-page prototype:
+
+1. Read the supplied validation/review artifact first and treat validated decisions as architecture inputs, not optional background.
+2. Resolve product inconsistencies visibly before defining entities, pages, or phases. Distinguish canonical records from workflow views so labels do not create duplicate domain objects.
+3. Keep documentation and prototype as separate deliverables, cross-linked from one stakeholder-facing review page.
+4. Prefer shared static CSS/JS for navigation, persisted theme, command palette, drawers, and modals; retain every requested route as a real HTML page.
+5. Add a deterministic stdlib verifier for required files, internal links, viewport/theme/mobile hooks, prohibited frameworks, and validated product concepts. Run it after the final edit.
+6. Publish a multi-page artifact by symlinking a named directory into the PRD web root rather than copying individual files. Publicly verify the review page, prototype index, and at least one interior page.
+7. Stage only requested blueprint/prototype paths. Formatting or cleanup helpers must use an explicit file allowlist; never sweep every existing file in a shared `docs/` directory.
+
 ## Verification Pitfalls
 
 - Verification run before the artifact edit becomes stale after the edit. Re-run the relevant canonical command after the final write, even when the artifact is documentation-only.

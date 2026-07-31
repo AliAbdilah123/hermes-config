@@ -77,6 +77,25 @@ hermes kanban --board $B link task1 task2              # dependency established
 
 If tasks were already created as ready and the dispatcher claimed them in parallel, use `reclaim` and `unblock` to reset them after completing the parent.
 
+## Recovering apparently stuck API-backed jobs
+
+Do not classify a job as orphaned from `ps` output alone. A run recorded as `hermes-api:<session-id>` is remote/API-backed, not a local tmux process.
+
+1. Read the latest job/run pair and resolve the workspace's persisted Hermes URL and API key.
+2. Query both `/api/sessions/<session-id>` and `/api/sessions/<session-id>/messages`.
+3. Classify before acting:
+   - active session, no terminal assistant response → restore/reattach the watcher; do not retry;
+   - terminal assistant response present, even if session metadata still has `ended_at: null` → treat the message stream as stronger completion evidence, ingest that exact response, and finish the existing run;
+   - ended session with final response → persist it and finish the existing run;
+   - missing/ended without response → block consistently and retry as a new attempt;
+   - implementation commits landed while result collection was interrupted → match commits to jobs and run fresh required verification before repairing state.
+4. A terminal assistant response means the latest message is an assistant message with substantive content and no pending tool calls. Do not infer completion from commit existence alone.
+5. For manual SQLite recovery, use `.backup` first, then atomically update both `job_runs` and `jobs` and append timeline events. Never merely flip a stale row to `running`.
+6. After a service restart, verify startup reconciliation processes every active API-backed run, including implementation-phase runs approved immediately before restart. It must inspect both session metadata and messages: reattach genuinely active sessions, but ingest terminal responses that arrived while the watcher was down.
+7. Restarting the service is a diagnostic, not a recovery claim. Re-query both `jobs` and `job_runs` afterward; if they remain `in_progress`/`running`, startup reconciliation is still broken and another restart will not repair them.
+
+See `references/api-backed-job-session-recovery.md` for a compact diagnosis and recovery recipe.
+
 ## Verification and reporting
 
 - When a task session appears mixed with another session, trace the exact job → run → agent-session relationship and inspect the original remote message list before concluding contamination. Classify it as cross-task contamination, same-task execution drift, multi-attempt timeline confusion, or insufficient evidence. See `references/task-run-conversation-attribution.md`.

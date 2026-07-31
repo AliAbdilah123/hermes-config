@@ -1,6 +1,6 @@
 Fixes require exact public E2E—not tests/build/HTTP alone. Finals: link, commit, push. Restore/reverify previews; never claim readiness early. Distinguish running processes from pending work and continue after delegates finish.
 §
-Small errors: fix directly. Complex errors: plan + styled HTML review first.
+Small feature/edit/fix: implement now, no plan/approval. Complex: plan first.
 §
 Code: SRP, DRY, clear names, boundary validation, few comments.
 §

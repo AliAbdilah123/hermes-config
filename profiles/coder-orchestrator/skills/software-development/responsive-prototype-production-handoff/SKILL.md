@@ -23,7 +23,7 @@ See `references/preview-first-worktree-approval-gate.md` for the complete lifecy
 1. Read the approved prototype, implementation plan, real page/component tree, shared styles, data helpers, translations, and nearby tests.
 2. Treat the prototype as the visual and interaction contract, not source code to paste into production.
 3. Preserve the real application’s data flow, routes, shared components, accessibility primitives, themes, and desktop/tablet behavior.
-4. Apply only the user’s requested refinement to the approved baseline. If they ask for “a little breathing room,” increase gaps/padding modestly while retaining measurable first-viewport requirements.
+4. Apply only the user’s requested refinement to the approved baseline. A request to rename, reorder, or add icons to “every tab” applies only to navigation items already visible in that surface; it does **not** authorize promoting related routes into new tabs. Inventory the baseline navigation items before editing and keep that set unchanged unless the user explicitly asks to add or remove destinations. If they ask for “a little breathing room,” increase gaps/padding modestly while retaining measurable first-viewport requirements.
 5. Use strict TDD for behavior changes: add focused failing tests, observe the expected failures, implement minimally, then rerun targeted and regression tests.
 6. Scope responsive overrides under the page root. Never globally rewrite a shared card/grid to satisfy one mobile page.
 7. Build and deploy using the project’s actual production path, then verify the public route with cache busting.
@@ -73,6 +73,7 @@ See `references/program-detail-production-parity.md` for a concrete data-backed 
 - A screenshot taken immediately may capture a loading state. Verify the API, then allow enough browser virtual time for the application and request to settle before judging data-backed geometry.
 - At the named acceptance viewport, visually prove the requested content is fully visible, media/fallbacks load, spacing is comfortable, and no overlap or page-level overflow exists.
 - Exercise the primary interaction path, dismissal paths, keyboard behavior, focus return, theme variants, and console output.
+- For an async action that must open its result in a new tab, create the blank tab synchronously inside the user gesture, clear `opener`, navigate it after the API returns, and close it on failure. Opening only after `await` is commonly popup-blocked. Verify both the exact destination and failure cleanup; do not replace the current tab unless requested.
 - Verify deployed asset timestamps/hashes and the cache-busted public URL.
 
 ## Approved-prototype recovery and production-contract reconciliation

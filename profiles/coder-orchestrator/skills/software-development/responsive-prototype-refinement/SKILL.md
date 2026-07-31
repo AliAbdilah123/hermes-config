@@ -33,6 +33,33 @@ Compact card typography often looks undersized after content is promoted to a fu
 - retain readable labels and metadata;
 - avoid globally changing shared component typography.
 
+## Fixed-height workspace footer visibility
+
+When a control is present in the DOM but reported missing on laptop-height viewports, do not assume placement order proves visibility. Inspect the entire height-containment chain first:
+
+- fixed shells such as `height: 100dvh` and `overflow: hidden`;
+- grid/flex ancestors missing `min-height: 0`;
+- which child owns scrolling;
+- footer/composer rows that can be pushed beyond the clipped workspace.
+
+Prefer one bounded workspace where only the timeline/content row scrolls and the composer plus adjacent actions remain non-scrolling rows. Keep tightly related controls in one footer wrapper when attachment summaries or validation messages can add rows. Verify both viewport width and height at representative laptop dimensions; width-only responsive checks miss this failure class.
+
+For actions that create a resource asynchronously and must open it in a new tab, calling `window.open` only after `await` may be blocked because the browser no longer considers it part of the user gesture. Prefer reserving a blank tab synchronously from the submit gesture, then set its location after creation succeeds and close it on failure. If that interaction cannot reserve a tab safely, provide a visible ordinary anchor to the created resource as fallback. Always use `noopener`/`noreferrer` semantics and keep the originating tab unchanged when requested.
+
+## Settings-tab consolidation
+
+When feedback renames a settings tab and moves existing controls into it:
+
+- treat the new tab name as a broader information-architecture boundary, not a label-only change;
+- move the existing control implementations rather than recreating them, preserving persistence hooks, accessibility labels, and state;
+- remove the controls from their old tab and mechanically verify there is exactly one rendered instance of each;
+- keep unrelated account/security actions in their original tab;
+- preserve internal section IDs and legacy routes when that avoids needless compatibility churn, unless the user explicitly requests URL changes;
+- update visible labels and headings in every supported locale;
+- test through normal tab navigation, then change each moved preference and verify persistence plus independence after reload.
+
+For language, display currency, and theme controls, verify all three coexist in Preferences; changing one must not reset either of the others. Display currency must remain presentation-only.
+
 ## Breakpoint preservation
 
 “Do not change mobile” means:
@@ -79,6 +106,10 @@ For interactive image prototypes, visible controls and source-string checks are 
 ## Single-column commerce refinements
 
 When a checkout or purchase page changes from two columns to one, size the centered parent once and let both cards use `width: 100%`. This guarantees matching edges without duplicated width values. Place package details first and payment/order details below; reassess sticky positioning because a formerly side-mounted payment card usually no longer needs it. When approval is the done definition, demonstrate this in an isolated non-transactional preview before changing production behavior. See `references/centered-single-column-checkout.md`.
+
+## Conversational localization refinement
+
+When prototype feedback says a locale sounds rigid or translated too literally, audit the whole locale catalog rather than replacing only the cited headline. Preserve keys, interpolation tokens, plurals, markup, and established domain terms; validate the catalog mechanically, then render representative surfaces in the selected locale. For Indonesian casual-polite copy, avoid `Anda`, prefer direct active phrasing, use `kamu` only when needed, and add conversational particles sparingly. A rejected lexical choice such as `Temukan` should be removed consistently from user-facing discovery copy, but do not blindly replace semantically distinct browse/filter actions. See `references/conversational-localization-refinement.md` for the editing and verification checklist.
 
 ## Rejected-delta rollback
 
