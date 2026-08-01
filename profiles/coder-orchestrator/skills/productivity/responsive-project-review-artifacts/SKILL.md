@@ -62,8 +62,19 @@ When product planning combines a written MVP blueprint with a static multi-page 
 6. Publish a multi-page artifact by symlinking a named directory into the PRD web root rather than copying individual files. Publicly verify the review page, prototype index, and at least one interior page.
 7. Stage only requested blueprint/prototype paths. Formatting or cleanup helpers must use an explicit file allowlist; never sweep every existing file in a shared `docs/` directory.
 
+## Visual Matching and Ambiguous UI References
+
+When the user asks to make one artifact or section look like another:
+
+1. Treat quoted text as a visual locator, not necessarily a literal source string. Inspect the rendered target and reference URLs, including screenshots and DOM structure, before searching local files.
+2. A `.md` URL may be rendered through a site-wide post-detail template even when the repository file contains only Markdown. Compare the server-rendered page chrome, typography, content width, metadata, navigation, and responsive behavior—not just the Markdown source.
+3. Map the rendered section back to local source only after understanding both rendered states. Search nearby headings or content if the quoted locator is absent verbatim.
+4. If browser automation is unavailable, fetch both URLs with a browser-like user agent and inspect their HTML/CSS; use a screenshot supplied by the user only when rendered evidence still cannot be obtained.
+5. Do not stop at “text not found” or ask for a screenshot until both rendered endpoints and local sources have been inspected. Implement the smallest shared-style or targeted markup change, then verify the exact public route visually at desktop and mobile widths.
+
 ## Verification Pitfalls
 
+- A quoted heading may identify a rendered card or post section without existing verbatim in the checked-in source. Literal search alone is insufficient evidence that the requested UI is absent.
 - Verification run before the artifact edit becomes stale after the edit. Re-run the relevant canonical command after the final write, even when the artifact is documentation-only.
 - Fresh verification evidence can be command-sensitive. If the workspace/runtime explicitly requests a canonical command, run that exact command after the last edit (for example, `pnpm run build` rather than relying on a prior successful `npm run build`), even when both invoke the same package script.
 - A public `curl` 200 verifies publication, not visual quality. Also run deterministic HTML checks; use browser/mobile inspection when available, but do not treat unavailable browser automation as a blocker when source checks and HTTP verification pass.
