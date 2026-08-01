@@ -1460,13 +1460,13 @@
     "created_at": "2026-06-22T07:20:34.959663+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T06:47:09.732114+00:00",
-    "last_used_at": "2026-07-31T08:40:51.251905+00:00",
-    "last_viewed_at": "2026-07-31T08:40:51.247125+00:00",
+    "last_used_at": "2026-08-01T02:20:22.523739+00:00",
+    "last_viewed_at": "2026-08-01T02:20:22.516280+00:00",
     "patch_count": 137,
     "pinned": false,
     "state": "active",
-    "use_count": 352,
-    "view_count": 352
+    "use_count": 353,
+    "view_count": 353
   },
   "teams-meeting-pipeline": {
     "archived_at": null,
@@ -1519,6 +1519,19 @@
     "state": "active",
     "use_count": 5,
     "view_count": 5
+  },
+  "visual-preview-feedback-loop": {
+    "archived_at": null,
+    "created_at": "2026-08-01T02:27:41.450453+00:00",
+    "created_by": "agent",
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
   },
   "weights-and-biases": {
     "archived_at": null,
