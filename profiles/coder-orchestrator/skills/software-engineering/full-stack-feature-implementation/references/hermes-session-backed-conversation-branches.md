@@ -31,6 +31,19 @@ Several sibling chats may finish simultaneously. Do not silently drop SQLite com
 - Guard by conversation ID, job ID, active status, and session ID so an old completion cannot overwrite newer activity.
 - After retries, attempt to persist an explicit error/`waiting` outcome and log if even that fails.
 
+## Merge-back review contract
+
+When a child conversation merges into its direct parent, prefer one editable summary field over a UI-managed list of extracted points.
+
+- Prefill the field from only the unmerged delta: query events after the latest persisted source-event watermark.
+- Keep the preview watermark and reject confirmation if newer events arrive before the merge transaction commits.
+- Submit and return a single `summary` string; render it as one whitespace-preserving text block.
+- Preserve direct-parent enforcement, authorization, active-reply exclusion, and idempotency-key semantics when simplifying the payload.
+- If an existing JSON column stored arrays of points, avoid a schema migration when a compatibility reader can decode both the new JSON string and legacy array, joining old points into readable paragraphs.
+- Validate non-empty and byte-length limits at the API boundary; ensure UTF-8-safe truncation when constructing the preview.
+
+Focused regression coverage should prove: exactly one prefilled textarea; edited summary submission; no point controls/list rendering; rejection of the legacy request contract if intentionally removed; stale preview and racing-event rejection; duplicate idempotent response; delta-only preview after a prior merge; and compatibility reads of legacy stored arrays.
+
 ## Required tests
 
 - Exact fork URL, auth header, and `{id,title}` payload.

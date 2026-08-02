@@ -72,3 +72,5 @@ Focused UI regressions should assert both text and semantics: queued renders its
 - Calling deployment E2E-verified based only on process health or an HTTP response.
 
 See `references/review-state-capacity.md` for a concrete state-table and deterministic test recipe.
+
+See `references/review-phase-replies-and-text-approval.md` when feedback must reset the workflow phase, proposal-only output was misclassified as done, text replies should share the button approval transition, or an already-misclassified persisted row needs an auditable repair.

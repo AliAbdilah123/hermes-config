@@ -46,9 +46,9 @@ When selecting a focused test by name, inspect the runner summary and require at
 verify_script=$(mktemp /tmp/hermes-verify-XXXXXX.sh)
 ```
 
-2. Put the focused behavior check in that script. Prefer invoking an existing regression test over duplicating test logic.
-3. Execute it against the actual changed code. Invoke the temporary shell script directly from the terminal command (for example, `"$verify_script"`), rather than hiding its checks inside a nested Python/subprocess wrapper, so verification tracking can observe the script execution and evidence.
-4. Remove the script afterward; use a cleanup trap when the script has multiple failure points.
+2. Put the focused behavior check in that script. Prefer invoking an existing regression test over duplicating test logic. For route changes, assert both the route helper and pathname parser, then run the focused test that exercises them.
+3. Execute it against the actual changed code. Invoke the temporary shell script directly from the terminal command (for example, `"$verify_script"`), rather than hiding its checks inside a nested Python/subprocess wrapper, so verification tracking can observe the script execution and evidence. The script itself may call Python for source assertions, but the shell script must be the directly executed verification process.
+4. Remove the script afterward; use a cleanup trap when the script has multiple failure points. Report the exact temporary path and cleanup result so the evidence boundary is auditable.
 5. Label the result “ad-hoc targeted verification.” State the behavior checked and distinguish passed tests from skipped tests.
 
 If the workspace still reports “unverified” after equivalent manual checks, rerun them through one directly executed `hermes-verify-*` script; prior output may be human-readable evidence without being registered as fresh workspace verification.
@@ -110,6 +110,12 @@ For trustworthy worktree verification:
 3. Run focused tests through the directly executed `hermes-verify-*` script only after dependency isolation is clean.
 4. If a symlinked-dependency run failed with hook errors, repair isolation and rerun. Treat only the fresh isolated result as evidence.
 5. Keep build blockers separate from targeted behavior. Unrelated missing source files or pre-existing type errors mean the full build is not green even when focused regressions pass.
+
+## Interactive job-operation verification
+
+For UI operations that change backend state, do not stop at a component test or build. Add or update a focused test for the operation's availability in each required lifecycle state, then exercise the API boundary for the corresponding persisted transition. If an operation expands from one status to all statuses, update stale tests that assert the old restriction. For destination selectors that can create records, verify both existing-destination and new-destination paths, including optional generated names, validation, ordering, authorization, and preservation of active run/session identity.
+
+When a move/reparent operation creates a destination inside a transaction, explicitly clear expected `sql.ErrNoRows`/not-found probe results before continuing; otherwise a successful lookup-for-absence can poison the later transaction and produce a misleading destination-validation error. Return the actual created destination ID, not a sentinel such as zero, and assert both the response ID and persisted foreign-key/lane change. In the UI, refresh the destination list when opening the dialog rather than trusting a stale board snapshot. See `references/move-operation-verification.md` for the focused regression pattern.
 
 ## Queue/status UI differentiation verification
 

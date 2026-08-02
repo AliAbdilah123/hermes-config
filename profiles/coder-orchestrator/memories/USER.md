@@ -2,11 +2,11 @@ Fixes need authenticated public E2E. WORKING/VERIFYING mean active execution; ot
 §
 Small feature/edit/fix: implement now, no plan/approval. Complex: plan first.
 §
-Code: SRP, DRY, clear names, boundary validation, few comments.
+Code: SRP/DRY, clear names, boundary validation, few comments.
 §
-Coding: use Codex CLI, preferring `gpt-5.6-sol` with medium reasoning and speed unless specified. Reuse existing code/workflows.
+Coding tasks: always use Codex CLI, preferring `gpt-5.6-sol` with medium reasoning and speed unless specified; reuse existing workflows.
 §
-Concise replies. Komuna: “Simple product,” not “Merchandise.” Simple forms hide manager/custom controls and ignore stale values. Discovery cards retain pricing/visibility. Detail-page headings use one color, with no orange last-word emphasis. Exact visuals need public verification.
+Concise replies. Komuna: say “Simple product”; simple forms hide manager/custom controls and stale values. Discovery keeps pricing/visibility. Detail headings one color. Exact visuals need public E2E.
 §
 Komuna previews: isolated exact routes; production requires explicit approval; remove rejected previews. Payment previews use genuine Xendit test invoices.
 §
@@ -14,4 +14,6 @@ Komuna reports: verify WIB date every time; use only that reporting period, neve
 §
 Job UX: editable todos first; parallel columns, sequential jobs; history is grey text, not bubbles. Done/blocked replies requeue at todo end.
 §
-WYSIWYG: use an established editor, not handmade contentEditable; polished UI, visibly working formatting/list markers, H1–H5, and a single-row horizontally scrollable toolbar.
+WYSIWYG: established editor; working formatting/lists, H1–H5, single-row scrollable toolbar.
+§
+Paragentix: full Job detail page and Job detail modal serve different purposes; keep separate and never modify interchangeably.

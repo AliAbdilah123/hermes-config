@@ -14,8 +14,9 @@ Use for visual web changes that are reviewed in an isolated preview before produ
 
 ## Workflow
 
-1. **Name the target precisely.** Record the environment (preview or production), exact route, state/auth requirements, and viewport. Similar pages are not interchangeable.
-2. **Make the smallest source change.** Inspect the route component and applicable breakpoint rules. For responsive changes, preserve desktop behavior unless requested otherwise.
+1. **Name the target precisely.** Record the environment (preview or production), exact route, state/auth requirements, and viewport. Similar pages are not interchangeable. Treat a full detail page, board modal/inspector, drawer, timeline, and conversation view as separate products until code tracing proves they share the relevant renderer. Name each surface and its purpose before proposing edits.
+2. **Trace route to renderer.** Follow the reported URL through pathname/query parsing to the mounted component and exact content renderer. Evidence from a sibling surface is not evidence for the target. Keep separate navigation, layout, and responsibilities as explicit invariants in the plan and regression tests.
+3. **Make the smallest source change.** Inspect the route component and applicable breakpoint rules. For responsive changes, preserve desktop behavior unless requested otherwise.
 3. **Verify mechanically.** Assert both the requested rule and removal of superseded styling. For a reverted effect, search for and remove its keyframes, selectors, reduced-motion override, and residual background declarations—not just the visible animation declaration.
 4. **Build for the actual preview mount.** Publish the resulting hashed assets to the isolated route.
 5. **Render exact public routes.** Exercise each changed route at the relevant viewport. A preview root, HTTP 200, source assertion, or build does not prove a detail route.
@@ -51,4 +52,4 @@ When users have questioned whether work stopped, proactively post the next state
 
 Never say “done” or imply the user should see a preview-only change on production. Do not promote backend data, generated URLs, HTTP health, or source tests into UI proof: for notification/navigation work, click the actual rendered dropdown item and prove the destination UI opens in the required state.
 
-See `references/truthful-status-and-role-sensitive-e2e.md` for role-overlap and exact-interaction verification patterns.
+See `references/truthful-status-and-role-sensitive-e2e.md` for role-overlap and exact-interaction verification patterns. See `references/distinct-detail-surfaces-and-session-reverts.md` for route-to-renderer disambiguation and safe correction when work touched the wrong UI surface.

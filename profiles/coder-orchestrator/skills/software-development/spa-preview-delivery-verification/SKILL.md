@@ -81,6 +81,10 @@ When the bug is collection-related, include explicit fixtures for:
 
 Normalize data at the API/client boundary where practical; still test every downstream `.filter`, `.map`, `.length`, and iteration path implicated by the original stack trace.
 
+## Review-artifact publication checks
+
+For standalone review HTML published through an `/prd/` or similar alias, HTTP 200 is insufficient. Verify the exact response body contains the artifact title and a stable content marker; an SPA shell can return 200 while silently replacing the requested document. Check both localhost and the public hostname, including HTTPS. Inspect the active hostname-specific server block: an alias in another virtual host does not apply to the requested domain. If the public body is the SPA shell, classify the artifact as unpublished/blocked and do not report the public link as verified. If the alias is correct locally but wrong publicly, investigate vhost selection, proxy/CDN behavior, and cache headers before changing application code.
+
 ## Pitfalls
 
 - `curl -I` proves transport status, not application identity.

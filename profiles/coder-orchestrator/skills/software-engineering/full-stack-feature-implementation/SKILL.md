@@ -9,7 +9,7 @@ Use this skill when the user asks to update an existing project with a real impl
 
 ## Focused UI and embedded-build verification
 
-Use linked references for specialized flows, including [Hermes session-backed conversation branches](references/hermes-session-backed-conversation-branches.md) and [approval-gated agent job workflows](references/approval-gated-agent-job-workflows.md). Verify source through served asset, git/upstream state, and deployment authorization.
+Use linked references for specialized flows, including [Hermes session-backed conversation branches and merge-back summaries](references/hermes-session-backed-conversation-branches.md) and [approval-gated agent job workflows](references/approval-gated-agent-job-workflows.md). Verify source through served asset, git/upstream state, and deployment authorization.
 
 When the repository is already dirty, isolate the feature by exact paths: inventory first, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 

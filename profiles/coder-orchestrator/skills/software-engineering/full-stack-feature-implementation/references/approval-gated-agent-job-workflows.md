@@ -5,6 +5,7 @@ Use this pattern when a board turns one agent session into proposal review follo
 ## State and session invariants
 
 - Persist review versus implementation explicitly; never infer phase from assistant prose.
+- For a missing approval action, inspect the authoritative job row and latest run before changing UI code. Derive the control from persisted lifecycle state (`in_review` plus review phase), not session prose or a stale board snapshot. If the latest conversation says implementation was not performed but the row is `done`/implementation, repair it to `in_review`/review, append a timeline correction event, and verify after authenticated refresh. A successful run exit does not mean implementation is complete: proposal completion and implementation completion are distinct states. Preserve unrelated working-tree changes and run narrow state-transition tests after repair.
 - Use atomic transitions such as `todo → in_progress(review) → in_review → in_progress(implementation) → done`; guard double approval.
 - Resume the same agent session for approval and feedback. Approval sends an explicit implementation instruction. Feedback records a timeline event and requeues at the end of Todo without losing session identity.
 - Treat the session title as display identity and the task as private execution input. Create a bounded fallback immediately, then synchronize the authoritative title through the documented session-metadata endpoint. Do not invent response fields or call another model merely to generate a title.
