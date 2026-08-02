@@ -35,6 +35,19 @@ Use when auditing or implementing payment-provider checkout that grants digital 
 - Resumable invoice URLs are bearer-like secrets: expose them only through an ownership-scoped member endpoint, never public or admin/program purchase listings. Separate member and admin DTOs to make accidental leakage harder.
 - Hide resume actions for paid, failed, refunded, expired, invalid-host, and valid-but-elapsed invoices. Open external provider URLs with `noopener noreferrer` and an explicit host allowlist.
 
+## Pay-click failures before checkout reaches the API
+
+When clicking Pay fails immediately and server logs show the quote request but no checkout request:
+
+1. Treat the provider and backend as downstream until browser evidence proves the checkout POST occurred.
+2. Inspect synchronous code executed before the request: idempotency-key generation, query parsing, auth/session reads, analytics, and payload construction.
+3. Capture browser `pageerror` plus quote and checkout responses. A successful quote followed by no POST strongly indicates a client-side exception.
+4. Audit modern Web APIs used in the click handler, especially `globalThis.crypto.randomUUID()`. A polyfill that only runs when `crypto` exists does not protect contexts where `crypto` itself is absent.
+5. Keep one stable idempotency key per logical attempt, but generate it through a compatibility-safe helper. Prefer native `crypto.randomUUID`; use a sufficiently unique fallback only for request deduplication, never for secrets or authentication.
+6. Add a regression test that removes the Web API, clicks Pay, and asserts the checkout POST contains a non-empty idempotency key.
+7. Public E2E should deliberately disable the API before clicking Pay, require checkout `200`, and verify navigation to the genuine provider test/staging invoice URL.
+8. Do not stop at the failure boundary or likely root cause. Continue through regression test, fix, deployment, and authenticated public provider-invoice E2E unless concretely blocked; do not require the user to say “Continue.”
+
 ## Critical ambiguous-create rule
 
 If the provider may have created an invoice but the response was lost, malformed, timed out, or failed to persist locally, a retry must first query the provider by the stored external purchase ID. Validate and adopt a matching invoice before attempting creation again. Do not guess unsupported idempotency headers.

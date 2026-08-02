@@ -20,4 +20,4 @@ Paragentix: default path ~/projects/paragentix. Inspect first and propose for ex
 §
 Paragentix public link is https://app-dev.paragentix.com.
 §
-Komuna manager Sessions: preserve the current Admin attendance UI; show Simple products/custom answers only in the existing Attendant details disclosure.
+Komuna Sessions: preserve Admin attendance UI; Simple/custom answers only in Attendant disclosure. Manager activation creates pending admin request visible in both inboxes; calendar selection scrolls to details.

@@ -40,10 +40,15 @@ For mobile hero simplification, verify at the breakpoint that the carousel is ab
 
 ## Communication
 
-Use concise status labels:
+Use concise status labels, and make them truthful about current execution:
 
-- `Implemented; exact public preview verification pending.`
-- `Preview verified; production unchanged pending approval.`
-- `Live verified on: <exact routes>.`
+- `WORKING` only while code, tests, deployment, or an explicitly tracked background process is actively running.
+- `VERIFYING` only while verification commands or interactive checks are actively underway; do not leave this label in place after stopping.
+- `READY FOR REVIEW` only after the exact public user interaction has passed.
+- `BLOCKED` or `STOPPED / pending verification` when no work is currently executing.
 
-Never say “done” or imply the user should see a preview-only change on production.
+When users have questioned whether work stopped, proactively post the next state transition when a background process completes; do not require them to ask again. Distinguish implementation completion, server restart, artifact publication, and public interaction verification.
+
+Never say “done” or imply the user should see a preview-only change on production. Do not promote backend data, generated URLs, HTTP health, or source tests into UI proof: for notification/navigation work, click the actual rendered dropdown item and prove the destination UI opens in the required state.
+
+See `references/truthful-status-and-role-sensitive-e2e.md` for role-overlap and exact-interaction verification patterns.

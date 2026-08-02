@@ -1,4 +1,4 @@
-Fixes need exact public E2E, not tests/build/HTTP alone. Finals: link, commit, push. Restore/reverify previews; don’t claim readiness early. Distinguish running from pending work.
+Fixes need authenticated public E2E. WORKING/VERIFYING mean active execution; otherwise say STOPPED. READY only after E2E. Finals: link, commit, push.
 §
 Small feature/edit/fix: implement now, no plan/approval. Complex: plan first.
 §

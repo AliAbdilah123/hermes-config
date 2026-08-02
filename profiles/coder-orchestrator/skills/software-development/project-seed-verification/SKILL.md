@@ -95,3 +95,4 @@ curl -fsS "$PUBLIC_BASE/api/v1/programs?limit=3" | head -c 2000
 ## References
 
 - See `references/komuna-seed-verification.md` for a concrete example where rich legacy seed scripts existed, but the deployed SQLite API contained only baseline demo data.
+- See `references/sqlite-copy-reseed-and-runtime-switch.md` when replacing an active SQLite dataset safely: backup API with WAL awareness, schema-equality and relationship gates, stopped-service sidecar archival, atomic promotion, and authenticated public role E2E.
