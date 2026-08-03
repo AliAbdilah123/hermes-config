@@ -89,6 +89,16 @@ For uploaded images in an isolated preview, verify the full media contract: stor
 
 ## Route-specific visual verification
 
+### Separate route and modal surfaces
+
+When a product has both a full detail route (for example `/items/:id`) and a board/list detail modal, treat them as separate delivery surfaces even when they share inner components.
+
+1. Trace pathname parsing through the top-level route switch before changing a shared text renderer. A component-level render test can pass while the requested pathname still falls through to the board or another default view.
+2. Inspect recent route commits and reverts. A reverted canonical-route change may explain why a shared modal works while the direct URL does not; do not blindly restore behavior that previously replaced the modal contract.
+3. Preserve entry semantics explicitly: direct pathname navigation renders the full page, while clicking a list/card continues to open the modal without pushing a new pathname unless navigation was requested.
+4. Add three focused regressions: pathname-to-route resolution, requested behavior rendered through the actual full-page wrapper, and unchanged modal/card navigation behavior.
+5. For public verification, open the exact authenticated `/items/:id` route with representative persisted content. A shared component test, successful build, deployed bundle marker, or HTTP 200 is supporting evidence only and must not be reported as authenticated route E2E.
+
 For authenticated settings/preferences previews, transport checks and a screenshot of the sign-in redirect are not feature evidence. Exercise authentication on the exact public preview, navigate to the intended settings tab through normal UI, change each preference, and verify persistence plus independence after reload. If authentication cannot be completed, report “public authenticated E2E pending” and do not call the preview ready for review.
 
 When language and display currency are separated, verify both cross-combinations (English + canonical currency and Indonesian + converted display currency), confirm changing language leaves currency unchanged, and confirm display-only currency never alters quote, checkout, invoice, provider, or stored transaction currency. Also verify controls were removed from every superseded header/dashboard surface rather than duplicated.
@@ -111,11 +121,19 @@ For trustworthy worktree verification:
 4. If a symlinked-dependency run failed with hook errors, repair isolation and rerun. Treat only the fresh isolated result as evidence.
 5. Keep build blockers separate from targeted behavior. Unrelated missing source files or pre-existing type errors mean the full build is not green even when focused regressions pass.
 
+## Mixed-version API/UI deployments
+
+When a form is supposed to be prefilled from an API preview, do not stop at a leaf-component test that injects the desired prop directly. Test the real API-consumption/state-setting boundary with both current and legacy response shapes when frontend assets and a compiled backend can deploy independently. An empty-string fallback can silently turn contract drift into a blank field.
+
+Trace and verify source commit → generated SPA bundle → compiled service binary → running process → public API shape → authenticated rendered control. Rebuild the exact executable named by systemd; a Git push or frontend build does not update a stale backend binary. During mixed-version windows, use a minimal compatibility normalizer that prefers the current field and deterministically converts the legacy field. Keep completion status pending until the exact authenticated public form is visibly non-empty and the operation succeeds.
+
+See `references/mixed-version-api-ui-deployment.md` for the regression shape, dirty-checkout isolation, deployment chain, and truthful reporting boundary.
+
 ## Interactive job-operation verification
 
 For UI operations that change backend state, do not stop at a component test or build. Add or update a focused test for the operation's availability in each required lifecycle state, then exercise the API boundary for the corresponding persisted transition. If an operation expands from one status to all statuses, update stale tests that assert the old restriction. For destination selectors that can create records, verify both existing-destination and new-destination paths, including optional generated names, validation, ordering, authorization, and preservation of active run/session identity.
 
-When a move/reparent operation creates a destination inside a transaction, explicitly clear expected `sql.ErrNoRows`/not-found probe results before continuing; otherwise a successful lookup-for-absence can poison the later transaction and produce a misleading destination-validation error. Return the actual created destination ID, not a sentinel such as zero, and assert both the response ID and persisted foreign-key/lane change. In the UI, refresh the destination list when opening the dialog rather than trusting a stale board snapshot. See `references/move-operation-verification.md` for the focused regression pattern.
+When a move/reparent operation creates a destination inside a transaction, explicitly clear expected `sql.ErrNoRows`/not-found probe results before continuing; otherwise a successful lookup-for-absence can poison the later transaction and produce a misleading destination-validation error. Return the actual created destination ID, not a sentinel such as zero, and assert both the response ID and persisted foreign-key/lane change. In the UI, refresh the destination list when opening the dialog rather than trusting a stale board snapshot. If the user still reports failure after source tests pass, treat runtime freshness as a first-class boundary: identify the service's exact `ExecStart`, rebuild that binary and the served frontend artifact, restart, verify the public asset hash changed, then exercise the exact authenticated public payload and persisted board state. Do not create another speculative source patch until this boundary is checked. See `references/move-operation-verification.md` for the focused regression and deployment recipe.
 
 ## Queue/status UI differentiation verification
 

@@ -96,6 +96,19 @@ Do not classify a job as orphaned from `ps` output alone. A run recorded as `her
 
 See `references/api-backed-job-session-recovery.md` for a compact diagnosis and recovery recipe.
 
+## Approval must enqueue before agent execution
+
+For review-gated sequential job systems, treat “Approve implementation” as queue admission, not immediate agent execution:
+
+1. The approval transaction moves the job from `in_review/review` to `todo/implementation` at the end of its lane and stores any approval reply for later delivery.
+2. Approval must not contact the agent/provider, reopen the completed run, increment attempts, or mark the job `in_progress`.
+3. The queue processor alone claims the job, atomically changes `todo → in_progress`, reopens/reuses the latest valid session/run, clears the pending approval payload, and sends the implementation prompt.
+4. Keep duplicate approval idempotent: no duplicate approval/comment events and no duplicate provider dispatch.
+5. Test both lifecycle halves with the lane paused or blocked for enqueue assertions, then unpause and invoke the real scheduler. Assert no provider request before claim and exactly one request after claim.
+6. Preserve review-feedback/retry semantics separately; do not route implementation approval through a generic feedback-resume path unless the pending payload has an explicit durable discriminator.
+
+This distinction keeps the board truthful: `todo` means queued, while `in_progress` means an agent is actively executing.
+
 ## Verification and reporting
 
 - When a task session appears mixed with another session, trace the exact job → run → agent-session relationship and inspect the original remote message list before concluding contamination. Classify it as cross-task contamination, same-task execution drift, multi-attempt timeline confusion, or insufficient evidence. See `references/task-run-conversation-attribution.md`.
