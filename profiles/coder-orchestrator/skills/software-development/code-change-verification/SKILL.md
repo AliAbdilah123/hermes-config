@@ -32,6 +32,12 @@ When the request is visual consistency with an existing component, verify the sh
 
 For a visual follow-up on an already-published preview, continue in that exact clean feature worktree and update the same isolated preview; do not create a second worktree for a revision to the same reviewed artifact. Conversely, a new request that merely touches the same domain is not continuation: create a fresh task worktree from the latest remote default branch instead of rebasing or reusing an older related preview. This distinction prevents stale feature history and avoidable conflicts from contaminating small changes.
 
+## Schema-migration and service-restart verification
+
+Before deploying a newly authored migration, review the complete migration history as it will execute on both an existing database and a fresh database. If columns were added while the migration is still uncommitted and has never shipped, fold the final definitions into that migration's original `CREATE TABLE`; do not append an unconditional later `ALTER TABLE ADD COLUMN` for those same columns. A clean bootstrap would otherwise create the final schema and then fail while adding duplicate columns. Keep a follow-up migration only after the earlier migration has actually shipped, and test both upgrade and clean-bootstrap paths when practical.
+
+After replacing a service binary and restarting it, `systemctl is-active` is only lifecycle evidence. The listener may not be ready yet. Poll the real local health endpoint with a bounded timeout, then probe the public route and expected content/API behavior. Treat an immediate connection refusal followed by healthy startup as a readiness race, not product failure; inspect status and journal if the bounded readiness check does not converge.
+
 ## Ad-hoc fallback
 
 When the environment does not detect a canonical verification command, run a focused ad-hoc check even if you already found and ran a build command manually. Build evidence and a targeted behavioral assertion are complementary; one does not replace the other.
@@ -54,6 +60,15 @@ verify_script=$(mktemp /tmp/hermes-verify-XXXXXX.sh)
 If the workspace still reports “unverified” after equivalent manual checks, rerun them through one directly executed `hermes-verify-*` script; prior output may be human-readable evidence without being registered as fresh workspace verification.
 
 The fallback supplements canonical checks; it does not redefine an arbitrary command as full-suite verification.
+
+## Completion-state integrity
+
+Keep task tracking and the final report aligned with the strongest evidence actually obtained:
+
+- Never mark an E2E item completed when the browser flow timed out, authentication failed, fixture/onboarding setup returned an error, or only API/asset probes succeeded. Leave it pending, blocked, or cancelled with the exact boundary.
+- Do not reinterpret a failed authenticated setup as successful E2E because deployment health, public assets, focused tests, or an unauthenticated route passed.
+- If authenticated public E2E is required, do not use `READY`, “completed,” or an all-complete checklist until the exact public browser flow passes. Report `STOPPED` or “implemented/deployed; authenticated public E2E pending” when work is no longer actively executing.
+- A final “unconfirmed” caveat does not repair an earlier completion claim or completed todo. Correct the status before reporting.
 
 ## Reporting examples
 
