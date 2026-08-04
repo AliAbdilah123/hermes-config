@@ -1,0 +1,61 @@
+---
+name: existing-product-workflow-module-planning
+description: Plan a new intermediate workflow module inside an existing product by reconciling implemented architecture, domain boundaries, migration conflicts, UX, and phased delivery without changing product code.
+version: 1.0.0
+metadata:
+  hermes:
+    tags: [planning, product-architecture, workflow, migration, domain-modeling]
+---
+
+# Existing Product Workflow Module Planning
+
+Use when a requested module sits between an existing source-of-truth entity and a downstream operational system, such as catalog → review → sales, intake → assessment → case, or Business → Prospect → Opportunity.
+
+## Required approach
+
+1. Verify the actual repository; placeholder or missing paths require candidate discovery and affiliation confirmation.
+2. Inspect read-only across frontend routes/navigation/list/detail surfaces, backend routes/services, models, migrations, tenant/auth boundaries, current schema, and representative relationship counts.
+3. Read existing product/architecture documents, but label documented targets separately from implemented behavior.
+4. Identify every current entry point that bypasses the proposed workflow.
+5. Define entity ownership before features:
+   - canonical entity owns stable identity and shared facts;
+   - intermediate entity owns research/review evidence, progress, decision, and pre-transition history;
+   - downstream entity owns operational state after explicit acceptance.
+6. Produce a conflict ledger: current behavior, conflict, smallest decision, and compatibility implication.
+7. Prefer additive migration over a big-bang rewrite. Add the intermediate domain, link legacy downstream persistence where practical, centralize conversion transactionally, then retire old labels/fields later.
+8. Define treatment of existing downstream records without fabricating missing historical evidence.
+9. Publish the canonical plan plus the required styled review artifact, and include an explicit implementation gate.
+
+## Mandatory plan sections
+
+- Executive recommendation
+- Current implementation baseline with exact file/symbol evidence
+- Why the module is separate
+- Entity ownership and state machines
+- Architectural conflict ledger
+- Navigation and page hierarchy
+- Complete transition workflow and eligibility rules
+- List/detail UX and all loading/empty/error/success states
+- Reuse versus new component boundaries
+- Evidence/checklist and explainable scoring rules
+- Reports and immutable snapshot behavior
+- Proposed data relationships, constraints, and API boundaries
+- MVP versus postponed scope
+- Minimal-refactor migration phases
+- Acceptance scenarios, risks, and decisions required
+- Implementation gate
+
+## Key pitfalls
+
+- Never duplicate the canonical entity; reports are historical snapshots, not canonical copies.
+- Do not let one status field represent lifecycle, qualification, outreach, and pipeline simultaneously.
+- `not_checked` is not failure: it reduces completeness/confidence and may block finalization.
+- In opportunity scoring, a failed quality check can increase service opportunity; expose signed rule contributions rather than assuming pass always scores higher.
+- Automated audits may suggest evidence but must not silently mark checklist results or trigger conversion.
+- Do not extend two competing detail-page implementations; name the canonical reuse target.
+- Do not propose destructive table renames merely to fix terminology in the first release.
+- When implementation changes are forbidden, create only new plan/review artifacts; describe schemas/endpoints as proposals, never as completed work.
+
+## Supporting reference
+
+See `references/intermediate-workflow-module-planning.md` for the detailed inspection, conflict, migration, scoring, and deliverable checklists.
