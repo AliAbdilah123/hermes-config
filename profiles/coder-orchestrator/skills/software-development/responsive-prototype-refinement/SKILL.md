@@ -135,3 +135,4 @@ Scope visual QA to the exact DOM surface. Removing an `Open` badge from each car
 ## References
 
 - `references/detail-column-with-mobile-preservation.md` — concrete selected-session calendar pattern and verification checklist.
+- `references/session-detail-simple-product-package-picker.md` — checkout-consistent vertical Simple product selection, capped horizontal package recommendations, empty states, and focused verification matrix.

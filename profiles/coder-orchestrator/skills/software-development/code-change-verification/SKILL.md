@@ -223,6 +223,8 @@ A non-zero browser exit is not a passing render by itself, but neither does it i
 
 ## Side-effect-free auth and routing verification
 
+For authenticated production multipart/import endpoints, use `references/authenticated-backend-upload-e2e.md`: preflight usable credentials before deployment, proxy the exact route prefix, and prove both persistence and absence of forbidden downstream side effects. Do not treat a public `401` as authenticated E2E.
+
 When debugging signup/login routing, do not create or delete user accounts merely to infer whether the frontend reached the backend. Trace submit handler → API URL construction → browser network status/body → reverse-proxy access log → proxy mapping → global middleware → route handler first. Reproduce the browser's `Origin`, `Host`, credentials mode, and public path: a curl without `Origin` can return 201 while the browser is rejected by CORS before the handler.
 
 Prefer non-mutating or already-existing-state probes. For example, an existing identity returning `409 user_exists` proves a same-origin request crossed proxy and CORS and reached registration without creating data. Pair it with an unrelated-origin probe that must remain `403 origin_not_allowed`. Report the exact failing boundary and response; never infer “the request did not reach the API” from generic frontend copy or sparse application logs.
