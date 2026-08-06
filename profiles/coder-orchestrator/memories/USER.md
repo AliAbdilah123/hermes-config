@@ -6,7 +6,7 @@ Code: SRP/DRY, clear names, boundary validation, few comments.
 §
 Coding tasks: always use Codex CLI, preferring `gpt-5.6-sol` with medium reasoning and speed unless specified; reuse existing workflows.
 §
-Concise replies. Komuna: say “Simple product”; simple forms hide manager/custom controls and stale values. Discovery keeps pricing/visibility. Detail headings one color. Exact visuals need public E2E.
+Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §
 Komuna previews: isolated exact routes; production requires explicit approval; remove rejected previews. Payment previews use genuine Xendit test invoices.
 §

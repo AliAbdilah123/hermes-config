@@ -210,6 +210,18 @@ For manager-request/admin-approval session workflows, also read `references/sess
 
 For admin create/edit forms, verify dirty-state behavior across the actual navigation surfaces, not only the form component: pristine forms must leave without prompting; changed forms must prompt on breadcrumb, cancel, dashboard tab/link navigation, and browser unload; successful saves must clear the guard. Nested image or package controls may mutate state outside ordinary text-input events, so test their dirty-state propagation explicitly. If a navigation item must be hidden, inspect and assert every navigation provider (for example both a horizontal tab list and a workspace/sidebar builder) while preserving the route unless deletion was requested. Native numeric input attributes are UX only: mirror integer, money, and quantity limits in frontend submit validation and the current API boundary, with tests at the maximum and one value above it.
 
+## Headless Chromium and ARM64 browser fallback
+
+When the primary browser runner cannot provision its bundled browser—especially on Linux ARM64 where Chrome-for-Testing builds may be unavailable—do not downgrade authenticated E2E to HTTP checks. Use the system Chromium executable with `playwright-core` (which does not download a browser):
+
+1. Probe the installed executable (`/snap/bin/chromium`, `/usr/bin/chromium-browser`, or equivalent); do not hardcode one path across hosts.
+2. In a temporary directory, install `playwright-core` only and launch with `chromium.launch({executablePath: '<system-path>', headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage']})`.
+3. Exercise the exact public authenticated flow, collect `console` and `pageerror` events, assert the persisted terminal state, and save a screenshot.
+4. Keep temporary browser dependencies and credentials outside the repository; never commit test credentials.
+5. Prefer public setup flows for prerequisite records. If none exists, create a uniquely named dedicated E2E tenant and the minimum fixture in the actual runtime database, respecting effective schema, ownership, and tenant IDs. Inspect the live schema first rather than trusting planning documents. The browser must still perform the feature's actual writes and transitions through the public UI/API; direct fixture setup is not itself E2E evidence.
+
+A browser package provisioning failure is setup state; the durable fallback is pairing `playwright-core` with an already-installed system Chromium.
+
 ## Headless Chromium artifact classification
 
 When the primary browser runner is unavailable, Chromium headless may create a valid screenshot or DOM dump and still return non-zero because of host GPU, D-Bus, or accessibility-bus warnings. Do not let `set -e` discard that evidence before classifying the run:

@@ -9,6 +9,8 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 For shared Regular Post / Project composer changes, follow `references/post-project-flow-verification.md` for title-boundary, dirty-worktree, deployment, and lazy-route verification details.
 
+For workspace multi-photo behavior, crop geometry, custom ratios, Review-to-editor state invalidation, and destination status visibility, follow `references/workspace-multi-photo-crop-and-destination-visibility.md`.
+
 For metadata-first Project creation that persists a Draft before destinations/content and then reuses the existing composer, follow `references/metadata-first-project-flow.md`, including its SQLite migration baseline and stable-restart checks.
 
 When metadata-only Projects fail during Edit rendering, trace the complete library → Edit route → detail API → SQL scan/DTO → boundary normalization → composer hydration/render flow before proposing fallbacks. Identify the exact null property. Keep the aggregate truthful: canonicalize nullable scalar content once to the strict frontend state contract, return absent child collections as `[]`, and never synthesize fake media/items containing null fields. Verify metadata-only, populated, published/non-editable, missing, and foreign-owner Projects without runtime exceptions; preserve owner-scoped 404 behavior. See `references/metadata-project-edit-null-contract.md`.

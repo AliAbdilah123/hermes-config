@@ -1,5 +1,3 @@
-#p-delegate=delegate; #p-boilerplate=boilerplate
-§
 Roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna. Use project root; delegates request terminal; retry indirect failures directly.
 §
 For this user's projects, `.env` and `sqlite.db` are placed in each project's directory/root unless specified otherwise.
@@ -20,4 +18,4 @@ Paragentix: default path ~/projects/paragentix. Inspect first and propose for ex
 §
 Paragentix public link is https://app-dev.paragentix.com.
 §
-Komuna Sessions: keep Admin attendance separate. Simple/custom answers stay in Attendant disclosure; session detail lets attendants edit fields/select simple product, or shows ≤3 simple-product packages.
+Komuna Sessions: Admin attendance separate; answers stay in Attendant disclosure. Simple product defaults None; owned vouchers save without checkout. If none owned, show ≤3 packages default None; Buy preserves draft/returns to edit; Checkout and save persists after payment.

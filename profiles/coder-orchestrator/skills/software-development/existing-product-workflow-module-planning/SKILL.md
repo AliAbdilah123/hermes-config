@@ -23,8 +23,12 @@ Use when a requested module sits between an existing source-of-truth entity and 
    - downstream entity owns operational state after explicit acceptance.
 6. Produce a conflict ledger: current behavior, conflict, smallest decision, and compatibility implication.
 7. Prefer additive migration over a big-bang rewrite. Add the intermediate domain, link legacy downstream persistence where practical, centralize conversion transactionally, then retire old labels/fields later.
-8. Define treatment of existing downstream records without fabricating missing historical evidence.
-9. Publish the canonical plan plus the required styled review artifact, and include an explicit implementation gate.
+8. Define treatment of existing downstream records without fabricating missing historical evidence. Inspect representative counts grouped by legacy stage/status and source linkage; use that evidence to ask whether legacy records remain editable, become read-only, or are archived. Distinguish genuinely direct/legacy rows from valid source-linked rows that merely use old stage labels—do not archive both groups with one coarse predicate.
+9. When a partial downstream module already exists, treat it as an implemented baseline—not a blank slate. Inspect its route shape, card/detail behavior, transition handler, persistence fields, and every direct-create/bulk-create bypass before proposing replacement work.
+10. For drag/drop stage workflows, separate the gesture from the mutation: dropping proposes a destination, confirmation collects destination-specific required data, and only the validated server action changes stage. Always provide a keyboard/mobile non-drag alternative.
+11. When the user resolves policy questions, propagate each answer into every affected plan section—not only a decisions appendix. Update state machines, schema/constraints, migration rules, API contracts, permissions, UX, notifications, tests, risks, and implementation tasks; remove stale alternatives and the resolved open-question list.
+12. Re-render and verify both canonical source and public review artifact. Check exact decision phrases and confirm obsolete question headings are absent; use a cache-safe URL/version when an intermediary may serve stale HTML.
+13. Publish the canonical plan plus the required styled review artifact, and include an explicit implementation gate.
 
 ## Mandatory plan sections
 
@@ -40,6 +44,8 @@ Use when a requested module sits between an existing source-of-truth entity and 
 - Evidence/checklist and explainable scoring rules
 - Reports and immutable snapshot behavior
 - Proposed data relationships, constraints, and API boundaries
+- Legacy-record evidence and an explicit compatibility policy question
+- Gesture-versus-mutation behavior for drag/drop, including confirmation, rollback, keyboard, and mobile paths
 - MVP versus postponed scope
 - Minimal-refactor migration phases
 - Acceptance scenarios, risks, and decisions required

@@ -119,8 +119,15 @@ If an old assertion fails because the established locale/formatter emits an equi
 
 Scope visual QA to the exact DOM surface. Removing an `Open` badge from each card does not imply removing a page-level “Open to Join” section. Name the relevant element/class in screenshot-review prompts so similarly worded headings do not become false failures.
 
+## Optional product/package selection refinements
+
+For session-detail forms that combine owned optional products with fallback package checkout, keep owned-product state and package-checkout state mutually exclusive, default both to explicit **None**, and verify persistence through canonical refetch and edit rehydration—not only the outbound save payload. Direct package **Buy** and **Checkout and save** require distinct return intentions. See `references/session-detail-simple-product-package-picker.md` for the full state, payment-return, persistence, visual-border, and verification matrix.
+
 ## Pitfalls
 
+- Letting hidden or stale package selection keep the main action checkout-oriented after an owned product is selected.
+- Resetting an API-persisted optional product to **None** when reopening edit mode, causing a later save to erase it.
+- Treating a pale parent-card border around a flush placeholder as part of the placeholder asset instead of inspecting hierarchy first.
 - Reverting the whole preview when only the latest component delta was rejected.
 - Changing restored UI to satisfy a stale locale-specific literal assertion.
 - Letting screenshot QA confuse a page-level heading with the exact card-level element under review.

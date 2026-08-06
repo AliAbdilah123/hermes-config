@@ -40,6 +40,12 @@ When asked to move a visual theme above tab containers, put theme tokens and pag
 
 See `references/nested-null-collections-and-feature-route-verification.md` for a compact reproduction and preview checklist.
 
+## Startup auth loading loops
+
+When an SPA stays forever on its workspace/bootstrap loader and never exposes Login/Register, inspect persisted auth before treating it as a dashboard API outage. A stale non-empty token can initialize the client as authenticated while the authoritative `/me` request fails and leaves workspace/onboarding state `null`. Clear the persisted credential and all auth-derived state at the saved-session restoration boundary so the existing unauthenticated route renders. Do not clear a valid session for failures from secondary dashboard fan-out endpoints.
+
+Verify by seeding an invalid token before public browser navigation, then assert login is visible, loading copy is absent, persisted auth is cleared, and no uncaught page error occurs. See `references/stale-saved-auth-loading-loop.md`.
+
 ## Pitfalls
 
 - Fixing `weekly_slots: null` while overlooking `member.roles: null` in a downstream manager mapper.
