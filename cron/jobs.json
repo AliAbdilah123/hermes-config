@@ -20,15 +20,15 @@
       "schedule_display": "0 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 40
+        "completed": 41
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-28T16:43:05.667937+00:00",
-      "next_run_at": "2026-08-08T02:00:00+00:00",
-      "last_run_at": "2026-08-07T02:00:58.583435+00:00",
+      "next_run_at": "2026-08-09T02:00:00+00:00",
+      "last_run_at": "2026-08-08T02:00:11.160773+00:00",
       "last_status": "error",
       "last_error": "RuntimeError: No access token found for Nous Portal login. Run `hermes model` to re-authenticate.",
       "last_delivery_error": null,
@@ -63,15 +63,15 @@
       "schedule_display": "0 9 * * *",
       "repeat": {
         "times": null,
-        "completed": 39
+        "completed": 40
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-28T16:55:33.111911+00:00",
-      "next_run_at": "2026-08-08T09:00:00+00:00",
-      "last_run_at": "2026-08-06T09:00:07.310768+00:00",
+      "next_run_at": "2026-08-09T09:00:00+00:00",
+      "last_run_at": "2026-08-07T09:00:03.328169+00:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -87,5 +87,5 @@
       "fire_claim": null
     }
   ],
-  "updated_at": "2026-08-07T09:00:02.279907+00:00"
+  "updated_at": "2026-08-08T09:00:14.609617+00:00"
 }

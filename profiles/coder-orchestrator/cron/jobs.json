@@ -20,17 +20,17 @@
       "schedule_display": "0 9 * * *",
       "repeat": {
         "times": null,
-        "completed": 36
+        "completed": 37
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-07-03T06:35:30.624329+00:00",
-      "next_run_at": "2026-08-08T09:00:00+00:00",
-      "last_run_at": "2026-08-06T09:03:58.581992+00:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-09T09:00:00+00:00",
+      "last_run_at": "2026-08-07T09:03:27.813768+00:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: HTTP 429: [codex/gpt-5.6-sol] [429]: The usage limit has been reached (reset after 29m 50s)",
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
@@ -46,5 +46,5 @@
       "fire_claim": null
     }
   ],
-  "updated_at": "2026-08-07T09:00:02.288398+00:00"
+  "updated_at": "2026-08-08T09:00:14.621518+00:00"
 }
