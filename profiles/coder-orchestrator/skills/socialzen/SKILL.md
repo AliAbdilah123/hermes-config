@@ -9,7 +9,7 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 For shared Regular Post / Project composer changes, follow `references/post-project-flow-verification.md` for title-boundary, dirty-worktree, deployment, and lazy-route verification details.
 
-For workspace multi-photo behavior, crop geometry, custom ratios, Review-to-editor state invalidation, and destination status visibility, follow `references/workspace-multi-photo-crop-and-destination-visibility.md`.
+For workspace multi-photo behavior, crop geometry, edit-page destination/account parity, custom ratios, Review-to-editor state invalidation, and destination status visibility, follow `references/workspace-multi-photo-crop-and-destination-visibility.md`.
 
 For metadata-first Project creation that persists a Draft before destinations/content and then reuses the existing composer, follow `references/metadata-first-project-flow.md`, including its SQLite migration baseline and stable-restart checks.
 

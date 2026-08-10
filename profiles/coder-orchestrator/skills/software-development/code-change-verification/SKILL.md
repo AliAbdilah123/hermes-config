@@ -32,6 +32,12 @@ When the request is visual consistency with an existing component, verify the sh
 
 For a visual follow-up on an already-published preview, continue in that exact clean feature worktree and update the same isolated preview; do not create a second worktree for a revision to the same reviewed artifact. Conversely, a new request that merely touches the same domain is not continuation: create a fresh task worktree from the latest remote default branch instead of rebasing or reusing an older related preview. This distinction prevents stale feature history and avoidable conflicts from contaminating small changes.
 
+## Database-backed private-file lifecycle verification
+
+When a database row owns a private filesystem object, review failure ordering as a hard data-integrity gate. Neither “delete metadata, then remove bytes” nor “remove bytes, then delete metadata” is safe across partial failures. Use same-filesystem quarantine with restore-on-database-failure, and require forced-failure tests proving both metadata and original bytes survive. See `references/recoverable-private-file-deletion.md` for the sequence and regression matrix.
+
+Do not let green happy-path upload/download/delete tests substitute for this review. Independently inspect error paths after implementation; file lifecycle defects commonly survive full test/build suites until a database trigger, permission error, or I/O failure is forced.
+
 ## Schema-migration and service-restart verification
 
 Before deploying a newly authored migration, review the complete migration history as it will execute on both an existing database and a fresh database. If columns were added while the migration is still uncommitted and has never shipped, fold the final definitions into that migration's original `CREATE TABLE`; do not append an unconditional later `ALTER TABLE ADD COLUMN` for those same columns. A clean bootstrap would otherwise create the final schema and then fail while adding duplicate columns. Keep a follow-up migration only after the earlier migration has actually shipped, and test both upgrade and clean-bootstrap paths when practical.
@@ -54,7 +60,7 @@ verify_script=$(mktemp /tmp/hermes-verify-XXXXXX.sh)
 
 2. Put the focused behavior check in that script. Prefer invoking an existing regression test over duplicating test logic. For route changes, assert both the route helper and pathname parser, then run the focused test that exercises them.
 3. Execute it against the actual changed code. Invoke the temporary shell script directly from the terminal command (for example, `"$verify_script"`), rather than hiding its checks inside a nested Python/subprocess wrapper, so verification tracking can observe the script execution and evidence. The script itself may call Python for source assertions, but the shell script must be the directly executed verification process.
-4. Remove the script afterward; use a cleanup trap when the script has multiple failure points. Report the exact temporary path and cleanup result so the evidence boundary is auditable.
+4. Remove the script afterward; use a cleanup trap when the script has multiple failure points. Install the trap in the outer shell **before** executing the verifier. Do not rely on `status=$?; rm ...` after a verifier launched under outer `set -e`: a failed lint/test exits the shell before cleanup runs and leaves the temporary script behind. A safe shape is `verify_script=$(mktemp ...); trap 'rm -f "$verify_script"' EXIT; ...; "$verify_script"`. Report the exact temporary path and cleanup result so the evidence boundary is auditable.
 5. Label the result “ad-hoc targeted verification.” State the behavior checked and distinguish passed tests from skipped tests.
 
 If the workspace still reports “unverified” after equivalent manual checks, rerun them through one directly executed `hermes-verify-*` script; prior output may be human-readable evidence without being registered as fresh workspace verification.

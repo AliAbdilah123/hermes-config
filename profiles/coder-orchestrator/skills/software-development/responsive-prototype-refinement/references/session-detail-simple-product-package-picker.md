@@ -31,6 +31,18 @@ Do not stop at asserting the outbound payload. Verify the complete boundary:
 
 A common regression is `beginEdit()` resetting the selected product to `None` even though the API correctly persisted and returned its ID. Hydrate from the saved `merchandise_product_id` only when it remains among eligible owned products; otherwise safely fall back to **None**. Confirm attaching metadata does not claim or consume the owned voucher.
 
+## Remaining-voucher count UX
+
+When owned Simple products are selectable, show each product's eligible active-voucher count at the trailing edge of its selection card so the member can compare inventory without leaving the form.
+
+- Derive counts from the canonical per-product voucher summary keyed by product ID; do not infer inventory from the selectable-product array length.
+- Treat selection as a preview of allocation: subtract exactly one from the selected product's displayed remaining count, clamp at zero, and leave every other product unchanged.
+- Selecting **None** restores the unadjusted counts.
+- Keep this visual decrement separate from persistence. Saving disclosure metadata must not claim/consume a voucher, start checkout, or call payment APIs.
+- Use a three-part card structure—radio, flexible product copy, trailing count. Keep the count right-aligned and non-wrapping on desktop; at narrow widths stack the number and label within the trailing column rather than moving inventory below the product.
+- Use singular/plural labels and a polite atomic live region for the changing count. Preserve an explicit accessible radio name when the visual label contains secondary copy.
+- Do not silently present a missing voucher-summary entry as authoritative zero unless the API contract guarantees omitted entries mean zero; otherwise show a loading/unavailable state or suppress the count until the summary resolves.
+
 ## Visual hierarchy pitfall
 
 When a placeholder image sits flush against a card edge, a pale border on the parent card can look like an unintended white frame around the image. Inspect the parent border before changing the placeholder asset or gradient. If the border is redundant, remove only that declaration and preserve clipping, radius, background, and shadow; verify the exact selector mechanically and obtain visual approval.

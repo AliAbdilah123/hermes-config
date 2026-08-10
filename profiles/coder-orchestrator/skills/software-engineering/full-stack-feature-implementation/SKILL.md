@@ -9,7 +9,7 @@ Use this skill when the user asks to update an existing project with a real impl
 
 ## Focused UI and embedded-build verification
 
-Specialized references: [session-backed branches](references/hermes-session-backed-conversation-branches.md), [approval-gated jobs](references/approval-gated-agent-job-workflows.md), and [audited optimistic mutations](references/audited-optimistic-mutations.md). Verify source, served assets, upstream state, and deployment authorization.
+Specialized references: [approved multi-phase plans](references/approved-multi-phase-plan-execution.md), [session-backed branches](references/hermes-session-backed-conversation-branches.md), [approval-gated jobs](references/approval-gated-agent-job-workflows.md), and [audited optimistic mutations](references/audited-optimistic-mutations.md). Verify source, served assets, upstream state, and deployment authorization.
 
 When the repository is already dirty, isolate the feature by exact paths: inventory first, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 

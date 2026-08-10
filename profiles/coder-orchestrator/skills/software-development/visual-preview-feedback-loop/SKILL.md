@@ -37,7 +37,23 @@ Use for visual web changes that are reviewed in an isolated preview before produ
 
 For heading emphasis removal, verify the real rendered heading has a single inherited/plain text color; do not merely search for one removed `<em>` because CSS descendant selectors or alternate components may still color text.
 
-For mobile hero simplification, verify at the breakpoint that the carousel is absent, inherited hero imagery/decorative pseudo-elements are disabled, desktop behavior remains intact, and reduced-motion rules do not leave obsolete effect code behind.
+For mobile hero simplification, verify at the breakpoint that the carousel is absent, inherited hero imagery/decorative pseudo-elements are disabled, **and its grid track, min-height, aspect-ratio, margins, and reserved whitespace collapse too**. A hidden child with a surviving desktop hero row is a failed mobile simplification. Confirm discovery/content begins promptly after the hero copy, desktop behavior remains intact, and reduced-motion rules do not leave obsolete effect code behind.
+
+### Screenshot critique pass
+
+Before declaring a visual preview ready, capture fresh screenshots from the **exact public URL** at the requested desktop and mobile widths and inspect the pixels, not only DOM assertions. Check at minimum:
+
+- clipped labels, captions, controls, and adjacent carousel slides;
+- placeholder or fallback media occupying the primary composition;
+- hidden mobile elements that still reserve layout space;
+- horizontal overflow, ambiguous card-rail peeks, and undersized touch targets;
+- contrast, readable metadata, heading wraps, and whether primary content appears early enough.
+
+Treat screenshot findings as test failures: revise the same preview, rebuild, republish, and capture fresh screenshots. Do not share the review URL as ready while a central interactive surface visibly looks unloaded, clipped, or structurally empty. DOM presence and HTTP 200 remain transport/render evidence, not visual-polish evidence.
+
+For populated carousels, verify the active image, caption, controls, and pagination form one coherent frame. Labels and metadata must be complete; outgoing or adjacent slides must not appear as accidental slivers. Also inspect whether the selected image plausibly matches its record. If genuine backend/gallery data is semantically mismatched, report it as a data-quality issue rather than fabricating replacement content in a visual-only redesign.
+
+If the normal browser automation path times out, fall back to installed headless Chromium with an explicit viewport, virtual-time budget, `--dump-dom`, screenshot, and captured stderr. Re-run against the exact public URL. Distinguish harmless host-level Chromium noise (such as DBus/AppArmor messages) from page runtime failures using the rendered DOM and screenshot; do not encode a transient browser startup failure as a permanent tool limitation.
 
 ## Communication
 

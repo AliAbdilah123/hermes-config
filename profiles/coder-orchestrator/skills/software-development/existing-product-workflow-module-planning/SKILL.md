@@ -51,6 +51,17 @@ Use when a requested module sits between an existing source-of-truth entity and 
 - Acceptance scenarios, risks, and decisions required
 - Implementation gate
 
+## Runtime/schema compatibility checks
+
+When planning around a partially implemented downstream module, do not infer runtime readiness from source migrations alone:
+
+- Read the live database's migration ledger and table schema in read-only mode, then compare them with every column/index the checked-out handlers query.
+- Probe representative relationship counts separately (for example, downstream rows missing canonical, intermediate, or Offer links) before proposing legacy treatment.
+- Distinguish a proven schema-version mismatch from the user's reported API symptom. A missing column can explain SQL failures, but it does not prove a generic `not_found` response came from that cause.
+- Put exact authenticated request capture early in the plan: deployed revision, actual DB path, URL, method, status, role, and response. Classify routing, tenant-scoped absence, schema skew, relationship corruption, migration state, and frontend state separately.
+- Sequence rollout as backup → grouped legacy counts → migration → integrity/foreign-key checks → authenticated list/detail smoke tests. Never use a repository-local database as proof of the deployed database's state.
+- When a uniqueness constraint protects conversion, plan both an explicit transactional pre-check that returns the existing record ID for actionable UX and the database constraint as the race-safe backstop.
+
 ## Key pitfalls
 
 - Never duplicate the canonical entity; reports are historical snapshots, not canonical copies.

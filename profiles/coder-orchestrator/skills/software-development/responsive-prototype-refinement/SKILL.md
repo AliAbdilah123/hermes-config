@@ -121,7 +121,13 @@ Scope visual QA to the exact DOM surface. Removing an `Open` badge from each car
 
 ## Optional product/package selection refinements
 
-For session-detail forms that combine owned optional products with fallback package checkout, keep owned-product state and package-checkout state mutually exclusive, default both to explicit **None**, and verify persistence through canonical refetch and edit rehydration—not only the outbound save payload. Direct package **Buy** and **Checkout and save** require distinct return intentions. See `references/session-detail-simple-product-package-picker.md` for the full state, payment-return, persistence, visual-border, and verification matrix.
+For session-detail forms that combine owned optional products with fallback package checkout, keep owned-product state and package-checkout state mutually exclusive, default both to explicit **None**, and verify persistence through canonical refetch and edit rehydration—not only the outbound save payload. Direct package **Buy** and **Checkout and save** require distinct return intentions.
+
+When cards expose wallet inventory, put each product's count at the trailing edge and treat selection as a **prospective** reduction: selecting an item shows `activeCount - 1`, switching items restores the prior product, and selecting **None** restores every count. Clamp at zero. The preview must not claim/consume a voucher; assert disclosure save makes no checkout or provider call. Use a three-column card grid (`radio | wrapping copy | right-aligned count`) and stack the count label compactly on narrow screens so long names cannot collide with inventory.
+
+Keep ordinary bookable-session test fixtures safely in the future while preserving their intended weekday and timezone semantics. Fixed near-future dates eventually become “past,” silently disabling booking controls and causing misleading failures. Keep a separate explicit historical fixture for past-session behavior.
+
+See `references/session-detail-simple-product-package-picker.md` for the full state, payment-return, remaining-voucher count, responsive layout, persistence, visual-border, and verification matrix.
 
 ## Pitfalls
 
