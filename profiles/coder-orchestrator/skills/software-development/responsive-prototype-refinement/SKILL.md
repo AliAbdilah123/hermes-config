@@ -111,6 +111,12 @@ When a checkout or purchase page changes from two columns to one, size the cente
 
 When prototype feedback says a locale sounds rigid or translated too literally, audit the whole locale catalog rather than replacing only the cited headline. Preserve keys, interpolation tokens, plurals, markup, and established domain terms; validate the catalog mechanically, then render representative surfaces in the selected locale. For Indonesian casual-polite copy, avoid `Anda`, prefer direct active phrasing, use `kamu` only when needed, and add conversational particles sparingly. A rejected lexical choice such as `Temukan` should be removed consistently from user-facing discovery copy, but do not blindly replace semantically distinct browse/filter actions. See `references/conversational-localization-refinement.md` for the editing and verification checklist.
 
+## Staggered exit-animation continuity
+
+When elements briefly disappear after an action and then reappear when their staggered exit animation starts, inspect the animation fill mode before changing React state, visibility, or timing. A delayed animation with `forwards` applies neither the first nor final keyframe during its delay, so the element falls back to its underlying style and may vanish or jump. If the first keyframe represents the required pre-animation pose, use `both` (or `backwards` when the final pose must not persist) so that first keyframe applies throughout the delay.
+
+Keep this as a minimal CSS correction when the DOM remains mounted correctly. Add a focused style-contract regression asserting the exact selector uses the intended fill mode, then exercise the complete interaction because source assertions cannot prove visual continuity. For an existing reviewed preview, rebuild and republish the same preview route rather than creating a replacement preview.
+
 ## Rejected-delta rollback
 
 When the user asks to revert a reviewed component, undo only the latest rejected delta on that component; preserve all previously accepted preview changes. Restore the component and its focused tests together, rerun the focused test and preview-path build, then republish and visually verify the exact surface.

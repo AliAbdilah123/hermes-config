@@ -13,6 +13,10 @@ For workspace multi-photo behavior, crop geometry, edit-page destination/account
 
 For metadata-first Project creation that persists a Draft before destinations/content and then reuses the existing composer, follow `references/metadata-first-project-flow.md`, including its SQLite migration baseline and stable-restart checks.
 
+For Meta OAuth callbacks that fall onto the bare project prefix, retain `#_=_`, or loop between slash/no-slash routes—and for removing typed-phrase friction from account disconnect—follow `references/meta-oauth-callback-and-disconnect-ux.md`.
+
+For immediate-vs-scheduled state rendering, safe scheduler-resistant browser fixtures, profile-avatar dialog checks, and selected/delete-all notification verification, follow `references/publishing-state-and-destructive-notification-e2e.md`.
+
 When metadata-only Projects fail during Edit rendering, trace the complete library → Edit route → detail API → SQL scan/DTO → boundary normalization → composer hydration/render flow before proposing fallbacks. Identify the exact null property. Keep the aggregate truthful: canonicalize nullable scalar content once to the strict frontend state contract, return absent child collections as `[]`, and never synthesize fake media/items containing null fields. Verify metadata-only, populated, published/non-editable, missing, and foreign-owner Projects without runtime exceptions; preserve owner-scoped 404 behavior. See `references/metadata-project-edit-null-contract.md`.
 
 When a user approves a SocialZen proposal and asks for implementation:

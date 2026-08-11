@@ -249,6 +249,10 @@ Prefer non-mutating or already-existing-state probes. For example, an existing i
 
 For authenticated browser E2E using an existing session, inspect the frontend auth source before injecting credentials. A server session cookie can authenticate direct API calls while the SPA still renders logged out because its client session is bootstrapped from local storage or another client-side store. Seed every contract the real client requires (for example both cookie and token/user local-storage keys) before navigation, then prove the rendered authenticated chrome appears before exercising the feature. Use the active locale when locating translated controls: prefer an accessible-name regex covering supported labels or first inspect the rendered modal text, rather than hard-coding one locale and misclassifying a locator timeout as a feature failure.
 
+## Go SQLite single-connection generators
+
+For Go endpoints that read candidate rows and then insert notifications, reminders, queue items, or summaries with `MaxOpenConns(1)`, verify that all query rows are consumed and explicitly closed before any write. Raising the connection limit can mask the defect. Require timeout, idempotency, `db.Stats().InUse`, subsequent authenticated-request, and public deployment assertions. See `references/go-sqlite-single-connection-generation.md`.
+
 ## Pitfalls
 
 - Do not cite test/build output produced before the final edit.
