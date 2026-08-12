@@ -89,6 +89,26 @@ When replacing compact card metadata (price, status, badges) with API-provided d
 
 See `references/compact-cards-with-rich-text-descriptions.md` for the focused implementation and verification pattern.
 
+## Comprehensive multi-surface responsive audits
+
+When the request spans several related product surfaces rather than one visual correction, begin with a read-only route/component map before proposing CSS changes. Reconcile the user's page names with actual routing and state boundaries: a requested “Contact page” may be a Business-detail drawer, while Assessment or Report may be tabs rather than standalone routes. Record these distinctions so implementation does not invent duplicate pages or test the wrong surface.
+
+Use supplied screenshots as concrete regression evidence, but trace the symptom through the shell and breakpoint rules before assigning a fix. In particular, distinguish desktop sidebar collapse state from mobile drawer-open state; stale shared state across breakpoint changes can leave a wide drawer covering narrow content even when individual pages are responsive. Inspect global overflow suppression such as `overflow: hidden`, because it can conceal the owning component rather than eliminate overflow.
+
+For a comprehensive audit plan:
+
+1. Map every requested experience to its exact route/state, primary component, shared shell, and style owner.
+2. Compare implementation breakpoints and behavior with the repository's own UI specification; call out contradictions explicitly.
+3. Establish a named viewport matrix covering desktop, compact desktop/tablet landscape, tablet portrait, the reported failing viewport, mobile, and desktop→mobile→desktop resizing.
+4. Fix in dependency order: shell/navigation first; then feature-owned tables, maps, forms, drawers, modals, timelines, Kanban, and menus; then shared touch/accessibility standards; finally browser regression coverage.
+5. Keep genuinely wide surfaces locally scrollable while asserting that the document itself never overflows horizontally.
+6. Preserve critical actions at narrow widths; wrap, stack, or consolidate them rather than hiding them.
+7. Treat drag-and-drop as enhancement: retain an explicit keyboard/touch operation such as a Move control.
+8. Run existing unit/type/API checks read-only to register the baseline separately from future browser E2E.
+9. For complex work that requires planning before implementation, publish the reviewable plan first and make the implementation gate explicit; do not imply code was changed.
+
+For a concise reusable checklist and suggested browser assertions, see `references/comprehensive-responsive-audit.md`.
+
 ## Verification
 
 For targeted prototype refinements:

@@ -9,7 +9,7 @@ Use this skill when the user asks to update an existing project with a real impl
 
 ## Focused UI and embedded-build verification
 
-References: [multi-phase plans](references/approved-multi-phase-plan-execution.md), [session branches](references/hermes-session-backed-conversation-branches.md), [approval gates](references/approval-gated-agent-job-workflows.md), [optimistic mutations](references/audited-optimistic-mutations.md), and [tenant-scoped lifecycle conversion](references/tenant-scoped-lifecycle-conversion.md). Verify source, served assets, upstream state, and authorization.
+References: [delivery references](references/) and [acceptance-contract audit](references/acceptance-contract-audit.md). Verify source, served assets, upstream state, authorization, and exact acceptance coverage.
 
 When the repository is already dirty, isolate the feature by exact paths: inventory first, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 
