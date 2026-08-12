@@ -12,4 +12,4 @@ User systemd services must NOT include `User=` nor `Group=`; user manager alread
 §
 This host runs nginx with config at /etc/nginx/projects/default.conf (single server block). User-level systemd services live at /home/ubuntu/.config/systemd/user/.
 §
-Default project: Paragentix at /home/ubuntu/projects/paragentix. Use terminal directly with that workdir for all shell work; delegated shell must request terminal explicitly. Job cards: truncate task to ~15 words or ~60 chars with '...' when longer; these are just notes, not a summary of work done.
+Host firewall/tailscale quirk: client IPs in 100.64.0.0/10 are dropped by nft ts-input before UFW allow rules are checked. When exposing user-level services (e.g. code-server) to external CGNAT clients, either use tailscale0 or add an explicit allow for the client IP in ts-input before the broad drop. UFW allow alone is insufficient for these IPs.

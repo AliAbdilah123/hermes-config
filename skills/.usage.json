@@ -732,13 +732,13 @@
     "created_at": "2026-06-19T08:53:25.037243+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-21T07:45:12.698950+00:00",
-    "last_used_at": "2026-07-21T07:44:41.767233+00:00",
-    "last_viewed_at": "2026-07-21T07:44:41.744178+00:00",
+    "last_used_at": "2026-08-11T13:51:34.784596+00:00",
+    "last_viewed_at": "2026-08-11T13:51:34.774613+00:00",
     "patch_count": 18,
     "pinned": false,
     "state": "active",
-    "use_count": 26,
-    "view_count": 26
+    "use_count": 28,
+    "view_count": 28
   },
   "node-inspect-debugger": {
     "archived_at": null,
@@ -1043,14 +1043,14 @@
     "archived_at": null,
     "created_at": "2026-06-29T08:35:48.153576+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-07-21T09:41:11.365619+00:00",
-    "last_used_at": "2026-07-21T09:40:18.472289+00:00",
-    "last_viewed_at": "2026-07-21T09:40:18.467971+00:00",
-    "patch_count": 10,
+    "last_patched_at": "2026-08-11T13:52:13.886439+00:00",
+    "last_used_at": "2026-08-11T13:52:06.408079+00:00",
+    "last_viewed_at": "2026-08-11T13:52:06.403348+00:00",
+    "patch_count": 12,
     "pinned": false,
     "state": "active",
-    "use_count": 9,
-    "view_count": 9
+    "use_count": 12,
+    "view_count": 12
   },
   "teams-meeting-pipeline": {
     "archived_at": null,
