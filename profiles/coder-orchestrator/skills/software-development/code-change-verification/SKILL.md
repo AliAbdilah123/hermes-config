@@ -150,6 +150,10 @@ Trace and verify source commit → generated SPA bundle → compiled service bin
 
 See `references/mixed-version-api-ui-deployment.md` for the regression shape, dirty-checkout isolation, deployment chain, and truthful reporting boundary.
 
+## Mutation refresh and request-budget verification
+
+When optimizing frontend refetch behavior after task/goal or other nested CRUD mutations, define the mounted datasets and an explicit request budget per mutation before editing. Patch returned entities locally for ordinary mutations, refetch a scoped container query only when the mutation introduces unknown membership, and reserve hierarchy-cache refreshes for actual relationship changes. Browser verification must isolate initial-load and dialog-open requests from the post-mutation window; a GET observed nearby is not automatically mutation-triggered. Keep the result WORKING if any sibling flow still exceeds its budget, even when the primary regression passes. See `references/mutation-refresh-contract-verification.md` for the mutation matrix, race-detection test shape, and authenticated public request-count proof.
+
 ## Interactive job-operation verification
 
 For UI operations that change backend state, do not stop at a component test or build. Add or update a focused test for the operation's availability in each required lifecycle state, then exercise the API boundary for the corresponding persisted transition. If an operation expands from one status to all statuses, update stale tests that assert the old restriction. For destination selectors that can create records, verify both existing-destination and new-destination paths, including optional generated names, validation, ordering, authorization, and preservation of active run/session identity.
