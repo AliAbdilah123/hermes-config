@@ -109,6 +109,19 @@ For a comprehensive audit plan:
 
 For a concise reusable checklist and suggested browser assertions, see `references/comprehensive-responsive-audit.md`.
 
+## Screenshot-reported regressions against an evolving codebase
+
+A screenshot proves that a defect existed in the rendered artifact it captured; it does not prove the current checkout or live deployment still has that defect. Before editing a screenshot-reported responsive issue:
+
+1. Reproduce the **exact screenshot viewport**, including both width and height, rather than testing only nearby standard breakpoints.
+2. Inspect current shell markup, breakpoint CSS, and focused responsive tests for an existing fix.
+3. Check recent history and confirm the implementing commit is present in both local `HEAD` and the tracked remote.
+4. Render the current app at that viewport and measure the actual contract: closed navigation is off-canvas, workspace/document width equals the viewport, opening the drawer overlays rather than shifts content, desktop-only controls are hidden, mobile controls are visible, and document overflow remains absent.
+5. If deployment is in scope, trace the live HTML to its exact CSS/JS asset and confirm that asset contains or computes the responsive rules. A repository fix is not deployment evidence.
+6. If current behavior already passes, do not manufacture a no-op diff. Report the existing commit, push containment, focused browser result, build result, and exact live route separately.
+
+An open mobile drawer may intentionally occupy most of a narrow viewport. Distinguish that valid overlay state from the actual regression: a desktop sidebar remaining in normal document flow and clipping or shrinking the workspace.
+
 ## Verification
 
 For targeted prototype refinements:
