@@ -68,4 +68,4 @@ When users have questioned whether work stopped, proactively post the next state
 
 Never say “done” or imply the user should see a preview-only change on production. Do not promote backend data, generated URLs, HTTP health, or source tests into UI proof: for notification/navigation work, click the actual rendered dropdown item and prove the destination UI opens in the required state.
 
-See `references/truthful-status-and-role-sensitive-e2e.md` for role-overlap and exact-interaction verification patterns. See `references/distinct-detail-surfaces-and-session-reverts.md` for route-to-renderer disambiguation and safe correction when work touched the wrong UI surface.
+See `references/truthful-status-and-role-sensitive-e2e.md` for role-overlap and exact-interaction verification patterns. See `references/distinct-detail-surfaces-and-session-reverts.md` for route-to-renderer disambiguation and safe correction when work touched the wrong UI surface. See `references/nested-spa-preview-publication.md` for a compact build-base, fail-fast publication, asset-graph, and blank-page diagnosis recipe.

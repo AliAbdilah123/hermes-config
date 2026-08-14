@@ -27,6 +27,14 @@ See [references/read-only-mvp-audit.md](references/read-only-mvp-audit.md) for t
 
 When the user requests low token usage, keep citations exact and collapse repetitive requirements into compact tables. State audit/runtime limitations once, not under every row. Give details primarily for blockers, partial behavior, broken contracts, and architecture violations. Preserve the user’s required output order and exact labels.
 
+For an inspection-first implementation request:
+- Use the user's named sections as the report skeleton instead of adding a second generic hierarchy.
+- For each domain, report only: existing reuse point, evidenced gap/root cause, minimum architectural change, and verification target.
+- Do not repeat the full requirements or stream raw source/agent transcripts into the review response.
+- Distinguish a confirmed root cause from a hypothesis; cite schema/data/handler evidence when claiming confirmation.
+- Surface only scope-changing decisions, such as nullable relationship semantics, destructive retention policy, or real delivery transport versus an audited manual-send record.
+- End with an explicit implementation gate when approval is required. The short chat response should contain the key root cause, decisions awaiting approval, verification status, and artifact link—not a duplicate of the full plan.
+
 ## Pitfalls
 
 - Do not infer end-to-end completion from adjacent implementation.
