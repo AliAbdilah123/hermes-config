@@ -5,11 +5,11 @@ description: Implementing real features in an existing full-stack project, espec
 
 # Full-Stack Feature Implementation
 
-Use this skill when the user asks to update an existing project with a real implementation rather than stubs, mocks, or a plan. The goal is a working artifact backed by tool output.
+Use this skill for real full-stack implementation backed by execution evidence.
 
 ## Focused UI and embedded-build verification
 
-References: [delivery references](references/) and [acceptance-contract audit](references/acceptance-contract-audit.md). Verify source, served assets, upstream state, authorization, and exact acceptance coverage.
+References: [delivery](references/), [acceptance audit](references/acceptance-contract-audit.md), and [async private AI uploads](references/async-private-ai-upload-delivery.md). Verify source, served assets, upstream state, authorization, and exact acceptance coverage.
 
 When the repository is already dirty, isolate the feature by exact paths: inventory first, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 
