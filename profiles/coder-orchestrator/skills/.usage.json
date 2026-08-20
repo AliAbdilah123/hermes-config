@@ -160,13 +160,13 @@
     "created_at": "2026-07-23T03:23:44.812877+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-08-13T06:53:01.416469+00:00",
-    "last_used_at": "2026-08-19T03:35:34.563003+00:00",
-    "last_viewed_at": "2026-08-19T03:35:34.543398+00:00",
+    "last_used_at": "2026-08-19T13:12:28.028128+00:00",
+    "last_viewed_at": "2026-08-19T13:12:28.006011+00:00",
     "patch_count": 91,
     "pinned": false,
     "state": "active",
-    "use_count": 280,
-    "view_count": 280
+    "use_count": 281,
+    "view_count": 281
   },
   "codebase-inspection": {
     "archived_at": null,
@@ -186,13 +186,13 @@
     "created_at": "2026-06-25T05:56:09.313005+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T07:42:08.344022+00:00",
-    "last_used_at": "2026-08-19T03:35:34.534268+00:00",
-    "last_viewed_at": "2026-08-19T03:35:34.526532+00:00",
+    "last_used_at": "2026-08-19T13:12:28.022426+00:00",
+    "last_viewed_at": "2026-08-19T13:12:28.000712+00:00",
     "patch_count": 3,
     "pinned": false,
     "state": "active",
-    "use_count": 271,
-    "view_count": 271
+    "use_count": 273,
+    "view_count": 273
   },
   "coding-agent-delegation-readiness": {
     "archived_at": null,
@@ -1044,13 +1044,13 @@
     "created_at": "2026-06-30T06:45:10.588526+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-08-19T03:35:34.557804+00:00",
-    "last_viewed_at": "2026-08-19T03:35:34.553198+00:00",
+    "last_used_at": "2026-08-19T13:12:28.016966+00:00",
+    "last_viewed_at": "2026-08-19T13:12:27.995436+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 273,
-    "view_count": 273
+    "use_count": 274,
+    "view_count": 274
   },
   "popular-web-designs": {
     "archived_at": null,
@@ -1278,13 +1278,13 @@
     "created_at": "2026-07-22T08:59:42.237917+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-08-12T09:28:07.567630+00:00",
-    "last_used_at": "2026-08-19T03:35:34.574463+00:00",
-    "last_viewed_at": "2026-08-19T03:35:34.568049+00:00",
+    "last_used_at": "2026-08-19T12:02:46.191211+00:00",
+    "last_viewed_at": "2026-08-19T12:02:46.182492+00:00",
     "patch_count": 25,
     "pinned": false,
     "state": "active",
-    "use_count": 66,
-    "view_count": 66
+    "use_count": 67,
+    "view_count": 67
   },
   "role-scoped-dashboard-operations": {
     "archived_at": null,
@@ -1572,18 +1572,31 @@
     "use_count": 0,
     "view_count": 0
   },
+  "sqlite-state-transition-debugging": {
+    "archived_at": null,
+    "created_at": "2026-08-19T13:31:06.990713+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-08-19T13:31:21.961787+00:00",
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 1,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
   "systematic-debugging": {
     "archived_at": null,
     "created_at": "2026-06-22T07:20:34.959663+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T06:47:09.732114+00:00",
-    "last_used_at": "2026-08-11T06:17:10.392933+00:00",
-    "last_viewed_at": "2026-08-11T06:17:10.370910+00:00",
+    "last_used_at": "2026-08-19T13:12:28.034148+00:00",
+    "last_viewed_at": "2026-08-19T13:12:28.011380+00:00",
     "patch_count": 137,
     "pinned": false,
     "state": "active",
-    "use_count": 381,
-    "view_count": 381
+    "use_count": 382,
+    "view_count": 382
   },
   "teams-meeting-pipeline": {
     "archived_at": null,
