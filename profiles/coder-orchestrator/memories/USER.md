@@ -1,8 +1,8 @@
 Fixes need authenticated public E2E. WORKING/VERIFYING mean active execution; otherwise say STOPPED. READY only after E2E. Finals: link, commit, push.
 §
-Small feature/edit/fix: implement now, no plan/approval. Complex: plan first.
+Small fixes: implement now. Complex work: plan first. Ordered plans: verify each item before starting the next; never defer failures.
 §
-Coding tasks: always use Codex CLI, preferring `gpt-5.6-sol` with medium reasoning and speed unless specified; reuse existing workflows.
+Coding: use Codex CLI, preferably `gpt-5.6-sol` with medium reasoning/speed unless specified; reuse workflows.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §

@@ -7,7 +7,9 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 Use after modifying code and before reporting completion, committing, or deploying. The goal is evidence from the final workspace state, not merely a plausible implementation.
 
-## Sequence
+For live database-backed E2E, back up and integrity-check the actual runtime database before deploying schema changes. Prefer a uniquely named dedicated tenant with minimum Owner/Admin/Member fixtures, exercise writes through the public browser/API, verify persistence/isolation/CSRF/responsive/console-network boundaries, and remove the fixture afterward. Direct fixture insertion is setup evidence, not feature E2E. Keep fixture credentials and browser scripts outside the repository; use the application's real password-hash algorithm and effective live schema. Register cleanup before running the browser so failed E2E cannot strand test tenants, users, sessions, or operational rows. After cleanup, query for the unique fixture prefix/tenant ID and require zero remaining rows.
+
+When the production service runs a compiled binary separately from the source checkout and nginx serves a separate static document root, discover both from `systemctl cat/show` and `nginx -T`; rebuild and replace the exact `ExecStart`, restart and poll the local health endpoint, publish the final frontend build to the discovered root, then verify the public HTML names the new asset. Treat binary health, static publication, and authenticated browser behavior as separate gates.
 
 ### Hard completion gate
 
@@ -66,6 +68,22 @@ verify_script=$(mktemp /tmp/hermes-verify-XXXXXX.sh)
 If the workspace still reports “unverified” after equivalent manual checks, rerun them through one directly executed `hermes-verify-*` script; prior output may be human-readable evidence without being registered as fresh workspace verification.
 
 The fallback supplements canonical checks; it does not redefine an arbitrary command as full-suite verification.
+
+## Ordered multi-item delivery gates
+
+When the user requires an exact implementation order, treat each item as a hard transactional gate rather than implementing the whole list and verifying afterward:
+
+1. Keep exactly one item `in_progress`; later items remain pending.
+2. Implement only that item, preferably with a focused RED→GREEN regression.
+3. Independently inspect an autonomous coding agent's diff and rerun the focused regression plus proportionate package tests/build from the final workspace state. The agent's exit code and self-reported checks are not the gate.
+4. Use a directly executed, securely named `/tmp/hermes-verify-*` script when verification tracking is relevant; clean it with an outer trap.
+5. Advance the task list and begin the next item only after every required check for the current item passes. If any check fails or cannot run, stop on that item, resolve it, and do not defer it into a later item.
+6. Keep progress language precise: say `WORKING` while implementation or verification is actively executing; otherwise report the exact stopped boundary. Do not call an item complete merely because its implementation agent exited successfully.
+7. In cumulative full-stack plans, constrain every coding-agent prompt to the current item while explicitly preserving already verified earlier-item changes and forbidding later-item scope. Reserve commit, push, deployment, and whole-plan authenticated E2E for the declared final gate unless the plan assigns one of those boundaries to an earlier item.
+
+This sequencing rule applies even when later items look independent: exact user-requested order outranks opportunities for parallel implementation. Per-item local checks establish only that item's gate; they do not make the whole plan `READY`.
+
+For the reusable prompt boundary, cumulative-workspace discipline, final integrated gate, and status-language checklist, see [references/sequential-gated-implementation.md](references/sequential-gated-implementation.md).
 
 ## Completion-state integrity
 
@@ -219,6 +237,10 @@ For isolated SPA previews, also read `references/spa-preview-prefix-and-browser-
 For manager-request/admin-approval session workflows, also read `references/session-approval-preview-e2e.md`. It defines generated-versus-persisted approval invariants, the dual-role endpoint trap, persisted public E2E, notification-dropdown deep links including legacy rows, mobile calendar scrolling, and truthful active-work status labels.
 
 For admin create/edit forms, verify dirty-state behavior across the actual navigation surfaces, not only the form component: pristine forms must leave without prompting; changed forms must prompt on breadcrumb, cancel, dashboard tab/link navigation, and browser unload; successful saves must clear the guard. Nested image or package controls may mutate state outside ordinary text-input events, so test their dirty-state propagation explicitly. If a navigation item must be hidden, inspect and assert every navigation provider (for example both a horizontal tab list and a workspace/sidebar builder) while preserving the route unless deletion was requested. Native numeric input attributes are UX only: mirror integer, money, and quantity limits in frontend submit validation and the current API boundary, with tests at the maximum and one value above it.
+
+## Public authenticated role-matrix E2E
+
+When completion requires multiple deployed roles (for example Owner/Admin/Member), use a dedicated isolated tenant and run the full matrix through the public UI. Navigate to each feature's actual surface before asserting visibility, use exact/scoped semantic locators to avoid table/detail strict-mode ambiguity, and classify wrong-surface or ambiguous-locator failures as harness defects that require correcting and rerunning the whole matrix—not as product failures or permission to skip coverage. See `references/public-role-matrix-e2e-harness.md` for fixture, assertion, screenshot, cleanup, and status discipline.
 
 ## Headless Chromium and ARM64 browser fallback
 

@@ -147,26 +147,26 @@
     "created_at": "2026-06-24T06:35:52.946843+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-17T05:19:28.767781+00:00",
-    "last_used_at": "2026-08-13T14:22:04.883265+00:00",
-    "last_viewed_at": "2026-08-13T14:22:04.873615+00:00",
+    "last_used_at": "2026-08-20T13:32:05.604520+00:00",
+    "last_viewed_at": "2026-08-20T13:32:05.599896+00:00",
     "patch_count": 13,
     "pinned": false,
     "state": "active",
-    "use_count": 50,
-    "view_count": 50
+    "use_count": 51,
+    "view_count": 51
   },
   "code-change-verification": {
     "archived_at": null,
     "created_at": "2026-07-23T03:23:44.812877+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-08-20T03:56:00.598470+00:00",
-    "last_used_at": "2026-08-20T03:55:52.263753+00:00",
-    "last_viewed_at": "2026-08-20T03:55:52.258662+00:00",
-    "patch_count": 92,
+    "last_patched_at": "2026-08-20T15:03:35.204592+00:00",
+    "last_used_at": "2026-08-20T15:03:12.927250+00:00",
+    "last_viewed_at": "2026-08-20T15:03:12.920467+00:00",
+    "patch_count": 102,
     "pinned": false,
     "state": "active",
-    "use_count": 283,
-    "view_count": 283
+    "use_count": 295,
+    "view_count": 295
   },
   "codebase-inspection": {
     "archived_at": null,
@@ -186,13 +186,13 @@
     "created_at": "2026-06-25T05:56:09.313005+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T07:42:08.344022+00:00",
-    "last_used_at": "2026-08-20T03:51:16.018397+00:00",
-    "last_viewed_at": "2026-08-20T03:51:16.005856+00:00",
+    "last_used_at": "2026-08-20T13:43:11.847812+00:00",
+    "last_viewed_at": "2026-08-20T13:43:11.841810+00:00",
     "patch_count": 3,
     "pinned": false,
     "state": "active",
-    "use_count": 275,
-    "view_count": 275
+    "use_count": 276,
+    "view_count": 276
   },
   "coding-agent-delegation-readiness": {
     "archived_at": null,
@@ -355,13 +355,13 @@
     "created_at": "2026-08-04T03:01:46.694659+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-08-10T06:10:38.666642+00:00",
-    "last_used_at": "2026-08-17T08:17:30.574400+00:00",
-    "last_viewed_at": "2026-08-17T08:17:30.564324+00:00",
+    "last_used_at": "2026-08-20T13:32:01.169153+00:00",
+    "last_viewed_at": "2026-08-20T13:32:01.163619+00:00",
     "patch_count": 5,
     "pinned": false,
     "state": "active",
-    "use_count": 10,
-    "view_count": 10
+    "use_count": 11,
+    "view_count": 11
   },
   "findmy": {
     "archived_at": null,
@@ -381,13 +381,13 @@
     "created_at": "2026-06-18T15:29:18.028685+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-08-15T08:26:29.486250+00:00",
-    "last_used_at": "2026-08-15T17:27:08.964764+00:00",
-    "last_viewed_at": "2026-08-15T17:27:08.948349+00:00",
+    "last_used_at": "2026-08-20T13:43:11.884403+00:00",
+    "last_viewed_at": "2026-08-20T13:43:11.873958+00:00",
     "patch_count": 555,
     "pinned": false,
     "state": "active",
-    "use_count": 635,
-    "view_count": 633
+    "use_count": 636,
+    "view_count": 634
   },
   "functional-preview-operations": {
     "archived_at": null,
@@ -459,13 +459,13 @@
     "created_at": "2026-06-22T05:08:02.894036+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-08T02:22:49.316772+00:00",
-    "last_used_at": "2026-08-10T03:43:48.974222+00:00",
-    "last_viewed_at": "2026-08-10T03:43:48.952751+00:00",
+    "last_used_at": "2026-08-20T15:01:34.570326+00:00",
+    "last_viewed_at": "2026-08-20T15:01:34.565458+00:00",
     "patch_count": 11,
     "pinned": false,
     "state": "active",
-    "use_count": 54,
-    "view_count": 54
+    "use_count": 55,
+    "view_count": 55
   },
   "github-repo-management": {
     "archived_at": null,
@@ -1018,13 +1018,13 @@
     "created_at": "2026-06-26T16:43:38.243882+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-16T03:53:52.785231+00:00",
-    "last_used_at": "2026-08-17T09:37:53.203873+00:00",
-    "last_viewed_at": "2026-08-17T09:37:53.193459+00:00",
+    "last_used_at": "2026-08-20T13:32:01.180308+00:00",
+    "last_viewed_at": "2026-08-20T13:32:01.175350+00:00",
     "patch_count": 40,
     "pinned": false,
     "state": "active",
-    "use_count": 269,
-    "view_count": 268
+    "use_count": 270,
+    "view_count": 269
   },
   "polymarket": {
     "archived_at": null,
@@ -1629,13 +1629,13 @@
     "created_at": "2026-06-22T06:47:16.423413+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-13T00:19:27.934608+00:00",
-    "last_used_at": "2026-08-12T04:40:03.058537+00:00",
-    "last_viewed_at": "2026-08-12T04:40:03.033866+00:00",
+    "last_used_at": "2026-08-20T13:43:11.853486+00:00",
+    "last_viewed_at": "2026-08-20T13:43:11.834401+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 328,
-    "view_count": 317
+    "use_count": 329,
+    "view_count": 318
   },
   "touchdesigner-mcp": {
     "archived_at": null,
