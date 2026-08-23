@@ -26,6 +26,8 @@ Use for material website UI changes that must be reviewed at a public preview be
 
 For backend-dependent previews, follow `references/full-stack-isolated-preview.md` for the loopback API, copied database, Nginx proxy, build variables, and content-level verification pattern. For schema/API/UI changes in repositories with unrelated baseline failures, use `references/full-stack-verification-boundaries.md` to separate complete-suite, changed-file, focused-flow, preview transport, and browser evidence accurately.
 
+For dependency-light plain HTML/CSS/JS prototypes with a Python stdlib shell served under an nginx project subpath, follow `references/stdlib-prototype-subpath-delivery.md`. It covers relative asset paths, hash routing, JSON-vs-SPA fallback, cache-busted visual fixes, browser geometry checks, and final public E2E.
+
 When approval arrives but the shared production checkout contains unrelated work, follow `references/dirty-production-checkout-handoff.md`: rebase and verify in the clean feature worktree, update the remote production branch from that branch, build deployable artifacts there, and leave the dirty checkout untouched.
 
 ## Visual constraints
