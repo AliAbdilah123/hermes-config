@@ -83,7 +83,7 @@ When the user requires an exact implementation order, treat each item as a hard 
 
 This sequencing rule applies even when later items look independent: exact user-requested order outranks opportunities for parallel implementation. Per-item local checks establish only that item's gate; they do not make the whole plan `READY`.
 
-For the reusable prompt boundary, cumulative-workspace discipline, final integrated gate, and status-language checklist, see [references/sequential-gated-implementation.md](references/sequential-gated-implementation.md).
+For the reusable prompt boundary, cumulative-workspace discipline, final integrated gate, and status-language checklist, see [references/sequential-gated-implementation.md](references/sequential-gated-implementation.md). For the concrete Go/SQLite/React milestone matrix—including OTP, deterministic matching, messaging authorization, worker dedupe, moderation audit atomicity, and privacy-safe funnel checks—see [references/sequential-full-stack-milestone-gates.md](references/sequential-full-stack-milestone-gates.md).
 
 ## Completion-state integrity
 
@@ -254,6 +254,32 @@ When the primary browser runner cannot provision its bundled browser—especiall
 
 A browser package provisioning failure is setup state; the durable fallback is pairing `playwright-core` with an already-installed system Chromium.
 
+## Browser screenshots, geometry, and cache freshness
+
+A visual reviewer can correctly spot apparent overlap or whitespace while still misclassifying browser chrome, screenshot framing, safe-area space, or stale CSS as an application defect. Before making another CSS patch:
+
+1. Prove the browser loaded the final stylesheet. Use a versioned asset URL or cache-busting query when an edge/cache may retain prior CSS, and inspect one exact changed selector or computed style.
+2. Pair screenshot review with DOM geometry at the exact viewport. For fixed bottom navigation, compare `getBoundingClientRect().bottom` to `window.innerHeight`; a difference within one pixel proves it is flush even if the screenshot appears to contain a strip below it.
+3. Assert overlay state directly: a skip link is hidden when unfocused and visible when keyboard-focused; toast offset clears fixed navigation; bottom labels remain within the viewport.
+4. If screenshot interpretation conflicts with computed geometry, trust measured layout evidence and do not add speculative CSS. Keep the screenshot observation as a review caveat.
+5. After cache-busting or CSS edits, rerun the complete browser behavior—not only the screenshot—and require console/page errors to remain clean.
+
+When smoke-testing a newly built local binary, never assume a familiar port is free. A valid response can come from an unrelated service and create dangerously misleading evidence. Select an ephemeral free port, start the exact binary, inspect startup/bind output, and assert a service-specific health payload before probing routes or MIME types. Treat `address already in use` as verification setup failure, not application behavior.
+
+For local development-OTP applications with persisted CRUD and two-user authorization checks, follow [references/local-otp-auth-browser-e2e.md](references/local-otp-auth-browser-e2e.md). It covers exact-binary/temp-DB isolation, OTP retrieval through an injectable sender log, stable Playwright selectors, expected anonymous-session `401` classification, second-context ownership checks, and DB/API terminal-state fallback after an ambiguous final locator.
+
+When resolving emitted asset URLs from generated HTML, avoid brittle regexes that assume attribute order or an exact tag shape (for example, assuming `src` immediately follows `<script`). Bundlers may insert `type`, `crossorigin`, or other attributes. Prefer an HTML parser; for a minimal smoke probe, search the complete document for a quoted URL ending in `.js`/`.css`, then verify that exact URL returns the expected MIME type and non-trivial body. A parser miss is harness setup failure—not evidence that the built asset is absent.
+
+## Browser harness failures versus product failures
+
+When an authenticated browser flow reaches the expected page but fails on a locator or harness API, classify the boundary before editing product code:
+
+1. Inspect the rendered form's actual accessible labels and stable IDs. Regex locators such as `/Nama/i` can match both “Nama” and “Nama bisnis”; use exact accessible names or stable DOM IDs when labels overlap.
+2. Confirm the assertion API belongs to the active runner. Playwright `Page` does not expose Testing Library helpers such as `getByDisplayValue`; use `locator(...).inputValue()` or the runner's native equivalent.
+3. Treat a locator timeout after successful navigation as harness evidence, not proof that the product flow failed. Correct the harness and rerun the complete flow with a fresh identity when auth state may have changed. Before replaying, determine whether the prior run already committed a side effect; avoid creating duplicate records merely to repair a final assertion. If the requested mutation already succeeded, verify the missing terminal invariant through the real API and runtime database (including ownership/status and `PRAGMA integrity_check`) and rerun only the missing browser assertion when practical.
+4. Classify console/network errors by request and expected state. A `401` from session bootstrap before login or an explicit session probe after logout is an expected auth boundary, not a console-cleanliness regression. Require each ignored `401` to correspond to a deliberately asserted unauthenticated request; unexpected `401`s during authenticated steps remain hard failures.
+5. Keep `pageerror`, uncaught exceptions, unexpected failed requests, and console errors unrelated to asserted auth boundaries as hard failures.
+
 ## Headless Chromium artifact classification
 
 When the primary browser runner is unavailable, Chromium headless may create a valid screenshot or DOM dump and still return non-zero because of host GPU, D-Bus, or accessibility-bus warnings. Do not let `set -e` discard that evidence before classifying the run:
@@ -275,9 +301,21 @@ Prefer non-mutating or already-existing-state probes. For example, an existing i
 
 For authenticated browser E2E using an existing session, inspect the frontend auth source before injecting credentials. A server session cookie can authenticate direct API calls while the SPA still renders logged out because its client session is bootstrapped from local storage or another client-side store. Seed every contract the real client requires (for example both cookie and token/user local-storage keys) before navigation, then prove the rendered authenticated chrome appears before exercising the feature. Use the active locale when locating translated controls: prefer an accessible-name regex covering supported labels or first inspect the rendered modal text, rather than hard-coding one locale and misclassifying a locator timeout as a feature failure.
 
+## Transactional matching and messaging workflow verification
+
+For database-backed marketplace or collaboration workflows, verify the whole state machine rather than isolated endpoint success:
+
+1. **Matching:** require complementary intent, deterministic score/reason output across repeated calls, stable tie ordering, bounded results, and exclusion of own, inactive, expired, suspended, and bidirectionally blocked candidates. Exercise at least one real two-user case and assert localized reasons, not just a numeric score.
+2. **Responses:** test create, duplicate prevention, withdraw, reject, and accept authorization. Accept must atomically transition the response and create exactly one conversation with exactly two members; repeated same decisions are idempotent, while contradictory later decisions conflict.
+3. **Messaging:** verify both members can send and reload persisted messages in deterministic order; a third user must be unable to list, read, send, or mark read. Also test blocked and suspended participants, bounded message length/pagination, and unread/read transitions.
+4. Pair browser evidence with API/DB invariants. Repeated text often appears in both a thread preview and message body, so scope browser assertions to the semantic message container rather than using unscoped page text.
+5. Keep fixture setup and runtime artifacts outside the repository, use separate authenticated browser contexts for each role, and clean the temporary DB/process after verification.
+
 ## Go SQLite single-connection generators
 
 For Go endpoints that read candidate rows and then insert notifications, reminders, queue items, or summaries with `MaxOpenConns(1)`, verify that all query rows are consumed and explicitly closed before any write. Raising the connection limit can mask the defect. Require timeout, idempotency, `db.Stats().InUse`, subsequent authenticated-request, and public deployment assertions. See `references/go-sqlite-single-connection-generation.md`.
+
+For persisted per-user status controls and scheduled digest workers, verify hydration after server restart/browser reload and run the exact worker twice at a fixed timestamp to prove ledger-backed deduplication. See `references/persisted-status-and-worker-idempotency.md`.
 
 ## Pitfalls
 

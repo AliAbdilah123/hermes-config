@@ -1,10 +1,10 @@
-Roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna. Use project root; delegates request terminal; retry indirect failures directly.
+Roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna; TemuBisnis ~/projects/temubisnis (Go/SQLite/React-Vite). Use project root; delegates request terminal; retry indirect failures directly.
 §
 For this user's projects, `.env` and `sqlite.db` are placed in each project's directory/root unless specified otherwise.
 §
 Public server endpoint is dev.ahsanworks.com. HTTP :80, HTTPS :443 (self-signed /etc/nginx/ssl/). Certbot installed. OCI Security List must allow new ports (cannot be done from terminal). See nginx-server-admin skill.
 §
-For migrations, don't recreate from boilerplate by default; port/convert the source project in place or into a clone, preserving identity. Use boilerplate only as a pattern reference unless user says otherwise.
+Migrations preserve/convert source identity in place or clone. Boilerplate is pattern-only unless requested.
 §
 PRD/docs HTML: deploy to /usr/share/nginx/html/prds/ (nginx /prd/ alias), set 644. Verify with curl -sI http://localhost/prd/name.
 §

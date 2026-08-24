@@ -281,6 +281,7 @@ Restore all missing leaf deployments, narrow any domain vhost rooted at the shar
 
 ## References
 
+- See `references/prefix-mounted-single-binary-deployment.md` when one binary embeds the SPA and natively mounts UI + API at the same public prefix; it covers no-strip proxying, Cloudflare redirect-cache diagnosis, scoped-cookie verification, CSRF rotation, and safe SMTP capture for public E2E.
 - See `references/oracle-cloud-security-list.md` for step-by-step instructions to open a port in the OCI Security List (the network-level firewall that cannot be configured from the server).
 - See `references/single-build-subfilter.md` for the full code patches, nginx sub_filter config, and verification steps for the single-build domain + path deployment pattern (the current preferred approach).
 - See `references/vite-domain-deployment.md` for the legacy dual-build pattern (historical reference only — do NOT use for new setups).

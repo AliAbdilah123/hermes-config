@@ -19,6 +19,7 @@ Use this for dependency-light prototypes built as plain HTML/CSS/JS plus a Pytho
 6. Inspect a screenshot, but treat visual-model findings as hypotheses. Confirm suspected fixed-position gaps or overlap using browser geometry (`getBoundingClientRect`, viewport height, and computed styles) before editing CSS.
 7. If source/deployed files changed but public computed styles remain old, cache-bust the CSS URL in HTML and verify the exact public marker before rerunning E2E.
 8. After any visual correction, rerun focused tests, republish, and repeat the complete public browser flow from the final state.
+9. Stop any temporary local verification server after the checks. Confirm the nginx-hosted public preview remains healthy so the final artifact does not accidentally depend on the temporary process.
 
 ## Common traps
 
