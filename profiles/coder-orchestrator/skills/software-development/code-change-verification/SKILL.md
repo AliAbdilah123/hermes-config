@@ -168,6 +168,19 @@ Trace and verify source commit → generated SPA bundle → compiled service bin
 
 See `references/mixed-version-api-ui-deployment.md` for the regression shape, dirty-checkout isolation, deployment chain, and truthful reporting boundary.
 
+## Nested subtask drag-and-drop verification
+
+For persistent reordering of collapsible child rows across homepage, all-tasks, goal-card, or similar surfaces, preserve the existing nested renderer and separate the parent row's drag boundary from its expanded subtree. Audit nested `DragDropContext` ownership, filtered/partial sibling lists, cache freshness, recursive children, rollback races, keyboard interaction, and persistence after reload. A build plus an endpoint reorder test is insufficient; exercise each required authenticated public surface. See [references/nested-subtask-drag-reordering.md](references/nested-subtask-drag-reordering.md).
+
+## Multi-select filter verification
+
+When a checkbox group maps to an API `IN` filter, verify all three state classes rather than only the default render:
+
+1. Assert the default checked set and the exact initial request payload. Labels such as “done” may map to persisted values such as `completed`; verify values, not only visible copy.
+2. Toggle one included and one excluded value and require a fresh request whose filter contains exactly the resulting set.
+3. Exercise the all-unchecked state. Many API clients intentionally omit empty arrays, which silently changes “show none” into “no filter/show all.” Handle the empty selection explicitly (usually clear results without requesting), and verify stale in-flight responses cannot repopulate the list after filters change.
+4. Verify the filter on every shared-component surface named by the request; a shared source diff and successful build are supporting evidence, not rendered-flow proof.
+
 ## Mutation refresh and request-budget verification
 
 When optimizing frontend refetch behavior after task/goal or other nested CRUD mutations, define the mounted datasets and an explicit request budget per mutation before editing. Patch returned entities locally for ordinary mutations, refetch a scoped container query only when the mutation introduces unknown membership, and reserve hierarchy-cache refreshes for actual relationship changes. Browser verification must isolate initial-load and dialog-open requests from the post-mutation window; a GET observed nearby is not automatically mutation-triggered. Keep the result WORKING if any sibling flow still exceeds its budget, even when the primary regression passes. See `references/mutation-refresh-contract-verification.md` for the mutation matrix, race-detection test shape, and authenticated public request-count proof.

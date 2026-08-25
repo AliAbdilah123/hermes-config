@@ -159,14 +159,14 @@
     "archived_at": null,
     "created_at": "2026-07-23T03:23:44.812877+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-08-23T14:03:51.037980+00:00",
-    "last_used_at": "2026-08-23T14:03:23.381081+00:00",
-    "last_viewed_at": "2026-08-23T14:03:23.373138+00:00",
-    "patch_count": 113,
+    "last_patched_at": "2026-08-25T07:07:33.046251+00:00",
+    "last_used_at": "2026-08-25T07:07:20.497301+00:00",
+    "last_viewed_at": "2026-08-25T07:07:20.491743+00:00",
+    "patch_count": 117,
     "pinned": false,
     "state": "active",
-    "use_count": 305,
-    "view_count": 305
+    "use_count": 313,
+    "view_count": 313
   },
   "codebase-inspection": {
     "archived_at": null,
@@ -186,26 +186,26 @@
     "created_at": "2026-06-25T05:56:09.313005+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T07:42:08.344022+00:00",
-    "last_used_at": "2026-08-23T09:38:56.078400+00:00",
-    "last_viewed_at": "2026-08-23T09:38:56.068578+00:00",
+    "last_used_at": "2026-08-25T06:57:45.113683+00:00",
+    "last_viewed_at": "2026-08-25T06:57:45.100320+00:00",
     "patch_count": 3,
     "pinned": false,
     "state": "active",
-    "use_count": 278,
-    "view_count": 278
+    "use_count": 282,
+    "view_count": 282
   },
   "coding-agent-delegation-readiness": {
     "archived_at": null,
     "created_at": "2026-07-20T02:43:26.824474+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-27T02:48:02.276531+00:00",
-    "last_used_at": "2026-08-11T03:31:09.593641+00:00",
-    "last_viewed_at": "2026-08-11T03:31:09.587079+00:00",
+    "last_used_at": "2026-08-25T05:05:57.398803+00:00",
+    "last_viewed_at": "2026-08-25T05:05:57.388905+00:00",
     "patch_count": 2,
     "pinned": false,
     "state": "active",
-    "use_count": 12,
-    "view_count": 12
+    "use_count": 13,
+    "view_count": 13
   },
   "comfyui": {
     "archived_at": null,
@@ -1044,13 +1044,13 @@
     "created_at": "2026-06-30T06:45:10.588526+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-08-20T03:51:16.011545+00:00",
-    "last_viewed_at": "2026-08-20T03:51:15.997465+00:00",
+    "last_used_at": "2026-08-25T06:57:45.118811+00:00",
+    "last_viewed_at": "2026-08-25T06:57:45.108372+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 275,
-    "view_count": 275
+    "use_count": 278,
+    "view_count": 278
   },
   "popular-web-designs": {
     "archived_at": null,
@@ -1629,13 +1629,13 @@
     "created_at": "2026-06-22T06:47:16.423413+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-13T00:19:27.934608+00:00",
-    "last_used_at": "2026-08-23T08:06:24.053738+00:00",
-    "last_viewed_at": "2026-08-23T08:06:24.024777+00:00",
+    "last_used_at": "2026-08-25T05:05:08.434320+00:00",
+    "last_viewed_at": "2026-08-25T05:05:08.423617+00:00",
     "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 330,
-    "view_count": 319
+    "use_count": 331,
+    "view_count": 320
   },
   "touchdesigner-mcp": {
     "archived_at": null,
@@ -1667,14 +1667,14 @@
     "archived_at": null,
     "created_at": "2026-08-01T02:27:41.450453+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-08-13T13:02:07.561622+00:00",
-    "last_used_at": "2026-08-13T13:01:46.600757+00:00",
-    "last_viewed_at": "2026-08-13T13:01:46.593708+00:00",
-    "patch_count": 11,
+    "last_patched_at": "2026-08-25T05:12:57.093977+00:00",
+    "last_used_at": "2026-08-25T05:12:49.777755+00:00",
+    "last_viewed_at": "2026-08-25T05:12:49.768732+00:00",
+    "patch_count": 12,
     "pinned": false,
     "state": "active",
-    "use_count": 14,
-    "view_count": 14
+    "use_count": 16,
+    "view_count": 16
   },
   "weights-and-biases": {
     "archived_at": null,

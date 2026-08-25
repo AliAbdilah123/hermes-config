@@ -26,6 +26,10 @@ Use for visual web changes that are reviewed in an isolated preview before produ
 9. **Promote only after explicit approval.** Fetch the latest production branch, integrate both independently approved visual changes when requested, rebuild once from the clean integration commit, push, deploy, and render the exact live routes/viewports.
 10. **Clean previews last.** Remove explicit preview routes and assets only after live verification. Remember that a production SPA fallback may still return HTTP 200 for the old preview URL; prove the explicit mount and directory are gone.
 
+## Priority columns inside drag-and-drop lists
+
+When a visual request divides one status section into priority columns, preserve the status section’s existing droppable identity unless moving between priorities is intended to mutate data. Partition only at render time (for example, high versus all other priorities), keep each draggable’s index tied to its position in the original unpartitioned status list, and use a responsive one-column/mobile, two-column/desktop grid. Mechanically assert the labels, partition rule, responsive grid, and absence of new priority-specific droppable IDs; then exercise drag behavior because a compiling layout can still mis-map visual and source indices.
+
 ## Evidence boundaries
 
 - **Source/build proof:** implementation compiles and intended selectors/components changed.
