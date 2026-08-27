@@ -181,6 +181,10 @@ When a checkbox group maps to an API `IN` filter, verify all three state classes
 3. Exercise the all-unchecked state. Many API clients intentionally omit empty arrays, which silently changes “show none” into “no filter/show all.” Handle the empty selection explicitly (usually clear results without requesting), and verify stale in-flight responses cannot repopulate the list after filters change.
 4. Verify the filter on every shared-component surface named by the request; a shared source diff and successful build are supporting evidence, not rendered-flow proof.
 
+## Many-to-many unlink verification
+
+When a UI action removes selected records from a container, do not assume clearing a legacy child foreign key removes membership. Trace the read path and junction table, prefer an existing synchronization/unlink contract, and require persisted public E2E that proves the selected junction rows are gone while unselected siblings remain. A mocked request-shape test can encode the same false contract as the implementation, so it is supporting evidence only. See [references/many-to-many-unlink-verification.md](references/many-to-many-unlink-verification.md).
+
 ## Mutation refresh and request-budget verification
 
 When optimizing frontend refetch behavior after task/goal or other nested CRUD mutations, define the mounted datasets and an explicit request budget per mutation before editing. Patch returned entities locally for ordinary mutations, refetch a scoped container query only when the mutation introduces unknown membership, and reserve hierarchy-cache refreshes for actual relationship changes. Browser verification must isolate initial-load and dialog-open requests from the post-mutation window; a GET observed nearby is not automatically mutation-triggered. Keep the result WORKING if any sibling flow still exceeds its budget, even when the primary regression passes. See `references/mutation-refresh-contract-verification.md` for the mutation matrix, race-detection test shape, and authenticated public request-count proof.
@@ -266,6 +270,10 @@ When the primary browser runner cannot provision its bundled browser—especiall
 5. Prefer public setup flows for prerequisite records. If none exists, create a uniquely named dedicated E2E tenant and the minimum fixture in the actual runtime database, respecting effective schema, ownership, and tenant IDs. Inspect the live schema first rather than trusting planning documents. The browser must still perform the feature's actual writes and transitions through the public UI/API; direct fixture setup is not itself E2E evidence.
 
 A browser package provisioning failure is setup state; the durable fallback is pairing `playwright-core` with an already-installed system Chromium.
+
+## Long-content dialog overflow verification
+
+For modals that overflow only with long task/item titles, do not treat a successful build or the presence of `truncate` as behavioral proof. Inspect intrinsic sizing through every grid/flex boundary: `min-width: auto` on an ancestor can preserve the text's intrinsic minimum and defeat ellipsis. Prefer `min-w-0` on the narrowest shrinkable grid child or flex row rather than changing shared dialog width. Verify with both long unbroken and normal text at mobile and desktop widths; assert dialog/preview bounds stay inside the viewport, text truncates, internal scrolling remains usable, and footer actions remain reachable.
 
 ## Browser screenshots, geometry, and cache freshness
 
