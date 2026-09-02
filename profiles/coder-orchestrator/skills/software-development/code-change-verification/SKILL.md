@@ -172,6 +172,8 @@ See `references/mixed-version-api-ui-deployment.md` for the regression shape, di
 
 For persistent reordering of collapsible child rows across homepage, all-tasks, goal-card, or similar surfaces, preserve the existing nested renderer and separate the parent row's drag boundary from its expanded subtree. Audit nested `DragDropContext` ownership, filtered/partial sibling lists, cache freshness, recursive children, rollback races, keyboard interaction, and persistence after reload. A build plus an endpoint reorder test is insufficient; exercise each required authenticated public surface. See [references/nested-subtask-drag-reordering.md](references/nested-subtask-drag-reordering.md).
 
+When expanded rows hide terminal children such as `completed` and `not done`, rendered drag indices no longer address the full sibling array. Encode the visibility mode in the droppable identity, apply the identical predicate in every owning drag-end handler, and merge reordered visible IDs into their existing slots so hidden siblings retain order. Keep a Show/Hide action available even when every child is hidden. See [references/filtered-subtask-visibility-and-reordering.md](references/filtered-subtask-visibility-and-reordering.md).
+
 ## Multi-select filter verification
 
 When a checkbox group maps to an API `IN` filter, verify all three state classes rather than only the default render:
@@ -277,13 +279,15 @@ For modals that overflow only with long task/item titles, do not treat a success
 
 ## Browser screenshots, geometry, and cache freshness
 
-A visual reviewer can correctly spot apparent overlap or whitespace while still misclassifying browser chrome, screenshot framing, safe-area space, or stale CSS as an application defect. Before making another CSS patch:
+A visual reviewer can correctly spot apparent overlap or whitespace while still misclassifying browser chrome, screenshot framing, safe-area space, stale CSS, or full-page screenshot stitching as an application defect. Before making another CSS patch:
 
-1. Prove the browser loaded the final stylesheet. Use a versioned asset URL or cache-busting query when an edge/cache may retain prior CSS, and inspect one exact changed selector or computed style.
+1. Prove the browser loaded the final stylesheet and entry bundle. Use a unique timestamp/query per browser run—not a reused fixed cache-buster—and confirm public HTML names the final asset hashes before capturing evidence.
 2. Pair screenshot review with DOM geometry at the exact viewport. For fixed bottom navigation, compare `getBoundingClientRect().bottom` to `window.innerHeight`; a difference within one pixel proves it is flush even if the screenshot appears to contain a strip below it.
-3. Assert overlay state directly: a skip link is hidden when unfocused and visible when keyboard-focused; toast offset clears fixed navigation; bottom labels remain within the viewport.
-4. If screenshot interpretation conflicts with computed geometry, trust measured layout evidence and do not add speculative CSS. Keep the screenshot observation as a review caveat.
-5. After cache-busting or CSS edits, rerun the complete browser behavior—not only the screenshot—and require console/page errors to remain clean.
+3. Assert overlay state directly: count modal backdrops, require each intended fixed overlay to have `x=0`, `y=0`, width=`innerWidth`, and height=`innerHeight`, inspect computed `position`/`inset`/`z-index`, and compare against global chrome such as skip links and sticky headers. Avoid stacked full-screen modals; when a child payment/state modal opens, stop rendering its parent modal unless stacking is intentional.
+4. **Use viewport screenshots (`fullPage: false`) for fixed overlays, sticky headers, drawers, and viewport chrome.** Full-page screenshots stitch document-height segments; a fixed overlay may appear to begin after an undimmed strip exactly equal to `screenshotHeight - viewportHeight` even when geometry proves it covers the viewport. Use full-page captures for document flow, not fixed-layer coverage.
+5. If screenshot interpretation conflicts with measured geometry, classify the capture mode before editing. Recapture at the viewport and inspect pixels; do not stack speculative CSS fixes onto a stitching artifact.
+6. Assert other overlay-adjacent states directly: skip links hidden when unfocused and visible when keyboard-focused, toast offsets clearing fixed navigation, and bottom labels remaining within the viewport.
+7. After cache-busting or CSS edits, rerun the complete browser behavior—not only the screenshot—and require console/page/network errors to remain clean.
 
 When smoke-testing a newly built local binary, never assume a familiar port is free. A valid response can come from an unrelated service and create dangerously misleading evidence. Select an ephemeral free port, start the exact binary, inspect startup/bind output, and assert a service-specific health payload before probing routes or MIME types. Treat `address already in use` as verification setup failure, not application behavior.
 

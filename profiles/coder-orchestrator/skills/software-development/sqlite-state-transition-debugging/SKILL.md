@@ -5,7 +5,7 @@ description: Diagnose and repair SQLite-backed workflow/state transitions that f
 
 # SQLite State-Transition Debugging
 
-Use when a workflow transition (CRM stage, order status, approval state, queue state) returns a generic failure even though the submitted destination and confirmation fields look valid.
+Use when a workflow transition (CRM stage, order status, approval state, queue state) returns a generic failure even though the submitted destination and confirmation fields look valid. Also use when relationship state changes unexpectedly—for example, creating a parent silently reparents older children—because stale client IDs and broad SQLite updates can form one cross-layer transition bug.
 
 ## Workflow
 
@@ -30,3 +30,5 @@ Use when a workflow transition (CRM stage, order status, approval state, queue s
 ## References
 
 - See `references/historical-row-trigger-failures.md` for the diagnostic recipe, migration shape, and verification matrix.
+- See `references/stale-dialog-state-reparenting.md` for tracing reusable create/edit dialog state through relationship-ID payloads into destructive `parent_id` updates.
+- See `references/reparented-children-hidden-by-status-filters.md` when repaired children exist in SQLite/API but disappear because top-level and nested UI filters leave them no visible location.

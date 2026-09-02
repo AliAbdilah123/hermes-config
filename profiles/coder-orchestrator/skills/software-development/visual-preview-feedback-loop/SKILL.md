@@ -45,7 +45,13 @@ For mobile hero simplification, verify at the breakpoint that the carousel is ab
 
 ### Screenshot critique pass
 
-Before declaring a visual preview ready, capture fresh screenshots from the **exact public URL** at the requested desktop and mobile widths and inspect the pixels, not only DOM assertions. Check at minimum:
+Before declaring a visual preview ready, capture fresh screenshots from the **exact public URL** at the requested desktop and mobile widths and inspect the pixels, not only DOM assertions.
+
+For iterative deployments, make every browser navigation use a unique cache-busting value and first verify the fetched public HTML references the expected final JS/CSS hashes. A fixed cache-buster can repeatedly serve an older HTML shell and produce stale screenshots even while newly emitted assets are live. If visual review contradicts source/deployment evidence, compare the exact loaded asset hash before editing again.
+
+For overlay defects, pair screenshot review with measured DOM geometry and stacking evidence. Record the overlay's `getBoundingClientRect()`, computed `position`/`inset`/`z-index`, parent element, and ancestor transforms. If geometry proves a full-viewport overlay but chrome remains bright, inspect competing layers such as skip links and sticky headers before changing inset or portal code. Portals solve containing-block constraints; they do not automatically outrank higher-`z-index` chrome. Also check for stacked/nested modals, which can make backdrop coverage look uneven.
+
+Check at minimum:
 
 - clipped labels, captions, controls, and adjacent carousel slides;
 - placeholder or fallback media occupying the primary composition;
