@@ -46,6 +46,12 @@ When an SPA stays forever on its workspace/bootstrap loader and never exposes Lo
 
 Verify by seeding an invalid token before public browser navigation, then assert login is visible, loading copy is absent, persisted auth is cleared, and no uncaught page error occurs. See `references/stale-saved-auth-loading-loop.md`.
 
+## Plain-text error responses parsed as JSON
+
+When a CRUD form reports `Unexpected token '<letter>'`, inspect the shared fetch wrapper before changing the form. Parsing every body as JSON before checking HTTP status can mask a useful plain-text error returned by Go `http.Error`, a proxy, or a legacy endpoint. Preserve the text on failed responses, keep malformed successful JSON as a protocol error, then investigate any underlying server rejection separately.
+
+See `references/plain-text-http-errors-masked-by-json-parsing.md` for the diagnosis, minimal fix, and authenticated persistence verification recipe.
+
 ## Pitfalls
 
 - Fixing `weekly_slots: null` while overlooking `member.roles: null` in a downstream manager mapper.
