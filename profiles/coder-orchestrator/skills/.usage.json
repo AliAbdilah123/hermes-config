@@ -472,13 +472,13 @@
     "created_at": "2026-06-25T05:56:09.355677+00:00",
     "created_by": null,
     "last_patched_at": "2026-06-30T07:43:06.348004+00:00",
-    "last_used_at": "2026-08-02T04:17:24.320993+00:00",
-    "last_viewed_at": "2026-08-02T04:17:24.314301+00:00",
+    "last_used_at": "2026-09-06T15:35:35.194325+00:00",
+    "last_viewed_at": "2026-09-06T15:35:35.189114+00:00",
     "patch_count": 2,
     "pinned": false,
     "state": "stale",
-    "use_count": 13,
-    "view_count": 13
+    "use_count": 14,
+    "view_count": 14
   },
   "github:codebase-inspection": {
     "archived_at": null,
@@ -887,14 +887,14 @@
     "archived_at": null,
     "created_at": "2026-06-30T08:53:01.817776+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-08-23T14:22:25.572765+00:00",
-    "last_used_at": "2026-08-23T14:22:17.747608+00:00",
-    "last_viewed_at": "2026-08-23T14:22:17.742142+00:00",
-    "patch_count": 44,
+    "last_patched_at": "2026-09-06T15:41:20.851264+00:00",
+    "last_used_at": "2026-09-06T15:41:06.877581+00:00",
+    "last_viewed_at": "2026-09-06T15:41:06.870770+00:00",
+    "patch_count": 45,
     "pinned": false,
     "state": "active",
-    "use_count": 77,
-    "view_count": 77
+    "use_count": 79,
+    "view_count": 79
   },
   "node-inspect-debugger": {
     "archived_at": null,
@@ -1096,13 +1096,13 @@
     "created_at": "2026-07-27T10:23:16.678190+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-08-23T09:44:53.633775+00:00",
-    "last_used_at": "2026-08-23T09:44:25.419898+00:00",
-    "last_viewed_at": "2026-08-23T09:44:25.412331+00:00",
+    "last_used_at": "2026-09-06T15:35:35.182226+00:00",
+    "last_viewed_at": "2026-09-06T15:35:35.163778+00:00",
     "patch_count": 14,
     "pinned": false,
     "state": "active",
-    "use_count": 13,
-    "view_count": 13
+    "use_count": 14,
+    "view_count": 14
   },
   "preview-worktree-delivery": {
     "archived_at": null,
