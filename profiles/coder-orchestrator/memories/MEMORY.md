@@ -1,4 +1,4 @@
-Roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna; TemuBisnis ~/projects/temubisnis (Go/SQLite/React-Vite). Use project root; delegates request terminal; retry indirect failures directly.
+Roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna; TemuBisnis ~/projects/temubisnis (Go/SQLite/React-Vite). Work from project root.
 §
 For this user's projects, `.env` and `sqlite.db` are placed in each project's directory/root unless specified otherwise.
 §
@@ -19,3 +19,5 @@ Paragentix: default path ~/projects/paragentix. Inspect first and propose for ex
 Paragentix public link is https://app-dev.paragentix.com.
 §
 Komuna Sessions: Admin attendance separate; answers stay in Attendant disclosure. Simple product defaults None; owned vouchers save without checkout. If none owned, show ≤3 packages default None; Buy preserves draft/returns to edit; Checkout and save persists after payment.
+§
+Discord #p-balikpapan-dev defaults to the balikpapan-dev project unless stated otherwise.

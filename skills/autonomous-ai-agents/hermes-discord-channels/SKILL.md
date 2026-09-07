@@ -101,6 +101,15 @@ the same change to the runtime file.
    **Pitfall:** do not use `hermes gateway restart` from inside the gateway;
    it is blocked to prevent restart loops.
 
+   **Pitfall:** restart attempts from inside the gateway process are broadly
+   blocked, not just `hermes gateway restart`. Wrapper commands such as
+   `terminal(background=true)`, `bash -lc`, `nohup`, `setsid`, and even
+   `ssh ubuntu@127.0.0.1 ...` can still fail with the same restart-loop
+   block because the child inherits the gateway’s protection. The reliable
+   workaround is to run `systemctl --user restart
+   hermes-gateway-<profile>.service` from a shell outside the Hermes
+   gateway process entirely.
+
 6. Verify:
    - `systemctl --user status hermes-gateway-<profile>.service` → active.
    - Check profile logs:

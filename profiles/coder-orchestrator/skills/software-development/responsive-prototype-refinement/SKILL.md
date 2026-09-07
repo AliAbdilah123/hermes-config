@@ -124,6 +124,12 @@ An open mobile drawer may intentionally occupy most of a narrow viewport. Distin
 
 ## Verification
 
+### Standalone multi-variant prototypes
+
+When variants share JSON, CSS, or JavaScript, publish the complete dependency directory atomically and probe every shared asset at its final public URL. For runtime-generated controls, do not search static HTML for generated markup: verify the loader/script and dataset mechanically, then exercise the rendered control in a browser across every requested state.
+
+Keep prototype artifacts isolated from production until explicit approval. Verify each exact public variant URL independently, and report project build, route/asset probes, and visual interaction checks as separate evidence: HTTP 200 does not prove rendering, and a passing production build does not validate standalone prototype assets. If browser visual automation remains unavailable, explicitly mark visual approval pending rather than claiming visual verification.
+
 For targeted prototype refinements:
 
 1. Once the visual change is ready for review (and always before committing), build the artifact.

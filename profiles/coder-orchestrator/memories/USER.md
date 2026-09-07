@@ -1,8 +1,8 @@
-Fixes need authenticated public E2E. WORKING/VERIFYING mean active execution; otherwise say STOPPED. READY only after E2E. Finals: link, commit, push.
+Fixes need authenticated public E2E. WORKING/VERIFYING=active; otherwise STOPPED. READY only after E2E. Finals: link, commit, push.
 §
 Small fixes: implement now. Complex work: plan first. Ordered plans: verify each item before starting the next; never defer failures.
 §
-Coding: Codex `gpt-5.6-sol` medium; announce delegation. UI: atomic, implement→inspect→verify.
+Coding: Codex gpt-5.6-sol medium; announce delegation. Each feature gets a new branch. UI: implement→inspect→verify.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §

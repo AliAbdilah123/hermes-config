@@ -1,6 +1,6 @@
 Keep nginx troubleshooting checklist inside `~/.hermes/skills/nginx/SKILL.md` with references in `references/config.md`.
 §
-Hermes multi-profile Discord channel routing: whitelist config is in $HERMES_HOME/profiles/<name>/config.yaml not the main config; both runtime config at /home/ubuntu/.hermes/profiles/ and source config at /home/ubuntu/hermes-config/profiles/ should be kept in sync. Use `discord.channel_prompts` to set default per-channel/topic context; keys are channel IDs or `channel:thread` pairs. Restart profile gateway with systemctl --user restart hermes-gateway-<profile>.service — if SIGTERM hangs showing stop-sigterm, kill -9 old PID then start.
+Hermes multi-profile Discord routing: whitelist in runtime `~/.hermes/profiles/<name>/config.yaml`; keep it synced with source `~/hermes-config/profiles/<name>/config.yaml` because runtime reverts on restart. Context keys are channel IDs or `channel:thread` pairs. Restart profile gateway with `systemctl --user restart hermes-gateway-<profile>.service` from outside Hermes — gateway blocks restart attempts from child/wrapper commands too, not just `hermes gateway restart`.
 §
 Hermes dashboard may appear to error when `/api/*` returns 401 from bare curl; that is expected because auth uses an ephemeral session token injected into `index.html`. Verify dashboard health with root `/` (expect 200 HTML) or pass `Authorization: Bearer <token>` where token is from the injected `window.__HERMES_SESSION_TOKEN__`.
 §

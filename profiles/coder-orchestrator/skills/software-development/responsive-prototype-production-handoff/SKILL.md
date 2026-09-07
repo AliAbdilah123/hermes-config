@@ -59,6 +59,19 @@ See `references/mobile-list-axis-vs-card-anatomy.md` for the parent-list vs. car
 See `references/mobile-section-document-reordering.md` when a desktop-owned section must move below tabs or to another semantic DOM position only on mobile.
 See `references/program-detail-production-parity.md` for a concrete data-backed responsive handoff checklist.
 
+## Simplifying an implemented prototype after launch
+
+When the user removes a previously implemented mode, filter, or period selector:
+
+1. Treat this as a product-model simplification, not merely a visual request to hide controls.
+2. Choose the surviving canonical dataset from the user's intent and established semantics. If the user only says that multiple time ranges are unnecessary, preserve the broadest existing ranking (typically all-time) unless they name another source.
+3. Remove the selector UI, component state, variant types/constants, period-specific copy, and duplicated data branches together. Do not leave hidden modes or dead data “for later.”
+4. Preserve unrelated approved behavior literally: ranking order, layout, responsive treatment, theme support, accessibility, and tooltip/tap behavior.
+5. Add a focused regression that asserts one canonical data list and the absence of the removed mode primitive/state. Run it red against the multi-mode implementation before simplifying.
+6. In public rendered-DOM verification, assert both sides: canonical content is present and every removed control label is absent.
+
+Prefer deleting mode machinery over adapting it into disabled or invisible configuration. Git history is enough if the modes may return later; do not retain dormant production complexity.
+
 ## Verification discipline
 
 - Before accepting a delegated implementation of a broad, staged responsive plan, reconcile the actual changed-file list and diff against every approved stage. Build a short stage-to-file/test ledger (shell, each feature surface, shared controls, browser coverage) and inspect suspicious omissions before running final gates. A green build or newly added E2E files does not prove that untouched feature stages were implemented; if a stage was satisfied entirely by shared CSS, identify and inspect the exact selectors that provide that coverage.
@@ -75,6 +88,8 @@ See `references/program-detail-production-parity.md` for a concrete data-backed 
 - A screenshot taken immediately may capture a loading state. Verify the API, then allow enough browser virtual time for the application and request to settle before judging data-backed geometry.
 - At the named acceptance viewport, visually prove the requested content is fully visible, media/fallbacks load, spacing is comfortable, and no overlap or page-level overflow exists.
 - Exercise the primary interaction path, dismissal paths, keyboard behavior, focus return, theme variants, and console output.
+- For tabbed or filterable JSON-backed pages, initial rendered content plus the presence of every control is not interaction proof. Activate at least one non-default period/filter through the rendered UI and assert a value that must change (range, leader, ranking, or score), then return to the default. A data-order self-check complements this cycle but does not replace it.
+- Before promising **authenticated** public E2E, inspect whether the target route actually has an authentication flow, credentials, or a deterministic authenticated fixture. If the route is intentionally public, explicitly use and report public E2E instead of implying authentication was performed.
 - For an async action that must open its result in a new tab, create the blank tab synchronously inside the user gesture, clear `opener`, navigate it after the API returns, and close it on failure. Opening only after `await` is commonly popup-blocked. Verify both the exact destination and failure cleanup; do not replace the current tab unless requested.
 - Verify deployed asset timestamps/hashes and the cache-busted public URL.
 
