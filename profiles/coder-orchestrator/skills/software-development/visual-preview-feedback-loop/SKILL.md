@@ -49,6 +49,10 @@ Before declaring a visual preview ready, capture fresh screenshots from the **ex
 
 For iterative deployments, make every browser navigation use a unique cache-busting value and first verify the fetched public HTML references the expected final JS/CSS hashes. A fixed cache-buster can repeatedly serve an older HTML shell and produce stale screenshots even while newly emitted assets are live. If visual review contradicts source/deployment evidence, compare the exact loaded asset hash before editing again.
 
+Before requiring a console-clean public preview, give standalone/new SPAs an explicit favicon (a tiny inline SVG data URI is enough). Otherwise Chromium requests the host-level `/favicon.ico`; a missing favicon creates a noisy 404 that can fail an otherwise clean UI E2E. Diagnose console resource failures by recording `message.location().url` or the failed request URL before changing product code.
+
+In browser harnesses, scope repeated labels to their semantic container and use exact accessible names for short navigation labels. For example, `getByRole('button', { name: 'Rumah' })` can also match “Perbarui data rumah”; prefer the bottom-navigation locator plus an exact `Rumah` match. Treat strict-mode ambiguity as a harness defect, tighten the locator, and rerun the complete flow rather than patching the UI.
+
 For overlay defects, pair screenshot review with measured DOM geometry and stacking evidence. Record the overlay's `getBoundingClientRect()`, computed `position`/`inset`/`z-index`, parent element, and ancestor transforms. If geometry proves a full-viewport overlay but chrome remains bright, inspect competing layers such as skip links and sticky headers before changing inset or portal code. Portals solve containing-block constraints; they do not automatically outrank higher-`z-index` chrome. Also check for stacked/nested modals, which can make backdrop coverage look uneven.
 
 Check at minimum:
