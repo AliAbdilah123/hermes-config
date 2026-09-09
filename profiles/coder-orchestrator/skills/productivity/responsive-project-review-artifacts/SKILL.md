@@ -86,3 +86,4 @@ When the user asks to make one artifact or section look like another:
 
 - See `references/evidence-backed-improvement-audit.md` for the compact audit rubric and report content pattern.
 - See `references/holistic-prd-revision.md` when stakeholder decisions must be integrated across an existing PRD rather than appended; it includes consistency checks, critique prompts, architecture defaults, and deterministic verification.
+- See `references/review-artifact-publication-permissions-and-visual-qa.md` when a PRD symlink returns 403 or a design-heavy artifact needs rendered desktop/mobile QA and cache-busted content verification.
