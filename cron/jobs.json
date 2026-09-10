@@ -20,7 +20,7 @@
       "schedule_display": "0 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 73
+        "completed": 74
       },
       "enabled": true,
       "state": "scheduled",
@@ -28,9 +28,9 @@
       "paused_reason": null,
       "created_at": "2026-06-28T16:43:05.667937+00:00",
       "next_run_at": "2026-09-11T02:00:00+00:00",
-      "last_run_at": "2026-09-09T02:01:12.368482+00:00",
-      "last_status": "ok",
-      "last_error": null,
+      "last_run_at": "2026-09-10T02:00:45.060225+00:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: HTTP 429: The requested model is temporarily at capacity upstream. This is not your API key's rate limit \u2014 please retry shortly.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -70,7 +70,7 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-28T16:55:33.111911+00:00",
-      "next_run_at": "2026-09-10T09:00:00+00:00",
+      "next_run_at": "2026-09-11T09:00:00+00:00",
       "last_run_at": "2026-09-09T09:00:59.658379+00:00",
       "last_status": "ok",
       "last_error": null,
@@ -87,5 +87,5 @@
       "fire_claim": null
     }
   ],
-  "updated_at": "2026-09-10T02:00:09.283572+00:00"
+  "updated_at": "2026-09-10T09:00:13.474619+00:00"
 }
