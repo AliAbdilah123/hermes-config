@@ -293,6 +293,17 @@ When smoke-testing a newly built local binary, never assume a familiar port is f
 
 For local development-OTP applications with persisted CRUD and two-user authorization checks, follow [references/local-otp-auth-browser-e2e.md](references/local-otp-auth-browser-e2e.md). It covers exact-binary/temp-DB isolation, OTP retrieval through an injectable sender log, stable Playwright selectors, expected anonymous-session `401` classification, second-context ownership checks, and DB/API terminal-state fallback after an ambiguous final locator.
 
+### Fixed OTPs in development previews
+
+When a development preview needs a memorable OTP, make it explicit configuration rather than hard-coding verification or weakening the normal authentication path:
+
+1. Preserve cryptographically random OTP generation whenever the setting is absent.
+2. Validate the configured value at startup (for six-digit flows: exactly six ASCII digits), then pass it through the existing create/hash/send/verify path so expiry, attempt limits, one-time consumption, suspended-account handling, and rate limits remain intact.
+3. Reject fixed OTP configuration in production. If a preview currently uses `APP_ENV=production` only for deployment safety checks, introduce/use a distinct validated `preview` mode rather than allowing the bypass in production; keep secure cookies, absolute DB paths, allowed-origin checks, and other applicable controls.
+4. Test RED→GREEN at both boundaries: the auth service sends/accepts the configured code; configuration rejects malformed values and production use; the unset path stays random.
+5. After replacing the exact service binary, derive local health/API probes from effective `APP_BASE_PATH`. A subpath-mounted handler can correctly return 404 at `/api/...` while serving `/<base>/api/...`; classify that as a harness-path error before diagnosing the service.
+6. Verify through the exact public origin with browser-equivalent `Origin`: request a code, authenticate with the fixed value, assert the returned identity/session, clean the unique E2E identity, and require database integrity to remain healthy.
+
 When resolving emitted asset URLs from generated HTML, avoid brittle regexes that assume attribute order or an exact tag shape (for example, assuming `src` immediately follows `<script`). Bundlers may insert `type`, `crossorigin`, or other attributes. Prefer an HTML parser; for a minimal smoke probe, search the complete document for a quoted URL ending in `.js`/`.css`, then verify that exact URL returns the expected MIME type and non-trivial body. A parser miss is harness setup failure—not evidence that the built asset is absent.
 
 ## Browser harness failures versus product failures
