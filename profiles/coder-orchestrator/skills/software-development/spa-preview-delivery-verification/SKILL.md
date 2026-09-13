@@ -99,3 +99,5 @@ For standalone review HTML published through an `/prd/` or similar alias, HTTP 2
 ## Supporting detail
 
 See `references/subpath-spa-proof-checklist.md` for a concise reusable verification checklist and evidence format.
+
+For SQLite-backed payment approval previews, also use `references/payment-approval-preview-checklist.md`; it covers baseline classification, single-connection query safety, authenticated receipt blobs, transaction invariants, atomic ordering, and two-role public E2E.

@@ -129,6 +129,8 @@ Return the live PIDs and the direct URL so the user can reach it.
 - **`hermes dashboard --status` shows PIDs but HTTP is closed** → stale PID is lying; stop all and restart fresh
 - **Trying `python -m hermes_cli.main web`** → invalid subcommand; use `dashboard`
 - **`/api/version` returns 401** → expected; token auth is injected into `index.html`, not sent on bare API calls. Use root `/` probe instead.
+- **Repeated `APIConnectionError` retries in `journalctl --user -u hermes-gateway*`** → check the `model=` field on each line: it may be another Hermes service pointed at `http://localhost:20128/v1` (gateway resolves `localhost`→`::1` while the router binds IPv4). Point that client at `127.0.0.1`. To identify which real upstream model is serving an alias, see the `llm-model-routing` skill.
+
 
 ## References
 

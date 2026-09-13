@@ -56,6 +56,7 @@ For a mobile quick-filter rail plus bottom sheet:
 - When the user asks for cards to load vertically or reports horizontal card scrolling, fix the sibling-list axis first. Preserve each card’s approved internal anatomy unless they explicitly request a card redesign. Inspect shared rail rules for fixed flex-basis, overflow, snap behavior, and `!important`, then apply the smallest page-scoped mobile override.
 
 See `references/mobile-list-axis-vs-card-anatomy.md` for the parent-list vs. card-anatomy diagnostic, minimal scoped CSS pattern, and rendered-geometry verification.
+See `references/compact-pos-form-and-expense-corrections.md` for a focused TDD recipe covering responsive POS workspaces, modal form migration, required line-item totals, OCR prefills, and expandable expense rows.
 See `references/mobile-section-document-reordering.md` when a desktop-owned section must move below tabs or to another semantic DOM position only on mobile.
 See `references/program-detail-production-parity.md` for a concrete data-backed responsive handoff checklist.
 

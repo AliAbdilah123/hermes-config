@@ -4,7 +4,7 @@ Hermes multi-profile Discord routing: whitelist in runtime `~/.hermes/profiles/<
 §
 Hermes dashboard may appear to error when `/api/*` returns 401 from bare curl; that is expected because auth uses an ephemeral session token injected into `index.html`. Verify dashboard health with root `/` (expect 200 HTML) or pass `Authorization: Bearer <token>` where token is from the injected `window.__HERMES_SESSION_TOKEN__`.
 §
-9router is managed by a user-level systemd service at /home/ubuntu/.config/systemd/user/9router.service; runs ubuntu-owned node /home/ubuntu/.local/bin/9router, binds port 20128. Do NOT use Group= in user systemd units (status=216/GROUP failure).
+9router = local OpenAI-compatible router behind Hermes (user systemd unit ~/.config/systemd/user/9router.service, port 20128); resolves model aliases/combos — see `llm-model-routing` skill.
 §
 Go+React projects deployed under nginx `/projects/<name>/` require: build frontend, copy `dist/` to `/var/www/html/projects/<name>/`, update Go `serveReact` path, add nginx proxy + alias blocks inside existing server config.
 §

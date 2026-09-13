@@ -111,7 +111,13 @@ For a concise reusable checklist and suggested browser assertions, see `referenc
 
 ## Screenshot-reported regressions against an evolving codebase
 
-A screenshot proves that a defect existed in the rendered artifact it captured; it does not prove the current checkout or live deployment still has that defect. Before editing a screenshot-reported responsive issue:
+A screenshot proves that a defect existed in the rendered artifact it captured; it does not prove the current checkout or live deployment still has that defect. For high-density mobile/tablet screenshots, infer and reproduce the **CSS viewport**, not the physical image dimensions. Device-pixel ratio is only a starting hypothesis; confirm by rendering nearby exact widths and measuring the failing components.
+
+When fixing a breakpoint mismatch, do not broaden an entire media block blindly. A block may combine unrelated workspace stacking, navigation, fixed checkout docks, card sizing, and safe-area rules. Move or duplicate only the selectors whose breakpoint must change, then verify every behavior newly activated at the wider breakpoint. Otherwise a correct tablet workspace fix can accidentally enable a phone-only overlay.
+
+Pair screenshot review with geometry assertions for canvas width, card width, card/action intersection, first-product visibility, ledger position, fixed-overlay intersection, and document overflow. “No horizontal overflow” is insufficient: a grid can fit while compressing cards to unusable widths.
+
+Before editing a screenshot-reported responsive issue:
 
 1. Reproduce the **exact screenshot viewport**, including both width and height, rather than testing only nearby standard breakpoints.
 2. Inspect current shell markup, breakpoint CSS, and focused responsive tests for an existing fix.
@@ -192,5 +198,6 @@ See `references/session-detail-simple-product-package-picker.md` for the full st
 
 ## References
 
+- `references/pos-touch-layout-and-modal-forms.md` — exact-viewport POS layout checks, long-press menu semantics, table multi-selects, accessible modal lifecycle, and expandable line-item records.
 - `references/detail-column-with-mobile-preservation.md` — concrete selected-session calendar pattern and verification checklist.
 - `references/session-detail-simple-product-package-picker.md` — checkout-consistent vertical Simple product selection, capped horizontal package recommendations, empty states, and focused verification matrix.

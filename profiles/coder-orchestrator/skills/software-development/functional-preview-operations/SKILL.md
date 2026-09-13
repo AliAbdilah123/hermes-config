@@ -53,6 +53,21 @@ For hierarchy feedback, identify the exact visible text the user names before ed
 
 If the user says a change is not updated, trace source → build output → deployed directory → public HTML asset names → public bundle contents before making another speculative edit.
 
+## Payment and protected-upload verification
+
+For checkout/payment previews, apply these boundaries before public E2E:
+
+- Enforce each payment-method toggle before expensive parsing and re-read it inside the purchase transaction immediately before insertion; an in-flight request must not commit after the method is disabled.
+- Validate a rejected-payment resubmission against the stored owner, tenant/program, package, intended session, payment method, and state. Never accept mutable intent fields that the server silently ignores.
+- Route approval through the shared transaction-safe purchase finalizer. Verify no entitlement before approval and exactly one entitlement plus notification after duplicate approval attempts.
+- With SQLite configured to one connection, fully consume and close outer result rows before per-record item/status queries. Leave a timed regression check for nested-query deadlocks.
+- Protected images cannot use a plain `<img src>` when authentication depends on bearer headers. Fetch through the authenticated API client, render a blob object URL, and revoke it on close/unmount.
+- Treat filesystem receipt storage and SQLite commits as a coordinated durability problem: use staged/finalized files with recovery cleanup, or transactional blob storage, before claiming crash safety.
+- Assert mandated checkout copy in every supported locale. Type public payment-option bank accounts separately from richer admin DTOs.
+- Reordering ordered records must update the complete ordering atomically (or swap/reindex affected records server-side); changing only one numeric position can create ties and no visible movement.
+
+When the repository-wide test or lint gate fails, reproduce suspicious failures on a clean worktree from the same baseline before editing unrelated code. Report feature regressions, reproduced baseline failures, repository lint debt, and changed-file checks separately. Baseline debt does not excuse a feature failure, and build success is not lint or E2E success.
+
 ## Verification boundaries
 
 Report these separately:

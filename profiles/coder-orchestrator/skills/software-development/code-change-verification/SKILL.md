@@ -17,7 +17,7 @@ Before the first commit, push, or completion report, confirm the workspace has *
 
 1. Prefer the repository’s documented canonical test, lint, and build commands.
 2. Before running language-specific checks, locate the actual module/package root rather than assuming the Git repository root is executable. For Go, run tests from the directory containing the relevant `go.mod` (or use an explicit module-aware workspace command); monorepos commonly keep modules under paths such as `api/v1/`. Apply the same principle to nested JavaScript/Python workspaces, and classify a wrong-working-directory failure as verification setup—not a product-test failure.
-3. Run the smallest existing regression test that directly exercises the changed behavior first.
+3. Run the smallest existing regression test that directly exercises the changed behavior first. For a request limited to the final N review blockers, treat those named blockers as a hard scope boundary: add one focused behavioral regression per blocker, make only the production edits needed for those regressions, and exclude adjacent cleanup, commits, deployment, docs, and dependency changes unless explicitly requested.
 4. Run broader canonical checks when available and proportionate to the change.
 4. If code changes after a check, rerun the affected verification. Earlier output is stale evidence.
 5. Capture fresh passing evidence before committing or reporting completion; do not rely on a build alone when the changed behavior needs a focused assertion.
@@ -50,7 +50,7 @@ After replacing a service binary and restarting it, `systemctl is-active` is onl
 
 When the environment does not detect a canonical verification command, run a focused ad-hoc check even if you already found and ran a build command manually. Build evidence and a targeted behavioral assertion are complementary; one does not replace the other.
 
-If verification tracking is required or likely to classify ordinary commands as unverified, make the directly executed `/tmp/hermes-verify-*` script part of the pre-commit gate. Run it before committing, pushing, deploying, or claiming completion—not as a repair after the completion report. A manually executed suite can be human-readable evidence while the workspace verifier still has no registered evidence; when command detection is uncertain, default to the tracked script before commit. The script should invoke the focused behavior test and any proportionate compile/build check from the real package root. In monorepos or nested frontends, `cd` inside the script to the directory containing the relevant `package.json`, `go.mod`, or equivalent; verification from the repository root can miss the canonical project context.
+If verification tracking is required or likely to classify ordinary commands as unverified, make the directly executed `/tmp/hermes-verify-*` script part of the pre-commit gate. Run it before committing, pushing, deploying, or claiming completion—not as a repair after the completion report. A manually executed suite can be human-readable evidence while the workspace verifier still has no registered evidence; when command detection is uncertain, default to the tracked script before commit. The script should invoke the focused behavior test and any proportionate compile/build check from the real package root. In monorepos or nested frontends, `cd` inside the script to the directory containing the relevant `package.json`, `go.mod`, or equivalent; verification from the repository root can miss the canonical project context. When workspace verification status is derived from the last recognized command, order multi-gate verification so a canonical test command runs last. A final build can otherwise leave the workspace classified as stale even though tests ran earlier; after all edits, finish with the focused or full test command and confirm the returned `verification_evidence` says `passed`.
 
 When selecting a focused test by name, inspect the runner summary and require at least one executed test. A zero-exit run where every test is skipped is not RED or GREEN evidence; broaden or correct the filter and rerun until the intended test actually executes. Do not let a later build or HTTP probe turn that zero-test script into “passed targeted verification.” Make the script fail explicitly when the runner reports only skipped tests (or parse the summary and assert executed > 0), then rerun with an exact current test name.
 
@@ -80,10 +80,20 @@ When the user requires an exact implementation order, treat each item as a hard 
 5. Advance the task list and begin the next item only after every required check for the current item passes. If any check fails or cannot run, stop on that item, resolve it, and do not defer it into a later item.
 6. Keep progress language precise: say `WORKING` while implementation or verification is actively executing; otherwise report the exact stopped boundary. Do not call an item complete merely because its implementation agent exited successfully.
 7. In cumulative full-stack plans, constrain every coding-agent prompt to the current item while explicitly preserving already verified earlier-item changes and forbidding later-item scope. Reserve commit, push, deployment, and whole-plan authenticated E2E for the declared final gate unless the plan assigns one of those boundaries to an earlier item.
+8. Treat coding-agent delegation as an implementation mechanism, not automatically as the milestone gate. If the delegated CLI cannot start because of transient setup, credentials, provider routing, or model availability, continue the same milestone directly with the primary agent unless the user explicitly made successful delegation itself an acceptance requirement. Preserve strict RED→GREEN order and independently run the same checks; do not cancel the remaining plan merely because an optional worker failed to launch.
+9. Distinguish `pending`, `blocked`, and `cancelled` accurately. A sequential milestone not yet started because an earlier gate is unresolved remains pending; use cancelled only when the user or scope decision has intentionally abandoned it. If a blocker truly prevents progress, leave the current item stopped and later items pending rather than rewriting the entire remainder as cancelled.
 
 This sequencing rule applies even when later items look independent: exact user-requested order outranks opportunities for parallel implementation. Per-item local checks establish only that item's gate; they do not make the whole plan `READY`.
 
 For the reusable prompt boundary, cumulative-workspace discipline, final integrated gate, and status-language checklist, see [references/sequential-gated-implementation.md](references/sequential-gated-implementation.md). For the concrete Go/SQLite/React milestone matrix—including OTP, deterministic matching, messaging authorization, worker dedupe, moderation audit atomicity, and privacy-safe funnel checks—see [references/sequential-full-stack-milestone-gates.md](references/sequential-full-stack-milestone-gates.md).
+
+## Verification recovery after an interrupted handoff
+
+If a prior completion report admits that final verification did not run, the next turn must resume execution immediately rather than repeat or rephrase that report. Reload this skill, inspect the latest failing output, run the smallest affected test, repair it, and continue through the canonical suite. Do not answer with another implementation summary until fresh final-state evidence exists or a concrete external blocker has been demonstrated.
+
+When a security fix removes implicit state derivation (for example, URL-driven role promotion), expect old tests to have relied on that unsafe behavior as fixture setup. Update each legitimate privileged-route test to establish its role explicitly; preserve one negative deep-link regression proving an unprivileged role remains unprivileged. Do not restore insecure production behavior merely to keep legacy tests green.
+
+After strengthening a workflow precondition such as requiring a table, classify broad failures before changing code: tests that intend to complete payment must satisfy the new precondition, while tests specifically covering the disabled state should assert it. Update fixtures/actions narrowly rather than weakening the invariant globally.
 
 ## Completion-state integrity
 
@@ -191,7 +201,19 @@ When a UI action removes selected records from a container, do not assume cleari
 
 When optimizing frontend refetch behavior after task/goal or other nested CRUD mutations, define the mounted datasets and an explicit request budget per mutation before editing. Patch returned entities locally for ordinary mutations, refetch a scoped container query only when the mutation introduces unknown membership, and reserve hierarchy-cache refreshes for actual relationship changes. Browser verification must isolate initial-load and dialog-open requests from the post-mutation window; a GET observed nearby is not automatically mutation-triggered. Keep the result WORKING if any sibling flow still exceeds its budget, even when the primary regression passes. See `references/mutation-refresh-contract-verification.md` for the mutation matrix, race-detection test shape, and authenticated public request-count proof.
 
+## Draft, hold, and resume workflow integrity
+
+See `references/persisted-draft-resume-and-responsive-pos-actions.md` for the compact round-trip and narrow-viewport verification checklist.
+
+When a workflow saves an editable object as draft, held, open, or unpaid and later resumes it, verify **lossless round-trip restoration**, not merely that the object reappears. Persist and restore the exact editable payload (for POS orders: name, service mode, table, quantities, modifiers, item notes, discounts/coupons, and unpaid status). Do not reconstruct saved lines from the current catalog/menu: catalog values may have changed, unavailable items may disappear, and reconstruction commonly drops per-line customization. Prefer a reducer/state action that restores persisted lines directly.
+
+Use an ordered TDD gate: create a customized object, save it in the intermediate state, assert payment/terminal fields are absent, resume it, and assert every customization is still present. For held POS orders, cover the **entire editing context**, not only lines: service/order type, plural table IDs plus resolvable legacy table, active coupon/discount state, immutable line prices, modifiers, and notes. If a saved coupon is now missing or inactive, restore no coupon and show an explicit notice rather than silently changing the meaning of the resumed order. Also verify the saved record is removed or transitioned only after validated restoration can proceed; a resume action must refuse to overwrite a non-empty active draft unless an explicit merge/replace choice exists, and cancellation must preserve both objects.
+
+After a security or invariant repair, inspect test-fixture edits as production-adjacent changes. Automated fix agents may accidentally overwrite role setup or leave old happy paths invalid (for example, checkout tests that no longer select a required table). Rerun the complete canonical suite from the final workspace and classify failures before changing production code: repair corrupted/stale fixtures narrowly, never weaken the new guard to make old tests pass.
+
 ## Interactive job-operation verification
+
+For operational mutations against a dynamically selected session dataset (for example, kitchen availability while an experiment catalog is active), also follow `references/session-scoped-operational-mutations.md`. It covers symmetric read/write resolution, immutable history, guarded state transitions, least-privilege checks, and accessible status-copy compatibility.
 
 For UI operations that change backend state, do not stop at a component test or build. Add or update a focused test for the operation's availability in each required lifecycle state, then exercise the API boundary for the corresponding persisted transition. If an operation expands from one status to all statuses, update stale tests that assert the old restriction. For destination selectors that can create records, verify both existing-destination and new-destination paths, including optional generated names, validation, ordering, authorization, and preservation of active run/session identity.
 
@@ -220,6 +242,55 @@ When changing a retry/reply action from immediate execution to queued execution,
 6. Use a request counter or channel around the test provider to distinguish “not called yet” from “eventually called.” Avoid sleep-only assertions; wait with a bounded timeout and inspect persisted final state.
 
 This applies to job boards, sequential automation lanes, durable agent queues, and any UI where “sent” means accepted for later processing rather than already running.
+
+## Configurable persisted option registries
+
+When replacing hard-coded workflow choices with admin-managed persisted records, use the strict behavior and verification matrix in `references/configurable-persisted-options.md`. Verify migration/defaults, normalized uniqueness, lifecycle, consumer filtering, deterministic selection repair, an explicit no-options state, metadata-driven conditional behavior, and immutable historical rendering. Scope repeated row assertions and account for duplicate responsive controls; run test-source typecheck independently of runtime tests.
+
+For fixture-backed physical or operational resources that add capacity, availability, lifecycle, and multi-selection, also use `references/persisted-managed-resources-and-multi-selection.md`. It covers partial legacy-map migration, stable plural-ID persistence with singular-field history compatibility, archive-on-reference behavior, selection retention, grouped availability summaries, and accessible checkbox-group queries.
+
+## Versioned local catalogs and additive accessibility controls
+
+For composite products, also use `references/versioned-bundle-menu-integrity.md`. It covers versioned component references, minimal cycle prevention, archived-component saleability, privacy-filtered details, custom-price calculations, and immutable sale snapshots.
+
+For admin-managed experiments that temporarily replace a session catalog, use `references/active-experiment-session-catalogs.md`. It covers cloned drafts, deterministic revenue and bundle-recipe projections, central one-active enforcement, shared session-menu resolution, and one-time version-preserving finalization.
+
+When migrating fixture-backed catalog records into a persisted, immutable-version model:
+
+1. Verify both a clean seed and legacy saved state. A runtime fallback such as `saved.catalog || seededCatalog` makes the page render but does not prove migration persistence; reload from storage and assert normalized version records were written when durable migration is required.
+2. Keep order/history rows as immutable sale-time snapshots. After editing or archiving a current catalog item, assert old transactions still show their original name and price rather than resolving through the current catalog.
+3. Make current-version selection explicit and test missing or malformed version references. Avoid non-null assertions at the persisted-data trust boundary unless load-time normalization guarantees the invariant.
+4. For hidden-by-default metadata, test authoring and disclosure separately: newly added ingredients start hidden, while consumer detail views render only explicitly public ingredients.
+5. Adding a sibling accessible action can make established broad queries ambiguous when both actions include the record name. Inspect the accessible-name contract before rewriting old tests; prefer exact or scoped primary-action queries and a distinct details-action name, then run the full suite for locator collisions.
+6. Long-press verification must cover successful activation plus cancellation on movement, pointer cancellation, and ordinary tap. Retain an explicit keyboard-accessible action because long press and context menu are not sufficient accessibility paths.
+7. In jsdom, pointer-event helpers may omit coordinates. If a movement-threshold regression ignores supplied `clientX`/`clientY`, dispatch bubbling `MouseEvent`s named `pointerdown` and `pointermove` with explicit coordinates. Wrap fake-timer advancement that triggers React state in `act(...)`, and restore real timers in `afterEach` so a failed interaction test cannot cause unrelated async tests to time out.
+8. When replacing checkbox groups with native `<select multiple>`, verify the labeled listbox, each option's selected property, disabled unavailable options, and the exact persisted array. Update every workflow test that previously clicked a checkbox; stale interaction helpers can otherwise present as timeouts instead of contract drift.
+
+## Auxiliary form modal migrations
+
+When converting several inline create/edit forms into dialogs, preserve handlers and domain behavior while reusing the existing accessible modal/action components. Update established workflow tests to open the modal before querying fields, and scope submit-button queries to the dialog when trigger and submit share a name. See `references/auxiliary-form-modal-migrations.md` for the migration and verification checklist.
+
+## Accessible modal and asynchronous draft lifecycle verification
+
+For shared application dialogs, verify the complete keyboard contract rather than only `role="dialog"`: opening moves focus inside, Tab and Shift+Tab wrap among enabled focusable controls, Escape invokes the current close handler, every dialog title has a unique ID, and unmount restores focus to the launcher. Keep the key listener mounted once and store a changing close callback in a ref; depending on an inline `onClose` callback can repeatedly tear down the effect, move focus back to the first control after every render, and capture the wrong restoration target.
+
+For upload-assisted create/edit dialogs, route backdrop, close button, Cancel, and successful save through one reset function. That function should invalidate in-flight work, reset the native form, clear controlled rows/errors/file state/parsing state, release preview URLs through effect cleanup, and close. Guard asynchronous parser/OCR results with a monotonically increasing generation token: each upload claims a generation, close invalidates it, and only the latest generation may populate fields, report errors, or clear loading state. Verify both race classes: an older upload resolving after a newer upload, and any upload resolving after close/reopen.
+
+For disclosure rows, pair `aria-expanded` with `aria-controls` and give the revealed panel a stable matching ID plus a useful region label. Test the collapsed and expanded states through accessible queries, not only visible text.
+
+When running test, lint, typecheck, and build gates in parallel, a timing-sensitive UI test can exceed its timeout because of CPU contention even when behavior is correct. Rerun the exact failed test or full suite alone before classifying it; only the uncontended fresh result is evidence. Do not weaken assertions or raise timeouts based solely on a parallel-run timeout.
+
+## Native form validation and datalist test boundaries
+
+When testing forms that combine native HTML constraints with submit-handler validation, browser constraint validation may prevent the submit event entirely. A test expecting the handler's custom error must either use an input that passes native constraints but fails an additional application rule, or deliberately remove/bypass the relevant constraint before submitting. Assert the native attribute (`required`, `min`, `type`, etc.) separately, then exercise the application validation path. Do not diagnose a missing alert as broken handler logic until confirming the handler ran.
+
+Native `<datalist>` options are inconsistently represented in accessibility trees and test DOM implementations. Verify the input's `list` attribute and inspect `#<list-id> option` values directly rather than relying on `getByRole('option')`. For case-insensitive historical suggestions, assert normalized uniqueness and decide explicitly whether migration placeholders such as `Uncategorized` belong in suggestions. Currency assertions should tolerate locale-inserted whitespace (for example `Rp 12.000` versus `Rp12.000`) while remaining scoped to the intended element and numeric value.
+
+## Read-only UI verification in shared application shells
+
+A read-only route can legitimately live inside a shell that still contains global controls such as theme, role, demo-state, navigation-toggle, or reset buttons. Do not assert that the entire rendered document has no buttons; that confuses shell controls with feature mutations and creates a false failure. Scope the negative assertion to the route's semantic boundary (`main`, a named region, or the catalog container), and separately assert that forbidden feature actions and navigation links—create, edit, archive, checkout, payment, availability changes—are absent. Pair this with positive assertions for every read-only datum that must remain visible, including unavailable/sold-out records when the requirement says to show availability rather than filter it.
+
+For a catalog resolved from session state, test both resolver branches at the rendered route: the default catalog and the active override/experiment catalog. Assert current-version fields are used, archived records are absent, privacy-filtered metadata excludes hidden entries, bundle/component labels resolve against the same session catalog, and no mutation controls occur inside the route content. Include loading, empty, and error states when the shared demo/application state already supports them; reuse that native state mechanism rather than adding route-specific state machinery.
 
 ## Test-run artifact hygiene
 
@@ -258,6 +329,10 @@ For manager-request/admin-approval session workflows, also read `references/sess
 For admin create/edit forms, verify dirty-state behavior across the actual navigation surfaces, not only the form component: pristine forms must leave without prompting; changed forms must prompt on breadcrumb, cancel, dashboard tab/link navigation, and browser unload; successful saves must clear the guard. Nested image or package controls may mutate state outside ordinary text-input events, so test their dirty-state propagation explicitly. If a navigation item must be hidden, inspect and assert every navigation provider (for example both a horizontal tab list and a workspace/sidebar builder) while preserving the route unless deletion was requested. Native numeric input attributes are UX only: mirror integer, money, and quantity limits in frontend submit validation and the current API boundary, with tests at the maximum and one value above it.
 
 ## Public authenticated role-matrix E2E
+
+### Route-derived role synchronization
+
+When testing client-side capability guards, inspect any effect that derives the active role from the URL before trusting denial tests. A deep link such as `/admin/...` can silently switch a kitchen/display/member session to admin, making the guard authorize the page it was meant to reject. Keep URL-to-role synchronization limited to legitimate workspace navigation, never let a privileged route promote a least-privileged active role, and verify denied deep links retain the original role while rendering no privileged mutation controls. Test both the denial heading and absence of the action; either assertion alone can miss role promotion or accidental component rendering.
 
 When completion requires multiple deployed roles (for example Owner/Admin/Member), use a dedicated isolated tenant and run the full matrix through the public UI. Navigate to each feature's actual surface before asserting visibility, use exact/scoped semantic locators to avoid table/detail strict-mode ambiguity, and classify wrong-surface or ambiguous-locator failures as harness defects that require correcting and rerunning the whole matrix—not as product failures or permission to skip coverage. See `references/public-role-matrix-e2e-harness.md` for fixture, assertion, screenshot, cleanup, and status discipline.
 

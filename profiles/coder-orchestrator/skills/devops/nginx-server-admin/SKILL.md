@@ -183,6 +183,21 @@ sudo rm -rf /var/www/html/<slug>   # if an old domain-specific build dir exists
 - `sub_filter_types text/html` may produce a harmless warning about duplicate MIME types if multiple projects use it — this is safe to ignore.
 - Never redirect the domain root to `/projects/<slug>/`. The user wants clean URLs.
 
+## Renaming a Path-Mounted Static Project
+
+Treat a rename as an identity and routing cutover, not merely a directory move:
+
+1. Begin from a clean Git state and inventory the old slug in source metadata, visible branding, browser-storage namespaces, build/test scripts, deployment paths, and nginx.
+2. Rename source/package/product identity first. If the repository directory moves, immediately switch every later tool call to the new working directory.
+3. Build with the new Vite base and assert generated HTML contains the new prefix and no old slug before deployment.
+4. Deploy with `rsync --delete` only to the new project leaf; never target the shared `/projects/` parent.
+5. Replace nginx's exact-slash redirect, alias, and SPA fallback together. Preserve literal `$uri` with a quoted script or payload, then read the resulting block back before `nginx -t`.
+6. Make the old URL policy explicit. For a true replacement, add exact and prefix `404` rules for the old slug; redirect only when backward compatibility is requested.
+7. Verify separately: new HTML, referenced JS/CSS MIME types, deep-link fallback, browser-visible title/brand, client routing under the new basename, and terminal behavior of both old root and old deep paths.
+8. Remove the old deployment leaf only after the new public route passes. Commit source changes separately from runtime nginx state and report honestly when no Git remote exists.
+
+Use a unique cache-busting query for public HTML and search both source and generated output for the old slug; a successful new root request alone does not prove the identity cutover is complete.
+
 ## Adding a New Project Route
 
 To serve a new project under `/projects/<slug>/`:
@@ -282,6 +297,7 @@ Restore all missing leaf deployments, narrow any domain vhost rooted at the shar
 
 ## References
 
+- See `references/static-spa-canonical-rename.md` for the full source/package/nginx/deployment/public-E2E checklist when both a project name and `/projects/<slug>/` URL change.
 - See `references/prefix-mounted-single-binary-deployment.md` when one binary embeds the SPA and natively mounts UI + API at the same public prefix; it covers no-strip proxying, Cloudflare redirect-cache diagnosis, scoped-cookie verification, CSRF rotation, and safe SMTP capture for public E2E.
 - See `references/oracle-cloud-security-list.md` for step-by-step instructions to open a port in the OCI Security List (the network-level firewall that cannot be configured from the server).
 - See `references/single-build-subfilter.md` for the full code patches, nginx sub_filter config, and verification steps for the single-build domain + path deployment pattern (the current preferred approach).

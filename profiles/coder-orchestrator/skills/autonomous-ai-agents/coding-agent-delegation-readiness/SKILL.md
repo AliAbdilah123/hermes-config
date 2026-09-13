@@ -52,7 +52,10 @@ For a direct quota question, inspect the quota authority the user names first (f
 
 Report only models and quota values actually confirmed by the authoritative CLI, API, or dashboard. Do not infer a full catalog or allowance from one active model or config file.
 
-Provider-specific 9Router quota probing notes are in `references/9router-quota-checks.md`.
+Provider-specific references:
+
+- Quota probing: `references/9router-quota-checks.md`
+- Codex custom-provider routing, stale dashboard-applied model IDs, authentication, compatibility errors, secret-safe fingerprint probes, and verification: `references/9router-codex-provider-setup.md`
 
 ## Execution handoff
 
