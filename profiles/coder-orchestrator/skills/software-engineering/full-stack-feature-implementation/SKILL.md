@@ -9,7 +9,7 @@ Use this skill for real full-stack implementation backed by execution evidence.
 
 ## Focused UI and embedded-build verification
 
-References: [delivery](references/), [acceptance audit](references/acceptance-contract-audit.md), [async private AI uploads](references/async-private-ai-upload-delivery.md), and [ordered milestones](references/ordered-milestone-delivery.md). Verify source, served assets, upstream state, authorization, and acceptance coverage.
+References: [delivery](references/), [acceptance](references/acceptance-contract-audit.md), [uploads](references/async-private-ai-upload-delivery.md), [milestones](references/ordered-milestone-delivery.md), and [versioned variations](references/versioned-product-variation-workflows.md). Verify source, served assets, upstream state, auth, and acceptance.
 
 When the repository is already dirty, isolate the feature by exact paths: inventory first, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 

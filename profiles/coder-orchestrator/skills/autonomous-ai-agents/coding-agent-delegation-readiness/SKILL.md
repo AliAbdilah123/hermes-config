@@ -59,6 +59,23 @@ Provider-specific references:
 
 ## Execution handoff
 
+Before promising the delivery boundary, preflight the repository as well as the coding CLI:
+
+1. Record the current branch, `HEAD`, dirty/untracked paths, and configured remotes.
+2. Classify untracked plan/review artifacts created during planning as task-owned; preserve them across branch creation and stage them explicitly rather than treating them as unrelated dirt.
+3. Verify remote **write access**, not merely that a remote URL exists, before promising a push. Use a non-mutating permission check where the host supports one; otherwise state that push access is unverified until the actual push. If unavailable, report the boundary early but continue local implementation, verification, commit, and authorized deployment where possible.
+4. Create the feature branch from the intended integration base only after baseline ownership is clear.
+
+### Event-driven long-running handoffs
+
+For bounded coding-agent jobs, launch them in the background with the runtime's one-shot completion notification enabled, then end the active turn. Do not repeatedly poll or block waiting for completion; let the completion event re-enter the conversation and trigger review/finalization. Inspect logs or send input only when the user asks, an explicit intervention signal arrives, or the agent is known to require input.
+
+A process handle proves only launch. A completion notification proves exit, not correctness: after it arrives, independently inspect the diff and commit, run fresh scoped tests, and verify push/deploy state.
+
+When a requested model identifier fails, do not normalize or strip catalog/provider prefixes speculatively. Probe the CLI's configured/default model, read the exact identifier it reports, then retry once with that exact identifier and requested reasoning level.
+
+If the user reports that the same CLI works manually, treat that as strong evidence of an invocation/environment mismatch before diagnosing credentials. Compare the automated and manual contexts without exposing secrets: `type -a`/resolved binary, effective top-level model and provider config, HOME/XDG paths, relevant environment-variable **names**, local router listener/catalog, and exact CLI flags. Preserve catalog prefixes such as `cx/`: with a local router they can select the credential pool, while overriding with an unqualified `gpt-*` ID can deterministically route to another provider and produce a misleading “no active credentials” response. Reproduce the working manual route before changing auth or asking the user to reauthenticate.
+
 For implementation prompts include:
 
 - repository/workdir and project instructions,

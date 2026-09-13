@@ -18,6 +18,6 @@ Paragentix public link is https://app-dev.paragentix.com.
 §
 Komuna Sessions: Admin attendance separate; answers stay in Attendant disclosure. Simple product defaults None; owned vouchers save without checkout. If none owned, show ≤3 packages default None; Buy preserves draft/returns to edit; Checkout and save persists after payment.
 §
-Discord project defaults: #p-balikpapan-dev=balikpapan-dev; #p-light-pos=Light POS unless stated otherwise.
+Discord defaults: #p-balikpapan-dev=balikpapan-dev; #p-light-pos=Light POS; #p-ai-notes=ai-notes unless overridden.
 §
 Light POS: backend owns/stores receipt OCR; frontend uses same-origin prefill. Prefer archive. Auxiliary forms use accessible modals except New Order. Menu details: long press + keyboard equivalent. Tables: multi-select, unavailable visible/disabled. Expenses: required line items, computed total, expandable rows.
