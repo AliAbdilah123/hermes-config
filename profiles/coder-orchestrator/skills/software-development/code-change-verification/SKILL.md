@@ -310,6 +310,10 @@ Builds, package-manager invocations, browser tests, and end-to-end runners may r
 6. Finish with a direct foreground canonical test from the real package/module root after all cleanup. Require both fresh passing evidence and the expected clean/known-dirty status before committing or reporting completion.
 7. Recheck `git status` after commit or deployment so generated evidence is not accidentally presented as unrelated user work.
 
+## Fleet branch/worktree realignment
+
+When consolidating many branches and worktrees into a canonical branch, **commit ancestry is not behavior-preservation evidence**. A later conflict resolution can keep a feature commit reachable while silently replacing its implementation. Maintain a per-feature behavior ledger, rerun focused regressions after resolving high-churn files, inspect final source/diffs for distinctive behavior markers, and verify the exact deployed route or lazy chunk before pruning. Independently validate worker-reported unit names, listeners, SHAs, and deployment details rather than trusting summaries. See `references/fleet-branch-realignment-behavior-preservation.md` for the full sequence and pruning gate.
+
 ## Concurrent shared-checkout commits
 
 A shared checkout may advance or become dirty while verification and deployment are in progress. Treat this as normal concurrency, not permission to absorb or erase another worker's changes. Record the baseline SHA before launching any autonomous coding CLI, even when its prompt says not to commit or push. After it exits, compare `HEAD`, the tracked remote, and that baseline before inspecting only `git diff`: an autonomous commit can make the working tree look clean while hiding both intended changes and scope creep in history. If this happened, review the full baseline-to-HEAD range, preserve the implementing commit, and apply a narrow corrective commit rather than resetting shared history.

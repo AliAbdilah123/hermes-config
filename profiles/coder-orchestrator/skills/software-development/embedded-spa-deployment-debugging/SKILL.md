@@ -54,3 +54,5 @@ See `references/go-embedded-link-visibility.md` for a concise command recipe and
 See `references/go-embedded-spa-stale-runtime.md` for the stale-binary evidence pattern, correct frontend→Go build→restart sequence, and hash-based local/public verification.
 
 See `references/safe-pull-rebuild-restart.md` for dirty-worktree handling, semantic stash comparison, rebuilding the executable named by systemd, readiness polling, and local/public verification.
+
+See `references/static-spa-cache-safe-deployment.md` when fresh browsers render but some clients see a blank page after a hashed-asset deployment. It covers previous-generation asset probes, SPA-fallback MIME traps, immediate restoration, HTML cache policy, and compatibility-window cleanup.
