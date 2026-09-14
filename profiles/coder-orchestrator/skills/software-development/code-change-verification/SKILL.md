@@ -22,7 +22,7 @@ Before the first commit, push, or completion report, confirm the workspace has *
 4. If code changes after a check, rerun the affected verification. Earlier output is stale evidence.
 5. Capture fresh passing evidence before committing or reporting completion; do not rely on a build alone when the changed behavior needs a focused assertion.
 6. Report exactly what ran and what passed. Do not convert a targeted pass into a claim that the whole suite is green.
-7. Treat an autonomous coding agent's zero exit as a handoff, not evidence that its claimed checks passed. Inspect the final diff and rerun verification independently from the final workspace state.
+7. Treat an autonomous coding agent's zero exit as a handoff, not evidence that its claimed checks passed. Inspect the final diff and rerun verification independently from the final workspace state. Compare test-file size, test declaration counts, and runner totals against the recorded baseline: a green suite that became materially smaller is a failed handoff, especially when an agent replaced established regressions with a few new tests. Restore the baseline tests first, then adapt their shared harness to the new architecture; never accept deleted, skipped, or weakened assertions as migration work.
 8. When a broad lint/test suite fails, classify failures before editing: reproduce each claimed baseline failure with the same command or smallest equivalent test in a clean worktree at the recorded upstream baseline. Source inspection or the fact that a changed feature seems unrelated is not proof that a failure is pre-existing. Fix feature-caused regressions and report only reproduced baseline failures separately. Run changed-file lint and focused feature tests independently so unrelated global failures do not suppress useful evidence; never churn unrelated files just to force a global green result.
 9. For broad UI loading-state migrations, audit text mechanically across all relevant TSX/components, but verify by behavior class rather than file count: initial route loads, inline actions/buttons, pagination/search/upload, authenticated dashboard, privileged/admin routes, accessibility status labels, reduced-motion behavior, and layout-shift prevention. A build plus a zero-match text search is insufficient without representative focused tests and rendered public-route checks.
 
@@ -51,6 +51,8 @@ After replacing a service binary and restarting it, `systemctl is-active` is onl
 When the environment does not detect a canonical verification command, run a focused ad-hoc check even if you already found and ran a build command manually. Build evidence and a targeted behavioral assertion are complementary; one does not replace the other.
 
 A canonical test buried inside an `&&` chain or surfaced only through a background-process wait may produce human-readable green output without registering fresh workspace evidence. After the final edit and all lint/typecheck/build gates, run the canonical focused or full test as its own direct foreground command and require the tool result's `verification_evidence.status` to be `passed` before reporting completion. If the system still reports stale evidence, rerun directly rather than repeating the prior completion claim.
+
+When an explicit verification follow-up names commands, execute each named command directly and independently first; do not substitute a wrapper script as the first response. If the named package manager is unavailable, record that boundary, inspect the repository's lockfile/scripts, and run the repository-native equivalent (for example, `npm run lint` and `npm run build`) as separate foreground calls. Report command success as human-readable verification, but do not claim the workspace tracker registered a pass unless the tool result actually includes passing `verification_evidence`.
 
 If verification tracking is required or likely to classify ordinary commands as unverified, make the directly executed `/tmp/hermes-verify-*` script part of the pre-commit gate. Run it before committing, pushing, deploying, or claiming completion—not as a repair after the completion report. A manually executed suite can be human-readable evidence while the workspace verifier still has no registered evidence; when command detection is uncertain, default to the tracked script before commit. The script should invoke the focused behavior test and any proportionate compile/build check from the real package root. In monorepos or nested frontends, `cd` inside the script to the directory containing the relevant `package.json`, `go.mod`, or equivalent; verification from the repository root can miss the canonical project context. When workspace verification status is derived from the last recognized command, order multi-gate verification so a canonical test command runs last. A final build can otherwise leave the workspace classified as stale even though tests ran earlier; after all edits, finish with the focused or full test command and confirm the returned `verification_evidence` says `passed`.
 
@@ -298,13 +300,15 @@ For a catalog resolved from session state, test both resolver branches at the re
 
 ## Test-run artifact hygiene
 
-Browser and end-to-end test runners may rewrite tracked reports or create screenshots, traces, result directories, and HTML reports even when the product test passes. Before staging or reporting completion:
+Builds, package-manager invocations, browser tests, and end-to-end runners may rewrite lockfiles or tracked reports and create screenshots, traces, result directories, and HTML reports even when the product check passes. Before staging or reporting completion:
 
-1. Compare `git status` before and after verification.
-2. Restore only runner-generated changes that were clean at the start; never erase pre-existing dirty files.
-3. Prefer runner flags or configuration that suppress persistent reports for focused verification when available.
-4. Stage explicit product and regression-test paths rather than `git add .`.
-5. Recheck `git status` after commit or deployment so generated evidence is not accidentally presented as unrelated user work.
+1. Record `git status --short` before verification and compare it afterward.
+2. Restore only artifacts proven to have been generated by that verification command and clean at the recorded baseline; never erase pre-existing dirty files.
+3. Treat an unexpected lockfile rewrite as verification-side mutation, not automatically as a product change. Inspect it, restore it when unrelated, then rerun the final recognized test command because cleanup after a passing verifier can leave workspace evidence stale or the tree no longer identical to the tested state.
+4. Prefer frozen-lockfile/install-free commands and runner flags that suppress persistent reports when available.
+5. Stage explicit product and regression-test paths rather than `git add .`.
+6. Finish with a direct foreground canonical test from the real package/module root after all cleanup. Require both fresh passing evidence and the expected clean/known-dirty status before committing or reporting completion.
+7. Recheck `git status` after commit or deployment so generated evidence is not accidentally presented as unrelated user work.
 
 ## Concurrent shared-checkout commits
 
@@ -395,7 +399,8 @@ When resolving emitted asset URLs from generated HTML, avoid brittle regexes tha
 
 When an authenticated browser flow reaches the expected page but fails on a locator or harness API, classify the boundary before editing product code:
 
-1. Inspect the rendered form's actual accessible labels and stable IDs. Regex locators such as `/Nama/i` can match both “Nama” and “Nama bisnis”; use exact accessible names or stable DOM IDs when labels overlap.
+1. Treat locators captured before a React route/data-context transition as potentially stale when that transition can remount the shell. Re-query the labeled control inside each loop iteration before selecting or asserting; a locator valid before the first tenant/workspace switch may point at a detached element and cause a false timeout on the next switch.
+2. Inspect the rendered form's actual accessible labels and stable IDs. Regex locators such as `/Nama/i` can match both “Nama” and “Nama bisnis”; use exact accessible names or stable DOM IDs when labels overlap.
 2. Confirm the assertion API belongs to the active runner. Playwright `Page` does not expose Testing Library helpers such as `getByDisplayValue`; use `locator(...).inputValue()` or the runner's native equivalent.
 3. Treat a locator timeout after successful navigation as harness evidence, not proof that the product flow failed. Correct the harness and rerun the complete flow with a fresh identity when auth state may have changed. Before replaying, determine whether the prior run already committed a side effect; avoid creating duplicate records merely to repair a final assertion. If the requested mutation already succeeded, verify the missing terminal invariant through the real API and runtime database (including ownership/status and `PRAGMA integrity_check`) and rerun only the missing browser assertion when practical.
 4. Classify console/network errors by request and expected state. A `401` from session bootstrap before login or an explicit session probe after logout is an expected auth boundary, not a console-cleanliness regression. Require each ignored `401` to correspond to a deliberately asserted unauthenticated request; unexpected `401`s during authenticated steps remain hard failures.

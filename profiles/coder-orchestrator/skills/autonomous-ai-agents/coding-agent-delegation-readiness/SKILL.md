@@ -18,7 +18,9 @@ Use when a user requires implementation through a named external coding CLI/mode
 3. Run a cheap one-line probe using the **exact requested model, reasoning variant, and service/speed tier**.
 4. Treat login and model-cache presence as insufficient: an authenticated account may have exhausted quota.
 5. Only tell the user the agent is working after startup output confirms the model accepted the task. A background process handle proves only that a process launched.
-6. If preflight fails, report the concrete blocker immediately and offer verified alternatives; do not launch the full task first.
+6. Preserve router catalog prefixes exactly (for example, `cx/gpt-*`) in both the readiness probe and full launch. A bare downstream model name can select a different provider or credential pool even when the prefixed catalog entry is healthy.
+7. If a preflight or wrong-route launch fails, verify the repository still has the expected branch, unchanged `HEAD`, and no new dirty paths before retrying. Report the corrected route rather than presenting a transient routing failure as an implementation failure.
+8. If preflight fails, report the concrete blocker immediately and offer verified alternatives; do not launch the full task first.
 
 Example readiness probe pattern:
 

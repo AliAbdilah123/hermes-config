@@ -297,6 +297,9 @@ Restore all missing leaf deployments, narrow any domain vhost rooted at the shar
 
 ## References
 
+- See `references/fleet-wide-git-realignment-and-deployment.md` for the end-to-end orchestrator pattern: nginx-driven discovery, bounded parallel batches, conservative branch/worktree pruning, distrust-and-verify handling of worker summaries, final fleet probes, and status reporting.
+- See `references/canonical-main-realignment-and-deployment.md` when completed work is stranded on stacked task branches while a stale `main` also backs a live systemd/nginx deployment; it covers dirty-work preservation, non-rewriting integration, runtime backup, exact-target deployment, remote validation, and conservative ref cleanup.
+- See `references/nginx-application-inventory-and-realignment.md` for fleet-wide “every remaining app” work: exhaustive `nginx -T` classification, monorepo identity checks, API-only route handling, canonical-branch rules, exact-target deployment, and a no-route-skipped report.
 - See `references/static-spa-canonical-rename.md` for the full source/package/nginx/deployment/public-E2E checklist when both a project name and `/projects/<slug>/` URL change.
 - See `references/prefix-mounted-single-binary-deployment.md` when one binary embeds the SPA and natively mounts UI + API at the same public prefix; it covers no-strip proxying, Cloudflare redirect-cache diagnosis, scoped-cookie verification, CSRF rotation, and safe SMTP capture for public E2E.
 - See `references/oracle-cloud-security-list.md` for step-by-step instructions to open a port in the OCI Security List (the network-level firewall that cannot be configured from the server).

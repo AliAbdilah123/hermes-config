@@ -5,6 +5,10 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 # SocialZen Project
 
+## Repository and deployment realignment
+
+When multiple Scheduling-Post/SocialZen checkouts, branches, legacy product ports, and live services must be reconciled, follow `references/repository-lineage-and-live-realignment.md`. It covers clean integration worktrees, explicit local-main-to-remote-master pushes, keeping Brand Organizer distinct despite shared Git ancestry, exact binary/static deployment, prefix-base and MIME verification, and conservative cleanup.
+
 ## Plan approval and implementation handoff
 
 For shared Regular Post / Project composer changes, follow `references/post-project-flow-verification.md` for title-boundary, dirty-worktree, deployment, and lazy-route verification details.
