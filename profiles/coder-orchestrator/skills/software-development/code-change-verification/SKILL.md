@@ -401,6 +401,8 @@ When resolving emitted asset URLs from generated HTML, avoid brittle regexes tha
 
 ## Browser harness failures versus product failures
 
+For SvelteKit-specific cases where SSR renders but handlers do not hydrate, client navigation changes the URL without replacing content, or stale Vite listeners confuse local E2E, follow `references/sveltekit-hydration-and-preview-process-triage.md`. It covers direct-route isolation, Svelte 5 bindable fallback mismatches, orphaned Vite children, fresh builds, and `--strictPort` listener verification.
+
 When an authenticated browser flow reaches the expected page but fails on a locator or harness API, classify the boundary before editing product code:
 
 1. Treat locators captured before a React route/data-context transition as potentially stale when that transition can remount the shell. Re-query the labeled control inside each loop iteration before selecting or asserting; a locator valid before the first tenant/workspace switch may point at a detached element and cause a false timeout on the next switch.
