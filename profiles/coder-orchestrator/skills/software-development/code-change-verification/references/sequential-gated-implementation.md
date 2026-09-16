@@ -25,6 +25,7 @@ For each item:
 - Keep unrelated pre-existing files untouched.
 - At each boundary, review `git status`, `git diff --stat`, and `git diff --check` so scope growth is visible.
 - Do not commit intermediate items unless the delivery contract requests checkpoints. A final commit may contain all gated items after final integrated verification.
+- If a delegated coding agent stops mid-milestone because of quota, provider, or transport limits after modifying files, treat the workspace as an untrusted partial handoff—not as a clean delegation failure. Inspect status/diff first, run the smallest focused test to locate the incomplete boundary, then continue directly or discard only clearly task-owned broken edits. Independently rerun the whole milestone gate afterward.
 
 ## Final gate
 
@@ -33,3 +34,5 @@ After all implementation items pass individually, run the complete integrated su
 ## Status language
 
 Use **WORKING** only while execution is active. If interrupted, report **STOPPED** with the exact current gate. Use **READY** only after required public authenticated E2E passes.
+
+When the user requests lower token usage, keep progress messages to one short line containing only the active phase, concrete blocker, or passed gate. Skip routine polling narration and repeated command details; reserve concise evidence for the final report.
