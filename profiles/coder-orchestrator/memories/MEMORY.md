@@ -1,6 +1,6 @@
-Project roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna; TemuBisnis ~/projects/temubisnis; Light POS ~/projects/light-pos.
+Roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna; TemuBisnis ~/projects/temubisnis; Light POS ~/projects/light-pos; #p-social-notes ~/projects/social-media-note-taking-app, web /projects/social-notes/.
 §
-For this user's projects, `.env` and `sqlite.db` are placed in each project's directory/root unless specified otherwise.
+Projects use root `.env` and `sqlite.db` unless specified.
 §
 Public endpoint: dev.ahsanworks.com; nginx HTTP/HTTPS. OCI Security List controls new ports. See nginx-server-admin.
 §
@@ -18,6 +18,6 @@ Paragentix public link is https://app-dev.paragentix.com.
 §
 Komuna Sessions: Admin attendance separate; answers stay in Attendant disclosure. Simple product defaults None; owned vouchers save without checkout. If none owned, show ≤3 packages default None; Buy preserves draft/returns to edit; Checkout and save persists after payment.
 §
-Discord defaults: #p-balikpapan-dev=balikpapan-dev; #p-light-pos=Light POS; #p-ai-notes=ai-notes unless overridden.
+Discord: #p-balikpapan-dev=balikpapan-dev; #p-light-pos=Light POS; #p-ai-notes=ai-notes.
 §
 Light POS: backend owns/stores receipt OCR; frontend uses same-origin prefill. Prefer archive. Auxiliary forms use accessible modals except New Order. Menu details: long press + keyboard equivalent. Tables: multi-select, unavailable visible/disabled. Expenses: required line items, computed total, expandable rows.
