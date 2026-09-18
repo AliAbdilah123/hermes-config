@@ -91,6 +91,38 @@ Plan for:
 
 Do not add a queue until measured acknowledgement or retry behavior requires asynchronous processing.
 
+## Dedicated inbox configuration boundaries
+
+Keep the app-owned receiving account separate from user routing identities:
+
+- Store the dedicated inbox in an app-level integration record (for example, `instagram_integration`), not in `social_identities`.
+- The integration record owns the provider account ID, username, encrypted or prototype-null token, status, and timestamps.
+- `social_identities` owns each app user's pending/active sender identity and stable provider sender ID.
+- A real integration spans both sides: the provider app authorizes and subscribes the professional receiving account, while the backend records which account is authoritative.
+- Keep app secrets and webhook verification tokens in environment configuration. Keep account identity and renewable credentials in the database unless explicitly designed otherwise.
+- A webhook verification token is an application-generated random secret; a production account/user ID is provider-issued and must not be invented.
+- A simulated prototype needs neither real scopes nor OAuth/webhook environment configuration. Seed an unmistakable prototype integration record and replace it in the real-provider phase.
+
+## Verification-code prototype
+
+A minimal safe prototype flow is:
+
+`register username → pending identity → display short-lived one-time code → simulate DM → bind stable sender ID → active`
+
+Requirements:
+
+- Return and visibly display plaintext only when generating the code; persist a secure hash, expiry, and consumption state.
+- Regeneration invalidates the previous code. Ten minutes is a reasonable default lifetime.
+- Atomically match an unexpired, unused code and bind the incoming stable sender ID.
+- Do not create a note from the verification message unless explicitly requested.
+- After activation, route only by stable sender ID, never username.
+- Deduplicate later messages by external message/event ID and test cross-user isolation.
+- No admin approval is needed unless moderation is explicitly requested.
+
+## Clarification and execution sequencing
+
+When configuration questions precede implementation approval, answer them directly first and explicitly confirm that no changes were made. Separate real-integration requirements from simulated-prototype requirements so environment variables are not presented as prototype prerequisites. Once the user explicitly says to proceed, that is the implementation command; do not wait for another authorization. If asked whether work has started, state the current execution status first, then summarize scope briefly.
+
 ## Scope discipline
 
 - Keep platform-specific handlers until a second integration exists.
@@ -114,6 +146,15 @@ Include:
 - an explicit implementation gate when approval is required.
 
 For a worked decision checklist and acceptance matrix, see `references/identity-routing-checklist.md`.
+
+## Subpath deployment and E2E traps
+
+For a social-inbox SPA mounted below a path prefix:
+
+- Build with the production base path and verify the deployed HTML points JS/CSS at that prefix. A root-base build may return HTTP 200 while failing to hydrate because assets are requested from `/_app/...` instead of the mounted path.
+- After correcting the base, rerun the full authenticated workflow; asset transport checks are not feature evidence.
+- Do not let a loose navigation regex match the project slug. For example, `/notes/` also matches `/projects/social-notes/login`. Match the exact route boundary via `URL.pathname`, then assert authenticated chrome or a protected API response before continuing.
+- For two-user routing E2E, create unique users, visibly capture each code, activate distinct stable sender IDs, deliver and redeliver external message IDs, assert each user sees only their own note, then remove fixtures and require zero residual rows plus database integrity.
 
 ## Pitfalls
 

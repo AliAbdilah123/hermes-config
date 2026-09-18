@@ -56,3 +56,5 @@ See `references/go-embedded-spa-stale-runtime.md` for the stale-binary evidence 
 See `references/safe-pull-rebuild-restart.md` for dirty-worktree handling, semantic stash comparison, rebuilding the executable named by systemd, readiness polling, and local/public verification.
 
 See `references/static-spa-cache-safe-deployment.md` when fresh browsers render but some clients see a blank page after a hashed-asset deployment. It covers previous-generation asset probes, SPA-fallback MIME traps, immediate restoration, HTML cache policy, and compatibility-window cleanup.
+
+See `references/sveltekit-static-subpath-build-base.md` when a SvelteKit static SPA returns HTML but stays blank under an Nginx subpath. It distinguishes a source defect from a deployment-build invocation that omitted `BASE_PATH`, and defines emitted-HTML, asset-MIME, and rendered-browser gates.
