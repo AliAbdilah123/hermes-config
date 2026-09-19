@@ -16,6 +16,7 @@ Use when debugging or implementing:
 See `references/error-transcripts.md` for raw error messages and reproduction recipes.
 See `references/instagram-insights-api.md` for the Instagram Insights endpoint (reach, impressions, saves).
 See `references/instagram-account-discovery-and-dedicated-inbox-triage.md` when username search is absent or verification displays the wrong dedicated inbox; it covers prototype-route detection, runtime config precedence, seeded placeholders, and Meta discovery limits.
+See `references/instagram-business-discovery-confirmation-preflight.md` when username search must show an account-confirmation step before issuing a code; it covers stable-ID revalidation, no-create-before-confirm browser assertions, token error 190 triage, and live-DB fixture cleanup.
 See `references/instagram-login-verification-replies.md` when extending an existing DM verification flow with a success reply and backend-driven status feedback; it covers Instagram Login token/endpoint separation, local send-attempt deduplication, exactly-once limits, UI states, and scope discipline.
 
 ## Facebook OAuth Scopes

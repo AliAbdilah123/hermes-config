@@ -62,6 +62,18 @@ When planning around a partially implemented downstream module, do not infer run
 - Sequence rollout as backup → grouped legacy counts → migration → integrity/foreign-key checks → authenticated list/detail smoke tests. Never use a repository-local database as proof of the deployed database's state.
 - When a uniqueness constraint protects conversion, plan both an explicit transactional pre-check that returns the existing record ID for actionable UX and the database constraint as the race-safe backstop.
 
+## Account-linking workflow boundary
+
+When the workflow links a user-entered social username to a provider account:
+
+- Inspect both lookup and create/connect paths; a profile preview does not protect the flow if typed text can still be submitted directly.
+- Model separate states for entry, lookup, review, explicit confirmation/rejection, and ownership verification.
+- Bind confirmation to the provider's stable account ID and revalidate that ID plus normalized username server-side before persistence.
+- Keep account selection and ownership proof distinct: profile preview confirms intent; OAuth, provider DM/code, or an equivalent challenge proves control.
+- The rejection and mismatch paths must create no pending record or verification secret, clear stale selection, and support another search.
+- Plan accessible loading, empty, unavailable-provider, provider-failure, image-fallback, keyboard, and mobile states.
+- Prefer the existing lookup and ownership-verification infrastructure over adding dependencies, schema, or OAuth unless the current proof mechanism is insufficient.
+
 ## Key pitfalls
 
 - Never duplicate the canonical entity; reports are historical snapshots, not canonical copies.
