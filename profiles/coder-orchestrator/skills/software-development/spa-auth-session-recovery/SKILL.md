@@ -17,6 +17,18 @@ Use when an SPA still appears signed in while multiple unrelated protected pages
 6. **Keep unexpected failures observable.** Suppress only the expected recovery 401 during root bootstrap; continue reporting network, 5xx, and unrelated failures.
 7. **Verify both halves publicly.** Prove stale-state recovery and a subsequent valid login at the exact production origin.
 
+## Auth and application surfaces visible together
+
+When login succeeds and authenticated dashboard data renders, but the login/register panel remains visible above it, inspect computed styles and the CSS cascade before changing session logic. An author rule such as `.auth { display: grid }` can override the browser's native `[hidden] { display: none }` even when JavaScript correctly sets `element.hidden = true`.
+
+Prefer one global native-state invariant:
+
+```css
+[hidden] { display: none !important; }
+```
+
+Add a focused regression assertion for that rule. Then verify in a real authenticated browser that the auth container computes to `display: none`, the app container is visible, and no page errors occur. A screenshot showing both surfaces is strong evidence of a CSS visibility defect, not necessarily failed authentication.
+
 ## Guardrails
 
 - Do not patch Prospect, Offers, CRM, or other page components separately when they share the same API client.

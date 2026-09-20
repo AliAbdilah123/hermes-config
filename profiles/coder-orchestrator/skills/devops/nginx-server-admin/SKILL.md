@@ -297,6 +297,7 @@ Restore all missing leaf deployments, narrow any domain vhost rooted at the shar
 
 ## References
 
+- See `references/wrong-healthy-upstream.md` when a public route reaches a healthy listener belonging to the wrong application; it covers exact-route capture, port/process ownership, service-specific response fingerprints, minimal proxy correction, and authenticated public verification without manufacturing a source commit.
 - See `references/fleet-wide-git-realignment-and-deployment.md` for the end-to-end orchestrator pattern: nginx-driven discovery, bounded parallel batches, conservative branch/worktree pruning, distrust-and-verify handling of worker summaries, final fleet probes, and status reporting.
 - See `references/canonical-main-realignment-and-deployment.md` when completed work is stranded on stacked task branches while a stale `main` also backs a live systemd/nginx deployment; it covers dirty-work preservation, non-rewriting integration, runtime backup, exact-target deployment, remote validation, and conservative ref cleanup.
 - See `references/nginx-application-inventory-and-realignment.md` for fleet-wide “every remaining app” work: exhaustive `nginx -T` classification, monorepo identity checks, API-only route handling, canonical-branch rules, exact-target deployment, and a no-route-skipped report.

@@ -1,7 +1,7 @@
 # "The bot isn't responding in this channel" — triage
 
-Three different root causes present with the same complaint. Check them in
-order; the fix for (2) and (3) is **not** editing `allowed_channels`.
+Four different root causes present with the same complaint. Check them in
+order; the fix for (2), (3), and (4) is **not** editing `allowed_channels`.
 
 ## 1. Channel/thread genuinely not whitelisted
 
@@ -49,6 +49,38 @@ the SKILL.md workaround section.
 - The user posted in the **parent channel** while only
   `parent:thread` is whitelisted (or vice versa). The two are distinct
   entries; add both if the bot should answer in each.
+
+## 4. The bot replied — but into an auto-created thread (verified case)
+
+With `auto_thread: true`, a long reply to a message in a regular channel is
+posted as a **new thread attached to that message**, not inline in the
+channel. The user sees no response next to their post and reports "the bot
+didn't reply", even though the gateway processed everything correctly.
+
+How to confirm in `~/.hermes/logs/agent.log` (default profile) or the
+profile's `logs/agent.log`:
+
+```
+gateway.run: response ready: platform=discord chat=<NEW_THREAD_ID> time=…s …
+gateway.platforms.base: [Discord] Sending response (N chars) to <NEW_THREAD_ID>
+hermes_plugins.discord_platform.adapter: [Discord] Renamed Discord thread
+  <NEW_THREAD_ID> from '<first message text>' to '<generated title>'
+```
+
+The `chat=` id being a **thread id that didn't exist before the turn**, plus
+the rename line, is the signature. Cross-check with
+`discord(action='fetch_messages', channel_id=<THREAD_ID>)` — the bot's reply
+is in there.
+
+Nothing is broken, so do **not** edit config or restart the gateway. Options
+to present to the user:
+
+1. Point them to the thread (it's attached to their message in the channel —
+   look for the thread indicator).
+2. Post a short inline reply in the parent channel linking to the thread.
+3. If inline replies are wanted for that channel, set `auto_thread: false`
+   in the profile's `discord` block (both source and runtime configs —
+   see `references/config-sync.md`), then restart the gateway.
 
 ## Reading the channel directory correctly
 
