@@ -11,6 +11,8 @@ Use for exposing paths, fixing 404s under `/projects/`, `/prds/`, or other nginx
 
 - **Komuna prototype deployments**: for `/projects/komuna/` prefix, `sub_filter` rewrites, and full-copy deploy semantics, see `komuna-prototype-deployment`.
 - `references/config.md` — session-specific nginx + PHP-FPM layout on this host, alias pitfalls, `shell_exec` permission requirements, and current project-to-port proxy map.
+- `references/static-doc-pages.md` — publishing standalone styled HTML doc/note pages (password gate + mermaid) under an existing `/projects/<name>/` alias, the `write_file` 0600 → 403 pitfall, and node-based verification when the browser stack is down.
+- `templates/password-gated-note.html` — known-good skeleton for a public-URL page with client-side SHA-256 password gate, sessionStorage re-auth, and mermaid v11 diagram rendering after unlock.
 
 ## Procedure
 
@@ -22,6 +24,7 @@ Use for exposing paths, fixing 404s under `/projects/`, `/prds/`, or other nginx
 
 ## Key pitfalls
 
+- **New static files can 403 despite correct dir perms**: tooling like `write_file` creates files `0600`; nginx (`www-data`) then denies. After dropping any new file under `/var/www/html/projects/`, `chmod 644` it. Tell: sibling files 200, new file 403, dir modes fine. Detail in `references/static-doc-pages.md`.
 - `alias` URIs must end with a slash when the location also ends with one.
 - Keep more-specific location blocks above generic prefixes.
 - A catch-all `return 404` can mask newly added project slugs.

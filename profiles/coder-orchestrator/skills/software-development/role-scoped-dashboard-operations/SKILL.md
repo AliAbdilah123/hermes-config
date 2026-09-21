@@ -126,6 +126,12 @@ Tests and builds are necessary but insufficient. Before calling operational dash
 
 If this exact E2E has not run, report **implemented but not publicly verified**, not **fixed**.
 
+## Product-specific admin views in inherited boilerplates
+
+When the requested dashboard is domain-specific but the repository contains a generic or orphaned SaaS admin shell, inspect the mounted entry point before choosing reuse. Reuse authentication and server authorization, but do not revive a broad unmounted runtime merely because it exists. Keep domain ledgers separate from generic billing records when their identities and lifecycle fields differ.
+
+Follow `references/domain-admin-mvp-in-boilerplate.md` for the inspection checklist, minimal read-only architecture, ordered delivery, migration rules, and the SPA-fallback API verification pitfall.
+
 ## Review-first boundary
 
 For broad operational redesigns, produce a role matrix and static review artifact before implementation. Clearly label it as static and keep an explicit implementation gate. A review link is not a functional preview link, and approval of the review does not authorize production deployment.

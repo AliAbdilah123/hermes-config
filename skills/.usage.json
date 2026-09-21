@@ -744,14 +744,14 @@
     "archived_at": null,
     "created_at": "2026-06-19T08:53:25.037243+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-07-21T07:45:12.698950+00:00",
-    "last_used_at": "2026-08-11T13:51:34.784596+00:00",
-    "last_viewed_at": "2026-08-11T13:51:34.774613+00:00",
-    "patch_count": 18,
+    "last_patched_at": "2026-09-20T13:09:48.442344+00:00",
+    "last_used_at": "2026-09-20T13:09:07.261730+00:00",
+    "last_viewed_at": "2026-09-20T13:09:07.256820+00:00",
+    "patch_count": 22,
     "pinned": false,
     "state": "stale",
-    "use_count": 28,
-    "view_count": 28
+    "use_count": 30,
+    "view_count": 30
   },
   "node-inspect-debugger": {
     "archived_at": null,
