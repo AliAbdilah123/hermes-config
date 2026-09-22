@@ -862,13 +862,13 @@
     "created_at": "2026-07-01T13:57:28.169093+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-09-21T14:46:48.806549+00:00",
-    "last_used_at": "2026-09-21T14:46:39.996217+00:00",
-    "last_viewed_at": "2026-09-21T14:46:39.990777+00:00",
+    "last_used_at": "2026-09-22T05:06:04.237122+00:00",
+    "last_viewed_at": "2026-09-22T05:06:04.231520+00:00",
     "patch_count": 30,
     "pinned": false,
     "state": "active",
-    "use_count": 58,
-    "view_count": 58
+    "use_count": 59,
+    "view_count": 59
   },
   "multi-agent-delivery-workflows": {
     "archived_at": null,
@@ -901,13 +901,13 @@
     "created_at": "2026-06-30T08:53:01.817776+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-09-20T12:41:40.592590+00:00",
-    "last_used_at": "2026-09-21T08:55:58.283478+00:00",
-    "last_viewed_at": "2026-09-21T08:55:58.251300+00:00",
+    "last_used_at": "2026-09-22T02:34:57.598516+00:00",
+    "last_viewed_at": "2026-09-22T02:34:57.593003+00:00",
     "patch_count": 62,
     "pinned": false,
     "state": "active",
-    "use_count": 116,
-    "view_count": 116
+    "use_count": 117,
+    "view_count": 117
   },
   "node-inspect-debugger": {
     "archived_at": null,
