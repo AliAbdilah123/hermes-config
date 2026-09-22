@@ -2,7 +2,7 @@ Fixes need authenticated public E2E. WORKING/VERIFYING=active; otherwise STOPPED
 §
 Small fixes: implement now. Complex work: plan first. Ordered plans: verify each item before starting the next; never defer failures.
 §
-Coding: Codex `cx/gpt-5.6-sol` medium owns implementation/build/E2E/finalization; announce delegation. Ask whether a new branch/worktree is needed. Create one only if unrelated to current active live work; otherwise continue its branch/worktree unless specified.
+Coding: delegate build/E2E to Codex `cx/gpt-5.6-sol` medium; announce. Ask before branch/worktree; reuse related active work, isolate unrelated work.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §
@@ -13,3 +13,5 @@ Komuna reports: verify WIB date; use that period only. Mondays include Friday pl
 Job UX: editable todos first; parallel columns, sequential jobs; history is grey text, not bubbles. Done/blocked replies requeue at todo end.
 §
 Paragentix: Job detail page and modal serve different purposes; never modify interchangeably.
+§
+User may lack VPS access; credential handoff must not require server shell. Never commit secrets.

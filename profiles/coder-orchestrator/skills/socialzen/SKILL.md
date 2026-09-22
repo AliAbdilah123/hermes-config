@@ -5,6 +5,12 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 # SocialZen Project
 
+## Instagram Login DM inbox integrations
+
+For Instagram Login permissions, account/token invariants, dedicated-inbox webhook filtering, owner fallback routing, regression coverage, and live-DM acceptance, follow `references/instagram-login-dedicated-inbox-routing.md`.
+
+When a named sender's DM is visible in Instagram but absent from the application database, separate Meta delivery/visibility from local routing and persistence using `references/instagram-provider-delivery-vs-local-persistence.md`. In particular, treat `200` with an empty Conversations API result as request acceptance—not proof that the thread is visible—and never count a signed synthetic webhook as provider-backed acceptance.
+
 ## Repository and deployment realignment
 
 When multiple Scheduling-Post/SocialZen checkouts, branches, legacy product ports, and live services must be reconciled, follow `references/repository-lineage-and-live-realignment.md`. It covers clean integration worktrees, explicit local-main-to-remote-master pushes, keeping Brand Organizer distinct despite shared Git ancestry, exact binary/static deployment, prefix-base and MIME verification, and conservative cleanup.

@@ -147,6 +147,8 @@ Include:
 
 For a worked decision checklist and acceptance matrix, see `references/identity-routing-checklist.md`.
 
+For tracing Meta Instagram `recipient.id` through runtime configuration, active-integration validation, fallback ownership, note insertion, and the distinction between synthetic routing proof and live provider delivery, see `references/meta-instagram-webhook-recipient-routing.md`.
+
 ## Subpath deployment and E2E traps
 
 For a social-inbox SPA mounted below a path prefix:

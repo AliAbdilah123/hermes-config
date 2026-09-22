@@ -19,6 +19,12 @@ Use when a workflow transition (CRM stage, order status, approval state, queue s
 8. Add one current-row transition regression and one historical-schema upgrade regression.
 9. Verify the runtime migration version and repaired row, then exercise the authenticated public browser transition and assert both response and persisted state.
 
+## Live persistence investigations
+
+When checking whether an external DM, webhook, poll result, or import was saved, first identify the SQLite file opened by the running service rather than assuming a repository-root `sqlite.db` is live. Inspect the service PID and resolve `/proc/<PID>/fd/*`; then confirm the discovered database has the expected schema and current production rows.
+
+Correlate destination configuration, exact payload text, sender/source identity, provider message ID when available, source-specific row counts, and runtime logs around the claimed event time. Report delivery/read evidence separately from persistence evidence: a missing row proves only that the event was not persisted in the inspected live database, not that the provider never delivered it or the application never fetched it. A running poller is not proof that a specific event was read.
+
 ## Principles
 
 - Backfill only rows that otherwise satisfy the trigger's invariant.
