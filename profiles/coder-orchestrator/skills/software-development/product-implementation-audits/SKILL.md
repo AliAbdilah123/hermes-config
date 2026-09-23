@@ -23,6 +23,8 @@ Do not count a page, component, table, route, type, or test name as implementati
 
 See [references/read-only-mvp-audit.md](references/read-only-mvp-audit.md) for the evidence ladder, exact status rubric, contradiction checks, compact row format, and completion-percentage guidance.
 
+For dedicated social or messaging inbox integrations, use [references/dedicated-account-messaging-audit.md](references/dedicated-account-messaging-audit.md). It covers inbox/service/end-user identity separation, runtime receiver wiring, webhook contracts, fallback ownership, live-provider evidence, and ignored-file secret hygiene.
+
 ## Reporting style
 
 When the user requests low token usage, keep citations exact and collapse repetitive requirements into compact tables. State audit/runtime limitations once, not under every row. Give details primarily for blockers, partial behavior, broken contracts, and architecture violations. Preserve the user’s required output order and exact labels.

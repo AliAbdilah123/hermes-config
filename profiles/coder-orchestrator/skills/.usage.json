@@ -173,13 +173,13 @@
     "created_at": "2026-07-23T03:23:44.812877+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-09-19T13:42:31.604285+00:00",
-    "last_used_at": "2026-09-22T10:38:41.414798+00:00",
-    "last_viewed_at": "2026-09-22T10:38:41.406273+00:00",
+    "last_used_at": "2026-09-23T06:54:18.177608+00:00",
+    "last_viewed_at": "2026-09-23T06:54:18.162674+00:00",
     "patch_count": 181,
     "pinned": false,
     "state": "active",
-    "use_count": 454,
-    "view_count": 454
+    "use_count": 455,
+    "view_count": 455
   },
   "codebase-inspection": {
     "archived_at": null,
@@ -446,13 +446,13 @@
     "created_at": "2026-06-25T05:56:09.348343+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-09-13T03:48:35.815224+00:00",
-    "last_viewed_at": "2026-09-13T03:48:35.810319+00:00",
+    "last_used_at": "2026-09-23T07:07:20.946557+00:00",
+    "last_viewed_at": "2026-09-23T07:07:20.938821+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 27,
-    "view_count": 27
+    "use_count": 28,
+    "view_count": 28
   },
   "github-issues": {
     "archived_at": null,
@@ -472,13 +472,13 @@
     "created_at": "2026-06-22T05:08:02.894036+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-08T02:22:49.316772+00:00",
-    "last_used_at": "2026-09-19T13:40:14.087564+00:00",
-    "last_viewed_at": "2026-09-19T13:40:14.081975+00:00",
+    "last_used_at": "2026-09-23T06:54:18.184910+00:00",
+    "last_viewed_at": "2026-09-23T06:54:18.171706+00:00",
     "patch_count": 11,
     "pinned": false,
     "state": "active",
-    "use_count": 60,
-    "view_count": 60
+    "use_count": 61,
+    "view_count": 61
   },
   "github-repo-management": {
     "archived_at": null,
@@ -862,13 +862,13 @@
     "created_at": "2026-07-01T13:57:28.169093+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-09-22T16:08:43.590672+00:00",
-    "last_used_at": "2026-09-22T16:08:28.710507+00:00",
-    "last_viewed_at": "2026-09-22T16:08:28.705217+00:00",
+    "last_used_at": "2026-09-23T02:30:11.679102+00:00",
+    "last_viewed_at": "2026-09-23T02:30:11.673836+00:00",
     "patch_count": 31,
     "pinned": false,
     "state": "active",
-    "use_count": 64,
-    "view_count": 64
+    "use_count": 65,
+    "view_count": 65
   },
   "multi-agent-delivery-workflows": {
     "archived_at": null,
@@ -1147,14 +1147,14 @@
     "archived_at": null,
     "created_at": "2026-08-10T14:41:53.584833+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-08-13T14:24:33.370871+00:00",
-    "last_used_at": "2026-09-20T12:19:09.806759+00:00",
-    "last_viewed_at": "2026-09-20T12:19:09.801267+00:00",
-    "patch_count": 2,
+    "last_patched_at": "2026-09-23T07:09:45.788228+00:00",
+    "last_used_at": "2026-09-23T07:09:11.719189+00:00",
+    "last_viewed_at": "2026-09-23T07:09:11.710143+00:00",
+    "patch_count": 4,
     "pinned": false,
     "state": "active",
-    "use_count": 9,
-    "view_count": 9
+    "use_count": 10,
+    "view_count": 10
   },
   "productivity:kanban-task-orchestration": {
     "archived_at": null,
