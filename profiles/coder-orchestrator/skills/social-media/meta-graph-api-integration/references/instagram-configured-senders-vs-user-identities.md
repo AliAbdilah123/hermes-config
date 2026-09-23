@@ -10,6 +10,19 @@ Use when a dashboard confuses a dedicated inbox, application-configured sender a
 
 Do not insert a configured sender into the user identity table merely to make it visible in Settings. That creates false ownership and bypasses verification. Instead, expose non-secret sender metadata from runtime configuration (normally username only) in an authenticated platform/settings response.
 
+## Role-first inspection before destructive account edits
+
+When a user asks what account/user is saved, or asks to clear a saved username and ID, do not infer the record's role from generic column names such as `username`, `user_id`, or `instagram_user_id`.
+
+1. Identify the table and trace how the application reads it.
+2. Classify the record as dedicated inbox, configured sender, or user social identity.
+3. Report the role and ask for clarification if “user account” is ambiguous before deleting or blanking anything.
+4. Check startup configuration: an `instagram_integrations` row may be restored from environment variables on restart, so direct database edits alone may be temporary or create env/DB drift.
+5. For a dedicated inbox, derive the canonical account ID from that inbox token's `/me` response and keep its username, token, owner, and active status together. Never substitute an ID copied from webhook `entry.id`, a Facebook Page, another token, or an ordinary sender.
+6. Clearing a dedicated inbox's username/ID disables receiver routing conceptually even if the token remains present; do not describe it as harmless “user data cleanup.”
+
+A dedicated inbox belongs in `instagram_integrations`; ordinary connecting accounts belong in `social_identities`. Preserve this boundary during inspection, cleanup, restoration, and UI explanations.
+
 ## Diagnosis when “I can’t add this sender”
 
 1. Trace the UI action. An “Add platform/account” flow may create a user identity, not manage the application sender pool.
