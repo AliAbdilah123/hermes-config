@@ -18,7 +18,9 @@ Do not count a page, component, table, route, type, or test name as implementati
 3. Extract the requirements into a checklist using the user’s exact requested classifications and report sections.
 4. Inspect schema, backend, frontend, permissions, tests, and cross-module contracts.
 5. Run only side-effect-free checks allowed by the request.
-6. Recheck working-tree status; never clean or alter pre-existing files.
+   - For split frontend/API systems, verify both development and production topology. A dev-server proxy does not prove the built or previewed app can reach the API. Build/preview the frontend, probe a representative API path on that origin, and inspect whether the backend serves static assets or an external reverse proxy is actually documented/configured.
+   - Separate product defects from prerequisites: code that advertises an unavailable feature or lacks deployment wiring is a confirmed product/architecture gap; absent credentials, public webhook ingress, provider subscriptions, or seeded operator data are environment/setup blockers unless the repository claims to provision them.
+6. Recheck working-tree status; never clean or alter pre-existing files. If an allowed build regenerates ignored artifacts, confirm tracked/untracked status is unchanged and report any pre-existing dirt explicitly.
 7. Produce a conservative report focused on actual behavioral gaps and MVP blockers.
 
 See [references/read-only-mvp-audit.md](references/read-only-mvp-audit.md) for the evidence ladder, exact status rubric, contradiction checks, compact row format, and completion-percentage guidance.

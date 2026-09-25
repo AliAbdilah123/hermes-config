@@ -1,9 +1,9 @@
 {
-  "last_report_path": "/home/ubuntu/.hermes/profiles/coder-orchestrator/logs/curator/20260917-094438",
-  "last_run_at": "2026-09-17T09:44:38.657899+00:00",
-  "last_run_duration_seconds": 1.082729,
-  "last_run_summary": "auto: 1 marked stale, 12 reactivated; llm: skipped (consolidation off)",
+  "last_report_path": "/home/ubuntu/.hermes/profiles/coder-orchestrator/logs/curator/20260924-102856",
+  "last_run_at": "2026-09-24T10:28:56.972135+00:00",
+  "last_run_duration_seconds": 2.611174,
+  "last_run_summary": "auto: 1 marked stale, 46 archived, 1 reactivated; llm: skipped (consolidation off)",
   "last_run_summary_shown_at": null,
   "paused": false,
-  "run_count": 13
+  "run_count": 14
 }
