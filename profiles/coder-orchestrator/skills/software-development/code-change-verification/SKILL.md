@@ -40,6 +40,19 @@ When a database row owns a private filesystem object, review failure ordering as
 
 Do not let green happy-path upload/download/delete tests substitute for this review. Independently inspect error paths after implementation; file lifecycle defects commonly survive full test/build suites until a database trigger, permission error, or I/O failure is forced.
 
+## Pull-and-restart deployments
+
+For requests to “pull all updates and restart,” treat source synchronization, artifact publication, and runtime restart as separate gates:
+
+1. Record branch/tracking state and existing untracked or modified files before pulling. Use a fast-forward-only pull when no merge was requested, and preserve unrelated runtime artifacts rather than cleaning the checkout.
+2. Fetch first and inspect the incoming commit/diff. Use changed paths to determine which artifacts require rebuilding, while still honoring an explicit request to restart the whole project.
+3. Discover runtime ownership instead of guessing: inspect systemd `ExecStart`/working directory for APIs and nginx configuration for static document roots. A repository build directory, long-running preview process, and publicly served static root may be three different things.
+4. Run canonical checks from each real package/module root, build the exact backend executable used by systemd, atomically install it, restart the unit, and poll its local health endpoint.
+5. Build frontend assets with the deployment base path explicitly set on that invocation, publish them to the discovered nginx root while deleting stale hashed assets, and restart any explicitly requested development/preview process separately. Do not mistake restarting a preview listener for publishing production static assets.
+6. Verify independently: local API health payload, service active timestamp/PID, local frontend listener when applicable, public HTML status and expected prefixed asset URLs, and local `HEAD ==` tracked remote. Report preserved pre-existing dirty files.
+
+If the incoming change is backend-only, a frontend rebuild may be operationally redundant; prefer skipping it unless “all” or “whole project” restart semantics, deployment policy, or uncertain coupling justify rebuilding. Keep the report precise about which artifact changed versus which components were merely restarted.
+
 ## Schema-migration and service-restart verification
 
 When a service has optional external integrations, classify startup configuration before making it fatal. Core failures (database unavailable, invalid schema, unsafe security configuration) should stop startup; a missing optional integration owner may degrade only that integration if it remains unassigned and no arbitrary-user fallback is possible. After clearing one fatal startup error, always inspect the fresh journal again: chained failures commonly reveal an occupied default port or a mismatch between runtime `HTTP_ADDR`, the bound listener, and nginx `proxy_pass`. Verify these as separate gates: exact `ExecStart` binary, persistent env file, local upstream health, public proxy health, authenticated state-changing flow, fixture cleanup, and database integrity.

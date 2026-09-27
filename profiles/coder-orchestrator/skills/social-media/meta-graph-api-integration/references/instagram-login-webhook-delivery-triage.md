@@ -58,6 +58,26 @@ After deployment verify independently:
 
 Do not call the work READY before step 8 when real inbound delivery is the acceptance criterion.
 
+## Live receive-message test protocol
+
+When the user asks whether a newly sent DM was received, distinguish **a webhook request** from **the requested real-message event**:
+
+1. Record a baseline immediately before asking the user to send: current UTC time, latest webhook access-log timestamp, latest provider message ID, and latest persisted Instagram note.
+2. Give the user a unique marker to send, then inspect only events newer than that baseline. Do not treat an older POST, a dashboard test, or an unrelated webhook as proof.
+3. Verify all three layers independently:
+   - nginx/public edge received a fresh Meta `POST`;
+   - application logs classified it as a text message and report its processing outcome;
+   - the expected database row exists, preferably matched by unique marker or provider message ID.
+4. Query the live database used by the systemd process. Confirm the schema first (`PRAGMA table_info(...)` for SQLite) rather than guessing column names such as `content` versus `content_markdown`.
+5. Avoid broad relative windows like “last 10 minutes” as the sole proof. Compare explicit timestamps/IDs against the captured baseline so an earlier event cannot be mistaken for the new test.
+6. Report the narrowest supported result:
+   - fresh POST + parsed + persisted: received successfully;
+   - fresh POST but ignored/unmatched/not persisted: delivered, processing failed or routed incorrectly;
+   - no fresh POST: Meta did not deliver the test to the callback;
+   - uncertain timing/marker: inconclusive, repeat with a new unique marker.
+
+A `200` response proves only that the callback accepted that request. It does not prove that the user's just-sent message arrived or was saved.
+
 ## Webhook-only cutover
 
 When the user requires webhook-only ingestion, treat this as a runtime ownership change—not merely a longer polling interval:
