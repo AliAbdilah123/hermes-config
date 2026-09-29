@@ -145,6 +145,16 @@ Include:
 - risks and fallbacks;
 - an explicit implementation gate when approval is required.
 
+### Provider decisions before implementation planning
+
+When authentication and feasibility questions come first, answer them before implementation tasks. Distinguish four actors explicitly: the product user, the authenticated product session, the app-owned receiving account, and the provider-issued sender identity. State separately whether an ordinary user needs provider OAuth and whether an operator/admin must authorize the receiving account.
+
+After the user confirms platform scope, create a dedicated implementation plan; earlier recommendations or feasibility answers do not count as that artifact. Preserve unsupported-platform exclusions in both API discovery and UI, and name any existing provider implementation that must remain unchanged under regression tests.
+
+For an app-owned Facebook Page Messenger inbox, plan around the Page-scoped sender ID (PSID) as the routing identity and treat a typed username/display identity as metadata only. Gate implementation on a real signed webhook fixture proving Page ID, PSID, external message ID, text/echo semantics, callback verification, subscription, and replay behavior. Ordinary senders can message the Page without product-side Facebook OAuth; Page-administrator authorization is a separate operational prerequisite.
+
+Keep independent product features in independent artifacts. For example, social-message ingestion and note search need separate canonical plans and review URLs, each with its own code evidence, acceptance matrix, verification sequence, and implementation gate.
+
 For a worked decision checklist and acceptance matrix, see `references/identity-routing-checklist.md`.
 
 For tracing Meta Instagram `recipient.id` through runtime configuration, active-integration validation, fallback ownership, note insertion, and the distinction between synthetic routing proof and live provider delivery, see `references/meta-instagram-webhook-recipient-routing.md`.

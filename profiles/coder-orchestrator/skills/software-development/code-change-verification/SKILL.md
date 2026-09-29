@@ -413,6 +413,8 @@ A visual reviewer can correctly spot apparent overlap or whitespace while still 
 
 When smoke-testing a newly built local binary, never assume a familiar port is free. A valid response can come from an unrelated service and create dangerously misleading evidence. Select an ephemeral free port, start the exact binary, inspect startup/bind output, and assert a service-specific health payload before probing routes or MIME types. Treat `address already in use` as verification setup failure, not application behavior.
 
+For deployed services, preflight the effective env-file listener against nginx `proxy_pass` and inspect ownership of both ports **before** replacing or restarting the binary. A public route can remain healthy through a stale or unrelated process while systemd is configured for another occupied port. Follow [runtime listener reconciliation](references/runtime-listener-reconciliation.md), then require local health, service-active evidence, and public proxied health as separate gates.
+
 For local development-OTP applications with persisted CRUD and two-user authorization checks, follow [references/local-otp-auth-browser-e2e.md](references/local-otp-auth-browser-e2e.md). It covers exact-binary/temp-DB isolation, OTP retrieval through an injectable sender log, stable Playwright selectors, expected anonymous-session `401` classification, second-context ownership checks, and DB/API terminal-state fallback after an ambiguous final locator.
 
 ### Fixed OTPs in development previews
