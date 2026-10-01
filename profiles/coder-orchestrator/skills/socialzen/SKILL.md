@@ -5,6 +5,10 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 # SocialZen Project
 
+## Facebook Messenger webhook deployment
+
+When enabling, deploying, or proving inbound Facebook Messenger callbacks, follow `references/facebook-messenger-webhook-deployment.md`. A successful Meta verification challenge proves only `GET`; independently verify signed `POST` routing, privacy-safe outcome logs, transactional processing, replay behavior, database migration safety, and the distinction between synthetic transport probes and real Meta delivery.
+
 ## Instagram Login DM inbox integrations
 
 For Instagram Login permissions, account/token invariants, dedicated-inbox webhook filtering, owner fallback routing, regression coverage, and live-DM acceptance, follow `references/instagram-login-dedicated-inbox-routing.md`.

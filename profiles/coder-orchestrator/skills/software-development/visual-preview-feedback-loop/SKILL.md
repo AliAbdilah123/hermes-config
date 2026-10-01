@@ -36,6 +36,8 @@ When a visual request divides one status section into priority columns, preserve
 - **Preview proof:** exact public preview route visibly shows the requested state.
 - **Production proof:** exact live route visibly shows it after the approved deployment.
 - Never promote one boundary into another. If authentication or data blocks rendering, say visual verification is pending.
+- **Absence checks require positive page identity.** Before accepting that removed content is absent, prove the browser reached the intended authenticated/data-backed screen using a stable element that must remain (for example the page heading plus a known toolbar control), record the final URL, and reject login pages, error shells, redirects, or empty DOMs. A check such as `grep -q removed-text || PASS` is not E2E evidence by itself because every wrong page also lacks the removed text.
+- Treat screenshot creation as a required assertion when claiming visual verification: check the browser process exit code and require a non-empty image before reporting success. Do not allow a successful DOM check earlier in a shell chain to mask a later screenshot failure.
 
 ## Visual assertions
 

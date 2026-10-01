@@ -84,6 +84,24 @@ For live verification, send a signed event from an arbitrary unregistered sender
 
 A production webhook may safely log structured metadata such as delivery timestamp, event count, outcome category (`ignored`, `unmatched`, `deduplicated`, `processed`, `failed`), and hashed/truncated identifiers. Never log access tokens, app secrets, verification tokens, signatures, raw payloads, or message text. Without outcome telemetry, `200` responses can hide application-level drops.
 
+### Accepted-but-failed retry storms
+
+When the summary changes from `processed=1` to repeated `processing_failed` for the same hashed `message.mid`, treat it as a persistent domain/storage failure—not a transport failure. Meta will retry the same delivery, sometimes alongside distinct messages from the same sender.
+
+1. Correlate the event hash, recipient hash, integration match, and result across the complete retry window. Do not count retries as separate user messages.
+2. Confirm the exact runtime database from `/proc/<pid>/fd`, then check `PRAGMA integrity_check` and the columns/tables used by the current processing path.
+3. Trace the handler into the domain/store function. A log showing `integration result=matched status=active` proves routing succeeded; the failure lies afterward.
+4. The failure branch must log a **sanitized wrapped error** (operation/stage plus database/provider error), while excluding payload text, tokens, signatures, and raw identifiers. A bare `processing_failed` counter is insufficient for root-cause diagnosis.
+5. If source temporarily changes identifier logging but runtime still emits hashes, verify the exact systemd `ExecStart` binary contains a unique source marker and was rebuilt to that path. Source checkout state is not runtime evidence.
+6. Do not guess or patch production from retry summaries alone. If the underlying error is not observable, stop at that boundary and add safe diagnostics first.
+
+Useful report shape:
+
+```text
+message hash: …; ProcessInstagramDM: called; integration: matched/active;
+result: failed on N retries; DB integrity/schema: OK; root error: not logged (diagnostic patch required)
+```
+
 ## Related cautions
 
 - `conversations: []` does not prove all permissions, roles, app-mode rules, or thread visibility are correct.

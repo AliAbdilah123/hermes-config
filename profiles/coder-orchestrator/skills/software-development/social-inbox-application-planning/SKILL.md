@@ -159,6 +159,8 @@ For a worked decision checklist and acceptance matrix, see `references/identity-
 
 For tracing Meta Instagram `recipient.id` through runtime configuration, active-integration validation, fallback ownership, note insertion, and the distinction between synthetic routing proof and live provider delivery, see `references/meta-instagram-webhook-recipient-routing.md`.
 
+For safely discovering real attachment payload shapes before implementing media ingestion—including deploy-before-resend sequencing, privacy-safe structural logging, and the minimum persistence/rendering verification—see `references/provider-webhook-media-shape-discovery.md`.
+
 ## Subpath deployment and E2E traps
 
 For a social-inbox SPA mounted below a path prefix:

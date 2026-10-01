@@ -23,6 +23,7 @@ Minimize overhead, not correctness.
 - Do not restate a supplied plan.
 - Do not narrate routine phase transitions or repeat status already visible in tooling.
 - A background-worker failure is not a user-facing stopping point when direct implementation can continue.
+- If live-provider evidence requires the user to resend/retry, first deploy and health-check the diagnostic or implementation, then ask once with the exact action. Do not request a resend before the relevant build is live; correlate callback and deployment timestamps to avoid redundant user loops.
 - Keep the final to artifact/link, verification, commit, and push when those boundaries were requested.
 
 ## Non-negotiable boundaries

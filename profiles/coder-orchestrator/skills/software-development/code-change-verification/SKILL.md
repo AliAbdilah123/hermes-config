@@ -59,6 +59,10 @@ When a service has optional external integrations, classify startup configuratio
 
 Before deploying a newly authored migration, review the complete migration history as it will execute on both an existing database and a fresh database. If columns were added while the migration is still uncommitted and has never shipped, fold the final definitions into that migration's original `CREATE TABLE`; do not append an unconditional later `ALTER TABLE ADD COLUMN` for those same columns. A clean bootstrap would otherwise create the final schema and then fail while adding duplicate columns. Keep a follow-up migration only after the earlier migration has actually shipped, and test both upgrade and clean-bootstrap paths when practical.
 
+For SQLite migrations that rebuild tables, compare the replacement `CREATE TABLE` against the complete current schema: a later rebuild can silently remove columns added by an earlier migration while both ledger entries remain applied. Treat duplicate numeric migration prefixes as an ordering hazard, verify `PRAGMA table_info` against current queries, and test both clean bootstrap and the historical applied-ledger/missing-column state. See `references/sqlite-table-rebuild-migration-drift.md` for diagnosis, idempotent repair, and authenticated deployment proof.
+
+Before replacing a compiled service binary, run the new binary against the **effective runtime env file** (or invoke its config loader in a focused test) and require configuration parsing/startup validation to pass. A successful build and repository suite do not prove compatibility with runtime-only keys added by another deployed feature. Compare key names without printing values. If an intentionally unwired integration key is rejected, add an explicitly tested accepted-and-ignored compatibility key rather than deleting runtime configuration or silently enabling behavior. See `references/runtime-env-parser-preflight.md`.
+
 After replacing a service binary and restarting it, `systemctl is-active` is only lifecycle evidence. The listener may not be ready yet. Poll the real local health endpoint with a bounded timeout, then probe the public route and expected content/API behavior. Treat an immediate connection refusal followed by healthy startup as a readiness race, not product failure; inspect status and journal if the bounded readiness check does not converge.
 
 ## Ad-hoc fallback
@@ -343,6 +347,19 @@ Builds, package-manager invocations, browser tests, and end-to-end runners may r
 
 When consolidating many branches and worktrees into a canonical branch, **commit ancestry is not behavior-preservation evidence**. A later conflict resolution can keep a feature commit reachable while silently replacing its implementation. Maintain a per-feature behavior ledger, rerun focused regressions after resolving high-churn files, inspect final source/diffs for distinctive behavior markers, and verify the exact deployed route or lazy chunk before pruning. Independently validate worker-reported unit names, listeners, SHAs, and deployment details rather than trusting summaries. See `references/fleet-branch-realignment-behavior-preservation.md` for the full sequence and pruning gate.
 
+## Dirty-checkout branch integration
+
+When a user asks to merge an existing feature branch and the current checkout contains unrelated uncommitted work:
+
+1. Compare the branch against the approved plan or acceptance contract first. Reuse and merge a substantially aligned implementation rather than recreating the feature; treat filename or internal-design differences as gaps only when they change required behavior.
+2. Preserve unrelated edits with two recovery paths before merging: a uniquely named `git diff --binary` patch under `/tmp` and `git stash push -u`.
+3. Synchronize `main`, merge the feature, resolve conflicts, and verify the clean merged state before committing. For independently developed migrations that reused the same sequence number, reconcile ordering so neither clean bootstrap nor upgrade applies equivalent schema twice.
+4. Commit and push the verified merge before restoring unrelated work. This keeps the integration commit auditable and prevents local work from leaking into it.
+5. Pop the stash only after remote SHA verification. Resolve stash-pop overlaps by combining merged behavior and preserved local behavior, then `git reset` the restored paths so they remain uncommitted as before. Rerun proportionate checks on the combined local state.
+6. Keep the stash until restoration is confirmed; the binary patch is the fallback. Report pushed merge state separately from restored local-work state.
+
+A stash-pop conflict after a successful push is not a conflict in remote `main`; it is a local restoration boundary and must be described that way.
+
 ## Concurrent shared-checkout commits
 
 A shared checkout may advance or become dirty while verification and deployment are in progress. Treat this as normal concurrency, not permission to absorb or erase another worker's changes. Record the baseline SHA before launching any autonomous coding CLI, even when its prompt says not to commit or push. After it exits, compare `HEAD`, the tracked remote, and that baseline before inspecting only `git diff`: an autonomous commit can make the working tree look clean while hiding both intended changes and scope creep in history. If this happened, review the full baseline-to-HEAD range, preserve the implementing commit, and apply a narrow corrective commit rather than resetting shared history.
@@ -437,8 +454,9 @@ For SvelteKit-specific cases where SSR renders but handlers do not hydrate, clie
 When an authenticated browser flow reaches the expected page but fails on a locator or harness API, classify the boundary before editing product code:
 
 1. Treat locators captured before a React route/data-context transition as potentially stale when that transition can remount the shell. Re-query the labeled control inside each loop iteration before selecting or asserting; a locator valid before the first tenant/workspace switch may point at a detached element and cause a false timeout on the next switch.
-2. Inspect the rendered form's actual accessible labels and stable IDs. Regex locators such as `/Nama/i` can match both “Nama” and “Nama bisnis”; use exact accessible names or stable DOM IDs when labels overlap.
-2. Confirm the assertion API belongs to the active runner. Playwright `Page` does not expose Testing Library helpers such as `getByDisplayValue`; use `locator(...).inputValue()` or the runner's native equivalent.
+2. Inspect the rendered form's actual accessible labels, toggle-button names, and stable IDs. A label like “Password” may also match “Show password” and “Confirm password”; regex or non-exact locators can likewise match sibling fields. Use exact accessible names or stable DOM IDs when labels overlap, and fill required confirmation fields through the real form contract.
+2. Treat URL arrival as navigation evidence, not hydration/data evidence. After search/filter submission or hash navigation, wait for the destination result row or heading element before counting/asserting it; immediate zero counts are commonly harness races.
+3. Confirm the assertion API belongs to the active runner. Playwright `Page` does not expose Testing Library helpers such as `getByDisplayValue`; use `locator(...).inputValue()` or the runner's native equivalent.
 3. Treat a locator timeout after successful navigation as harness evidence, not proof that the product flow failed. Correct the harness and rerun the complete flow with a fresh identity when auth state may have changed. Before replaying, determine whether the prior run already committed a side effect; avoid creating duplicate records merely to repair a final assertion. If the requested mutation already succeeded, verify the missing terminal invariant through the real API and runtime database (including ownership/status and `PRAGMA integrity_check`) and rerun only the missing browser assertion when practical.
 4. Classify console/network errors by request and expected state. A `401` from session bootstrap before login or an explicit session probe after logout is an expected auth boundary, not a console-cleanliness regression. Require each ignored `401` to correspond to a deliberately asserted unauthenticated request; unexpected `401`s during authenticated steps remain hard failures.
 5. Keep `pageerror`, uncaught exceptions, unexpected failed requests, and console errors unrelated to asserted auth boundaries as hard failures.
@@ -464,7 +482,25 @@ Prefer non-mutating or already-existing-state probes. For example, an existing i
 
 For authenticated browser E2E using an existing session, inspect the frontend auth source before injecting credentials. A server session cookie can authenticate direct API calls while the SPA still renders logged out because its client session is bootstrapped from local storage or another client-side store. Seed every contract the real client requires (for example both cookie and token/user local-storage keys) before navigation, then prove the rendered authenticated chrome appears before exercising the feature. Use the active locale when locating translated controls: prefer an accessible-name regex covering supported labels or first inspect the rendered modal text, rather than hard-coding one locale and misclassifying a locator timeout as a feature failure.
 
+## Provider DM attachment contract discovery
+
+For an approved reduction from provider media to text-only—including mixed text/media discard behavior, imported-note detail/edit proof, one-time confirmation claims, provider permission preflight, and public fixture cleanup—follow `references/text-only-social-webhook-parity.md`.
+
+When shared social-media posts, Reels/videos, or carousels arrive through a signed messaging webhook, capture and lock the real provider contract before extending schema or rendering. Preserve provider-semantic `type`, normalize type-specific identifiers to `media_id`, distinguish playable media URLs from HTML permalinks, and never infer carousel children from one preview. If attachment and text arrive as separate IDs, merge only the proven direction into a still-unfinalized note—not any recent sender note. See `references/social-webhook-attachment-contract-capture.md` for secure temporary capture, redaction, split-event, video/embed, carousel, teardown, and live-verification gates.
+
+### Text-only scope reduction
+
+When the user explicitly narrows a social webhook release to text-only, treat that as an approved scope change rather than an attachment-evidence blocker:
+
+1. Mark media persistence, parsing, rendering, and split-event milestones **cancelled**, not completed. Preserve any other provider’s existing media behavior.
+2. Lock both boundaries with focused tests: attachment-only events create no note; text-plus-attachment events create exactly one note containing only the text and no attachment metadata.
+3. Run the focused regression before changing production code. If it passes immediately, inspect validation, ingestion, and schema to confirm the behavior already exists; keep the regression and avoid a no-op production edit.
+4. Trace validation separately from processing. A discarded attachment flag can coexist with correct text-plus-attachment ingestion when the webhook requires non-empty text and ignores media afterward.
+5. When asked whether manual action is needed, inspect effective provider configuration using key presence/length or a redacted fingerprint—never values. Continue autonomously when prerequisites exist and request human interaction only at an unavoidable live-sender/provider boundary.
+
 ## Dedicated social inbox identity verification
+
+For attachment support whose provider callback shape or grouping behavior is not yet proven, follow `references/social-webhook-attachment-contract-capture.md`. It covers signature-gated temporary capture, redacted fixtures, metadata-only URL probing, split-event evidence, strict contract-driven scope, and mandatory diagnostic teardown.
 
 When one provider account receives messages for many application users, ownership must be proven by a code sent **from the user's account** to the dedicated inbox. Never auto-send that code from an application-controlled/test sender, or the webhook will bind the wrong stable sender ID. Verify raw-body signatures, recipient ID matching, transactional code consumption, stable sender-ID routing, retry deduplication, exclusion of verification messages from notes, and fail-fast resolution of any fallback inbox owner. For the complete invariant and TDD matrix, see `references/dedicated-social-inbox-identity-verification.md`.
 

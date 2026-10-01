@@ -38,7 +38,7 @@ When asked to move a visual theme above tab containers, put theme tokens and pag
 - Shared-shell visual ownership is mechanically asserted when changed.
 - Preview infrastructure verification and feature-route verification are reported as separate boundaries.
 
-See `references/nested-null-collections-and-feature-route-verification.md` for a compact reproduction and preview checklist.
+See `references/nested-null-collections-and-feature-route-verification.md` for a compact reproduction and preview checklist. For search pages that appear slow/missing despite a fast correct API response, use `references/search-results-null-collection-render-crash.md`; it covers nested Go nil slices, permanent loaders, immediate scope changes, stale-request races, and authenticated browser proof.
 
 ## Startup auth loading loops
 
