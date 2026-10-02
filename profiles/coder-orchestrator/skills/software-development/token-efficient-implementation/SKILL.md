@@ -30,9 +30,22 @@ Minimize overhead, not correctness.
 
 Token reduction never removes input validation, authorization, data-loss prevention, accessibility, required tests, authenticated public E2E, or honest blocker reporting.
 
+## Live-provider evidence gates
+
+For webhook/provider fixes that require observing an unknown callback shape:
+
+1. Deploy only the privacy-safe diagnostic first and health-check that exact deployment.
+2. Ask once for the provider action, then correlate callback and deployment timestamps.
+3. Record only redacted structure/classifications—never raw payload values or URLs.
+4. Convert the observed shape into a redacted fixture/test, support only that proven variant, and remove temporary diagnostics.
+5. Deploy, then request one fresh callback to prove the deployed parser and authenticated rendered result. Stay below `READY` until both pass.
+
+The discovery callback proves payload shape; the post-deployment callback proves the implementation. Explain this distinction in one sentence so the second request does not look redundant.
+
 ## Pitfalls
 
 - Loading several large overlapping skills for a narrow edit.
 - Sending `WORKING` as a final response while executable work remains.
 - Repeating tool errors instead of silently taking the documented fallback.
 - Treating fewer words as permission to skip fresh verification.
+- Calling a provider-backed fix complete after local tests or the discovery callback.

@@ -2,7 +2,7 @@ Fixes: authenticated public E2E; WORKING/VERIFYING only while active; READY only
 §
 Small fixes now; complex work plan first. Ordered plans gate each item.
 §
-Coding: delegate build/E2E to Codex `cx/gpt-5.6-sol` medium; announce. Ask before worktrees; reuse related active work, isolate unrelated work.
+Coding: concise/token-efficient updates; delegate build/E2E to Codex `cx/gpt-5.6-sol` medium and announce. Ask before worktrees; reuse related active work, isolate unrelated work.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §

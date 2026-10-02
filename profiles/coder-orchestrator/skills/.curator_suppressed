@@ -18,6 +18,7 @@ himalaya
 huggingface-hub
 humanizer
 imessage
+jupyter-live-kernel
 llama-cpp
 llm-wiki
 manim-video

@@ -13,6 +13,8 @@ When enabling, deploying, or proving inbound Facebook Messenger callbacks, follo
 
 For Instagram Login permissions, account/token invariants, dedicated-inbox webhook filtering, owner fallback routing, regression coverage, and live-DM acceptance, follow `references/instagram-login-dedicated-inbox-routing.md`.
 
+When a webhook matches an active integration but repeatedly returns `processing_failed` and the note is absent, inspect receipt/event-table foreign keys for stale temporary-table targets before changing routing or credentials. Follow `references/sqlite-social-event-foreign-key-repair.md` for the transactional rollback diagnosis, TDD migration repair, backup, deployment, and provider-retry proof.
+
 When a named sender's DM is visible in Instagram but absent from the application database, separate Meta delivery/visibility from local routing and persistence using `references/instagram-provider-delivery-vs-local-persistence.md`. In particular, treat `200` with an empty Conversations API result as request acceptance—not proof that the thread is visible—and never count a signed synthetic webhook as provider-backed acceptance.
 
 ## Repository and deployment realignment
