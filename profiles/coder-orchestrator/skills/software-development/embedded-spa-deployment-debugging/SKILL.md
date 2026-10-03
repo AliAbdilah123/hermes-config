@@ -23,6 +23,8 @@ Treat deployment as four distinct artifacts:
 
 Never infer deployment from source or build success alone. Compare hashed JS/CSS names at every boundary. For Go `embed.FS`, copying new files into the embed directory does not modify an existing executable; rebuild the executable from the actual main package and restart it.
 
+For independently served static SPAs, separate the frontend artifact from the API service: restarting a healthy backend cannot repair missing frontend assets. Rebuild with the public mount path, atomically publish the complete clean output directory, and restart the API only if its runtime artifact or configuration also changed. After recovery, make the mount path part of the canonical deploy command/script or CI environment so a later root-base build cannot reintroduce the blank page.
+
 ## Workflow
 
 1. Reproduce the exact reported record and inspect its stored content.

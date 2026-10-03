@@ -7,6 +7,18 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 Use after modifying code and before reporting completion, committing, or deploying. The goal is evidence from the final workspace state, not merely a plausible implementation.
 
+## Task-only commits in a dirty file
+
+When the requested change shares files with pre-existing uncommitted work, do not stage the whole file and do not rewrite or temporarily revert the working tree just to isolate a commit.
+
+1. Record the baseline commit and inspect both the working-tree diff and the task agent's narrow diff.
+2. Construct the intended task-only patch against `HEAD` (for example, generate a unified diff from `git show HEAD:<path>` plus only the approved edits).
+3. Apply that patch directly to the index with `git apply --cached <patch>`.
+4. Review `git diff --cached`, run `git diff --cached --check`, and confirm `git status --short` still shows unrelated working-tree edits unstaged.
+5. Run tests against the real final working tree before committing. After commit/push, verify the commit contains only task-owned hunks and unrelated local edits remain present.
+
+This is safer than interactive hunk staging when task and unrelated edits are adjacent, and it preserves active work without requiring a worktree for a small change.
+
 For live database-backed E2E, back up and integrity-check the actual runtime database before deploying schema changes. Prefer a uniquely named dedicated tenant with minimum Owner/Admin/Member fixtures, exercise writes through the public browser/API, verify persistence/isolation/CSRF/responsive/console-network boundaries, and remove the fixture afterward. Direct fixture insertion is setup evidence, not feature E2E. Keep fixture credentials and browser scripts outside the repository; use the application's real password-hash algorithm and effective live schema. Register cleanup before running the browser so failed E2E cannot strand test tenants, users, sessions, or operational rows. After cleanup, query for the unique fixture prefix/tenant ID and require zero remaining rows.
 
 When the production service runs a compiled binary separately from the source checkout and nginx serves a separate static document root, discover both from `systemctl cat/show` and `nginx -T`; rebuild and replace the exact `ExecStart`, restart and poll the local health endpoint, publish the final frontend build to the discovered root, then verify the public HTML names the new asset. Treat binary health, static publication, and authenticated browser behavior as separate gates. Beware relative compiler output paths from nested module directories: they can silently create a second binary while systemd restarts the stale one. Verify a change marker in the exact `ExecStart` binary and exercise the precise public request contract before editing source again; see `references/compiled-service-output-path-and-contract-probe.md`.

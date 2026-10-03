@@ -60,15 +60,29 @@ Prefer reusing the existing attachment DTO, persistence transaction, sender veri
 
 Persist provider fields when supplied (`type`, `url`, `media_id`, alt/title). If the product needs display text and the provider supplied none, use a neutral UI/title fallback such as `Shared Threads post`; do not fabricate message body content.
 
+## Runtime configuration and diagnostic freshness
+
+Adding Threads app credentials or a Meta scope does not itself change the Instagram webhook decoder. Treat these as separate boundaries:
+
+1. Confirm new configuration keys using names, presence booleans, and lengths only; never print credential values.
+2. Before restarting, run the new binary against the effective runtime env. Strict allowlist-based config parsers may reject newly added `THREADS_APP_ID` / `THREADS_APP_SECRET` keys even when the feature does not consume them.
+3. If the service is webhook-only and the credentials are not wired into OAuth/API calls, add explicitly tested accepted-and-ignored compatibility keys rather than pretending they affect webhook payloads. Document that ceiling in code.
+4. Verify the installed `ExecStart` binary contains the diagnostic marker, restart it, and poll the real `/api/health` route on the effective listener. A later deployment can silently replace the diagnostic build while leaving source changes intact.
+5. Correlate only callbacks received after the verified diagnostic binary became active. A callback handled by an older binary cannot be reinterpreted from summary logs, and raw webhook bodies should not be retained merely to enable replay.
+6. If Meta adds a scope, existing OAuth tokens generally require reauthorization; an OAuth redirect URI matters only when the application actually implements that OAuth flow. Never point an OAuth redirect at the webhook receiver or claim it will enrich inbound webhook payloads.
+
+When readiness fails after adding env keys, inspect the fresh service journal immediately. An `unknown setting` restart loop is a runtime-config compatibility problem, not evidence that the new credential is invalid.
+
 ## Acceptance evidence
 
 Report:
 
 - callback timestamp and timezone;
 - hashed IDs unless exact-ID logging was separately authorized;
+- the active diagnostic binary/restart timestamp used as the evidence boundary;
 - whether domain processing ran;
 - matched/unmatched/ignored reason;
 - note insertion versus duplicate;
 - authenticated public visibility of exactly one note.
 
-Tests and HTTP health are not substitutes for the final provider-originated callback and public application check.
+Tests and HTTP health are not substitutes for the final provider-originated callback and public application check. Likewise, a callback received before the diagnostic deployment is not payload-shape evidence merely because the current source contains diagnostics.

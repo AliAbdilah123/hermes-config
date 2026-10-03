@@ -5,6 +5,14 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 # SocialZen Project
 
+## Multi-post Project containers
+
+When a Project becomes a container for multiple independently editable and scheduled posts, follow `references/project-container-multi-post-workspaces.md`. Keep posts/publication runs canonical, preserve legacy graph identities, make partial bulk scheduling replay-safe, coordinate generation workers with durable leases, fail closed without a production provider, and require authenticated exact-route E2E before READY.
+
+## Account lifecycle timing changes
+
+Treat deletion/restoration timing as a cross-layer contract, not a backend constant-only edit. Update the shared backend grace period, deadline/remaining-days tests, authenticated settings and restore copy, and both English and Indonesian public legal/privacy/deletion text. Search specifically for old duration phrases after editing, while excluding unrelated durations such as analytics windows and dispute-resolution periods. Follow `references/account-lifecycle-timing-change.md` for the compact checklist.
+
 ## Facebook Messenger webhook deployment
 
 When enabling, deploying, or proving inbound Facebook Messenger callbacks, follow `references/facebook-messenger-webhook-deployment.md`. A successful Meta verification challenge proves only `GET`; independently verify signed `POST` routing, privacy-safe outcome logs, transactional processing, replay behavior, database migration safety, and the distinction between synthetic transport probes and real Meta delivery.
@@ -46,6 +54,7 @@ When a user approves a SocialZen proposal and asks for implementation:
 
 ## Feature workflows
 
+- See `references/project-container-generation-delivery.md` when changing Projects into containers of multiple independently scheduled posts with generated media. It covers compatibility boundaries, replay-safe partial bulk scheduling, durable multi-instance generation leases/admission, TDD, deployment, and authenticated E2E gates.
 - See `references/multi-destination-project-publishing.md` when extending publishing into reusable multi-destination Projects. It defines the existing-post/post-target boundary, atomic persistence and enqueue order, preflight validation, failed-only retry/idempotency, cancellation/history invariants, composer/review UX, dirty-worktree safety, and real-provider deployment gate.
 
 - See `references/analytics-backend-performance-correctness-audit.md` for read-only analytics/detail audits covering route tracing, SQL plans and indexes, database-level repeated lookups, O(n²) DTO processing, SQLite single-connection contention, refresh-job polling/payloads, correctness contracts, logs/tests, and local timing methodology.
