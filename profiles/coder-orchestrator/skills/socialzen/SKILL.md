@@ -5,9 +5,14 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 # SocialZen Project
 
-## Multi-post Project containers
+## Key references
 
-When a Project becomes a container for multiple independently editable and scheduled posts, follow `references/project-container-multi-post-workspaces.md`. Keep posts/publication runs canonical, preserve legacy graph identities, make partial bulk scheduling replay-safe, coordinate generation workers with durable leases, fail closed without a production provider, and require authenticated exact-route E2E before READY.
+- Password resets: `references/safe-account-password-reset.md`.
+- Browser branding: `references/favicon-from-existing-brand-mark.md`.
+- Multi-post projects: `references/project-container-multi-post-workspaces.md`.
+- Disconnect/publishing triage: `references/disconnect-false-failure-and-publish-triage.md`.
+- Complete social-provider enablement: `references/complete-social-provider-enablement.md`.
+- Reverse-proxy CSRF/uploads: `references/reverse-proxy-origin-and-upload-errors.md`.
 
 ## Account lifecycle timing changes
 

@@ -1,17 +1,17 @@
-Fixes: authenticated public E2E; WORKING/VERIFYING only while active; READY only after E2E. Finals: link, commit, push.
+Fixes: authenticated public E2E; READY only after E2E. Finals: link, commit, push.
 §
 Small fixes now; complex work plan first. Ordered plans gate each item.
 §
-Coding: concise/token-efficient updates; delegate build/E2E to Codex `cx/gpt-5.6-sol` medium and announce. Ask before worktrees; reuse related active work, isolate unrelated work.
+Coding: concise; delegate via configured provider model; announce. Ask before worktrees unless current branch explicit. Whole-UI revamps must materially migrate every surface—not just shell/recolor—and pass independent compliance review before commit/deploy.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §
 Komuna preview: isolated route; production needs approval. After verified deploy, remove task worktree/branch/preview; verify remote master contains deploy, no task-only commits. Remove rejected previews; use real Xendit test invoices.
 §
-Komuna reports use verified WIB period; Mondays include Friday plus unreported weekend work.
+Komuna reports: verified WIB period; Mondays include Friday + unreported weekend.
 §
 Job UX: editable todos first; parallel columns, sequential jobs; history grey text. Done/blocked replies requeue last.
 §
-Paragentix: Job detail page and modal serve different purposes; never modify interchangeably.
+Paragentix: job detail page and modal have distinct purposes; never interchange.
 §
-User may lack VPS access; handoffs cannot require shell. Never expose/commit secrets. Webhook reports need exact sender/recipient/message IDs and whether processing ran; never inspect/change tokens.
+User may lack VPS access; handoffs cannot require shell. Never expose secrets. Webhook reports need exact IDs and processing status; never inspect/change tokens.

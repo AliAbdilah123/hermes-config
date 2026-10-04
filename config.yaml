@@ -432,7 +432,7 @@ discord:
   require_mention: true
   free_response_channels: ''
   allowed_channels: ''
-  auto_thread: false
+  auto_thread: true
   thread_require_mention: false
   history_backfill: true
   history_backfill_limit: 50

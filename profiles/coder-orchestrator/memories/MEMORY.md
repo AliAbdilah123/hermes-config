@@ -1,6 +1,6 @@
-Roots: SocialZen ~/socialzen; Paragentix ~/projects/paragentix; Komuna ~/projects/komuna; TemuBisnis ~/projects/temubisnis; Light POS ~/projects/light-pos; Social Notes ~/projects/social-media-note-taking-app. Social Notes supports Instagram Reels and ordered carousel media.
+Social Notes supports Instagram Reels and ordered carousel media. Instagram webhook stores only original post/media URL+ID; it must not fetch external media. Note Details lazily fetches missing data, caches successful results, preserves usable note/original references on failure, omits unavailable enrichment, and retries on a later open.
 §
-Default project URL: https://dev-{slug}.ahsanworks.com unless specified. Exceptions: selfflow.ahsanworks.com, shareexpense.ahsanworks.com.
+Default project URL: https://dev-{slug}.ahsanworks.com, mounted at `/` with no user-visible `/projects/...`, unless specified. Exceptions: selfflow.ahsanworks.com and shareexpense.ahsanworks.com, also root-mounted.
 §
 PRD/docs HTML: deploy to /usr/share/nginx/html/prds/ (nginx /prd/ alias), set 644. Verify with curl -sI http://localhost/prd/name.
 §

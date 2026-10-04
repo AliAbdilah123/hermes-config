@@ -159,7 +159,7 @@ A prefix supplied in prose or orchestration notation (for example `cx/`) may ide
 1. **Always use `pty=true` for interactive Codex sessions** — one-shot `codex exec` can receive its prompt directly as argv; when run through Hermes terminal, PTY remains the safe default
 2. **Git repo required** — Codex won't run outside a git directory. Use `mktemp -d && git init` for scratch
 3. **Use `exec` for one-shots** — `codex exec "prompt"` runs and exits cleanly
-4. **`--full-auto` for building** — auto-approves changes within the sandbox
+4. **Use installed CLI automation flags** — inspect `codex exec --help` first. Newer builds may reject `--full-auto`; use `codex exec --dangerously-bypass-approvals-and-sandbox` only inside an explicitly bounded workspace with clean Git preflight.
 5. **Background for long tasks** — use `background=true` and monitor with `process` tool
 6. **Don't interfere** — monitor with `poll`/`log`, be patient with long-running tasks
 7. **Parallel is fine** — run multiple Codex processes at once for batch work

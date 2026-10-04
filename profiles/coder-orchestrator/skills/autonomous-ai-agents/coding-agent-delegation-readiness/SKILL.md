@@ -29,6 +29,12 @@ printf '%s\n' 'Respond exactly: READY' | \
   <cli> <run-command> --model <exact-model> <reasoning/speed flags> -
 ```
 
+## CLI flag compatibility before long launches
+
+After the cheap model probe, inspect the installed CLI's subcommand help (for example, `codex exec --help`) before launching the full job. Automation flags and their placement can change across releases: a documented `--full-auto` may be replaced by `--approve-for-me`, `-a never`, or a bypass flag, and top-level flags may need to precede `exec`. Use only flags rendered by the installed binary.
+
+If a launch fails during argument parsing, verify the repository still has the expected branch, unchanged `HEAD`, and no new dirty paths. Correct the invocation from local help and re-run the cheap probe before announcing active work. For bounded background jobs, enable one-shot completion notification; a process handle alone does not prove the model accepted the goal, so confirm startup output names the expected model/provider and shows the task was received.
+
 ## Reliable multiline prompts
 
 Long prompts with quotes, backticks, or shell-sensitive text should go through stdin rather than one giant argv string:

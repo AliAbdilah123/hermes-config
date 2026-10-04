@@ -299,6 +299,7 @@ Restore all missing leaf deployments, narrow any domain vhost rooted at the shar
 
 ## References
 
+- See `references/root-mounted-wildcard-project-domains.md` for fleet migrations from `/projects/<slug>/` paths to clean per-project root domains, including wildcard DNS diagnosis, regex vhosts, sub-filter coverage, cache-aware checks, and per-app exception handling.
 - See `references/exact-provider-callback-routing.md` for narrowly scoped callback proxies, HTTP/HTTPS parity, SNI/certificate verification, exact challenge-response probes, and query-string secret hygiene.
 - See `references/wrong-healthy-upstream.md` when a public route reaches a healthy listener belonging to the wrong application; it covers exact-route capture, port/process ownership, service-specific response fingerprints, minimal proxy correction, and authenticated public verification without manufacturing a source commit.
 - See `references/fleet-wide-git-realignment-and-deployment.md` for the end-to-end orchestrator pattern: nginx-driven discovery, bounded parallel batches, conservative branch/worktree pruning, distrust-and-verify handling of worker summaries, final fleet probes, and status reporting.

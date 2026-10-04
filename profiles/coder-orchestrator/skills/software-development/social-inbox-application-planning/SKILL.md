@@ -161,6 +161,8 @@ For tracing Meta Instagram `recipient.id` through runtime configuration, active-
 
 For safely discovering real attachment payload shapes before implementing media ingestion—including deploy-before-resend sequencing, privacy-safe structural logging, and the minimum persistence/rendering verification—see `references/provider-webhook-media-shape-discovery.md`.
 
+For reference-only webhook ingestion plus detail-open-only external enrichment and persistent media caching, see `references/lazy-external-media-cache-planning.md`. Use an explicit resolve command rather than a generic GET so route preloading, list/search loads, startup, and unopened records cannot cause provider traffic; cache failures must preserve the source record and original references.
+
 ## Subpath deployment and E2E traps
 
 For a social-inbox SPA mounted below a path prefix:

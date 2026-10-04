@@ -7,6 +7,41 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 Use after modifying code and before reporting completion, committing, or deploying. The goal is evidence from the final workspace state, not merely a plausible implementation.
 
+## When the verifier does not detect a canonical command
+
+See [ad-hoc verification evidence](references/ad-hoc-verification-evidence.md) for the reusable script pattern, runtime polling safeguards, and evidence-reporting rules.
+
+A project may have a real check command (for example `make check`) that workspace verification metadata does not recognize. Do not merely repeat an earlier run or argue that the command is canonical:
+
+1. Create an OS-safe temporary script with `mktemp`, `tempfile.mkstemp()`, or equivalent, using a `/tmp/hermes-verify-XXXXXX`-style prefix. Do not use a predictable fixed filename.
+2. Put the focused checks in that script, including the project's own check command plus static validation needed for files the command does not cover.
+3. Run the script against the final workspace state and preserve its exact exit status. Remove the script in a shell trap or language-level `finally` block; also remove any scratch artifacts created during implementation, and optionally assert their absence in the script.
+4. Report the result explicitly as **ad-hoc verification**, not “suite green.” Separate executed checks from dry-runs/static parsing and state any runtime boundary that was not exercised.
+5. If workspace verification metadata still says **unverified** despite an earlier direct test/build run, comply with the ad-hoc-script gate once from the unchanged final state rather than citing the earlier run. Include the required test/build commands and `git diff --check` (or the repository equivalent) in that single script, then report its explicit success marker.
+5. If no files changed after that run, do not rerun solely because a repeated reminder appears; cite the fresh ad-hoc evidence and its remaining boundary accurately.
+
+Example shell shape:
+
+```sh
+verify=$(mktemp /tmp/hermes-verify-XXXXXX.sh)
+trap 'rm -f "$verify"' EXIT
+printf '%s\n' '#!/bin/sh' 'set -eu' 'make check' >"$verify"
+chmod +x "$verify"
+"$verify"
+```
+
+## Behavior-contract changes: update stale tests, not the new behavior
+
+When an approved change intentionally removes an old side effect (for example, webhook-time provider lookup becomes explicit detail-page resolution), the existing suite may encode that obsolete behavior.
+
+1. Run the full suite after focused tests pass.
+2. If an old test fails, read its assertions before changing production code.
+3. Update the test only when the approved contract clearly supersedes it; preserve adjacent security, persistence, and error-handling assertions.
+4. Add a positive assertion for the replacement contract (for example, outbound call count is exactly zero), rather than merely deleting the old assertion.
+5. Re-run the full suite from the final workspace state.
+
+Treat compiler, linter, and accessibility warnings as unfinished work when the project check or build reports them, even if the command exits successfully. Fix the warning and rerun the exact test/check/build chain so final evidence is clean.
+
 ## Task-only commits in a dirty file
 
 When the requested change shares files with pre-existing uncommitted work, do not stage the whole file and do not rewrite or temporarily revert the working tree just to isolate a commit.
