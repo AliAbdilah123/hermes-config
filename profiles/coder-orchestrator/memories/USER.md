@@ -1,12 +1,12 @@
 Fixes: authenticated public E2E; READY only after E2E. Finals: link, commit, push.
 §
-Small fixes now; complex work plan first. Ordered plans gate each item.
+Small fixes now; complex work plan first. Ordered plans gate items. “Copy app” means the actual app, not its marketing site; after correction, finish without more questions.
 §
-Coding: concise; delegate via configured provider model; announce. Ask before worktrees unless current branch explicit. Whole-UI revamps must materially migrate every surface—not just shell/recolor—and pass independent compliance review before commit/deploy.
+Coding: concise; delegate via configured model. Prefer the established stack; honor no-Docker requests. Ask before worktrees. UI revamps preserve behavior and need fail-closed review.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §
-Komuna preview: isolated route; production needs approval. After verified deploy, remove task worktree/branch/preview; verify remote master contains deploy, no task-only commits. Remove rejected previews; use real Xendit test invoices.
+Komuna preview: isolated route; production requires approval. After deploy remove preview/worktree/branch and verify remote master. Remove rejected previews; use real Xendit test invoices.
 §
 Komuna reports: verified WIB period; Mondays include Friday + unreported weekend.
 §

@@ -59,6 +59,7 @@ A preview is not working merely because its URL returns HTTP 200. A production S
    - For authenticated work, establish a suitable test session or fixture.
    - If the preview uses an isolated database cloned from a live SQLite application, create it with SQLite's `.backup`/backup API rather than copying an arbitrary nearby `.db` file. Confirm the copy contains the real authentication tables and a plausible account count before starting the preview API.
    - Exercise authentication through the **public preview API path**, not localhost: sign up or use a dedicated review account, capture `Set-Cookie`, call the session endpoint with that cookie, sign out, sign back in, and confirm the protected preview route renders. A login form rendering is not authentication verification.
+   - Keep viewport checks in one authenticated browser context, or explicitly import the same storage state into each context. A fresh context per viewport silently discards session cookies and can capture the login screen mid-reload. Confirm the session endpoint returns 200 before starting the viewport matrix, then assert an authenticated-shell marker at every size.
    - Navigate to the exact changed tab/page.
    - Reproduce the original payload shape, including nullable collections and empty states.
    - Exercise the interaction and assert the original error is absent.

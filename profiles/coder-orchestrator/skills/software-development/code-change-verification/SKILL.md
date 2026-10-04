@@ -5,11 +5,11 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 # Code Change Verification
 
-Use after modifying code and before reporting completion, committing, or deploying. The goal is evidence from the final workspace state, not merely a plausible implementation.
+Use after code changes and before completion, commit, or deploy. For navigation-heavy or whole-UI work, follow [fail-closed UI release gates](references/fail-closed-ui-release-gates.md).
 
 ## When the verifier does not detect a canonical command
 
-See [ad-hoc verification evidence](references/ad-hoc-verification-evidence.md) for the reusable script pattern, runtime polling safeguards, and evidence-reporting rules.
+See [ad-hoc verification evidence](references/ad-hoc-verification-evidence.md) for the reusable script pattern, runtime polling safeguards, and evidence-reporting rules. For mixed Go-service and pnpm-frontend repositories, use the concrete [mixed Go + web workspace verification](references/mixed-go-web-verification.md) template.
 
 A project may have a real check command (for example `make check`) that workspace verification metadata does not recognize. Do not merely repeat an earlier run or argue that the command is canonical:
 
