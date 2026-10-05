@@ -7,12 +7,12 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 ## Key references
 
-- Password resets: `references/safe-account-password-reset.md`.
-- Browser branding: `references/favicon-from-existing-brand-mark.md`.
-- Multi-post projects: `references/project-container-multi-post-workspaces.md`.
-- Disconnect/publishing triage: `references/disconnect-false-failure-and-publish-triage.md`.
-- Complete social-provider enablement: `references/complete-social-provider-enablement.md`.
-- Reverse-proxy CSRF/uploads: `references/reverse-proxy-origin-and-upload-errors.md`.
+- Auth/account: `references/safe-account-password-reset.md`, `references/auth-route-session-guards.md`.
+- Branding: `references/favicon-from-existing-brand-mark.md`, `references/app-wide-brand-renaming.md`.
+- Projects: see `references/project-*.md`, including published-post locking and count legibility.
+- Providers: `references/disconnect-false-failure-and-publish-triage.md`, `references/complete-social-provider-enablement.md`.
+- Uploads: `references/reverse-proxy-origin-and-upload-errors.md`.
+- Notes/Reels: `references/social-note-permalink-recovery-and-reel-fallback.md`.
 
 ## Account lifecycle timing changes
 

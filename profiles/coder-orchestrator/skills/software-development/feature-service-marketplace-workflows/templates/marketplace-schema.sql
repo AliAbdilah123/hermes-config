@@ -1,0 +1,7 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE workflows(id TEXT PRIMARY KEY,kind TEXT NOT NULL CHECK(kind IN('booking','open_job','bounty')),owner_id TEXT NOT NULL,assignee_id TEXT,status TEXT NOT NULL,fee_snapshot_json TEXT NOT NULL,quota INTEGER NOT NULL DEFAULT 1,version INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL);
+CREATE TABLE proposals(id TEXT PRIMARY KEY,workflow_id TEXT NOT NULL REFERENCES workflows(id),proposer_id TEXT NOT NULL,status TEXT NOT NULL,fee INTEGER NOT NULL,cover_letter TEXT,created_at TEXT NOT NULL,UNIQUE(workflow_id,proposer_id));
+CREATE TABLE proofs(id TEXT PRIMARY KEY,workflow_id TEXT NOT NULL REFERENCES workflows(id),author_id TEXT NOT NULL,evidence_json TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE workflow_events(id TEXT PRIMARY KEY,workflow_id TEXT NOT NULL REFERENCES workflows(id),actor_id TEXT NOT NULL,action TEXT NOT NULL,from_status TEXT,to_status TEXT,payload_json TEXT NOT NULL DEFAULT '{}',created_at TEXT NOT NULL);
+CREATE TABLE release_schedules(id TEXT PRIMARY KEY,workflow_id TEXT NOT NULL UNIQUE REFERENCES workflows(id),due_at TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN('pending','processing','released','failed')),attempts INTEGER NOT NULL DEFAULT 0,next_attempt_at TEXT);
+CREATE TABLE reviews(id TEXT PRIMARY KEY,workflow_id TEXT NOT NULL REFERENCES workflows(id),author_id TEXT NOT NULL,subject_id TEXT NOT NULL,rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),UNIQUE(workflow_id,author_id,subject_id));

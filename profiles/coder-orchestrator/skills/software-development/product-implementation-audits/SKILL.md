@@ -29,6 +29,8 @@ For dedicated social or messaging inbox integrations, use [references/dedicated-
 
 For proposed provider-webhook capabilities such as attachments or rich media, use [references/provider-webhook-feature-audit.md](references/provider-webhook-feature-audit.md). It covers envelope tracing, trust-boundary preservation, database-level deduplication, payload-evidence hierarchy, minimum implementation, and security-focused test implications.
 
+For multi-repository extraction audits, use [references/reusable-feature-slice-audit.md](references/reusable-feature-slice-audit.md). It covers canonical repository/lineage classification, exact path/function evidence, existing-skill deduplication, per-surface baseline verification, extraction readiness, and class-level `feature-*` proposals.
+
 ## Reporting style
 
 When the user requests low token usage, keep citations exact and collapse repetitive requirements into compact tables. State audit/runtime limitations once, not under every row. Give details primarily for blockers, partial behavior, broken contracts, and architecture violations. Preserve the user’s required output order and exact labels.

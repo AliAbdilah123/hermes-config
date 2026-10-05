@@ -9,7 +9,7 @@ Use this skill for real full-stack implementation backed by execution evidence.
 
 ## Focused UI and embedded-build verification
 
-References: [acceptance](references/acceptance-contract-audit.md), [milestones](references/ordered-milestone-delivery.md), [notifications](references/notification-delivery-milestones.md), [milestone gates](references/stack-alignment-and-milestone-gates.md), and [ad-hoc verification fallback](references/ad-hoc-verification-fallback.md). Verify source, served assets, upstream state, auth, and acceptance.
+References: [acceptance](references/acceptance-contract-audit.md), [milestones](references/ordered-milestone-delivery.md), [notifications](references/notification-delivery-milestones.md), [milestone gates](references/stack-alignment-and-milestone-gates.md), [ad-hoc verification fallback](references/ad-hoc-verification-fallback.md), [native file drop areas](references/native-file-drop-area.md), and [promoting an approved UI variant](references/promoting-approved-ui-variant.md). Verify source, served assets, upstream state, auth, and acceptance.
 
 When the repository is already dirty, isolate the feature by exact paths: inventory first, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 

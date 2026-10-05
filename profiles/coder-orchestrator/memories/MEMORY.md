@@ -2,7 +2,7 @@ Social Notes supports Instagram Reels and ordered carousel media. Instagram webh
 §
 Default project URL: https://dev-{slug}.ahsanworks.com, mounted at `/` with no user-visible `/projects/...`, unless specified. Exceptions: selfflow.ahsanworks.com and shareexpense.ahsanworks.com, also root-mounted.
 §
-PRD/docs HTML: deploy to /usr/share/nginx/html/prds/ (nginx /prd/ alias), set 644. Verify with curl -sI http://localhost/prd/name.
+Non-project links (PRDs, docs, etc.) use https://dev.ahsanworks.com. PRD/docs files: /usr/share/nginx/html/prds/, mode 644.
 §
 New projects start from a clean boilerplate unless the user specifies otherwise; do not retrofit unrelated projects.
 §

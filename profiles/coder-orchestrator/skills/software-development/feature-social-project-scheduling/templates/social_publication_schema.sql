@@ -1,0 +1,10 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE projects (id TEXT PRIMARY KEY,user_id TEXT NOT NULL,name TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE posts (id TEXT PRIMARY KEY,project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,body TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN ('DRAFT','SCHEDULED','PUBLISHED','PARTIAL_SUCCESS','FAILED')));
+CREATE TABLE project_targets (project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,connection_id TEXT NOT NULL,provider_account_id TEXT NOT NULL,PRIMARY KEY(project_id,connection_id));
+CREATE TABLE post_media (post_id TEXT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,media_id TEXT NOT NULL,position INTEGER NOT NULL,PRIMARY KEY(post_id,position));
+CREATE TABLE project_versions (id TEXT PRIMARY KEY,post_id TEXT NOT NULL REFERENCES posts(id),body TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE publication_runs (id TEXT PRIMARY KEY,version_id TEXT NOT NULL REFERENCES project_versions(id),scheduled_at TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN ('QUEUED','PUBLISHING','PUBLISHED','PARTIAL_SUCCESS','FAILED')));
+CREATE TABLE post_targets (run_id TEXT NOT NULL REFERENCES publication_runs(id),connection_id TEXT NOT NULL,provider_account_id TEXT NOT NULL,status TEXT NOT NULL,provider_post_id TEXT,error_code TEXT,error_message TEXT,idempotency_key TEXT NOT NULL,attempt_count INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(run_id,connection_id));
+CREATE TABLE publication_attempts (id TEXT PRIMARY KEY,run_id TEXT NOT NULL,connection_id TEXT NOT NULL,attempt_no INTEGER NOT NULL,outcome TEXT NOT NULL,error_code TEXT,created_at TEXT NOT NULL,UNIQUE(run_id,connection_id,attempt_no));
+CREATE TABLE project_schedule_requests (user_id TEXT NOT NULL,idempotency_key TEXT NOT NULL,payload_hash TEXT NOT NULL,response_json TEXT NOT NULL,created_at TEXT NOT NULL,PRIMARY KEY(user_id,idempotency_key));

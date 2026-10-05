@@ -1,8 +1,10 @@
 # Mixed Go + Web Workspace Verification
 
-Use when a repository combines a Go service and a pnpm frontend but no canonical verifier is detected.
+Use when a repository combines a Go service and a pnpm frontend.
 
-Create the verifier with `mktemp /tmp/hermes-verify-<project>-XXXXXX`, write a fail-fast script, execute it against the final workspace, preserve its exit status, and remove it afterward.
+First inspect the repository's canonical verifier (`make check`, package script, or equivalent). Run it once from the final workspace state when available; separate parallel test/typecheck/build calls may not satisfy automated verification tracking. Any later source edit invalidates that evidence, so rerun the canonical command before completion.
+
+Only when no canonical verifier exists or it is genuinely unusable, create the verifier with `mktemp /tmp/hermes-verify-<project>-XXXXXX`, write a fail-fast script, execute it against the final workspace, preserve its exit status, and remove it afterward.
 
 ```sh
 #!/bin/sh

@@ -9,11 +9,22 @@ Use this skill when a web or desktop application delegates generation to an inst
 
 ## Minimal architecture
 
-1. Keep the provider invocation server-side. Credentials, provider profiles, OAuth state, and command execution never belong in the browser.
-2. Invoke CLIs with an argument array, not a shell-built command. Bound input size, execution time, output size, and cancellation.
-3. Verify the installed CLI contract with its current `--help` before coding. Use only observed flags; provider CLIs evolve.
-4. Persist non-secret settings separately from credentials. Validate provider and model values at the API boundary.
-5. If only one provider exists, use a direct branch. Do not introduce a provider registry/interface until a second implementation exists.
+1. Keep provider invocation server-side. Credentials, provider profiles, OAuth state, and command execution never belong in the browser.
+2. Choose the smallest real server boundary already present in the repository. For an OpenAI-compatible HTTP provider, a thin server proxy is enough; do not add a provider framework merely to forward one endpoint.
+3. Invoke CLIs with an argument array, not a shell-built command. Bound input size, execution time, output size, and cancellation. For HTTP providers, likewise bound request body, prompt length, response body, and client timeout.
+4. Verify the installed CLI or upstream HTTP contract before coding. Use only observed flags and response shapes; provider contracts evolve.
+5. Persist non-secret settings separately from credentials. Validate provider and model values at the API boundary. Prefer a server-configured model; if the browser may override it, enforce an explicit server-side allowlist to prevent arbitrary model/billing selection.
+6. If only one provider exists, use a direct branch. Do not introduce a provider registry/interface until a second implementation exists.
+
+## OpenAI-compatible browser applications
+
+- Expose a non-secret status endpoint so the UI can honestly distinguish configured, unavailable, and unreachable states. Return only display-safe metadata; never return keys, credential fingerprints, or sensitive internal endpoint details.
+- Proxy generation through the application server with the authorization header added there. Never ask the browser to retain a provider key in local/session storage.
+- Treat non-2xx upstream status, transport failure, timeout, oversized output, malformed JSON, missing choices, and empty content as explicit failures. Do not replace failure with a canned “generated” result.
+- Keep provider capability claims narrow. Chat-completions text output does not implement image/video generation; either connect the matching media endpoint or label the workflow as text generation.
+- An unconfigured local run should remain usable for non-AI canvas/editor actions and should show an actionable, honest generation error.
+
+See `references/openai-compatible-web-proxy.md` for a compact endpoint and verification checklist.
 
 ## Hermes provider
 

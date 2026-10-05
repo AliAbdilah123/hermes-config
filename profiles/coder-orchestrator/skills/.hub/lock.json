@@ -1,1 +1,35 @@
-{"version": 1, "installed": {}}
+{
+  "version": 1,
+  "installed": {
+    "impeccable": {
+      "source": "official",
+      "identifier": "official/creative/impeccable",
+      "trust_level": "community",
+      "scan_verdict": "safe",
+      "content_hash": "sha256:305e5e55048c08dd",
+      "install_path": "creative/impeccable",
+      "files": [
+        "SKILL.md"
+      ],
+      "metadata": {
+        "source_url": "https://github.com/NousResearch/hermes-agent/tree/af90026aa09949579bd423d24def3d38f743cde0/optional-skills/creative/impeccable",
+        "source_revision": "af90026aa09949579bd423d24def3d38f743cde0"
+      },
+      "scan_provenance": {
+        "source": "official",
+        "source_url": "https://github.com/NousResearch/hermes-agent/tree/af90026aa09949579bd423d24def3d38f743cde0/optional-skills/creative/impeccable",
+        "bundle_hash": "sha256:305e5e55048c08dde3174796906394cb9bbc518a4250c778afe69bc60d92a3ed",
+        "scanner_version": "skills-guard-v1",
+        "verdict": "safe",
+        "trust_level": "builtin",
+        "findings": [],
+        "rules": [],
+        "scanned_at": "2026-10-04T15:57:12.153768+00:00",
+        "summary": "impeccable: clean scan, no threats detected",
+        "fresh": false
+      },
+      "installed_at": "2026-10-04T15:57:22.552010+00:00",
+      "updated_at": "2026-10-04T15:57:22.552081+00:00"
+    }
+  }
+}

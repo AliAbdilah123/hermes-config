@@ -1,8 +1,8 @@
-Fixes: authenticated public E2E; READY only after E2E. Finals: link, commit, push.
+Fixes: deploy live artifact, then public E2E; READY only after E2E. Source/build/push alone is incomplete. Finals: app link, commit, push.
 §
-Small fixes now; complex work plan first. Ordered plans gate items. “Copy app” means the actual app, not its marketing site; after correction, finish without more questions.
+Small fixes now; plan complex work first. Ordered plans gate work. “Copy app” means actual app; after correction, finish.
 §
-Coding: concise; delegate via configured model. Prefer the established stack; honor no-Docker requests. Ask before worktrees. UI revamps preserve behavior and need fail-closed review.
+Coding: concise; configured stack/model, no Docker. Ask before worktrees. UI uses impeccable; preserve behavior/fail closed.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §
@@ -14,4 +14,6 @@ Job UX: editable todos first; parallel columns, sequential jobs; history grey te
 §
 Paragentix: job detail page and modal have distinct purposes; never interchange.
 §
-User may lack VPS access; handoffs cannot require shell. Never expose secrets. Webhook reports need exact IDs and processing status; never inspect/change tokens.
+Handoffs need no shell. Never expose secrets/tokens. Webhook reports need exact IDs/status.
+§
+Log every implementation and fix in each project's changelog.

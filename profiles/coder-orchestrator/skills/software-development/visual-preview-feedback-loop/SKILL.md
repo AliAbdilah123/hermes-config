@@ -41,6 +41,12 @@ When a visual request divides one status section into priority columns, preserve
 
 ## Visual assertions
 
+### Dense mobile command headers
+
+When a desktop top bar contains a breadcrumb, board/workspace controls, notification actions, and an account avatar, do not let wrapping flexbox choose their mobile placement implicitly. Preserve DOM order and use a two-column mobile grid: `minmax(0, 1fr) auto` for breadcrumb + global actions, then place the board/workspace control group across `grid-column: 1 / -1`. Inside that full-width row, keep the selector flexible and action buttons fixed-width. This avoids notification/avatar controls overlapping the selector chevron or create button even when each component is individually responsive.
+
+Verify at the reported narrow viewport that selector and adjacent controls have non-overlapping bounding rectangles, every control retains at least a 44px touch target, global actions align with the breadcrumb, the full-width row stays inside the shared gutter, and desktop remains unchanged. Use an authenticated public render when the header exists only after login; if authentication is unavailable, report the visual gate as pending rather than promoting a login screenshot to UI proof.
+
 For heading emphasis removal, verify the real rendered heading has a single inherited/plain text color; do not merely search for one removed `<em>` because CSS descendant selectors or alternate components may still color text.
 
 For mobile hero simplification, verify at the breakpoint that the carousel is absent, inherited hero imagery/decorative pseudo-elements are disabled, **and its grid track, min-height, aspect-ratio, margins, and reserved whitespace collapse too**. A hidden child with a surviving desktop hero row is a failed mobile simplification. Confirm discovery/content begins promptly after the hero copy, desktop behavior remains intact, and reduced-motion rules do not leave obsolete effect code behind.
