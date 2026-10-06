@@ -14,8 +14,8 @@ Minimize overhead, not correctness.
 3. Batch independent reads and inspections.
 4. Prefer existing helpers, platform features, stdlib, and the smallest coherent diff.
 5. Run focused RED→GREEN checks, then the proportionate canonical verification.
-6. Continue through implementation and verification without progress-only final messages.
-7. Report only a blocker requiring user action, or the finished artifact with concise evidence.
+6. Continue through implementation and verification without progress-only final messages. A dispatched background worker is not completion: keep doing independent work, incorporate and verify its result when it returns, and do not end the turn with an “implementing now” status.
+7. Report only a blocker requiring user action, or the finished artifact with concise evidence. Fewer tokens means less narration, not an unfinished handoff.
 
 ## Communication budget
 
@@ -43,10 +43,18 @@ For webhook/provider fixes that require observing an unknown callback shape:
 
 The discovery callback proves payload shape; the post-deployment callback proves the implementation. Explain this distinction in one sentence so the second request does not look redundant.
 
+## Existing-work and failure triage
+
+- Before editing, compare the requested acceptance contract against `HEAD` and the dirty diff separately. The feature may already be partly committed while the worktree contains unrelated changes; do not misattribute either to the current task.
+- Preserve pre-existing dirty files. If a required file is modified, inspect its diff before editing and stage only exact task-owned paths.
+- When a broad suite fails, rerun the failure in isolation and classify it against the task-owned diff. Report an unrelated failure once, continue focused verification, and do not alter unrelated behavior merely to make the broad suite green.
+- Focused tests/builds are evidence, not completion, when acceptance requires deployment or live-provider E2E. Keep working or request the exact external action needed; never end with a progress-only final.
+
 ## Pitfalls
 
 - Loading several large overlapping skills for a narrow edit.
-- Sending `WORKING` as a final response while executable work remains.
+- Sending `WORKING`, “underway,” or “continuing” as a final response while executable work remains.
 - Repeating tool errors instead of silently taking the documented fallback.
 - Treating fewer words as permission to skip fresh verification.
 - Calling a provider-backed fix complete after local tests or the discovery callback.
+- Assuming dirty changes belong to the requested implementation without checking their provider/domain and provenance.

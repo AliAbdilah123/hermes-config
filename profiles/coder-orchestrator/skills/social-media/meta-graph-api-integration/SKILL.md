@@ -30,6 +30,16 @@ See `references/instagram-webhook-runtime-observability.md` when correlating pro
 See `references/privacy-safe-instagram-webhook-body-logging.md` when debugging requires payload visibility; it covers signature-gated recursive text redaction, malformed-request suppression, tests, and live journal verification.
 See `references/instagram-configured-senders-vs-user-identities.md` when Settings confuses the dedicated inbox, operator-configured sender accounts, and per-user social identities; it covers safe sender metadata exposure, Meta `/me` preflight, one-account-per-platform UI traps, and webhook-only versus UI status-polling terminology.
 
+## Webhook callback handoff
+
+When asked to “give me the Instagram/Facebook webhook,” treat it as a request for the exact callback URLs, not an implementation task:
+
+1. Identify the intended application first; similarly named products may expose different callbacks.
+2. Inspect the current source/runtime route and public hostname before using conversation history. Use history only as secondary context for a recent domain migration.
+3. Return separate provider-labelled, query-free HTTPS URLs in copyable form. Never include or repeat verify tokens; say to use the existing provider-specific token through a private channel.
+4. Do not claim an endpoint is verified from a generic CDN/WAF response. A valid verification probe must reach the provider route and satisfy the exact challenge contract; a deliberately wrong token should normally demonstrate route reachability via the application’s rejection, not merely any `403`.
+5. Keep a simple URL handoff concise. Add status, routing diagnosis, or setup instructions only when requested or when a callback is known not to be ready.
+
 ## Facebook OAuth Scopes
 
 Publishing to Facebook Pages requires these minimum scopes:
