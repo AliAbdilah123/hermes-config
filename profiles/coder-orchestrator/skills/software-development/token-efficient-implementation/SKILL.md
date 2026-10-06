@@ -22,6 +22,9 @@ Minimize overhead, not correctness.
 - One short kickoff only when useful.
 - Do not restate a supplied plan.
 - Do not narrate routine phase transitions or repeat status already visible in tooling.
+- A user approval such as “implement it” starts an execution turn, not a status-report turn. Continue through implementation, verification, commit/push/deploy, and required public E2E in that same turn. Do not emit a progress-only final such as “underway,” “implementation is running,” or “I’ll report back.”
+- If background agents are still running, keep the parent turn open and perform independent work; incorporate their results when delivered. A background dispatch never justifies ending the turn early.
+- Only interrupt execution for a blocker that specifically requires user input or external action. State the exact blocker and requested action; otherwise finish the job before replying.
 - When the user asks to be reminded about failures, report each meaningful failed boundary promptly in one sentence, state the active fallback, and later distinguish resolved failures from remaining blockers in the final.
 - A background-worker failure is not a user-facing stopping point when direct implementation can continue; switch to the shortest available fallback instead of waiting.
 - If live-provider evidence requires the user to resend/retry, first deploy and health-check the diagnostic or implementation, then ask once with the exact action. Do not request a resend before the relevant build is live; correlate callback and deployment timestamps to avoid redundant user loops.

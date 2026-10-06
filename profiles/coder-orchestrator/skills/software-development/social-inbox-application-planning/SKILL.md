@@ -163,6 +163,8 @@ For safely discovering real attachment payload shapes before implementing media 
 
 For reference-only webhook ingestion plus detail-open-only external enrichment and persistent media caching, see `references/lazy-external-media-cache-planning.md`. Use an explicit resolve command rather than a generic GET so route preloading, list/search loads, startup, and unopened records cannot cause provider traffic; cache failures must preserve the source record and original references.
 
+When an existing capture app evolves into a searchable note library—with message-derived titles/bodies, hashtag reanalysis, multi-source/tag filters, quota-safe explicit post loading, Markdown export, or bulk deletion—use `references/social-note-library-evolution.md`. It defines the full mutation/read-path inspection, ambiguous “homepage” check, tag/filter semantics, selection scope, partial-failure behavior, and quota-focused E2E evidence.
+
 ## Subpath deployment and E2E traps
 
 For a social-inbox SPA mounted below a path prefix:

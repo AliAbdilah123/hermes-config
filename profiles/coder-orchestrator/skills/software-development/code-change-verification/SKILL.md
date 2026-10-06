@@ -5,7 +5,7 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 # Code Change Verification
 
-Use after code changes and before completion, commit, or deploy. For navigation-heavy or whole-UI work, follow [fail-closed UI release gates](references/fail-closed-ui-release-gates.md).
+Use before release. Async/cross-layer gate: [guide](references/async-review-and-cross-layer-release-gates.md).
 
 ## When the verifier does not detect a canonical command
 
