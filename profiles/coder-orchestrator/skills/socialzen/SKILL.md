@@ -7,13 +7,11 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 ## Key references
 
-- Auth: `references/safe-account-password-reset.md`, `references/auth-route-session-guards.md`.
-- Projects: `references/project-*.md`.
-- Library/Studio: `references/virtual-asset-library-and-creation-studio.md`.
-- Providers: `references/complete-social-provider-enablement.md`, `references/webhook-free-cross-provider-comments.md`, `references/cross-platform-analytics-provider-enablement.md`.
-- Uploads: `references/reverse-proxy-origin-and-upload-errors.md`, `references/mobile-carousel-video-picker-mime-filtering.md`.
-- Notes: `references/social-note-permalink-recovery-and-reel-fallback.md`.
-- Composer labels/deploy: `references/provider-specific-composer-terminology.md`.
+- Auth: `references/safe-account-password-reset.md`, `references/auth-route-session-guards.md`
+- Projects/assets: `references/project-*.md`, `references/virtual-asset-library-and-creation-studio.md`
+- Providers: `references/complete-social-provider-enablement.md`, `references/cross-platform-analytics-provider-enablement.md`
+- Media: `references/reverse-proxy-origin-and-upload-errors.md`, `references/social-note-permalink-recovery-and-reel-fallback.md`
+- Frontend: `references/provider-specific-composer-terminology.md`, `references/vite-chunking-and-public-verification.md`
 
 ## Account lifecycle timing changes
 

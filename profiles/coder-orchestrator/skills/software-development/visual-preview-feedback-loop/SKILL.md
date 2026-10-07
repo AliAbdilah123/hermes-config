@@ -41,6 +41,12 @@ When a visual request divides one status section into priority columns, preserve
 
 ## Visual assertions
 
+### Long text in responsive detail layouts
+
+For note/article detail pages, treat long unbroken URLs and tokens as a two-part layout problem. Apply `overflow-wrap: anywhere` to rendered headings and rich-text content, and set `min-width: 0` on the text-bearing flex/grid child so it is allowed to shrink. Either rule alone can leave horizontal overflow: wrapping cannot help when the flex item retains its min-content width, while shrinkability does not create break opportunities inside an unbroken token. Prefer these native CSS rules over JavaScript text mutation or inserted soft-break characters.
+
+Verify the emitted production CSS contains both rules, then exercise the exact data-backed detail route at the reported mobile width. Measure `document.documentElement.scrollWidth <= document.documentElement.clientWidth` and confirm the heading/body bounding boxes remain within the viewport. A public HTML/CSS 200 response proves deployment only; if authentication or browser rendering blocks the exact detail page, report visual E2E as pending rather than calling the production fix fully verified.
+
 ### Dense mobile command headers
 
 When a desktop top bar contains a breadcrumb, board/workspace controls, notification actions, and an account avatar, do not let wrapping flexbox choose their mobile placement implicitly. Preserve DOM order and use a two-column mobile grid: `minmax(0, 1fr) auto` for breadcrumb + global actions, then place the board/workspace control group across `grid-column: 1 / -1`. Inside that full-width row, keep the selector flexible and action buttons fixed-width. This avoids notification/avatar controls overlapping the selector chevron or create button even when each component is individually responsive.

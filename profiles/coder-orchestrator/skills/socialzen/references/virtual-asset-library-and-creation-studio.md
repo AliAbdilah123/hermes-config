@@ -54,9 +54,12 @@ Frontend tests should prove:
 
 ## Delivery gates
 
-- Remove dead embedded-Studio rendering rather than hiding it behind a constant-false branch.
+- Remove dead embedded-Studio rendering rather than hiding it behind a constant-false branch. Also remove the now-unused state, polling, API calls, and types; typecheck catches partial cleanup.
+- When a feature corrects a previously documented product model, update the canonical `.hermes/plans/` source, its paired plan/design HTML, supporting alternatives, and `CHANGELOG.md` in the same delivery. Add a clear superseding note when historical alternatives are intentionally retained.
+- Publish changed review HTML through `/usr/share/nginx/html/prds/` symlinks, ensure source mode `644`, run `nginx -t`, and verify both HTTP 200 and a stable marker from the updated content at `https://dev.ahsanworks.com/prd/<file>`.
 - Run focused backend tests, focused frontend tests, typecheck, production build, and `git diff --check`.
 - A full-suite unrelated baseline failure must be reported separately and does not replace focused passing evidence.
 - Deploy the exact backend binary used by the service and the complete clean frontend `dist/`.
 - Read the service's actual listening port from runtime evidence before probing health.
+- Verify frontend deployment against the canonical development host `https://dev-socialzen.ahsanworks.com`: compare the live and local `index-*.js` basenames, resolve the relevant lazy chunk from the live index, and assert both a new stable marker and absence of removed UI markers. Do not use another hostname as deployment proof merely because it returns HTTP 200; it may serve a different cached build.
 - Do not claim public E2E when only HTTP 200, health, or bundle checks succeeded. If authenticated browser interaction was not completed, state that explicitly and keep readiness below READY.
