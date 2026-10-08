@@ -3,3 +3,9 @@ model:
   provider: custom
   base_url: http://127.0.0.1:20128/v1
   api_key: ${OPENAI_API_KEY}
+session_reset:
+  mode: idle
+  idle_minutes: 1440
+sessions:
+  auto_prune: true
+  retention_days: 7

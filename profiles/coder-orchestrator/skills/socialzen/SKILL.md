@@ -9,7 +9,9 @@ description: Maintain, deploy, and debug the SocialZen social-media scheduling a
 
 - Auth: `references/safe-account-password-reset.md`, `references/auth-route-session-guards.md`
 - Projects/assets: `references/project-*.md`, `references/virtual-asset-library-and-creation-studio.md`
-- Providers: `references/complete-social-provider-enablement.md`, `references/cross-platform-analytics-provider-enablement.md`
+- Providers: `references/cross-platform-analytics-provider-enablement.md`
+- Analytics: `references/analytics-metric-semantics-and-release.md`
+- Provider comment ingestion: `references/comment-refresh-to-webhook-migration.md`
 - Media: `references/reverse-proxy-origin-and-upload-errors.md`, `references/social-note-permalink-recovery-and-reel-fallback.md`
 - Frontend: `references/provider-specific-composer-terminology.md`, `references/vite-chunking-and-public-verification.md`
 

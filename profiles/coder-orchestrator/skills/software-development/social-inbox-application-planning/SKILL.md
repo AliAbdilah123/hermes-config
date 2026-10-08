@@ -161,6 +161,8 @@ For tracing Meta Instagram `recipient.id` through runtime configuration, active-
 
 For safely discovering real attachment payload shapes before implementing media ingestion—including deploy-before-resend sequencing, privacy-safe structural logging, and the minimum persistence/rendering verification—see `references/provider-webhook-media-shape-discovery.md`.
 
+When adding a manual **sync uncaptured messages** action to an established webhook inbox, use `references/manual-history-recovery.md`. It covers the real-provider history feasibility gate, durable temporary staging, strict oldest-first draining, reuse of webhook idempotency, failure/retry semantics, privacy boundaries, completeness reporting, and the threshold for moving from bounded synchronous work to a background job.
+
 For reference-only webhook ingestion plus detail-open-only external enrichment and persistent media caching, see `references/lazy-external-media-cache-planning.md`. Use an explicit resolve command rather than a generic GET so route preloading, list/search loads, startup, and unopened records cannot cause provider traffic; cache failures must preserve the source record and original references.
 
 When an existing capture app evolves into a searchable note library—with message-derived titles/bodies, hashtag reanalysis, multi-source/tag filters, quota-safe explicit post loading, Markdown export, or bulk deletion—use `references/social-note-library-evolution.md`. It defines the full mutation/read-path inspection, ambiguous “homepage” check, tag/filter semantics, selection scope, partial-failure behavior, and quota-focused E2E evidence.

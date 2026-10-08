@@ -59,4 +59,6 @@ See `references/safe-pull-rebuild-restart.md` for dirty-worktree handling, seman
 
 See `references/static-spa-cache-safe-deployment.md` when fresh browsers render but some clients see a blank page after a hashed-asset deployment. It covers previous-generation asset probes, SPA-fallback MIME traps, immediate restoration, HTML cache policy, and compatibility-window cleanup.
 
+See `references/nginx-static-spa-service-restart.md` for discovering the canonical Nginx hostname/mount, deploying a clean static build, restarting the separate API service when requested, and verifying public HTML, API health, MIME types, bundle markers, and rendered E2E.
+
 See `references/sveltekit-static-subpath-build-base.md` when a SvelteKit static SPA returns HTML but stays blank under an Nginx subpath. It distinguishes a source defect from a deployment-build invocation that omitted `BASE_PATH`, and defines emitted-HTML, asset-MIME, and rendered-browser gates.

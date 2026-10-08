@@ -1,0 +1,6 @@
+session_reset:
+  mode: idle
+  idle_minutes: 1440
+sessions:
+  auto_prune: true
+  retention_days: 7

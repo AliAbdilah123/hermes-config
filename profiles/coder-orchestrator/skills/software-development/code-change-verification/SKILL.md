@@ -7,11 +7,13 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 Use before release. Async/cross-layer gate: [guide](references/async-review-and-cross-layer-release-gates.md).
 
+For product/project renames across code, filesystem, services, routing, deployment, and public evidence, use the [full-stack rebrand release checklist](references/full-stack-rebrand-release-checklist.md).
+
 ## When the verifier does not detect a canonical command
 
 See [ad-hoc verification evidence](references/ad-hoc-verification-evidence.md) for the reusable script pattern, runtime polling safeguards, and evidence-reporting rules. For mixed Go-service and pnpm-frontend repositories, use the concrete [mixed Go + web workspace verification](references/mixed-go-web-verification.md) template.
 
-A project may have a real check command (for example `make check`) that workspace verification metadata does not recognize. Do not merely repeat an earlier run or argue that the command is canonical:
+If metadata misses a real project check (for example `make check`):
 
 1. Create an OS-safe temporary script with `mktemp`, `tempfile.mkstemp()`, or equivalent, using a `/tmp/hermes-verify-XXXXXX`-style prefix. Do not use a predictable fixed filename.
 2. Put the focused checks in that script, including the project's own check command plus static validation needed for files the command does not cover.
