@@ -76,3 +76,5 @@ See `references/review-state-capacity.md` for a concrete state-table and determi
 See `references/future-dated-head-of-line.md` when a future-dated head item must hold its FIFO lane without consuming capacity or allowing later items to leapfrog it. Keep the due-time predicate outside the subquery that identifies the positional head.
 
 See `references/review-phase-replies-and-text-approval.md` when feedback must reset the workflow phase, proposal-only output was misclassified as done, text replies should share the button approval transition, or an already-misclassified persisted row needs an auditable repair.
+
+See `references/account-scoped-live-and-backfill-queues.md` when live events and historical recovery share a durable per-account queue; it covers account-scoped leases, explicit live priority, failure barriers, onboarding fallback, provider-boundary honesty, and behavioral E2E requirements.

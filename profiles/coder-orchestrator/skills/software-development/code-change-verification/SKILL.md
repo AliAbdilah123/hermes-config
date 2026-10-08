@@ -7,7 +7,7 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 Use before release. Async/cross-layer gate: [guide](references/async-review-and-cross-layer-release-gates.md).
 
-For product/project renames across code, filesystem, services, routing, deployment, and public evidence, use the [full-stack rebrand release checklist](references/full-stack-rebrand-release-checklist.md).
+References: [full-stack rebrands](references/full-stack-rebrand-release-checklist.md); [SPA route namespace migrations](references/frontend-route-namespace-migrations.md).
 
 ## When the verifier does not detect a canonical command
 

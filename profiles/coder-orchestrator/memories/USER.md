@@ -1,4 +1,4 @@
-Fixes: deploy live artifact, then public E2E; READY only after E2E. Source/build/push alone is incomplete. Finals: app link, commit, push.
+Fixes and implementations: rebuild and restart the app, deploy live artifact, then public E2E. READY only after E2E. Source/build/push alone is incomplete. Finals: app link, commit, push.
 §
 Small fixes now; plan complex work first. Ordered plans gate work. “Copy app” means actual app; after correction, finish.
 §

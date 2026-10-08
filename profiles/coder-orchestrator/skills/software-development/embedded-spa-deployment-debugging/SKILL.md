@@ -25,6 +25,19 @@ Never infer deployment from source or build success alone. Compare hashed JS/CSS
 
 For independently served static SPAs, separate the frontend artifact from the API service: restarting a healthy backend cannot repair missing frontend assets. Rebuild with the public mount path, atomically publish the complete clean output directory, and restart the API only if its runtime artifact or configuration also changed. After recovery, make the mount path part of the canonical deploy command/script or CI environment so a later root-base build cannot reintroduce the blank page.
 
+## Standing post-implementation delivery gate
+
+When the user has established that implementations must be deployed, treat every completed implementation—not only explicit deployment requests—as requiring the full runtime cycle before reporting completion:
+
+1. Rebuild the production frontend artifact.
+2. Publish the complete clean artifact to the active serving directory.
+3. Restart the project service even for a frontend-only change when that is the user's established delivery workflow; this honors the requested lifecycle and removes stale-runtime ambiguity.
+4. Poll local service/API health after restart.
+5. Verify the canonical public URL and changed route/content. Use rendered browser E2E when available; if unavailable, report that limitation and provide public HTTP, asset MIME, and deployed bundle-marker evidence instead.
+6. Only then report ready, including the public app link, commit, and push status.
+
+Do not stop at source edits, tests, build success, or Git push. Those prove intermediate artifacts, not the running application.
+
 ## Workflow
 
 1. Reproduce the exact reported record and inspect its stored content.
