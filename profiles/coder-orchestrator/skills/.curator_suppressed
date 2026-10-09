@@ -7,6 +7,7 @@ ascii-video
 audiocraft-audio-generation
 baoyu-infographic
 blogwatcher
+comfyui
 evaluating-llms-harness
 excalidraw
 findmy
@@ -36,6 +37,7 @@ python-debugpy
 research-paper-writing
 segment-anything-model
 serving-llms-vllm
+simplify-code
 songsee
 songwriting-and-ai-music
 spike

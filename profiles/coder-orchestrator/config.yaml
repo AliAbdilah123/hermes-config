@@ -515,7 +515,7 @@ streaming:
   fresh_final_after_seconds: 0.0
 sessions:
   auto_prune: true
-  retention_days: 7
+  retention_days: 30
   vacuum_after_prune: true
   min_interval_hours: 24
   write_json_snapshots: false

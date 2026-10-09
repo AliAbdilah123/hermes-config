@@ -221,7 +221,7 @@
     "view_count": 55
   },
   "comfyui": {
-    "archived_at": null,
+    "archived_at": "2026-10-08T11:14:07.197802+00:00",
     "created_at": "2026-06-25T05:56:09.316300+00:00",
     "created_by": null,
     "last_patched_at": null,
@@ -229,7 +229,7 @@
     "last_viewed_at": "2026-07-08T07:49:15.005104+00:00",
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 1,
     "view_count": 1
   },
@@ -944,7 +944,7 @@
     "last_viewed_at": "2026-10-08T00:38:22.162875+00:00",
     "patch_count": 2,
     "pinned": false,
-    "state": "stale",
+    "state": "active",
     "use_count": 5,
     "view_count": 5
   },
@@ -1061,7 +1061,7 @@
     "last_viewed_at": "2026-10-04T10:51:33.993791+00:00",
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "active",
     "use_count": 2,
     "view_count": 2
   },
@@ -1191,7 +1191,7 @@
     "last_viewed_at": "2026-10-04T01:13:14.035009+00:00",
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "active",
     "use_count": 17,
     "view_count": 17
   },
@@ -1360,7 +1360,7 @@
     "last_viewed_at": "2026-10-08T02:08:38.315463+00:00",
     "patch_count": 9,
     "pinned": false,
-    "state": "stale",
+    "state": "active",
     "use_count": 8,
     "view_count": 8
   },
@@ -1482,7 +1482,7 @@
     "view_count": 0
   },
   "simplify-code": {
-    "archived_at": null,
+    "archived_at": "2026-10-08T11:14:07.249361+00:00",
     "created_at": "2026-06-25T05:56:09.504334+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-05T13:33:34.911434+00:00",
@@ -1490,7 +1490,7 @@
     "last_viewed_at": "2026-07-05T13:22:55.423040+00:00",
     "patch_count": 2,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 1,
     "view_count": 1
   },
@@ -1537,14 +1537,14 @@
     "archived_at": null,
     "created_at": "2026-07-02T15:58:52.225903+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-10-07T17:35:05.743294+00:00",
-    "last_used_at": "2026-10-07T17:34:21.711725+00:00",
-    "last_viewed_at": "2026-10-07T17:34:21.706368+00:00",
-    "patch_count": 444,
+    "last_patched_at": "2026-10-08T15:50:41.408417+00:00",
+    "last_used_at": "2026-10-08T15:50:32.494000+00:00",
+    "last_viewed_at": "2026-10-08T15:50:32.488353+00:00",
+    "patch_count": 445,
     "pinned": false,
     "state": "active",
-    "use_count": 774,
-    "view_count": 774
+    "use_count": 777,
+    "view_count": 777
   },
   "software-development/code-change-verification": {
     "archived_at": null,
@@ -1906,7 +1906,7 @@
     "last_viewed_at": "2026-10-04T01:26:06.045329+00:00",
     "patch_count": 2,
     "pinned": false,
-    "state": "stale",
+    "state": "active",
     "use_count": 7,
     "view_count": 7
   },
