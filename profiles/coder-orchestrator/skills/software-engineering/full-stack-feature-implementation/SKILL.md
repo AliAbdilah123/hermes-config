@@ -9,9 +9,9 @@ Use this skill for real full-stack implementation backed by execution evidence.
 
 ## Focused UI and embedded-build verification
 
-References: [acceptance](references/acceptance-contract-audit.md), [milestones](references/ordered-milestone-delivery.md), [notifications](references/notification-delivery-milestones.md), [milestone gates](references/stack-alignment-and-milestone-gates.md), [verification fallback](references/ad-hoc-verification-fallback.md), [file drop](references/native-file-drop-area.md), [approved UI](references/promoting-approved-ui-variant.md), and [Markdown live editors](references/markdown-live-editor-integration.md). Verify source, served assets, upstream, auth, and acceptance.
+References: [acceptance](references/acceptance-contract-audit.md), [milestones](references/ordered-milestone-delivery.md), [notifications](references/notification-delivery-milestones.md), [milestone gates](references/stack-alignment-and-milestone-gates.md), [verification fallback](references/ad-hoc-verification-fallback.md), [file drop](references/native-file-drop-area.md), [approved UI](references/promoting-approved-ui-variant.md), [Markdown editors](references/markdown-live-editor-integration.md), and [repeated create forms](references/repeated-create-forms.md).
 
-When the repository is already dirty, isolate the feature by exact paths: inventory first, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
+In dirty repositories, isolate exact paths, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 
 For uploads that accept arbitrary file types across creation and reply/comment flows, apply layered count/size enforcement, bounded multipart parsing, safe binary-to-context handling, and sibling-flow boundary tests. See [references/file-upload-boundary-validation.md](references/file-upload-boundary-validation.md).
 
