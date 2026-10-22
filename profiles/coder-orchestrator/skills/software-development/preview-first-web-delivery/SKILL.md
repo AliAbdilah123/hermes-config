@@ -28,7 +28,11 @@ For backend-dependent previews, follow `references/full-stack-isolated-preview.m
 
 For dependency-light plain HTML/CSS/JS prototypes with a Python stdlib shell served under an nginx project subpath, follow `references/stdlib-prototype-subpath-delivery.md`. It covers relative asset paths, hash routing, JSON-vs-SPA fallback, cache-busted visual fixes, browser geometry checks, and final public E2E.
 
+For map interfaces that visualize regions/polygons and for standalone HTML mockups that risk silent truncation, follow `references/map-region-preview-integrity.md`. It requires geometry provenance (never present synthetic polygons as verified boundaries) plus served-file completeness, desktop/mobile rendering, and cache-busted public checks before sharing.
+
 For a root-mounted static site deployed directly through nginx, follow `references/static-site-origin-deployment.md`. Normalize copied directories to `755` and files to `644`, then verify loopback with the production Host header before public HTTPS; preserved `600` source files otherwise produce a misleading `403` despite a valid server block.
+
+For Leaflet maps with fragmented tiles, blank gaps, panel overlap, or mobile overflow, follow `references/leaflet-runtime-assets-and-responsive-map-verification.md`. Verify that the stylesheet is actually applied (including SRI and CSS parsing), prefer same-origin vendored runtime assets for small static apps, and leave viewport checks for tile positioning, overflow, drawer state, and polygon navigation.
 
 When approval arrives but the shared production checkout contains unrelated work, follow `references/dirty-production-checkout-handoff.md`: rebase and verify in the clean feature worktree, update the remote production branch from that branch, build deployable artifacts there, and leave the dirty checkout untouched.
 
