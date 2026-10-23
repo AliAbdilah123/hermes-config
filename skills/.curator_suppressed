@@ -13,6 +13,7 @@ claude-design
 codebase-inspection
 codex
 comfyui
+computer-use
 design-md
 dogfood
 evaluating-llms-harness
@@ -27,6 +28,7 @@ github-repo-management
 google-workspace
 heartmula
 hermes-agent-skill-authoring
+hermes-desktop-plugins
 himalaya
 huggingface-hub
 humanizer
@@ -44,6 +46,7 @@ ocr-and-documents
 opencode
 openhue
 p5js
+petdex
 polymarket
 popular-web-designs
 powerpoint

@@ -208,7 +208,7 @@
     "view_count": 1
   },
   "computer-use": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T09:28:13.248167+00:00",
     "created_at": "2026-07-23T08:09:30.907191+00:00",
     "created_by": null,
     "last_patched_at": null,
@@ -216,12 +216,12 @@
     "last_viewed_at": null,
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 0,
     "view_count": 0
   },
   "css-theme-tokens": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T09:28:13.260795+00:00",
     "created_at": "2026-07-21T07:55:35.791972+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-21T07:55:41.759587+00:00",
@@ -229,7 +229,7 @@
     "last_viewed_at": null,
     "patch_count": 1,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 0,
     "view_count": 0
   },
@@ -472,13 +472,13 @@
     "created_at": "2026-06-20T23:23:15.294163+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-04T05:47:39.372269+00:00",
-    "last_used_at": "2026-10-22T02:00:07.839593+00:00",
-    "last_viewed_at": "2026-10-22T02:00:07.835461+00:00",
+    "last_used_at": "2026-10-23T02:00:29.108413+00:00",
+    "last_viewed_at": "2026-10-23T02:00:29.103967+00:00",
     "patch_count": 4,
     "pinned": false,
     "state": "active",
-    "use_count": 40,
-    "view_count": 40
+    "use_count": 41,
+    "view_count": 41
   },
   "hermes-agent-skill-authoring": {
     "archived_at": "2026-09-24T09:20:54.657087+00:00",
@@ -494,7 +494,7 @@
     "view_count": 0
   },
   "hermes-desktop-plugins": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T09:28:13.276082+00:00",
     "created_at": "2026-07-23T08:09:30.919705+00:00",
     "created_by": null,
     "last_patched_at": null,
@@ -502,7 +502,7 @@
     "last_viewed_at": null,
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 0,
     "view_count": 0
   },
@@ -515,7 +515,7 @@
     "last_viewed_at": "2026-09-19T14:27:37.810575+00:00",
     "patch_count": 20,
     "pinned": false,
-    "state": "active",
+    "state": "stale",
     "use_count": 8,
     "view_count": 8
   },
@@ -528,7 +528,7 @@
     "last_viewed_at": "2026-09-19T14:27:33.564172+00:00",
     "patch_count": 16,
     "pinned": false,
-    "state": "active",
+    "state": "stale",
     "use_count": 15,
     "view_count": 15
   },
@@ -624,7 +624,7 @@
     "view_count": 0
   },
   "komuna-commerce-rules": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T09:28:13.299502+00:00",
     "created_at": "2026-07-21T08:04:34.071107+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-21T08:06:02.705211+00:00",
@@ -632,12 +632,12 @@
     "last_viewed_at": "2026-07-21T08:05:31.837308+00:00",
     "patch_count": 1,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 1,
     "view_count": 1
   },
   "komuna-prototype-deployment": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T09:28:13.312886+00:00",
     "created_at": "2026-07-21T07:44:01.086114+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-07-21T07:44:33.615192+00:00",
@@ -645,7 +645,7 @@
     "last_viewed_at": null,
     "patch_count": 2,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 0,
     "view_count": 0
   },
@@ -749,7 +749,7 @@
     "last_viewed_at": "2026-09-22T02:38:52.616522+00:00",
     "patch_count": 27,
     "pinned": false,
-    "state": "active",
+    "state": "stale",
     "use_count": 33,
     "view_count": 33
   },
@@ -845,7 +845,7 @@
     "view_count": 0
   },
   "petdex": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T09:28:13.333916+00:00",
     "created_at": "2026-07-23T08:09:30.924484+00:00",
     "created_by": null,
     "last_patched_at": null,
@@ -853,7 +853,7 @@
     "last_viewed_at": null,
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 0,
     "view_count": 0
   },

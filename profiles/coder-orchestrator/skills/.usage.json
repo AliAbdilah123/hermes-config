@@ -143,7 +143,7 @@
     "view_count": 0
   },
   "claude-code": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T11:22:24.937156+00:00",
     "created_at": "2026-06-25T05:56:09.308063+00:00",
     "created_by": null,
     "last_patched_at": null,
@@ -151,7 +151,7 @@
     "last_viewed_at": "2026-07-20T02:41:42.741399+00:00",
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 1,
     "view_count": 1
   },
@@ -650,7 +650,7 @@
     "view_count": 9
   },
   "hermes-desktop-plugins": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T11:22:24.962320+00:00",
     "created_at": "2026-07-23T07:12:19.891411+00:00",
     "created_by": null,
     "last_patched_at": null,
@@ -658,7 +658,7 @@
     "last_viewed_at": null,
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 0,
     "view_count": 0
   },
@@ -1066,7 +1066,7 @@
     "view_count": 2
   },
   "opencode": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T11:22:24.974640+00:00",
     "created_at": "2026-06-25T05:56:09.450468+00:00",
     "created_by": null,
     "last_patched_at": null,
@@ -1074,7 +1074,7 @@
     "last_viewed_at": "2026-07-20T02:39:30.115792+00:00",
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 1,
     "view_count": 1
   },
@@ -1131,7 +1131,7 @@
     "view_count": 32
   },
   "petdex": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T11:22:24.996351+00:00",
     "created_at": "2026-07-23T07:12:19.903114+00:00",
     "created_by": null,
     "last_patched_at": null,
@@ -1139,7 +1139,7 @@
     "last_viewed_at": null,
     "patch_count": 0,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 0,
     "view_count": 0
   },
@@ -1438,12 +1438,12 @@
     "last_viewed_at": "2026-09-20T12:22:10.882203+00:00",
     "patch_count": 6,
     "pinned": false,
-    "state": "active",
+    "state": "stale",
     "use_count": 4,
     "view_count": 4
   },
   "scraped-business-data-product-analysis": {
-    "archived_at": null,
+    "archived_at": "2026-10-22T11:22:25.062807+00:00",
     "created_at": "2026-06-28T15:59:37.045519+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-06-28T15:59:56.260538+00:00",
@@ -1451,7 +1451,7 @@
     "last_viewed_at": "2026-07-19T11:44:05.901884+00:00",
     "patch_count": 1,
     "pinned": false,
-    "state": "stale",
+    "state": "archived",
     "use_count": 1,
     "view_count": 1
   },
@@ -1789,7 +1789,7 @@
     "last_viewed_at": "2026-09-19T14:07:33.625994+00:00",
     "patch_count": 2,
     "pinned": false,
-    "state": "active",
+    "state": "stale",
     "use_count": 2,
     "view_count": 2
   },

@@ -7,6 +7,7 @@ ascii-video
 audiocraft-audio-generation
 baoyu-infographic
 blogwatcher
+claude-code
 comfyui
 evaluating-llms-harness
 excalidraw
@@ -15,6 +16,7 @@ gif-search
 github-issues
 google-workspace
 heartmula
+hermes-desktop-plugins
 himalaya
 huggingface-hub
 humanizer
@@ -28,8 +30,10 @@ nano-pdf
 node-inspect-debugger
 notion
 obsidian
+opencode
 openhue
 p5js
+petdex
 polymarket
 powerpoint
 pretext
