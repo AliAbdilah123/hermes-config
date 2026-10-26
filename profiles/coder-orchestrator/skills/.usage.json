@@ -173,13 +173,13 @@
     "created_at": "2026-07-23T03:23:44.812877+00:00",
     "created_by": "agent",
     "last_patched_at": "2026-10-11T11:52:08.921220+00:00",
-    "last_used_at": "2026-10-21T11:07:40.772225+00:00",
-    "last_viewed_at": "2026-10-21T11:07:40.766390+00:00",
+    "last_used_at": "2026-10-25T12:53:04.037723+00:00",
+    "last_viewed_at": "2026-10-25T12:53:04.028483+00:00",
     "patch_count": 244,
     "pinned": false,
     "state": "active",
-    "use_count": 652,
-    "view_count": 652
+    "use_count": 653,
+    "view_count": 653
   },
   "codebase-inspection": {
     "archived_at": null,
@@ -492,6 +492,19 @@
     "state": "active",
     "use_count": 17,
     "view_count": 17
+  },
+  "geospatial-overlay-integrity": {
+    "archived_at": null,
+    "created_at": "2026-10-25T13:04:23.325252+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-10-25T13:04:32.541593+00:00",
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 1,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
   },
   "gif-search": {
     "archived_at": "2026-09-24T10:28:58.789582+00:00",
@@ -1174,13 +1187,13 @@
     "created_at": "2026-06-30T06:45:10.588526+00:00",
     "created_by": null,
     "last_patched_at": null,
-    "last_used_at": "2026-10-11T11:59:28.419615+00:00",
-    "last_viewed_at": "2026-10-11T11:59:28.414015+00:00",
+    "last_used_at": "2026-10-25T12:53:04.077263+00:00",
+    "last_viewed_at": "2026-10-25T12:53:04.063990+00:00",
     "patch_count": 0,
     "pinned": false,
     "state": "active",
-    "use_count": 406,
-    "view_count": 406
+    "use_count": 407,
+    "view_count": 407
   },
   "popular-web-designs": {
     "archived_at": null,
@@ -1850,13 +1863,13 @@
     "created_at": "2026-06-22T07:20:34.959663+00:00",
     "created_by": null,
     "last_patched_at": "2026-07-19T06:47:09.732114+00:00",
-    "last_used_at": "2026-10-21T11:27:50.775569+00:00",
-    "last_viewed_at": "2026-10-21T11:27:50.768914+00:00",
+    "last_used_at": "2026-10-25T12:53:04.069894+00:00",
+    "last_viewed_at": "2026-10-25T12:53:04.055858+00:00",
     "patch_count": 137,
     "pinned": false,
     "state": "active",
-    "use_count": 488,
-    "view_count": 488
+    "use_count": 489,
+    "view_count": 489
   },
   "teams-meeting-pipeline": {
     "archived_at": "2026-09-24T10:28:59.433446+00:00",
