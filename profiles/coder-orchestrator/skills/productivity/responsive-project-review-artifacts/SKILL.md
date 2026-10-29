@@ -26,8 +26,12 @@ Use when the user asks for a styled HTML report explaining what can be improved 
    - verification baseline;
    - theme toggle;
    - mobile-safe layout, tables, long paths, and code references.
-7. Publish the artifact to the configured review-document route, preserve a canonical source in the repository, and verify local and public HTTP 200 responses with a cache-busting query.
-8. Run an artifact-specific self-check after writing it (viewport, theme toggle, breakpoints, reduced motion, expected findings). Then run the relevant project verification again after the changed artifact so verification evidence is fresh.
+7. Publish the artifact to the configured review-document route and preserve its canonical source in the repository.
+   - For a documentation set containing an HTML index plus linked Markdown files, publish the whole directory under one stable route (for example `/prd/<project>-features/`) rather than scattering files across unrelated URLs.
+   - Use a responsive HTML index as the human-facing hub; keep Markdown files directly downloadable and use relative links so the set remains portable.
+   - Deploy with deletion and explicit web-readable permissions (directories `755`, files `644`) so removed documents do not linger and nginx cannot return `403`.
+   - Verify the index and **every linked document** publicly with a cache-busting query. Require HTTP 200, expected content type (`text/html` for the hub and normally `text/plain` for raw Markdown), non-empty bodies, and representative content—not only the directory root.
+8. Run an artifact-specific self-check after writing it (viewport, theme or color-scheme behavior, breakpoints, reduced motion, expected links/findings). Then run the relevant project verification again after the changed artifact so verification evidence is fresh.
 9. Before committing, inspect the changed paths and keep the report concise, KISS, and consistent with surrounding repository conventions. Commit and push only the intended artifact.
 10. Final response must include the public report URL, the project's public URL when known, the checks that actually passed, and the commit identifier.
 
