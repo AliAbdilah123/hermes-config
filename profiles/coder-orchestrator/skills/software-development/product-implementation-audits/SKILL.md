@@ -31,6 +31,8 @@ For proposed provider-webhook capabilities such as attachments or rich media, us
 
 For multi-repository extraction audits, use [references/reusable-feature-slice-audit.md](references/reusable-feature-slice-audit.md). It covers canonical repository/lineage classification, exact path/function evidence, existing-skill deduplication, per-surface baseline verification, extraction readiness, and class-level `feature-*` proposals.
 
+For requests to create a `features/` directory with complete product flows and step-by-step manual UI checks, use [references/feature-flow-ui-verification-docs.md](references/feature-flow-ui-verification-docs.md). It covers role/domain document structure, canonical deployment URL verification, implementation-to-UI tracing, runtime evidence wording, and commonly missed authorization, persistence, responsive, and cross-surface checks.
+
 ## Reporting style
 
 When the user requests low token usage, keep citations exact and collapse repetitive requirements into compact tables. State audit/runtime limitations once, not under every row. Give details primarily for blockers, partial behavior, broken contracts, and architecture violations. Preserve the user’s required output order and exact labels.
