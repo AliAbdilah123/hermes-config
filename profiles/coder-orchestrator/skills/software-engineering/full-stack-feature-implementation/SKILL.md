@@ -9,7 +9,7 @@ Use this skill for real full-stack implementation backed by execution evidence.
 
 ## Focused UI and embedded-build verification
 
-References: [acceptance](references/acceptance-contract-audit.md), [milestones](references/ordered-milestone-delivery.md), [notifications](references/notification-delivery-milestones.md), [milestone gates](references/stack-alignment-and-milestone-gates.md), [verification fallback](references/ad-hoc-verification-fallback.md), [file drop](references/native-file-drop-area.md), [approved UI](references/promoting-approved-ui-variant.md), [Markdown editors](references/markdown-live-editor-integration.md), and [repeated create forms](references/repeated-create-forms.md).
+References: `references/` contains acceptance, milestones, release verification, UI/form patterns, admin-editor TDD, and `access-profile-permission-management.md`.
 
 In dirty repositories, isolate exact paths, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
 
