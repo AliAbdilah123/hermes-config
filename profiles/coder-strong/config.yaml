@@ -5,17 +5,17 @@ model:
   api_key: sk-67285f26a531c155-wqkius-97664fd8
 providers: {}
 fallback_providers:
-- provider: opencode-go
-  model: glm-5.1
-  base_url: https://opencode.ai/zen/go/v1
-  api_mode: chat_completions
-- provider: opencode-go
-  model: glm-5.2
-  base_url: https://opencode.ai/zen/go/v1
-  api_mode: chat_completions
+  - provider: opencode-go
+    model: glm-5.1
+    base_url: https://opencode.ai/zen/go/v1
+    api_mode: chat_completions
+  - provider: opencode-go
+    model: glm-5.2
+    base_url: https://opencode.ai/zen/go/v1
+    api_mode: chat_completions
 credential_pool_strategies: {}
 toolsets:
-- hermes-cli
+  - hermes-cli
 max_concurrent_sessions: null
 agent:
   max_turns: 90
@@ -271,9 +271,9 @@ display:
   runtime_footer:
     enabled: false
     fields:
-    - model
-    - context_pct
-    - cwd
+      - model
+      - context_pct
+      - cwd
   copy_shortcut: auto
 dashboard:
   theme: default
@@ -421,11 +421,11 @@ discord:
     speech_gain: 1.0
     ack_enabled: true
     ack_phrases:
-    - Let me look into that.
-    - One moment.
-    - Checking on that now.
-    - Give me a sec.
-    - On it.
+      - Let me look into that.
+      - One moment.
+      - Checking on that now.
+      - Give me a sec.
+      - On it.
 whatsapp: {}
 telegram:
   reactions: false
@@ -512,7 +512,7 @@ streaming:
   transport: auto
   edit_interval: 0.8
   buffer_threshold: 24
-  cursor: " \u2589"
+  cursor: ' ▉'
   fresh_final_after_seconds: 0.0
 sessions:
   auto_prune: false
@@ -521,7 +521,8 @@ sessions:
   min_interval_hours: 24
   write_json_snapshots: false
 onboarding:
-  seen: {}
+  seen:
+    tool_progress_prompt: true
   profile_build: ask
 updates:
   pre_update_backup: false
@@ -551,29 +552,7 @@ paste_collapse_threshold_fallback: 5
 paste_collapse_char_threshold: 2000
 _config_version: 30
 custom_providers:
-- name: coder-strong
-  base_url: http://localhost:20128/v1
-  api_key: sk-67285f26a531c155-wqkius-97664fd8
-  model: coder-strong
-
-# ── Fallback Model ────────────────────────────────────────────────────
-# Automatic provider failover when primary is unavailable.
-# Uncomment and configure to enable. Triggers on rate limits (429),
-# overload (529), service errors (503), or connection failures.
-#
-# Supported providers:
-#   openrouter   (OPENROUTER_API_KEY)  — routes to any model
-#   openai-codex (OAuth — hermes auth) — OpenAI Codex
-#   nous         (OAuth — hermes auth) — Nous Portal
-#   zai          (ZAI_API_KEY)         — Z.AI / GLM
-#   kimi-coding  (KIMI_API_KEY)        — Kimi / Moonshot
-#   kimi-coding-cn (KIMI_CN_API_KEY)   — Kimi / Moonshot (China)
-#   minimax      (MINIMAX_API_KEY)     — MiniMax
-#   minimax-cn   (MINIMAX_CN_API_KEY)  — MiniMax (China)
-#   bedrock      (AWS IAM / boto3)     — AWS Bedrock (Converse API)
-#
-# For custom OpenAI-compatible endpoints, add base_url and key_env.
-#
-# fallback_model:
-#   provider: openrouter
-#   model: anthropic/claude-sonnet-4
+  - name: coder-strong
+    base_url: http://localhost:20128/v1
+    api_key: sk-67285f26a531c155-wqkius-97664fd8
+    model: coder-strong

@@ -2,7 +2,7 @@ Fixes and implementations: rebuild and restart the app, deploy live artifact, th
 §
 Small fixes now; plan complex work first. Ordered plans gate work. “Copy app” means actual app; after correction, finish.
 §
-Coding: concise; configured stack/model, no Docker. Ask before worktrees. UI uses impeccable; preserve behavior/fail closed.
+Coding: concise; configured stack/model, no Docker. Ask before worktrees. UI: shadcn/ui by default; impeccable design; preserve behavior/fail closed.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §

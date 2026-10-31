@@ -99,10 +99,22 @@ profiles/*/.skills_prompt_snapshot.json
 # ── Agent source tree (tracked in its own repo inside hermes-agent) ──
 hermes-agent/
 
-# ── Cron runtime files ──
+# ── Cron/runtime output (all profiles) ──
 cron/.tick.lock
 cron/.jobs.lock
 cron/output/
+**/cron/.tick.lock
+**/cron/.jobs.lock
+**/cron/output/
+**/cron/ticker_heartbeat
+**/cron/ticker_last_success
+**/state/
+**/lsp/
+**/__pycache__/
+**/.archive/
+**/skills/.usage.json
+**/skills/.bundled_manifest
+**/kanban/boards/
 
 # ── Plan-specific artifacts ──
 *.bak.*

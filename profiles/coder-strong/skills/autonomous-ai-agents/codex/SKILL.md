@@ -52,12 +52,11 @@ terminal(command="cd $(mktemp -d) && git init && codex exec 'Build a snake game 
 ## Background Mode (Long Tasks)
 
 ```
-# Start in background with PTY
-terminal(command="codex exec --full-auto 'Refactor the auth module'", workdir="~/project", background=true, pty=true)
-# Returns session_id
+# Start in background with PTY and a one-shot completion notification
+terminal(command="codex exec --full-auto 'Refactor the auth module'", workdir="~/project", background=true, pty=true, notify_on_complete=true)
+# Returns session_id; Hermes resumes when Codex exits
 
-# Monitor progress
-process(action="poll", session_id="<id>")
+# Inspect only when the user asks or intervention is required
 process(action="log", session_id="<id>")
 
 # Send input if Codex asks a question
@@ -110,11 +109,10 @@ terminal(command="git worktree add -b fix/issue-78 /tmp/issue-78 main", workdir=
 terminal(command="git worktree add -b fix/issue-99 /tmp/issue-99 main", workdir="~/project")
 
 # Launch Codex in each
-terminal(command="codex --yolo exec 'Fix issue #78: <description>. Commit when done.'", workdir="/tmp/issue-78", background=true, pty=true)
-terminal(command="codex --yolo exec 'Fix issue #99: <description>. Commit when done.'", workdir="/tmp/issue-99", background=true, pty=true)
+terminal(command="codex --yolo exec 'Fix issue #78: <description>. Commit when done.'", workdir="/tmp/issue-78", background=true, pty=true, notify_on_complete=true)
+terminal(command="codex --yolo exec 'Fix issue #99: <description>. Commit when done.'", workdir="/tmp/issue-99", background=true, pty=true, notify_on_complete=true)
 
-# Monitor
-process(action="list")
+# Park until each completion notification arrives
 
 # After completion, push and create PRs
 terminal(command="cd /tmp/issue-78 && git push -u origin fix/issue-78")
@@ -131,8 +129,8 @@ terminal(command="git worktree remove /tmp/issue-78", workdir="~/project")
 terminal(command="git fetch origin '+refs/pull/*/head:refs/remotes/origin/pr/*'", workdir="~/project")
 
 # Review multiple PRs in parallel
-terminal(command="codex exec 'Review PR #86. git diff origin/main...origin/pr/86'", workdir="~/project", background=true, pty=true)
-terminal(command="codex exec 'Review PR #87. git diff origin/main...origin/pr/87'", workdir="~/project", background=true, pty=true)
+terminal(command="codex exec 'Review PR #86. git diff origin/main...origin/pr/86'", workdir="~/project", background=true, pty=true, notify_on_complete=true)
+terminal(command="codex exec 'Review PR #87. git diff origin/main...origin/pr/87'", workdir="~/project", background=true, pty=true, notify_on_complete=true)
 
 # Post results
 terminal(command="gh pr comment 86 --body '<review>'", workdir="~/project")
@@ -144,6 +142,6 @@ terminal(command="gh pr comment 86 --body '<review>'", workdir="~/project")
 2. **Git repo required** — Codex won't run outside a git directory. Use `mktemp -d && git init` for scratch
 3. **Use `exec` for one-shots** — `codex exec "prompt"` runs and exits cleanly
 4. **`--full-auto` for building** — auto-approves changes within the sandbox
-5. **Background for long tasks** — use `background=true` and monitor with `process` tool
-6. **Don't interfere** — monitor with `poll`/`log`, be patient with long-running tasks
+5. **Background for long tasks** — use `background=true, notify_on_complete=true`
+6. **Park after handoff** — do not wait or poll; resume only when the completion notification arrives. Use `log`, `submit`, or `kill` only for explicit inspection or intervention
 7. **Parallel is fine** — run multiple Codex processes at once for batch work

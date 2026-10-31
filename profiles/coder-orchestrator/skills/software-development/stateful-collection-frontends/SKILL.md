@@ -36,6 +36,10 @@ Prefer component/browser interaction tests. Source-text assertions are a fallbac
 - Reuse an existing owner-scoped, CSRF-protected single-delete endpoint sequentially before adding a bulk endpoint.
 - After destructive partial failure, refresh data and keep only failed IDs selected with a visible error.
 - Defer quota-sensitive/provider-backed detail work behind explicit user activation.
+- When CRUD affects a global selector, keep one authoritative shared collection and one reload/invalidation path; page-local refreshes cannot update sibling UI.
+- Once collections are mutable, public E2E should derive expected selector labels from the authenticated live API rather than frozen seed fixtures.
+
+See `references/shared-entity-selector-staleness.md` for the diagnosis, minimal shared-store fix, and regression recipe.
 
 ## Shared-tree safeguards
 
