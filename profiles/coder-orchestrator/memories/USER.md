@@ -1,8 +1,8 @@
-Fixes and implementations: rebuild and restart the app, deploy live artifact, then public E2E. READY only after E2E. Source/build/push alone is incomplete. Finals: app link, commit, push.
+Fixes: rebuild/restart, deploy live artifact, then public E2E. READY only after E2E. Finals: app link, commit, push.
 §
 Small fixes now; plan complex work first. Ordered plans gate work. “Copy app” means actual app; after correction, finish.
 §
-Coding: concise; configured stack/model, no Docker. Ask before worktrees. UI: shadcn/ui by default; impeccable design; preserve behavior/fail closed.
+Coding: concise; configured stack/model, no Docker. Ask before worktrees. UI: shadcn/ui; impeccable; preserve behavior/fail closed.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §
@@ -17,3 +17,5 @@ Paragentix: job detail page and modal have distinct purposes; never interchange.
 Handoffs need no shell. Never expose secrets/tokens. Webhook reports need exact IDs/status.
 §
 Log every implementation and fix in each project's changelog.
+§
+In #p-orchestrator, assume the orchestrator project unless stated otherwise.

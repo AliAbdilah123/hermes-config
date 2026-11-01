@@ -5,13 +5,13 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 # Code Change Verification
 
-Use before release. Async/cross-layer gate: [guide](references/async-review-and-cross-layer-release-gates.md).
+Use before release. References: [cross-layer](references/async-review-and-cross-layer-release-gates.md), [rebrands](references/full-stack-rebrand-release-checklist.md), [SPA routes](references/frontend-route-namespace-migrations.md), [ARM64 browser UI](references/arm64-browser-ui-verification.md).
 
-References: [full-stack rebrands](references/full-stack-rebrand-release-checklist.md); [SPA route namespace migrations](references/frontend-route-namespace-migrations.md).
+## When no canonical command is detected
 
-## When the verifier does not detect a canonical command
+For generated UI plugin `dist/` code without a package manifest, find its focused repository integration test and run it through the canonical repository runner. `node --check` and `git diff --check` are supplementary, not behavioral verification.
 
-See [ad-hoc verification evidence](references/ad-hoc-verification-evidence.md) for the reusable script pattern, runtime polling safeguards, and evidence-reporting rules. For mixed Go-service and pnpm-frontend repositories, use the concrete [mixed Go + web workspace verification](references/mixed-go-web-verification.md) template.
+Fallbacks: [ad-hoc evidence](references/ad-hoc-verification-evidence.md) and [mixed Go + web](references/mixed-go-web-verification.md).
 
 If metadata misses a real project check (for example `make check`):
 

@@ -41,6 +41,12 @@ Prefer component/browser interaction tests. Source-text assertions are a fallbac
 
 See `references/shared-entity-selector-staleness.md` for the diagnosis, minimal shared-store fix, and regression recipe.
 
+## Searchable chat-history collections
+
+When converting a single-thread chat drawer into multiple durable threads, first verify whether transcripts are persisted or only an upstream session ID exists. Search over message bodies requires durable local message storage; make that contract change explicit. Use project/tenant-scoped server search, stable `(updated_at, id)` cursor pagination, stale-request protection, and restoration through the original upstream session. Route every New chat entry point through one complete reset function and create the durable thread on first send to avoid empty history rows.
+
+See `references/searchable-chat-history.md` for the data model, new-thread semantics, restore flow, legacy-data boundary, and end-to-end verification recipe.
+
 ## Shared-tree safeguards
 
 Respect assigned file ownership. Inspect scoped status before and after; never clean, revert, or overwrite another agent’s work. Run the repository’s canonical frontend tests, static checks, and production build after the final change.

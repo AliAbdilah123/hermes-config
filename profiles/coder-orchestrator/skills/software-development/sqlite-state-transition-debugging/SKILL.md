@@ -5,7 +5,7 @@ description: Diagnose and repair SQLite-backed workflow/state transitions that f
 
 # SQLite State-Transition Debugging
 
-Use when a workflow transition (CRM stage, order status, approval state, queue state) returns a generic failure even though the submitted destination and confirmation fields look valid. Also use when relationship state changes unexpectedly—for example, creating a parent silently reparents older children—or when ordinary reads fail after migration, because stale client IDs, broad SQLite updates, and table-rebuild schema loss can form cross-layer persistence bugs.
+Use when a workflow transition (CRM stage, order status, approval state, queue state) returns a generic failure even though the submitted destination and confirmation fields look valid. Also use when relationship state changes unexpectedly—for example, creating a parent silently reparents older children—or when ordinary reads fail after migration, because stale client IDs, broad SQLite updates, and table-rebuild schema loss can form cross-layer persistence bugs. Use it as well when database-created tenants appear in selectors but tenant-scoped APIs fail because authorization and JSON state envelopes still depend on a static seeded registry.
 
 ## Workflow
 
@@ -39,3 +39,4 @@ Correlate destination configuration, exact payload text, sender/source identity,
 - See `references/stale-dialog-state-reparenting.md` for tracing reusable create/edit dialog state through relationship-ID payloads into destructive `parent_id` updates.
 - See `references/reparented-children-hidden-by-status-filters.md` when repaired children exist in SQLite/API but disappear because top-level and nested UI filters leave them no visible location.
 - See `references/migration-order-table-rebuild-schema-loss.md` when the migration ledger says an added column exists but a later table rebuild silently removed it.
+- See `references/dynamic-tenant-registry-state-envelopes.md` when tenant CRUD succeeds but authorization or tenant-scoped state still relies on static seeded IDs.

@@ -1,0 +1,3 @@
+YouTube downloads fail on this host's datacenter IP ("Sign in to confirm you're not a bot") regardless of yt-dlp player_client or JS runtime; requires user-supplied cookies.txt or an uploaded .mp4.
+§
+OpenDesign repo is cloned at ~/videos/open-design (design-systems/*/DESIGN.md + skills/ + video templates); Remotion deps are installed in ~/videos/node_modules and reusable by new projects via symlink.

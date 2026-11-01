@@ -1,8 +1,7 @@
 model:
-  provider: custom
-  default: coder-strong
-  base_url: http://127.0.0.1:20128/v1
-  api_key: ${OPENAI_API_KEY}
+  provider: custom:hermes
+  default: hermes-content
+  base_url: ''
 approvals:
   destructive_slash_confirm: false
 sessions:
@@ -11,6 +10,7 @@ sessions:
 onboarding:
   seen:
     profile_build_offered: true
+    busy_input_prompt: true
 _config_version: 33
 session_reset:
   mode: idle
