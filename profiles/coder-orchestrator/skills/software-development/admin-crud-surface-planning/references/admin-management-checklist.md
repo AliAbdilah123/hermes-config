@@ -17,11 +17,13 @@
 - [ ] Filter dimensions
 - [ ] Sortable columns and default sort
 - [ ] Visible columns
+- [ ] Explicit primary create/add action button in the view toolbar or page header for every entity tab
 - [ ] Row actions
 - [ ] Result count
 - [ ] Loading/error/empty/no-results states
 - [ ] Mobile overflow or alternative presentation
 - [ ] `aria-sort`, labels, focus states, and 44px targets
+- [ ] Global context/shell selector synchronization after mutation
 
 ## Define each mutation
 

@@ -32,6 +32,8 @@ For map interfaces that visualize regions/polygons and for standalone HTML mocku
 
 For a root-mounted static site deployed directly through nginx, follow `references/static-site-origin-deployment.md`. Normalize copied directories to `755` and files to `644`, then verify loopback with the production Host header before public HTTPS; preserved `600` source files otherwise produce a misleading `403` despite a valid server block.
 
+For a Go binary embedding a root-mounted SPA, follow `references/embedded-go-spa-static-assets.md`. Preserve exact asset paths before applying SPA fallback, use versioned asset names when a CDN may have cached bad responses, verify public JS/CSS bodies and MIME rather than status alone, and use Chromium CDP as a truthful browser-E2E fallback when needed.
+
 For Leaflet maps with fragmented tiles, blank gaps, panel overlap, or mobile overflow, follow `references/leaflet-runtime-assets-and-responsive-map-verification.md`. Verify that the stylesheet is actually applied (including SRI and CSS parsing), prefer same-origin vendored runtime assets for small static apps, and leave viewport checks for tile positioning, overflow, drawer state, and polygon navigation.
 
 When approval arrives but the shared production checkout contains unrelated work, follow `references/dirty-production-checkout-handoff.md`: rebase and verify in the clean feature worktree, update the remote production branch from that branch, build deployable artifacts there, and leave the dirty checkout untouched.

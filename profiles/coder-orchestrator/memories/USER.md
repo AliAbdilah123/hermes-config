@@ -10,7 +10,7 @@ Komuna preview: isolated route; production requires approval. After deploy remov
 §
 Komuna reports: verified WIB period; Mondays include Friday + unreported weekend.
 §
-Job UX: editable todos first; parallel columns, sequential jobs; history grey text. Done/blocked replies requeue last.
+Job UX: editable todos first; parallel columns; same-workspace jobs run sequentially; history grey. Done/blocked replies requeue last.
 §
 Paragentix: job detail page and modal have distinct purposes; never interchange.
 §

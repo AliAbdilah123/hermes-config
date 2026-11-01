@@ -27,8 +27,10 @@ For each management surface, specify:
 - filter dimensions and values;
 - sortable columns and ascending/descending behavior;
 - semantic columns and row actions;
+- primary creation trigger per managed entity/tab (ensure every tab in grouped management surfaces has an explicit create/add button);
 - create/edit form location and lifecycle;
 - enable/disable versus delete semantics;
+- global shell synchronization (ensure mutations refresh shared contexts if the entity feeds topbar/sidebar selectors without full reload);
 - loading, error, empty, and no-results states;
 - responsive table behavior;
 - keyboard/focus behavior for dialogs;
@@ -69,6 +71,9 @@ When UI approval is required, publish separate plan and design pages. The design
 - Do not let a UI rename trigger an unnecessary schema migration.
 - Do not expose global operations through a shared tenant-admin capability without an explicit global-scope check.
 - Do not call cards or status rows a “proper table”; specify semantic headers and concrete controls.
+- Do not omit primary creation triggers from individual tabs in grouped/tabbed management views (e.g., adding "New role" on the roles tab but leaving "Users" with only row edits).
+- Avoid ambiguous button names or scope modal submit actions during testing: when a modal opens, an identically named trigger and submit button (e.g., "Create user") will collide in document-level queries unless scoped via `within(dialog)` or given distinct intent (e.g., "Save user").
+- Do not maintain isolated component-local state for entities that affect global shell controls; trigger shared store or context re-fetch on create/update/status toggle.
 - Do not treat HTTP 200 alone as visual verification. If browser rendering cannot be inspected, report that limitation without blocking publication verification.
 
 ## Supporting reference

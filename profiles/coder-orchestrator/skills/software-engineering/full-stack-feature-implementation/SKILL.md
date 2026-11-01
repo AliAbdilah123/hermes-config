@@ -7,6 +7,8 @@ description: Implementing real features in an existing full-stack project, espec
 
 Use this skill for real full-stack implementation backed by execution evidence.
 
+For autonomous greenfield builds, follow [references/delegated-greenfield-verification.md](references/delegated-greenfield-verification.md): independently verify the artifact, real provider contract, runtime rejection paths, and end-to-end UI behavior before claiming completion.
+
 ## Focused UI and embedded-build verification
 
 References: `references/` contains acceptance, milestones, release verification, UI/form patterns, admin-editor TDD, and `access-profile-permission-management.md`.

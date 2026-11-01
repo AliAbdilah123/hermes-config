@@ -58,24 +58,38 @@ Do **not** start implementing before the kanban tasks exist. Do not create tasks
 
 ## Shared-workspace parallel-task pitfall (CRITICAL)
 
-When tasks share a workspace (`dir:` or `worktree`), the auto-dispatcher can claim and run them in parallel, causing file conflicts (two workers editing the same files simultaneously).
+When tasks touch the same project checkout—even when one card says `scratch` or names a separate branch—the dispatcher can run them concurrently while workers inspect or edit the same real checkout. This causes file conflicts, contaminated tests, and blockers around unrelated uncommitted changes.
 
-**The fix:** Always create dependent tasks with `--initial-status blocked` to prevent premature parallel execution on shared workspaces. After creating all tasks, link parent-child dependencies, then unblock tasks in sequence so each runs only after its parent completes.
+**Default for this user: execute editing cards one by one.** Build an explicit dependency chain before dispatch. A scratch workspace is not isolation unless it contains a verified project checkout and the task can finish without touching the shared checkout.
 
 ```bash
-# BAD — creates race: tasks get claimed in parallel before linking
-hermes kanban --board $B create "Task 1" ...           # created as ready
-hermes kanban --board $B create "Task 2" ...           # also ready — runs in parallel!
-hermes kanban --board $B link task1 task2              # too late, both already running
+# BAD — both can be claimed before linking
+hermes kanban --board $B create "Task 1" ...
+hermes kanban --board $B create "Task 2" ...
+hermes kanban --board $B link task1 task2
 
-# GOOD — prevents race
-hermes kanban --board $B create "Task 1" ...           # ready — runs first
-hermes kanban --board $B create "Task 2" ... --initial-status blocked  # blocked until linked
-hermes kanban --board $B link task1 task2              # dependency established
-# Task 2 stays blocked until Task 1 completes, then dispatcher promotes it
+# GOOD — expose only the first editing task
+hermes kanban --board $B create "Task 1" ...
+hermes kanban --board $B create "Task 2" ... --initial-status blocked
+hermes kanban --board $B link task1 task2
 ```
 
-If tasks were already created as ready and the dispatcher claimed them in parallel, use `reclaim` and `unblock` to reset them after completing the parent.
+If conflicting tasks are already active:
+
+1. Keep the earliest/current card running.
+2. `reclaim` each later active card.
+3. Park later cards with `schedule` when no real dependency edge exists, or link the correct parent dependency.
+4. Verify with `list` and `stats` that exactly one editing card is `running` and no conflicting card is `ready`.
+5. After completion, release only the next card and dispatch once.
+
+```bash
+hermes kanban --board $B reclaim $LATER --reason "Sequential execution"
+hermes kanban --board $B schedule $LATER "Wait for current editing task"
+hermes kanban --board $B list
+hermes kanban --board $B stats
+```
+
+Do not retry all blocked editing cards together. Do not use `block --kind dependency` without a parent edge as a parking mechanism: the dispatcher may immediately promote it back to `ready`.
 
 ## Recovering apparently stuck API-backed jobs
 
@@ -113,6 +127,8 @@ This distinction keeps the board truthful: `todo` means queued, while `in_progre
 
 - When a task session appears mixed with another session, trace the exact job → run → agent-session relationship and inspect the original remote message list before concluding contamination. Classify it as cross-task contamination, same-task execution drift, multi-attempt timeline confusion, or insufficient evidence. See `references/task-run-conversation-attribution.md`.
 - Use `runs`, `show`, and worker comments to verify whether a blocked task succeeded or failed.
+- A `review-required` card whose comment proves implementation, deployment, public E2E, commit, and push is a stale gate for this user: complete it and advance the next sequential card rather than letting repeated unblock/re-block cycles trigger auto-decomposition.
+- If auto-decomposition nevertheless creates children after the parent work is already verified, map each child to evidence in the parent handoff, complete only the children actually covered, then complete the root and dispatch once. Do not rerun or parallelize duplicate work.
 - If a worker says tests passed, quote the command and status from the run/comment.
 - For Go projects, complete kanban implementation cards only after a real `go test ./...` and `go build` (usually `go build -o bin/<name> ./cmd/<name>`). If tests fail because other ready/running workers edited the same workspace, inspect the failing files and board state before retrying.
 - Final updates after feature/fix work should include the project public link when known.
