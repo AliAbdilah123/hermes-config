@@ -1,0 +1,61 @@
+{
+  "title": "Jangan Copy, Curi Strukturnya",
+  "lang": "id",
+  "theme": {
+    "bg": "#0B0F14",
+    "fg": "#F4F1EA",
+    "dim": "#8A93A0",
+    "accent": "#FFB300",
+    "accent2": "#4ADE80",
+    "font": "Inter"
+  },
+  "voice": {
+    "model": "k2-fsa/OmniVoice",
+    "instruct": "male, low pitch",
+    "speed": 1.05,
+    "steps": 16,
+    "clone": ""
+  },
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "hook",
+      "kicker": "STOP COPYING",
+      "headline": "Video viral bukan template",
+      "body": "",
+      "say": "Berhenti copy video viral. Yang kamu butuh cuma strukturnya."
+    },
+    {
+      "id": "s2",
+      "kind": "point",
+      "kicker": "LANGKAH SATU",
+      "headline": "Ukur ritmenya",
+      "body": "Whisper baca transkrip, hitung kata per detik, jeda, panjang hook.",
+      "say": "Pertama, ukur ritmenya. Whisper baca transkrip, kita hitung kata per detik dan panjang hook-nya."
+    },
+    {
+      "id": "s3",
+      "kind": "stat",
+      "kicker": "HASIL UKUR",
+      "headline": "4.2",
+      "body": "kata per detik bikin penonton bertahan di tiga detik pertama",
+      "say": "Hasilnya, empat koma dua kata per detik. Itu yang bikin orang bertahan."
+    },
+    {
+      "id": "s4",
+      "kind": "point",
+      "kicker": "LANGKAH DUA",
+      "headline": "Tulis ulang, jangan tiru",
+      "body": "Naskah baru, suara baru dari OmniVoice, tempo tetap sama.",
+      "say": "Kedua, tulis naskah baru. Suaranya digenerate OmniVoice, temponya tetap sama."
+    },
+    {
+      "id": "s5",
+      "kind": "end",
+      "kicker": "",
+      "headline": "Satu klik, video baru",
+      "body": "balikpapan.dev",
+      "say": "Sisanya satu klik. Video berikutnya, ulang lagi."
+    }
+  ]
+}

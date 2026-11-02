@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reel Studio</title>
+<style>
+  :root {
+    --bg: #0b0f14; --panel: #121821; --line: #1e2733; --fg: #f4f1ea;
+    --dim: #8a93a0; --accent: #ffb300; --ok: #4ade80; --bad: #f87171;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 15px/1.5 Inter, system-ui, sans-serif; display: grid;
+    grid-template-columns: 320px 1fr; min-height: 100vh;
+  }
+  aside { border-right: 1px solid var(--line); padding: 20px; overflow-y: auto; }
+  main { padding: 20px 28px; max-width: 1100px; }
+  h1 { font-size: 18px; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 4px; }
+  h1 span { color: var(--accent); }
+  h2 { font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+       color: var(--dim); margin: 26px 0 10px; font-weight: 700; }
+  .muted { color: var(--dim); font-size: 13px; }
+  input, textarea, select, button {
+    font: inherit; color: var(--fg); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; width: 100%;
+  }
+  textarea { resize: vertical; min-height: 68px; font-size: 14px; }
+  button { cursor: pointer; font-weight: 600; transition: .15s; }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.primary { background: var(--accent); color: #14100a; border-color: var(--accent); }
+  button.ghost { background: transparent; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  .proj { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+          margin-bottom: 8px; cursor: pointer; background: var(--panel); }
+  .proj:hover { border-color: #2d3a4a; }
+  .proj.on { border-color: var(--accent); background: #1a1509; }
+  .proj b { display: block; font-size: 14px; margin-bottom: 3px; }
+  .badge { font-size: 11px; padding: 1px 7px; border-radius: 20px;
+           border: 1px solid var(--line); color: var(--dim); margin-right: 4px; }
+  .badge.ok { color: var(--ok); border-color: #1d3a29; }
+  .card { background: var(--panel); border: 1px solid var(--line);
+          border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+  label.field { display: block; margin-bottom: 10px; }
+  label.field > span { display: block; font-size: 12px; color: var(--dim);
+                       text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+  .scene { display: grid; grid-template-columns: 74px 128px 1fr 40px;
+           gap: 8px; align-items: start; margin-bottom: 10px; }
+  .scene input, .scene textarea { font-size: 13px; }
+  .scene .del { padding: 8px 0; color: var(--bad); }
+  .stages { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .stage { font-size: 12px; padding: 5px 12px; border-radius: 20px;
+           border: 1px solid var(--line); color: var(--dim); }
+  .stage.on { border-color: var(--accent); color: var(--accent); }
+  pre { background: #070a0e; border: 1px solid var(--line); border-radius: 8px;
+        padding: 12px; font-family: var(--mono); font-size: 12px; line-height: 1.45;
+        max-height: 320px; overflow: auto; white-space: pre-wrap; margin: 0; }
+  video { width: 100%; max-width: 360px; border-radius: 10px; border: 1px solid var(--line); }
+  .stat { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+  .stat div { background: #0e141c; border-radius: 8px; padding: 10px 12px; }
+  .stat b { display: block; font-size: 22px; color: var(--accent); }
+  .stat span { font-size: 12px; color: var(--dim); }
+  .split { display: grid; grid-template-columns: 1fr 360px; gap: 16px; align-items: start; }
+  .err { color: var(--bad); font-size: 13px; margin-top: 8px; white-space: pre-wrap; }
+  .spinner { display: inline-block; width: 11px; height: 11px; border-radius: 50%;
+             border: 2px solid #333; border-top-color: var(--accent);
+             animation: spin .7s linear infinite; vertical-align: -1px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<aside>
+  <h1>Reel<span>.</span>Studio</h1>
+  <p class="muted">Referensi → naskah → suara → video.</p>
+
+  <h2>Proyek</h2>
+  <div id="projects"></div>
+  <div class="row" style="margin-top:10px">
+    <input id="newSlug" placeholder="slug-video-baru" />
+    <button class="ghost" style="flex:0 0 84px" onclick="createProject()">Baru</button>
+  </div>
+</aside>
+
+<main id="main">
+  <div class="card">
+    <p class="muted">Pilih atau buat proyek di kiri untuk mulai.</p>
+  </div>
+</main>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const el = (h) => { const d = document.createElement("div"); d.innerHTML = h.trim(); return d.firstElementChild; };
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const STAGES = ["transcribe", "tts", "timeline", "render", "mix"];
+let current = null, script = null, ref = null, pollTimer = null;
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, opts);
+  if (!r.ok) {
+    let msg = r.statusText;
+    try { msg = (await r.json()).detail || msg; } catch {}
+    throw new Error(msg);
+  }
+  return r.headers.get("content-type")?.includes("json") ? r.json() : r.text();
+}
+
+async function loadProjects() {
+  const list = await api("/api/projects");
+  const box = $("#projects");
+  box.innerHTML = "";
+  if (!list.length) { box.innerHTML = '<p class="muted">Belum ada proyek.</p>'; return; }
+  for (const p of list) {
+    const b = el(`<div class="proj ${p.slug === current ? "on" : ""}">
+      <b>${esc(p.title)}</b>
+      <span class="badge ${p.hasAudio ? "ok" : ""}">suara</span>
+      <span class="badge ${p.hasTimeline ? "ok" : ""}">timeline</span>
+      <span class="badge ${p.final ? "ok" : ""}">video</span>
+      <div class="muted">${p.duration ? p.duration.toFixed(1) + "s · " + p.scenes + " scene" : "belum dijalankan"}</div>
+    </div>`);
+    b.onclick = () => openProject(p.slug);
+    box.appendChild(b);
+  }
+}
+
+async function createProject() {
+  const slug = $("#newSlug").value.trim();
+  if (!slug) return;
+  const fd = new FormData(); fd.append("slug", slug);
+  try {
+    const j = await api("/api/projects", { method: "POST", body: fd });
+    $("#newSlug").value = "";
+    await track(j.job, () => openProject(j.slug));
+  } catch (e) { alert("Gagal buat proyek: " + e.message); }
+}
+
+async function openProject(slug) {
+  current = slug;
+  await loadProjects();
+  ref = await api(`/api/ref/${slug}`).catch(() => null);
+  script = await api(`/api/script/${slug}`);
+  render();
+}
+
+function render() {
+  const m = $("#main");
+  m.innerHTML = "";
+  const tl = script || { title: "", scenes: [] };
+
+  // --- header + run
+  const head = el(`<div class="card">
+    <div class="row" style="align-items:center;margin-bottom:12px">
+      <h2 style="margin:0">${esc(tl.title || current)}</h2>
+      <button class="ghost" style="flex:0 0 120px" onclick="saveScript()">Simpan</button>
+      <button class="primary" style="flex:0 0 170px" onclick="runAll()">Jalankan semua</button>
+    </div>
+    <div class="stages" id="stages">${STAGES.map((s) => `<span class="stage" data-s="${s}" onclick="toggleStage(this)">${s}</span>`).join("")}</div>
+    <div class="row">
+      <button class="ghost" onclick="runSelected()">Jalankan stage terpilih</button>
+      <button class="ghost" style="flex:0 0 150px" onclick="loadResult()">Lihat hasil</button>
+    </div>
+    <div id="jobBox"></div>
+  </div>`);
+  m.appendChild(head);
+
+  // --- reference analysis
+  const refCard = el(`<div class="card">
+    <h2>Referensi (whisper)</h2>
+    ${ref ? `<div class="stat">
+      <div><b>${ref.words_per_sec}</b><span>kata / detik</span></div>
+      <div><b>${ref.mean_segment}s</b><span>rata-rata potongan</span></div>
+      <div><b>${ref.mean_pause}s</b><span>rata-rata jeda</span></div>
+      <div><b>${ref.suggested_scene}s</b><span>saran durasi scene</span></div>
+      <div><b>${ref.words}</b><span>kata total</span></div>
+    </div>` : `<p class="muted">Belum ada. Jalankan <code>transcribe</code> dulu.</p>`}
+    <div class="row" style="margin-top:12px">
+      <input id="refUrl" placeholder="URL YouTube / path file .mp4" />
+      <button class="ghost" style="flex:0 0 110px" onclick="ingestUrl()">Ambil</button>
+    </div>
+    <div style="margin-top:8px">
+      <input type="file" id="refFile" accept="video/*" onchange="ingestFile(this)" />
+    </div>
+    <div id="ingestBox"></div>
+  </div>`);
+  m.appendChild(refCard);
+
+  // --- script editor
+  const scenes = (tl.scenes || []).map((s, i) => `<div class="scene">
+      <input value="${esc(s.id)}" onchange="setScene(${i},'id',this.value)" />
+      <select onchange="setScene(${i},'kind',this.value)">
+        ${["hook", "point", "stat", "list", "end"].map((k) => `<option ${k === s.kind ? "selected" : ""}>${k}</option>`).join("")}
+      </select>
+      <div>
+        <textarea placeholder="yang diucapkan (OmniVoice)" onchange="setScene(${i},'say',this.value)">${esc(s.say)}</textarea>
+        <input style="margin-top:6px" placeholder="headline di layar" value="${esc(s.headline)}" onchange="setScene(${i},'headline',this.value)" />
+        <input style="margin-top:6px" placeholder="body / sub-teks" value="${esc(s.body)}" onchange="setScene(${i},'body',this.value)" />
+        <input style="margin-top:6px" placeholder="kicker (huruf kecil, opsional)" value="${esc(s.kicker)}" onchange="setScene(${i},'kicker',this.value)" />
+      </div>
+      <button class="del ghost" onclick="delScene(${i})">✕</button>
+    </div>`).join("");
+
+  const scriptCard = el(`<div class="card">
+    <h2>Naskah orisinal — jangan tiru referensi</h2>
+    <label class="field"><span>Judul</span>
+      <input value="${esc(tl.title)}" onchange="script.title=this.value" /></label>
+    <label class="field"><span>Instruksi suara OmniVoice</span>
+      <input value="${esc(tl.voice?.instruct || "")}" onchange="script.voice=script.voice||{};script.voice.instruct=this.value" placeholder="male, low pitch" /></label>
+    ${scenes || '<p class="muted">Belum ada scene.</p>'}
+    <button class="ghost" onclick="addScene()">+ Scene</button>
+    <div class="muted" style="margin-top:8px">Durasi scene dihitung dari audio hasil TTS, bukan ditebak.</div>
+  </div>`);
+  m.appendChild(scriptCard);
+
+  const resCard = el(`<div class="card"><h2>Hasil</h2><div id="result"><p class="muted">Belum dirender.</p></div></div>`);
+  m.appendChild(resCard);
+  loadResult();
+}
+
+function setScene(i, k, v) { script.scenes[i][k] = v; }
+function addScene() {
+  script.scenes.push({ id: `s${script.scenes.length + 1}`, kind: "point", kicker: "",
+    headline: "", body: "", say: "" });
+  render();
+}
+function delScene(i) { script.scenes.splice(i, 1); render(); }
+
+async function saveScript() {
+  try {
+    await api(`/api/script/${current}`, {
+      method: "PUT", headers: { "content-type": "application/json" },
+      body: JSON.stringify(script),
+    });
+    await loadProjects();
+    flash("Naskah tersimpan.");
+  } catch (e) { alert("Gagal simpan: " + e.message); }
+}
+
+function toggleStage(s) { s.classList.toggle("on"); }
+function selectedStages() {
+  const on = [...document.querySelectorAll(".stage.on")].map((x) => x.dataset.s);
+  return on.length ? on : STAGES.slice();
+}
+
+async function runAll() { run(selectedStages()); }
+async function runSelected() { run(selectedStages()); }
+
+async function run(stages) {
+  await saveScript();
+  const fd = new FormData(); fd.append("stages", stages.join(","));
+  const { job } = await api(`/api/run/${current}`, { method: "POST", body: fd });
+  track(job, () => loadProjects());
+}
+
+function ingestUrl() {
+  const url = $("#refUrl").value.trim();
+  if (!url) return;
+  const fd = new FormData(); fd.append("url", url);
+  api(`/api/ingest/${current}`, { method: "POST", body: fd })
+    .then(({ job }) => track(job, () => loadProjects(), "#ingestBox"))
+    .catch((e) => { $("#ingestBox").innerHTML = `<div class="err">${esc(e.message)}</div>`; });
+}
+
+function ingestFile(input) {
+  const f = input.files[0]; if (!f) return;
+  const fd = new FormData(); fd.append("file", f);
+  api(`/api/ingest/${current}`, { method: "POST", body: fd })
+    .then(({ job }) => track(job, () => loadProjects(), "#ingestBox"))
+    .catch((e) => { $("#ingestBox").innerHTML = `<div class="err">${esc(e.message)}</div>`; });
+}
+
+async function track(jid, done, boxSel = "#jobBox") {
+  const box = $(boxSel); if (!box) return;
+  clearInterval(pollTimer);
+  box.innerHTML = `<pre id="log"><span class="spinner"></span> jalan…</pre>`;
+  pollTimer = setInterval(async () => {
+    let j;
+    try { j = await api(`/api/job/${jid}`); } catch { return; }
+    const pre = document.getElementById("log");
+    if (pre) pre.innerHTML = `<span class="muted">${j.elapsed}s · ${esc(j.status)}</span>\n` + esc(j.log || "");
+    if (j.status !== "running") {
+      clearInterval(pollTimer);
+      if (j.status === "failed") { pre.insertAdjacentHTML("afterbegin", '<div class="err">gagal — lihat log</div>'); }
+      done && done();
+    }
+  }, 1500);
+}
+
+async function loadResult() {
+  const box = $("#result"); if (!box) return;
+  try {
+    const r = await api(`/api/result/${current}`);
+    box.innerHTML = `<div class="split">
+      <div><video src="${r.url}?t=${Date.now()}" controls playsinline></video></div>
+      <div class="muted">${esc(r.file)}<br/>${(r.size / 1048576).toFixed(1)} MB<br/>
+        <a href="${r.url}" download style="color:var(--accent)">unduh</a></div>
+    </div>`;
+  } catch { box.innerHTML = '<p class="muted">Belum dirender.</p>'; }
+}
+
+function flash(msg) {
+  const d = el(`<div class="muted" style="color:var(--ok)">${esc(msg)}</div>`);
+  $("#main").prepend(d);
+  setTimeout(() => d.remove(), 2500);
+}
+
+loadProjects();
+</script>
+</body>
+</html>

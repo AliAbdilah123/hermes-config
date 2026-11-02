@@ -123,6 +123,17 @@ For review-gated sequential job systems, treat “Approve implementation” as q
 
 This distinction keeps the board truthful: `todo` means queued, while `in_progress` means an agent is actively executing.
 
+## Long-running broad migrations: decompose and auto-advance
+
+When a broad migration repeatedly times out, crashes, or returns `review-required` while explicitly reporting that substantial literal scope remains, stop retrying the same oversized card.
+
+1. Split it into bounded sequential cards around independently verifiable surfaces, such as shared navigation/overlays, page forms/controls, compatibility and legacy-style removal, then final deployment/public E2E.
+2. Link the full dependency chain before dispatching. Use the real project workspace only when shared-workspace operation is authorized, and expose exactly one editing card at a time.
+3. Give each card explicit preservation constraints, focused and full checks, and a bounded runtime. Make the parent depend on a final delivery card that owns deployment, public E2E, commit, and push.
+4. If the user says “continue till it finishes,” treat that as authorization to pass intermediate review gates automatically. Once a handoff contains concrete passing evidence, complete that card and dispatch the next immediately; do not wait for another progress request to discover and advance a stale gate.
+5. A worker's statement that deployment needs privileges is not itself a blocker when the orchestrator already has and has previously exercised the approved deployment procedure. Keep privileged operations in the final delivery card.
+6. Do not accept infrastructure-only or compatibility-wrapper work as completion when the parent explicitly requires full page/CSS migration. Compare actual delivered scope against the original acceptance criteria before closing it.
+
 ## Verification and reporting
 
 - When a task session appears mixed with another session, trace the exact job → run → agent-session relationship and inspect the original remote message list before concluding contamination. Classify it as cross-task contamination, same-task execution drift, multi-attempt timeline confusion, or insufficient evidence. See `references/task-run-conversation-attribution.md`.
