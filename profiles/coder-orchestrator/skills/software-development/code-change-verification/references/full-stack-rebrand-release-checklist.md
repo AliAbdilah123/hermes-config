@@ -28,6 +28,17 @@ Inspect Git status first. Existing untracked databases, media, backups, plans, o
 
 Historical plans and audits need judgment: update them when they are active operational references; otherwise preserve historical wording. Never bulk-edit arbitrary untracked artifacts.
 
+## Configuration-backed account or handle renames
+
+Treat a provider account/handle rename as a narrower cross-layer rename, not a full product rebrand:
+
+1. Use the tracked-file search (`git grep`) to update fixtures, assertions, URLs, and user-facing instructions without sweeping untracked backups or historical artifacts.
+2. Update the active runtime environment/config separately; do not edit dated `.env` backups merely to eliminate search hits.
+3. Keep stable provider account IDs, tokens, database records, and API contracts unchanged unless the provider actually changed them.
+4. Rebuild/install the backend and restart the owning service so the runtime consumes the new value; a source/test-only edit does not alter the live application.
+5. Verify focused tests, service activity/startup logs, and the public application boundary. If the confirming endpoint requires authentication, an unauthenticated `401` proves access control and routing only—not the renamed value—so use authenticated E2E or another safe runtime observation before claiming exact rendered-value verification.
+6. Add the rename to the project changelog, commit only tracked task-owned files, push, and confirm local HEAD equals the remote branch.
+
 ## Verify before release
 
 Run the repository's complete applicable checks. A typical Go + Svelte workspace includes:

@@ -145,6 +145,19 @@ hermes kanban --board <board> complete <task_id> --result "..."
 
 Do **not** run `hermes kanban create --board ...`; argparse treats `--board` as an unrecognized subcommand argument.
 
+Status-transition commands are specific:
+
+- There is no generic `retry` subcommand.
+- `promote` applies to `todo` or `blocked`, not `scheduled`.
+- To resume a deliberately scheduled card, use `unblock <task_id> --reason '...'`, then `dispatch`.
+- Never infer success from `dispatch` alone; verify the task became `running` with `list` or `stats`.
+
+```bash
+hermes kanban --board $B unblock $TASK --reason "Prerequisites complete; resume sequential work."
+hermes kanban --board $B dispatch
+hermes kanban --board $B list
+```
+
 ## Safety boundaries
 
 Do not skip explicit confirmation for destructive production deploy/copy operations if the user has not already authorized that class of action. Completing kanban review gates is not the same as deploying to production.
