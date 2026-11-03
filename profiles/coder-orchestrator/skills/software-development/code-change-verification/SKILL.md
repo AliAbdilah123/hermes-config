@@ -5,7 +5,7 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 # Code Change Verification
 
-Use before release. References: [cross-layer](references/async-review-and-cross-layer-release-gates.md), [rebrands](references/full-stack-rebrand-release-checklist.md), [SPA routes](references/frontend-route-namespace-migrations.md), [ARM64 browser UI](references/arm64-browser-ui-verification.md).
+Use before release. References: `references/`, including [sidebar/public release](references/sidebar-context-and-public-release.md).
 
 ## When no canonical command is detected
 

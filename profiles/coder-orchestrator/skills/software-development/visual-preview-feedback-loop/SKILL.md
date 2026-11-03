@@ -77,6 +77,14 @@ Check at minimum:
 - horizontal overflow, ambiguous card-rail peeks, and undersized touch targets;
 - contrast, readable metadata, heading wraps, and whether primary content appears early enough.
 
+### Searchable selects and tenant/workspace switchers
+
+When the user asks for a searchable select, implement **one combobox control**, not a separate search input plus native select. The selected label should occupy the editable combobox input; focusing/opening it reveals the option list, typing filters that same list, and choosing an option both commits the stable ID and restores the selected label. Preserve authorization by deriving options only from already-allowed tenants/workspaces; filtering must never broaden access.
+
+Use combobox semantics (`role="combobox"`, associated label, `aria-expanded`, `aria-controls`, `aria-autocomplete="list"`) with a named listbox and options. Support Escape to restore the committed label and close, Enter to choose the first visible option, pointer selection without premature blur, an explicit empty result, and unique IDs when desktop and mobile render parallel navigation trees. Prefer an existing accessible combobox primitive when installed; otherwise keep the custom implementation minimal and test keyboard, filtering, selection, and mobile-sheet behavior.
+
+Update tests and browser harnesses to reflect displayed labels rather than internal IDs. Scope option queries to the named listbox because unrelated native selects elsewhere on the page also expose `option` roles. Target the input explicitly as `getByRole('combobox', {name: ...})`; a broad label query may ambiguously match a similarly named listbox. When public tenant labels differ from fixtures, fetch/use live authorized labels for E2E selection instead of hard-coding stale names. Verify the exact public flow: open sidebar, focus combobox, type a partial label, select the filtered option, and prove tenant-scoped content changes.
+
 ### Grid cards that do not fill their tracks
 
 When a laptop screenshot shows large content-dependent gaps between cards, distinguish an empty grid column from an intrinsically sized child inside a wide occupied track. Measure the grid and card bounding boxes at the reported viewport; similar column origins with varying card widths usually mean the child is shrink-to-fit (commonly a button whose default width does not stretch through an extra wrapper). Prefer the smallest native CSS correction at the shared card selector, such as `width: 100%`, rather than redesigning breakpoints or changing the column count.

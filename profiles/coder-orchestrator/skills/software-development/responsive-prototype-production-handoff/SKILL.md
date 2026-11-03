@@ -133,5 +133,6 @@ See `references/rendered-shell-route-regressions.md` for the rendered-test, tran
 - Allowing an agent to deploy/commit without independently checking HEAD equals upstream and the public route serves the new build.
 
 See `references/data-backed-mobile-search-verification.md` for a concrete verification recipe.
+See `references/backend-owned-reference-data-and-mobile-admin-handoff.md` when responsive admin cleanup also removes runtime frontend fixtures, adds scoped reference-data reads, and needs geometry-based mobile verification.
 See `references/program-detail-tabbed-catalog-handoff.md` for tabbed catalog semantics, carousel/mobile-row geometry, deterministic active-tab alignment, and production-bundle QA.
 See `references/desktop-session-calendar-detail-panel-handoff.md` for replacing a desktop upcoming-session rail with an initially empty selected-session details panel while preserving a separate mobile implementation.
