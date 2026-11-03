@@ -47,6 +47,20 @@ When renaming a concept such as “Access Profiles” to “Roles”:
 - do not rename database tables or API paths merely for cosmetic consistency;
 - postpone contract migration unless the old name causes a real domain mismatch outside presentation.
 
+## Template-to-tenant copy lifecycles
+
+When built-in roles, policies, catalogs, or settings are templates, do not model tenant usage as references to immutable global records unless inheritance is explicitly required.
+
+- Persist global templates separately from tenant-owned copies.
+- On tenant creation, copy the current templates into tenant-scoped records atomically and assign users/resources to those tenant record IDs.
+- Tenant administrators with the relevant edit capability must see edit actions for copied records, including copies named Admin, Cashier, or other formerly “system” entries.
+- Editing a tenant copy must not mutate the template or another tenant. Editing a template affects future copies only unless the product explicitly defines a separately approved propagation workflow.
+- If an older implementation uses protected IDs such as `system:*`, migrate by creating one copy per tenant, remapping assignments, preserving template provenance for audit/debugging, and making the migration idempotent.
+- Global template APIs and their UI tab require explicit global-superadmin authorization server-side; hiding the tab is not authorization.
+- Test identity isolation, not only equal starting values: tenant A, tenant B, and the template must have distinct persisted IDs and independent post-edit values.
+
+See `references/template-to-tenant-copy-model.md` for the implementation and acceptance checklist.
+
 ## Reversible status operations
 
 Prefer reversible enable/disable over deletion when records anchor tenant or access history. Keep disabled records visible to authorized administrators while denying normal operational access. Specify whether disabling needs confirmation, what happens if the record is currently selected, and how the list refreshes after mutation.
