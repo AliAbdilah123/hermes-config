@@ -418,6 +418,7 @@ discord:
     - '1548477576324845648'
     - '1548477770550481017'
     - '1566329612584095805'
+    - '1568789801908572181'
   auto_thread: true
   thread_require_mention: false
   history_backfill: true

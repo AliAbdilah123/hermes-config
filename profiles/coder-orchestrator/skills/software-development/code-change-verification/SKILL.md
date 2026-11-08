@@ -5,7 +5,7 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 # Code Change Verification
 
-Use before release. References: `references/`, including [sidebar/public release](references/sidebar-context-and-public-release.md).
+Use before release. References: `references/`, including [sidebar/public release](references/sidebar-context-and-public-release.md) and [responsive table action regressions](references/responsive-table-action-regressions.md).
 
 ## When no canonical command is detected
 
