@@ -13,7 +13,7 @@ For autonomous greenfield builds, follow [references/delegated-greenfield-verifi
 
 References: `references/` contains acceptance, milestones, release verification, UI/form patterns, admin-editor TDD, and `access-profile-permission-management.md`.
 
-In dirty repositories, isolate exact paths, preserve unrelated changes, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run tests from the owning nested module root rather than guessing from repository layout. Treat commit/push and deployment as separate completion boundaries.
+In dirty repositories, isolate exact paths, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run checks from the owning module root. Treat push and deployment separately. For embedded Go assets under systemd, follow [references/embedded-go-systemd-release.md](references/embedded-go-systemd-release.md).
 
 For uploads that accept arbitrary file types across creation and reply/comment flows, apply layered count/size enforcement, bounded multipart parsing, safe binary-to-context handling, and sibling-flow boundary tests. See [references/file-upload-boundary-validation.md](references/file-upload-boundary-validation.md).
 
