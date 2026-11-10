@@ -1,8 +1,6 @@
-Fixes: rebuild/restart, deploy live artifact, then public E2E. READY only after E2E. Finals: app link, commit, push.
+Delivery: small fixes now; plan complex work first. Ordered plans gate work. Rebuild/restart, deploy live, then public E2E; READY only after E2E. Final: app link, commit, push.
 §
-Small fixes now; plan complex work first. Ordered plans gate work. “Copy app” means actual app; after correction, finish.
-§
-Coding: concise; configured stack/model, no Docker. Ask before worktrees. UI: shadcn/ui; impeccable; preserve behavior/fail closed.
+Coding: concise; configured stack, no Docker; ask before worktrees. UI: CLI-installed shadcn/Radix/Base or specialist libraries; brand-customize, accessible, editable; one standout moment/page.
 §
 Komuna: “Simple product” is optional/default None; owned vouchers save without checkout and must persist/reselect after reload/edit. Simple forms hide manager/custom/stale values. Discovery keeps pricing/visibility. Exact visuals need public E2E.
 §
