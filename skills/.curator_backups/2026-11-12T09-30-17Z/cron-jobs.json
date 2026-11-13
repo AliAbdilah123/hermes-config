@@ -20,15 +20,15 @@
       "schedule_display": "0 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 102
+        "completed": 137
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-28T16:43:05.667937+00:00",
-      "next_run_at": "2026-10-09T02:00:00+00:00",
-      "last_run_at": "2026-10-08T02:00:48.205046+00:00",
+      "next_run_at": "2026-11-13T02:00:00+00:00",
+      "last_run_at": "2026-11-12T02:00:58.362925+00:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -63,19 +63,19 @@
       "schedule_display": "0 9 * * *",
       "repeat": {
         "times": null,
-        "completed": 102
+        "completed": 137
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-28T16:55:33.111911+00:00",
-      "next_run_at": "2026-10-09T09:00:00+00:00",
-      "last_run_at": "2026-10-08T09:00:25.660613+00:00",
+      "next_run_at": "2026-11-13T09:00:00+00:00",
+      "last_run_at": "2026-11-12T09:00:49.466844+00:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
-      "deliver": "origin",
+      "deliver": "discord",
       "origin": {
         "platform": "discord",
         "chat_id": "1520834898414403826",
@@ -87,5 +87,5 @@
       "fire_claim": null
     }
   ],
-  "updated_at": "2026-10-08T09:00:25.661159+00:00"
+  "updated_at": "2026-11-12T09:00:49.467385+00:00"
 }
