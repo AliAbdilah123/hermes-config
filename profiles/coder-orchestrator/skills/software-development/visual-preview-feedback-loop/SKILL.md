@@ -97,6 +97,14 @@ For populated carousels, verify the active image, caption, controls, and paginat
 
 If the normal browser automation path times out, fall back to installed headless Chromium with an explicit viewport, virtual-time budget, `--dump-dom`, screenshot, and captured stderr. Re-run against the exact public URL. Distinguish harmless host-level Chromium noise (such as DBus/AppArmor messages) from page runtime failures using the rendered DOM and screenshot; do not encode a transient browser startup failure as a permanent tool limitation.
 
+## Completion requires the running app
+
+For every completed implementation, rebuild and restart or republish the actual application as its runtime requires, then verify the changed interaction on that running instance. A successful source edit and local build are intermediate evidence only; never report the implementation as complete or tell the user they should see it until the deployed/restarted app serves the new asset and the exact UI flow has been exercised.
+
+When a user says the current app still looks unchanged, first compare the live HTML and loaded asset hashes with the latest build. If they differ, deploy/restart the existing implementation before making more source edits. For static SPAs, publish fresh build output to the active document root and verify public HTML references the new hashed assets; use a unique cache-busting URL for CDN/browser caches. For process-backed applications, restart the owning service and verify readiness before browser QA.
+
+End visual implementation reports by distinguishing source/build, restart or publication, and exact running-app verification. If any boundary is pending, label it pending rather than “implemented” or “done.”
+
 ## Communication
 
 Use concise status labels, and make them truthful about current execution:

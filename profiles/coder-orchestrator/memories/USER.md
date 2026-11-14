@@ -1,4 +1,4 @@
-Delivery: small fixes now; plan complex work first. Ordered plans gate work. Rebuild/restart, deploy live, then public E2E; READY only after E2E. Final: app link, commit, push.
+Delivery: small fixes now; plan complex work first. Ordered plans gate work. Every implementation: rebuild/restart, deploy, public E2E, commit, push; READY only after E2E. Final: link, commit, push.
 §
 Coding: concise; configured stack, no Docker; ask before worktrees. UI: CLI-installed shadcn/Radix/Base or specialist libraries; brand-customize, accessible, editable; one standout moment/page.
 §
