@@ -7,11 +7,9 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 Use before release. Key references: [public sidebars](references/sidebar-context-and-public-release.md), [responsive rows](references/responsive-table-action-regressions.md), [clickable rows opening context drawers](references/clickable-row-to-context-drawer.md).
 
-## When no canonical command is detected
+## Verification fallbacks
 
-For generated UI plugin `dist/` code without a package manifest, find its focused repository integration test and run it through the canonical repository runner. `node --check` and `git diff --check` are supplementary, not behavioral verification.
-
-Fallbacks: [ad-hoc evidence](references/ad-hoc-verification-evidence.md) and [mixed Go + web](references/mixed-go-web-verification.md).
+Generated UI `dist/` code still needs its repository integration test; syntax and diff checks are only supplementary. See [ad-hoc evidence](references/ad-hoc-verification-evidence.md), [mixed Go + web](references/mixed-go-web-verification.md), and [surgical dirty-worktree commits](references/dirty-worktree-surgical-commit.md).
 
 If metadata misses a real project check (for example `make check`):
 
