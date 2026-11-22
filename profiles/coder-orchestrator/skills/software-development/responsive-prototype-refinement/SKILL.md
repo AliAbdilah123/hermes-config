@@ -199,5 +199,6 @@ See `references/session-detail-simple-product-package-picker.md` for the full st
 ## References
 
 - `references/pos-touch-layout-and-modal-forms.md` — exact-viewport POS layout checks, long-press menu semantics, table multi-selects, accessible modal lifecycle, and expandable line-item records.
+- `references/mobile-sidebar-dynamic-viewport.md` — diagnose `100vh` browser-chrome clipping, apply the minimal `100dvh` fallback pattern, and verify bottom controls geometrically at fold/tablet viewports.
 - `references/detail-column-with-mobile-preservation.md` — concrete selected-session calendar pattern and verification checklist.
 - `references/session-detail-simple-product-package-picker.md` — checkout-consistent vertical Simple product selection, capped horizontal package recommendations, empty states, and focused verification matrix.
