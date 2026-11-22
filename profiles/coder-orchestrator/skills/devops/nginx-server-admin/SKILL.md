@@ -235,6 +235,8 @@ To serve a new project under `/projects/<slug>/`:
    curl -fsSI http://<public-ip>/projects/<slug>/assets/<main-bundle>.js
    ```
    Expect app HTML and `Content-Type: application/javascript`; a `200 text/html` asset response is an SPA fallback, not success.
+6. Treat service readiness separately from `systemctl is-active`. A freshly restarted process may be active before its listener accepts connections. Use a bounded health retry (or wait for the application-specific startup log), then probe localhost and the public health route.
+7. Before running a repository-provided public E2E script, inspect its default base URL and override it with the canonical deployed URL when needed. A stale default domain/path can produce UI-selector timeouts that are routing failures, not application regressions. If the first selector never appears, inspect the browser's final URL, title/body, failed requests, and console errors before changing application code.
 
 ### Dual domain + bare-IP diagnostics
 

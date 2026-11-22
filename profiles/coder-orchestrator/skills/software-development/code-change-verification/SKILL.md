@@ -9,7 +9,7 @@ Use before release. Key references: [public sidebars](references/sidebar-context
 
 ## Verification fallbacks
 
-Generated UI `dist/` code still needs its repository integration test; syntax and diff checks are only supplementary. See [ad-hoc evidence](references/ad-hoc-verification-evidence.md), [mixed Go + web](references/mixed-go-web-verification.md), and [surgical dirty-worktree commits](references/dirty-worktree-surgical-commit.md).
+Generated UI `dist/` code still needs its repository integration test; syntax and diff checks are only supplementary. See [ad-hoc evidence](references/ad-hoc-verification-evidence.md), [mixed Go + web](references/mixed-go-web-verification.md), [optimistic full-stack mutations](references/optimistic-full-stack-mutations.md), and [surgical dirty-worktree commits](references/dirty-worktree-surgical-commit.md).
 
 If metadata misses a real project check (for example `make check`):
 
