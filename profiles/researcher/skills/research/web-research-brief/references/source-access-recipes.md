@@ -30,9 +30,41 @@ curl -sL "https://lite.duckduckgo.com/lite/?q=<url+encoded+query>" -A "Mozilla/5
 # ALSO WORKS — the HTML endpoint sometimes, but frequently serves a duck-CAPTCHA:
 #   https://html.duckduckgo.com/html/?q=...
 # If you see "Select all squares containing a duck", switch to lite.
+#
+# lite.duckduckgo.com IS ALSO RATE-LIMITED: hammering it with 3+ queries in one
+# loop returns the same duck-CAPTCHA on every subsequent request. Symptoms:
+# "Unfortunately, bots use DuckDuckGo too" + "error-lite+xxxx@duckduckgo.com".
+# This is a burst limit, not a permanent block. Either space the calls out, or
+# fall back to Bing (section above). Do not conclude DDG is dead for this host.
 ```
 
 Decode results with `python3 -c "import urllib.parse,sys;print(urllib.parse.unquote(sys.stdin.read()))"` or just eyeball — the hostnames are readable.
+
+## Docs sites: `/llms.txt` + `.md` suffix (best trick for vendor/API facts)
+
+Many docs platforms (Mintlify, ReadMe, Fumadocs) now publish an agent-facing index and a markdown rendition of every page. This is **far** better than scraping a marketing site — it's the vendor's own authoritative text, and it usually bypasses the Cloudflare bot-wall that blocks their `/pricing` page.
+
+```bash
+# 1. Discover the doc tree (hundreds of pages, one flat list)
+curl -s "https://docs.example.com/llms.txt" | head -60
+curl -s "https://docs.example.com/llms.txt" | grep -iE "fee|pricing|limit|auth|payout"
+
+# 2. Fetch any page as clean markdown — no HTML stripping needed
+curl -s "https://docs.example.com/docs/transaction-fees.md"
+```
+
+- Look for a banner on any docs page: several vendors now print *"For AI agents: the docs index is at `https://docs.X/llms.txt`. Append `.md` to any documentation page URL."* Read the page footer/noise block for it.
+- Observed working: `docs.xendit.co/llms.txt`, `docs.midtrans.com/llms.txt`.
+- **Why it matters**: vendor *pricing/marketing* pages are the most bot-blocked pages on the web (403 Cloudflare, "Just a moment..."). The docs page describing the same fees is often open. Structure and policy come from docs; per-unit numbers may be marketing-only — say which you got where.
+
+## Bing search (fallback when both DDG endpoints are challenged)
+
+```bash
+curl -s -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/121 Safari/537.36" \
+  "https://www.bing.com/search?q=<terms>&setlang=id"
+```
+
+Strip tags with the generic extractor. Results come back as a single run-on paragraph of `title url snippet` triples — ugly but complete, and it reliably returns real result URLs (unlike DDG lite's `uddg=` redirects). Use `setlang=<lang>` / `cc=` to bias the result set by locale, which matters for country-specific regulation questions.
 
 ## Google News RSS (current events, no API key)
 

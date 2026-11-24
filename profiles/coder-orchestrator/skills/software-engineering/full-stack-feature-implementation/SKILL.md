@@ -9,11 +9,11 @@ Use this skill for real full-stack implementation backed by execution evidence.
 
 For autonomous greenfield builds, follow [references/delegated-greenfield-verification.md](references/delegated-greenfield-verification.md): independently verify the artifact, real provider contract, runtime rejection paths, and end-to-end UI behavior before claiming completion.
 
-## Focused UI and embedded-build verification
+## Focused verification references
 
-References: `references/` contains acceptance, milestones, release verification, UI/form patterns, admin-editor TDD, and `access-profile-permission-management.md`.
+For authenticated multi-user offline-first work, read [offline-first-state-sync.md](references/offline-first-state-sync.md): shell caching and mutation safety are separate; never replay stale snapshots as merges.
 
-In dirty repositories, isolate exact paths, stage explicitly, inspect the cached diff, and prove local/remote SHA equality after push. Run checks from the owning module root. Treat push and deployment separately. For embedded Go assets under systemd, follow [references/embedded-go-systemd-release.md](references/embedded-go-systemd-release.md).
+In dirty repos, stage exact paths and verify cached diff plus local/remote SHA. Run checks from the owning module. For embedded Go/systemd releases, see [embedded-go-systemd-release.md](references/embedded-go-systemd-release.md).
 
 For uploads that accept arbitrary file types across creation and reply/comment flows, apply layered count/size enforcement, bounded multipart parsing, safe binary-to-context handling, and sibling-flow boundary tests. See [references/file-upload-boundary-validation.md](references/file-upload-boundary-validation.md).
 

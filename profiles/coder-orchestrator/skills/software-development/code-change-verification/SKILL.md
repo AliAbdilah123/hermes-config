@@ -9,7 +9,7 @@ Use before release. Key references: [public sidebars](references/sidebar-context
 
 ## Verification fallbacks
 
-Generated `dist/` needs integration tests. References: [fallbacks](references/ad-hoc-verification-evidence.md), [mixed stacks](references/mixed-go-web-verification.md), [mutations](references/optimistic-full-stack-mutations.md), [dirty trees](references/dirty-worktree-surgical-commit.md), [public E2E](references/public-e2e-route-and-selector-drift.md), [systemd releases](references/systemd-binary-release-readiness.md).
+Generated `dist/` needs integration tests. References: [fallbacks](references/ad-hoc-verification-evidence.md), [mixed stacks](references/mixed-go-web-verification.md), [mutations](references/optimistic-full-stack-mutations.md), [dirty trees](references/dirty-worktree-surgical-commit.md), [public E2E](references/public-e2e-route-and-selector-drift.md), [offline-first/PWA](references/offline-first-web-verification.md).
 
 If metadata misses a real project check (for example `make check`):
 

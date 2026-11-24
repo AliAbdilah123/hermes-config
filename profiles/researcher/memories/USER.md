@@ -7,3 +7,5 @@ User prefers JSON outputs delivered directly as file attachments, not pasted int
 Communicates in casual Indonesian ("lo/gue"); wants replies in Indonesian.
 §
 Works on TikTok/Reels short-form content; associated with community @balikpapan.dev.
+§
+Currently leveling up on UI/UX design systems (Figma) and backend system design for payment features; asks for research briefs that pair concepts with verified numbers.
