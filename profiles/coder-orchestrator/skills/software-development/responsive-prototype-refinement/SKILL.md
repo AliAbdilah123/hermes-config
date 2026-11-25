@@ -12,9 +12,11 @@ Use this skill when a user reviews an interactive or static UI prototype and ask
 
 ## Workflow
 
-1. Re-read the latest user correction and identify the exact surface and breakpoint in scope.
-2. Inspect the component hierarchy before changing CSS. If the complaint is “box inside box,” determine which wrapper owns layout and which wrapper is only decorative.
-3. Remove the redundant decorative wrapper rather than hiding its border or layering compensating CSS.
+1. Re-read the latest user correction and classify it as either a targeted visual refinement or a product-model reframing.
+2. For a product-model reframing, revise domain ownership and role boundaries before touching screens. If a specific experience becomes a package/module inside a broader platform, preserve the prior review artifact and create a versioned successor. Prototype the newly important role-scoped surfaces (for example member, group admin, and platform superadmin) rather than making cosmetic variants of the original end-user screen.
+3. For a targeted visual refinement, identify the exact surface and breakpoint in scope.
+4. Inspect the component hierarchy before changing CSS. If the complaint is “box inside box,” determine which wrapper owns layout and which wrapper is only decorative.
+5. Remove the redundant decorative wrapper rather than hiding its border or layering compensating CSS.
 4. Move the content to the requested structural level, preserving semantics, state, labels, and actions.
 5. Scope typography and spacing changes beneath the affected desktop/mobile container. Do not use broad selectors when another breakpoint is explicitly excluded.
 6. Preserve out-of-scope breakpoint markup and interaction literally unless a shared dependency makes a minimal change unavoidable.
