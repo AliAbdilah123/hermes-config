@@ -5,7 +5,7 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 # Code Change Verification
 
-Use before release. Key references: [public sidebars](references/sidebar-context-and-public-release.md), [responsive rows](references/responsive-table-action-regressions.md), [clickable rows opening context drawers](references/clickable-row-to-context-drawer.md).
+Use before release. First honor [delivery-scope overrides](references/delivery-scope-overrides.md).
 
 ## Verification fallbacks
 
