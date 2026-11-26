@@ -5,9 +5,9 @@ description: Implementing real features in an existing full-stack project, espec
 
 # Full-Stack Feature Implementation
 
-Use this skill for real full-stack implementation backed by execution evidence.
+Use this skill for full-stack delivery backed by execution evidence.
 
-For autonomous greenfield builds, follow [references/delegated-greenfield-verification.md](references/delegated-greenfield-verification.md): independently verify the artifact, real provider contract, runtime rejection paths, and end-to-end UI behavior before claiming completion.
+References: [artifact fidelity](references/canonical-frontend-artifact-fidelity.md), [delegated greenfield verification](references/delegated-greenfield-verification.md), [localized seeded-app delivery](references/localized-seeded-app-delivery.md), and [profile-owned resource actions](references/profile-owned-resource-actions.md) for privileged creation on another user's behalf.
 
 ## Focused verification references
 

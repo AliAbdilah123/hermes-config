@@ -38,6 +38,22 @@ A passing test/build is necessary but not sufficient. Conversely, do not repeate
 
 After each corrective pass, independently rerun tests, build, and diff checks from the final workspace. Then request a fresh reviewer who reads prior findings and explicitly marks each blocker fixed or still reproducible.
 
+## Visual-contract fidelity gate
+
+When the user supplies an HTML/design artifact and asks for the frontend “like the design,” treat the artifact's rendered DOM/CSS, composition, and responsive states as the acceptance contract—not merely its product requirements or palette.
+
+Before calling a preview ready:
+
+1. Build a surface matrix from the artifact and require material markup for every named screen.
+2. Capture reference and implementation at matching viewport sizes.
+3. Wait for asynchronous data that determines visual density (cards, tables, activity rows) before screenshots; partially loaded captures are not fidelity evidence.
+4. Compare structure, typography, spacing, sizing, content density, and responsive behavior side by side. Functional E2E and overflow checks do not substitute for this comparison.
+5. For fixed or sticky UI, do not infer placement from a full-page screenshot alone: compositing can make fixed controls appear mid-document. Verify `getBoundingClientRect()` against `innerHeight`, then capture a viewport screenshot.
+6. Correct real geometry defects such as wrapped paired CTAs and obscured bottom content, then rerun build and browser checks.
+7. Keep production unchanged until explicit user approval. After approval, promote the exact verified commit, run public E2E, and remove preview infrastructure only after production passes.
+
+A visually divergent but functional implementation is not READY. If fidelity was not independently compared against the artifact, report that gate as incomplete.
+
 ## Minimum regression evidence
 
 - detail-to-list navigation through the rendered application;

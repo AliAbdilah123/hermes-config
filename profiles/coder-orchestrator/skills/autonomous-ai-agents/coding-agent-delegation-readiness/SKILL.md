@@ -97,6 +97,24 @@ For implementation prompts include:
 
 After completion, independently verify claimed side effects: inspect diffs, run tests/build, check deployment HTTP, and confirm commit/push state before reporting success.
 
+## Delegating strict-TDD work + cheap progress monitoring
+
+When handing a multi-phase, test-first build to an external coding CLI, seed the RED step yourself before launch: write the first failing test, run it, and watch it fail for the right reason. Then pass it with an explicit "a failing test already exists and has been observed failing" anchor in the prompt. This guarantees the subagent cannot silently skip the RED phase, and you own the proof that the anchor actually fails for the intended reason (delegation does not transfer the "watch it fail" obligation).
+
+Make progress observable by contract, not by log-scraping: require one commit per approved phase with an exact, agreed subject line. While the job runs, poll `git log --oneline` + `git status --short` — each phase subject appearing in history is the real progress signal. The process log buffer is the wrong monitor for long jobs: it re-echoes the same stale diff hunks and buries the useful "now doing phase N" lines, so `process log` looks frozen even when work is advancing. (The poll-vs-event guidance above assumes you can end the turn and re-enter on completion; when the runtime returns the result in-turn with no re-entry, poll — but poll the git state signal, never the log buffer.)
+
+After exit, close the loop with a preserve-file audit instead of trusting the "not staged" claim: confirm each protected untracked/dirty path appears in zero commit diffs across the whole range, and that the observed phase subject per commit matches the plan.
+
+```bash
+base=<base-sha>   # the commit the work built on
+git log --oneline "$base"..HEAD                      # phase subjects = progress
+git status --short                                  # dirty/untracked survivors
+git log --name-only --format= "$base"..HEAD | grep -E '<preserve-path-pattern>' || echo clean
+for c in $(git rev-list --reverse "$base"..HEAD); do git show --format='%s' -s "$c"; done
+```
+
+Seeding the anchor also pairs with ponytail: the handoff prompt stays lazy — a few lines of anchor + a terse scope list beats a full spec re-statement.
+
 ## Pitfalls
 
 - Announcing “delegated” immediately after receiving a process ID.

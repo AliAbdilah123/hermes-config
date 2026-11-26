@@ -88,6 +88,7 @@ When the user asks to make one artifact or section look like another:
 
 ## Supporting References
 
+- See `references/open-design-vps-artifact-retrieval.md` when an authenticated OpenDesign URL is backed by a project stored on the same VPS; it covers `OD_DATA_DIR`, canonical artifact paths, conversation verification, and stale Next.js cache pitfalls.
 - See `references/static-shell-backend-runtime-audit.md` when a deployed static frontend returns 200 but API-backed flows fail; it covers proxy/upstream/service tracing, bootstrap cycles, and conservative readiness classification.
 - See `references/evidence-backed-improvement-audit.md` for the compact audit rubric and report content pattern.
 - See `references/holistic-prd-revision.md` when stakeholder decisions must be integrated across an existing PRD rather than appended; it includes consistency checks, critique prompts, architecture defaults, and deterministic verification.

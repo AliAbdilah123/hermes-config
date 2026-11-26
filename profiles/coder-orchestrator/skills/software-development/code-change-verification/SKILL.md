@@ -5,11 +5,11 @@ description: Verify code changes with fresh, accurately scoped evidence, includi
 
 # Code Change Verification
 
-Use before release. First honor [delivery-scope overrides](references/delivery-scope-overrides.md).
+Use before release. First honor [delivery-scope overrides](references/delivery-scope-overrides.md). Background review is a hard release gate; follow [asynchronous review release gate](references/async-review-release-gate.md).
 
 ## Verification fallbacks
 
-Generated `dist/` needs integration tests. References: [fallbacks](references/ad-hoc-verification-evidence.md), [mixed stacks](references/mixed-go-web-verification.md), [mutations](references/optimistic-full-stack-mutations.md), [dirty trees](references/dirty-worktree-surgical-commit.md), [public E2E](references/public-e2e-route-and-selector-drift.md), [offline-first/PWA](references/offline-first-web-verification.md).
+Generated `dist/` needs integration tests. References: [fallbacks](references/ad-hoc-verification-evidence.md), [mixed](references/mixed-go-web-verification.md), [mutations](references/optimistic-full-stack-mutations.md), [dirty tree](references/dirty-worktree-surgical-commit.md), [public E2E](references/public-e2e-route-and-selector-drift.md), [analytics filters](references/shared-analytics-filter-verification.md), [PWA](references/offline-first-web-verification.md).
 
 If metadata misses a real project check (for example `make check`):
 

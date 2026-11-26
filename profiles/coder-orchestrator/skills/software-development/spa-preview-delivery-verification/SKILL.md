@@ -101,6 +101,8 @@ For standalone review HTML published through an `/prd/` or similar alias, HTTP 2
 
 See `references/subpath-spa-proof-checklist.md` for a concise reusable verification checklist and evidence format.
 
+For a root-mounted SPA whose assets all return `200` but whose client router reports a valid route as not found after a legacy subpath deployment, use `references/root-mounted-spa-stale-base-build.md`; it covers stale compiled base/route metadata, clean artifact rebuilds, and browser-console verification.
+
 For cached media that exists but disappears on nested detail routes, use `references/detail-media-route-drift.md`; it covers `document.baseURI` drift, SPA-fallback false positives, the minimal route fix, and owner-scoped verification limits.
 
 For SQLite-backed payment approval previews, also use `references/payment-approval-preview-checklist.md`; it covers baseline classification, single-connection query safety, authenticated receipt blobs, transaction invariants, atomic ordering, and two-role public E2E.

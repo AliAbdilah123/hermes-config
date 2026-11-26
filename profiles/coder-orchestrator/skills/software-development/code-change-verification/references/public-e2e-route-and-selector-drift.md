@@ -9,6 +9,8 @@ Use this when a deployed change passes local tests/builds but the repository's p
 3. If an accessible control was added near a form field, check for selector ambiguity. For example, a password input labeled `Password` plus a `Show password` button can make `getByLabel('Password')` non-unique. Prefer a role-constrained selector such as `getByRole('textbox', {name: 'Password'})`.
 4. Patch the reusable E2E harness when its selector is genuinely stale, then rerun it. Do not weaken product accessibility to preserve a broad test selector.
 5. If the broad suite then fails on unrelated stale fixture labels or tenant names, run a minimal public browser probe for the exact acceptance path. Record both facts: scoped acceptance passed; broader suite remains blocked by unrelated harness/fixture drift.
+6. In an ad-hoc browser probe, apply the canonical suite's expected-error exclusions (for example, the initial unauthenticated session request returning 401). Otherwise a valid authentication bootstrap can be misreported as a browser regression.
+7. After restarting a service, do not treat `systemctl is-active` as readiness. Poll the local health endpoint with a bounded retry, then verify the public health endpoint and deployed asset fingerprint before browser acceptance checks.
 
 ## Logout/navigation probe
 
