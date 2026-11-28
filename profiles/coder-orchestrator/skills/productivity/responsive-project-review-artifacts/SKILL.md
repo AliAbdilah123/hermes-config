@@ -86,6 +86,8 @@ When the user asks to make one artifact or section look like another:
 - Build output can regenerate ignored files. Confirm the staged diff contains only the intended report before committing.
 - Nginx warnings are not failures when `nginx -t` explicitly reports successful syntax and configuration tests; report only actionable blockers.
 
+- When a review artifact is generated from canonical Markdown and later amended (appending new sections rather than a holistic rewrite), do **not** convert only the appended fragment with a bare `markdown.markdown(...)` call and splice it into the existing HTML. Plain `markdown` emits no heading `id` attributes, so the new section's headings lose the `id` slugs that TOC anchor links depend on (and `tables`/`fenced_code` extensions are not reapplied to the fragment). Either regenerate the whole HTML from the full Markdown source (so slugification and extensions apply uniformly), or re-apply the exact same slug/extensions pipeline to every injected heading. After either path, verify each injected heading carries its `id` and that the matching TOC link resolves — a public HTTP 200 does not catch a dangling anchor.
+
 ## Supporting References
 
 - See `references/open-design-vps-artifact-retrieval.md` when an authenticated OpenDesign URL is backed by a project stored on the same VPS; it covers `OD_DATA_DIR`, canonical artifact paths, conversation verification, and stale Next.js cache pitfalls.

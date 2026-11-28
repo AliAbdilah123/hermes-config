@@ -115,6 +115,23 @@ for c in $(git rev-list --reverse "$base"..HEAD); do git show --format='%s' -s "
 
 Seeding the anchor also pairs with ponytail: the handoff prompt stays lazy — a few lines of anchor + a terse scope list beats a full spec re-statement.
 
+## Reviewing uncommitted work vs. committed refs
+
+`codex exec review --uncommitted` rejects a positional `[PROMPT]` — it errors with
+`the argument '--uncommitted' cannot be used with '[PROMPT]'` even though its own
+usage line prints `--uncommitted [PROMPT]`. Do not keep re-trying the same flag with
+argv, a heredoc, or stdin: that path will not accept a brief. Options:
+
+- Review a **committed** ref normally: `codex exec review --base origin/main`, or
+  feed `git diff base...HEAD` to a plain `codex exec` review prompt.
+- For a **large uncommitted** diff, hand it to a Hermes subagent instead:
+  `delegate_task(role="leaf", goal="Review the uncommitted diff … concrete findings
+  with severity + file/line … do not modify files")`. The subagent's full summary is
+  written to a cache file
+  (`~/.hermes/profiles/<profile>/cache/delegation/subagent-summary-*.txt`) you can
+  `read_file` when the inline summary is truncated. This yields ranked findings
+  faster than fighting the `--uncommitted` input path.
+
 ## Pitfalls
 
 - Announcing “delegated” immediately after receiving a process ID.

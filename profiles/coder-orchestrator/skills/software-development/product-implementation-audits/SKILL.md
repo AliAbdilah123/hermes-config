@@ -33,6 +33,16 @@ For multi-repository extraction audits, use [references/reusable-feature-slice-a
 
 For requests to create a `features/` directory with complete product flows and step-by-step manual UI checks, use [references/feature-flow-ui-verification-docs.md](references/feature-flow-ui-verification-docs.md). It covers role/domain document structure, canonical deployment URL verification, implementation-to-UI tracing, runtime evidence wording, and commonly missed authorization, persistence, responsive, and cross-surface checks.
 
+## Re-evaluating a plan against current code
+
+When the user says "reevaluate based on the current state of code" (or asks whether an existing plan is still accurate), the deliverable is not a re-read of the plan — it is a plan-vs-code reconciliation. The original plan is often **already shipped**: the tree may be clean at a commit that closed it, so the real work is separating shipped from unstarted and correcting stale assumptions.
+
+1. Establish ground truth first: `git status --short`, branch, current commit. Record whether the working tree is clean.
+2. Verify each planned item against the **live schema** (`db.go`), the **route table** (`http.go` handler registration), and the **frontend types** (`types.ts`) — not against the plan's prose. Record a concrete evidence token per item (table/column name, route path, type definition). Absence of a token means "not started," never "assumed done."
+3. Emit a two-column status table: ✅ Shipped (with evidence token) vs ❌ Not started (with the missing token). This is the legible core of the artifact.
+4. Name the **corrections the re-evaluation forces**: features the plan framed as greenfield but which are actually a migration of a live model. For each, state what already exists and what the migration must preserve (e.g. charge identity is a `period_key` string, `group_members` is a composite-key table every query reads, an enum is still binary, the only payment endpoint is admin-only, there is no scheduler).
+5. Update both the canonical markdown and the published HTML review artifact, re-publish with a fresh cache-busting query, and verify HTTP 200 + that the new heading is present in the public body. See `references/plan-reevaluation-against-code.md`.
+
 ## Reporting style
 
 When the user requests low token usage, keep citations exact and collapse repetitive requirements into compact tables. State audit/runtime limitations once, not under every row. Give details primarily for blockers, partial behavior, broken contracts, and architecture violations. Preserve the user’s required output order and exact labels.

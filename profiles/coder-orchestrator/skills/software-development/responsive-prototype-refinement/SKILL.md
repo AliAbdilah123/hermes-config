@@ -130,6 +130,22 @@ Before editing a screenshot-reported responsive issue:
 
 An open mobile drawer may intentionally occupy most of a narrow viewport. Distinguish that valid overlay state from the actual regression: a desktop sidebar remaining in normal document flow and clipping or shrinking the workspace.
 
+## Long-form plan and review documents on phones
+
+When publishing a long plan, PRD, audit, or specification as standalone HTML, treat phone legibility as a primary deliverable rather than relying on one generic `max-width` rule.
+
+Before publishing:
+
+1. Inspect the artifact at an exact narrow viewport (at minimum 360×800 or the user's reported device), not only desktop or source CSS.
+2. Flatten decorative nesting on mobile. The document body should usually be edge-to-edge text with modest page gutters, not a large card inside the page shell.
+3. Replace a desktop sticky table of contents with a compact top bar, disclosure, or jump menu. Do not merely hide the TOC while leaving the sidebar's dimensions, border, or spacing behind.
+4. Keep body text at least 16px with comfortable line height. Reduce hero scale and vertical gaps so the first substantive section appears quickly.
+5. Make wide tables and code blocks independently horizontally scrollable. They must not force document-level horizontal overflow or compress prose.
+6. Keep theme/navigation controls at least 44px high and ensure long headings, inline code, URLs, and schema names wrap without widening the page.
+7. Verify both dark and light themes, no document overflow, readable headings/lists, and usable table/code scrolling. HTTP 200 and source-string checks do not prove phone readability.
+
+If browser visual inspection is temporarily unavailable, publish only after focused CSS/geometry checks, state that visual verification is still pending, and provide the cache-busted review URL. Do not describe the mobile layout as visually verified from HTTP status alone.
+
 ## Verification
 
 ### Standalone multi-variant prototypes

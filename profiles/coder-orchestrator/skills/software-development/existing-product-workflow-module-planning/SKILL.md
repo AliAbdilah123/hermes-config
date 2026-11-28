@@ -74,6 +74,20 @@ When the workflow links a user-entered social username to a provider account:
 - Plan accessible loading, empty, unavailable-provider, provider-failure, image-fallback, keyboard, and mobile states.
 - Prefer the existing lookup and ownership-verification infrastructure over adding dependencies, schema, or OAuth unless the current proof mechanism is insufficient.
 
+## Generalizing domain-specific feature requests
+
+When a user wants a domain-specific product adaptation but asks for reusable primitives (for example, neighborhood administration expressed as community/guild capabilities):
+
+- Write an explicit domain-to-platform mapping before schema work: hierarchy → self-reference on the canonical entity; household/team/cohort → generic member unit; official announcement → pinned/promoted content; dues → fee/charge/payment/entitlement; organization-authored communication → display identity separated from accountable actor.
+- Preserve the canonical entity and add relationships rather than parallel domain-named tables.
+- Put placement-specific state on the relationship. If content can appear in several communities, pinning or promotion belongs on the content-community junction, not the content row.
+- Retain the authenticated actor for authorization and audit even when the public display identity is the organization.
+- Treat payment as a transactional state transition, never as a badge: integer minor units, idempotent charge generation, duplicate-safe settlement, entitlement extension, and a unique provider-event seam.
+- Enforce paid access centrally on every read and mutation path without leaking protected payloads. Keep feature enabled/disabled state independent from its access tier.
+- Do not infer permission inheritance from parent/child navigation. Hierarchical access remains independent unless inheritance is explicitly approved.
+- Define compatibility defaults so existing records remain free, user-authored, unpinned, and otherwise behaviorally unchanged after migration.
+- Include policy questions for visibility, role thresholds, entitlement periods, payment provider, and grace periods, followed by an explicit implementation gate.
+
 ## Key pitfalls
 
 - Never duplicate the canonical entity; reports are historical snapshots, not canonical copies.
@@ -85,6 +99,18 @@ When the workflow links a user-entered social username to a provider account:
 - Do not propose destructive table renames merely to fix terminology in the first release.
 - When implementation changes are forbidden, create only new plan/review artifacts; describe schemas/endpoints as proposals, never as completed work.
 
-## Supporting reference
+## Amendments to an in-progress implementation
 
-See `references/intermediate-workflow-module-planning.md` for the detailed inspection, conflict, migration, scoring, and deliverable checklists.
+When new requirements arrive while an approved plan is already partly implemented:
+
+1. Inspect the committed baseline **and** dirty working tree before revising the plan.
+2. Preserve compatible implemented primitives; do not casually discard in-progress work.
+3. State exactly which earlier sections are superseded, especially billing, entitlement, visibility, or migration rules. Do not leave conflicting models equally authoritative.
+4. Group the amendment by feature, with outcome, backend/data, frontend/UX, tests, and phase for each.
+5. Put identity-bearing history behind a durable period/entity ID before adding dependent payment, badge, or custom-field history.
+6. Keep implementation gated and update both the canonical source and the existing stable review URL.
+
+## Supporting references
+
+- See `references/intermediate-workflow-module-planning.md` for detailed inspection, conflict, migration, scoring, and deliverable checklists.
+- See `references/community-membership-feature-expansion.md` for unique join periods, month-level dues/debt, discounted batch settlements, custom member fields, payment approval/gateway paths, visibility matrices, events, and cross-group posts.

@@ -103,6 +103,8 @@ See `references/subpath-spa-proof-checklist.md` for a concise reusable verificat
 
 For a root-mounted SPA whose assets all return `200` but whose client router reports a valid route as not found after a legacy subpath deployment, use `references/root-mounted-spa-stale-base-build.md`; it covers stale compiled base/route metadata, clean artifact rebuilds, and browser-console verification.
 
+When a root-mounted project domain is internally bridged to a legacy `/projects/<slug>/` deployment, do not treat Nginx `sub_filter` output as proof that the source build base is correct. HTML rewriting can make emitted asset URLs look root-relative while `import.meta.env.BASE_URL`, API helpers, router basenames, and test mocks still retain the legacy prefix. Inspect the source bundler base and compiled JS, then rebuild with `base: '/'` when the public contract is root-mounted. Remove test-only prefix stripping so tests assert the real public URL contract. After deployment, verify fresh public HTML emits root assets, JS/CSS have correct MIME types, an unauthenticated API route reaches the API and returns its expected auth response rather than SPA HTML, and desktop/mobile browser DOM contains a route-specific marker with no uncaught errors.
+
 For cached media that exists but disappears on nested detail routes, use `references/detail-media-route-drift.md`; it covers `document.baseURI` drift, SPA-fallback false positives, the minimal route fix, and owner-scoped verification limits.
 
 For SQLite-backed payment approval previews, also use `references/payment-approval-preview-checklist.md`; it covers baseline classification, single-connection query safety, authenticated receipt blobs, transaction invariants, atomic ordering, and two-role public E2E.
